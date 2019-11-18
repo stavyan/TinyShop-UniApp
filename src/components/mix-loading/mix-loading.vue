@@ -1,0 +1,68 @@
+<template>
+	<!-- loading 加载 -->
+	<view class="mix-loading-content">
+		<view class="mix-loading-wrapper">
+			<image 
+				class="mix-loading-icon" 
+				src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFIAAABRCAYAAABBuPE1AAAOyElEQVR4Xu1ce1hU1RZfe0aQmQHlfopC+cBHiXJvoaafoBXd1Ozh86qFfipXpRTfDxS73StYX/nKa93U8nED+wIrS7CypK6hKZgaoAahSSJcZQBN5DHDa2bfb+3hHM8M8zjncEC63+x/FNh77bV/81trr7322kPA3RRBgCgixS0E3EAqRAI3kG4gFUJAITFuRrqBVAgBhcS4GekGUiEEFBLjZmR7AdI/eMQcAiSEAoTwOlFSSCnNMavI8fLcjByFdG2RGL/gsBCVmT5OCAkBQgM5YQQghwLN0eeeTmzJBLIZ2W1g6CS1irwPAL7OFKCUFhICKY1AEtsaVP+gEYFETZZRCpMIITx4DvStoGBeoc89nSAHUFlAdh8YukylItu5CXv37AlarQaCg4IgNz8fGhtNtb8UFHjZKkSBpoOJxuvzT6fLUVbsGP+gEeFERZYBIZNsx/Tscb/JW6dTo66FRcVQfvMmXCsuFnSj20tyM1eInUvAbGlDmph4CEchgNFR86FPr552hZzJyoYzP/4IP5w911BXX+9x1/Qhh5rNK1wBiowCIL0t4+g1ff7pQmfaIoCgJusJkHCun6eHR/2I4cM8hw8dCsOHDLY7/GpRMbyze7ep+L/X1WwmMP9VKjMlMdI3MMTXS6vJRjNBEONi14JOpxX1SaSfPAkHDn7W+FtFRYe7gNIUaobtoKaBnJ/Ff125CwCoQL/G+TcwkUJQkUhCIJKT3blTp9qZ06d6DRs8RLSOS9euq9aXlnqjfGONoU9FYU6FqMUBSEtaBAwMXQ4q8k8UvmPrZvDr2lXsPHy/I0e/gYTkZMnjpAyIjIiAZ54aI2UI64tmvmRNbI3ZbNYBpW+V5GUuFytEEiMDBoVlA4GQx0aGweKo+WLnYP3QfI4cTYMzWVnUaDQ2m7dfn0B4sH9fuD8gAAb07wc+3kiM5q2quhouXSmAEn0p3NCXQvaFi3b7PT5yJISPGgnBA4Mk6fnqlq1XLubm9cdNUp+X2UfsYNFAWnZA1VUUvHrpEof+xnbi3J/z4ZPUVMjLv2T1p25+XeGJUWHwxKOjYGjIQ2L1tdvvx5wLcC7nPBw/lQG/FDAV+TYoaAA8O3YsDHPgH20FFhQWVq2L2+CDv28EGCw20hANpNCsP074t8uFIwMTk5KsANRptTB+3Bh4btxTMKB/X5cy5HRAph7+Og2SPz0ENTUGK0CnTZwoiqEvzJ3PzJtSiNfnZcSJ0UM8kINCtwMhywYOeBDi18U6lI3KIwOPpH3D9+nu1xUWzJ0Nj4eFgY+PfZMVo6zUPl8cTYP33v8A9GXl/FA0+cgZEU43oCVrYq+VlpX1BgqpJXkZzUIoe3qIBtI/ODSdAHncmX9EM96xdx/cvHWLzYUMfClyFkRMnSwVA0X72wKq1WohZslih+zcnbA//9v09CAK9Lg+N5MPpZwpJRpIbqOZOnECTJ/c/ENKSEq2YuELUybCi3NmtSkDnS20qqoakj49BHv3f8h3e2bsGMZO25aQdEB/JC3NH8OgktyMP4j5VMUDGRxGUaAtkGjKO/fug7PZ2Ww+/25+EBcb0+INRIzycvrgxhS3cQtv7rgZxSxZYmXqaFnxmzYz8SW5GaIwEtUJBQY0ARk9fy6EjxrFJkEQ4zduhsLiIvbzY2GhELd2VbthoSOgkZ1v7ngXvkz7lnUJ7NkLFkbN409obQLk+rVrmG+xBfHZsaMhLna1HJLcszHvJXzAmzr6zfWxaxmYbQZkYK9eVkxcv3YlPPfU2HsGSEsmxo0oftM2JkKr0dAtr8aTsvKbrW/az4wZDXn5l3lzXhn90j3flVsCJI4Vgtm7Rw/TtCmT1Vvf/lfr+kih0r9Hc3YEuhBMjUbDH2MV32y4OJJT5P8JRG5Nb76zCw58lspjTYHe0edmOk1cc51F79pCIAc/9CfYvX2LZIvKOn+BjRnycMvO1q4mbsk8Ly6P4RMhrRKQ+w8KvYp5SMw/Ju/ZBQH+3V2th/97+skM2LbjXSgpLWO/C+jeDVYuWgDho8JEyxDTEWPE+E1b+Xm8vXXsUBDxF1GnPDYFhkbjZ8xmUQlmgGoNxsFi8pKiGClMWEjdXIS+BxWdNvFppvAnqV+Bkrs9flgx/9gAU8aPY0nWo8dOQHVT0kLqPJws1FNs4sIlkJgV13prCymFzlJNGjMxM16MhurqGgbevrfegKeffIz9/6v/nIBlf3sNDn+Y2OIAHlk0YeYciImeB1Gzn2fyM85kwdS5S3giH05KlGRFK19eD9+f/oGNpyZzH1fXHC6B9B8UFkcIrEeBUpURBrxoZpdPp1lZ6H1/HAnzZ89kiY2WNI71N346ZSVm6OjJUKK3uBOpmyOSYMKMORYggSbqczP5awx7ujoFEtmo0WkxU+orVRGcbGZUNFwu+JWf13ahCKRUlttbxKpX4uFERibYyh82ZgpcLynl/fLh5P2SPq91G96Ab9OPi2KlUyCFvvHdbZslJyKG/XmcleLxa5byprdn/0ewfvPb7O9nj30taYG2nSdEzGYbzMqFc2H1onnszx+lfAkrXnndqqvUeX4pKIQZUQssQLpI8joHsumORi5rbIFEhUKHWa5EM89askVKACmcJ3jAA9Cpk7eVfLnzNDQ0QuyG1+HEqQy2gzu7w3EIpPCORuquxyluD0h71JPKFFsZ41+YZZUFd0RvOfMgs7njorM7HIdACs36WOpBWTvrjKiFzS6jbBcpl+1COZyPdOYfME/6+YEPJLuQq0U3YHrkXMs4J1e0jhnZdLXwQL8+kLRnl2QFcIBw13YkQGpcak+Obaxqrw9m7FctXih5HSVlt2DDpq1wLjsbd2+HVw8MSEtpCIAwVgoIDruNu3VLwhPhKcHeCvCU9HnSfllsl2Leck5jnHwE8rPUL/iiBmESQ4gbEdbycIMtFWSW6i08Fz8S8jD7E8aCeI36QN++ohfvjC1bNvxDsWPipSu/wksrVltdwXLrkerj8ayO8vAgUVVjgCsFv/JXKXiPY1tSYzLTyXaBdMV/vFJ48zUWo4tqtvckrXWvg4uP37SF98s4D5qzlDN93Mat/BWEqMUBAANSYNqW+kGVKhwIDcerV/wRNwNswtIQ2f5GXwreOp1oNotdiG0/dCnVNTWSjoScDFu/jvf42H6+dJn9i34SKEkHs5krTSxEl2h3sxEeC+WEDHIBaG/jjLV1oC+z3NHPWbgIjEajw8DcDaSTT6+ysgZuVdxhPdb8PY5drzg64dgFUhhDcozkkqUo1Nlm07H8DmiLS0FtqONVNGk7gqFnd6jz69ympJOrC7fW23eqoW+gxeNxsaRTILGUmRDiSwj1xaJ6Qokvlu85WrWzBEa3Y9ngUWlJmwlbfdfOUD7K4m/bqsnRxVXsixENEECfmEMpqaCUVtQZjYlEyD6xC3QVWyITOt6ymAS2ui6dJbMx+dMUwASrsGEYFjVnplg1WT+pugiTumInQpYSfDahpjSFDSLA1WgXEiAsGYfsGz/Ocmd9n393WTuhWIW4fs4WIzUmlDo31z/rQh7cKNGzH89mZcGRbyxVGXhMpE3WSoD4Ukp9wUwjXR4RpcaMchUXjnNmXnLyolJ1qqo2wM3f7paPv7NnL8sAqVSqn65fPGnXP7Vq0kLqArj+yQcPwbad79kdrsTZ3JleJrMZrt8oB5PZxHeLjF4MBoNBXtICTb4DAEsatpU5CRdoL6PTFkVaeLaurb0bceATFy6NRk3mJxw9aXGa2OXush/s1xc+3LNTLsFkj8Oj5YKVa9h4ORl6qRP/drsS7lRVWw2L27iJlW+rVOT69YunejiS6RxIfEGlVn13r1jZlkDa+kVcsxUbXTxiEnGLGIqZoN54RsZbxLasAcfFYHKYVdvu2dVqc9sDEeeOXhXDyrhdsRH7ugZSwMqnRz8JG16OkWox7bo/7s4IpG37+FAKHEw9zH6N2Z2ynzMtIaKD5hJIHBfQ9KIB/79m2WKYNvG5dg2OGOUaGxuh9GYF1NfXN+uOz/127m16AiPyZYMoIJvutzFtxDK8K6IXwPNTJoBapRKjc7vrg8mIispqqxCHU1JYrQuEFBurax5SrPYHJ2FpdTXJIUA6Y5nw4qgoGB0+Ejr5eP9uAMW02K3bdwCvWe01fGQVv3ETixkJIdUNlD6q+MsvnLgptsTSg07485wZETBh3Djw8dGAj04LHTrcffjanmiIPrCy2mDXjDk9heYsFURRm40tIOxsDhQfL7GcmPAllU6rAZ1OAzpNszfvbY4r+sDKKgMYamsdMpBTaseefXD8lKVuSA6IsoDkzJyoVbiLMZ/ZtUsXWDR/Hv+SSq1Sg5eXJ2i8OoLGy7PNmIqmazTWiQIP9UZ/mJh0gK+Hx7N0vdk8S6w5C9kharNxRCfhbo59hg0eDJEzI5q94/bw6ACeHh7g4aEGT09P8FDjv3e/UEAqXfE8XF/fAA31jdBoMoGxrt6p2drKx3fZHx9K5VmIf8eKs9oa43IxG4s9fVsEZBM7w0FFEjBo5yZAc58+eaKoh/FeXh2t9PLooAa12hINNDSYAEHjmslkcmmmzj4UewDizmwymZe6ihNdfdgtBhInsHxFg3Y5ELqc8534e3yehu+xEdh72dD/fff9Sds345VA6ftGgzFOLgsVM21bcBwBypn98EeGwKABA0QxtSXAY/33uZxsOHMuC3IvXbKkwJoavlQASrbXGgzblQCQk6sII+0CqvOaRECF3wlhKdMQNNyc8Otiuvn5QXAQAttFNrhoruU3b8HVoiIovFbEvi6He+ZsM+15MNMEo9GYoCSArQqkcAEs9jRT9KNYOtwMVFuA8SsauObXpSsDG1uNoQYKiyyPR7HhMzcHgAlFnqcUUkwEUuTsxFKsolUY6UgBNH1PjSZcTSAc7z24ag4pCjvri1UQhEKOiUK6itIcVwX0Ss2LctoUSHuKN1V0BeJ3llG8Egbqy10uOVoogkWBWC5VLKUjrGxESWCkyrrnQEpVuL32dwOp0CfjBtINpEIIKCTGzUg3kAohoJAYNyPdQCqEgEJi3Ix0A6kQAgqJ+R/hGsVgZB67rgAAAABJRU5ErkJggg==">
+			</image>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		
+		props: {
+			top: {
+				//距离顶部距离，单位upx
+				type: Number,
+				default: 0
+			},
+		},
+		data() {
+			return {
+
+			};
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+	.mix-loading-content{
+		display:flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: transparent;
+	}
+	.mix-loading-wrapper{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		animation: loading .5s ease-in infinite both alternate;
+	}
+	
+	.mix-loading-icon{
+		width: 80upx;
+		height: 80upx;
+		transition: .3s;
+	}
+	
+	@keyframes loading {
+		0% {
+			transform: translateY(-20upx) scaleX(1);
+		}
+		100% {
+			transform: translateY(4upx)  scaleX(1.3);
+		}
+	}
+	
+</style>
