@@ -11,7 +11,7 @@
 		<view class="row b-b">
 			<text class="tit">地址</text>
 			<text @click="chooseLocation" class="input">
-				{{addressData.address_name}}
+				{{addressData.addressName}}
 			</text>
 			<text class="yticon icon-shouhuodizhi"></text>
 		</view>
@@ -19,7 +19,6 @@
 			<!--<text class="tit">门牌号</text>-->
 			<!--<input class="input" type="text" v-model="addressData.area" placeholder="楼号、门牌" placeholder-class="placeholder" />-->
 		<!--</view>-->
-
 		<view class="row default-row">
 			<text class="tit">设为默认</text>
 			<switch :checked="addressData.defaule" color="#fa436a" @change="switchChange" />
@@ -63,6 +62,7 @@
 			chooseLocation(){
 				uni.chooseLocation({
 					success: (data)=> {
+						console.log(data)
 						this.addressData.addressName = data.name;
 						this.addressData.address = data.name;
 					}

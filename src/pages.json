@@ -1,10 +1,5 @@
 {
-	"pages": [ {
-			"path": "pages/address/address",
-			"style": {
-				"navigationBarTitleText": "收货地址"
-			}
-		},
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -144,6 +139,11 @@
 			"path": "pages/order/createOrder",
 			"style": {
 				"navigationBarTitleText": "创建订单"
+			}
+		}, {
+			"path": "pages/address/address",
+			"style": {
+				"navigationBarTitleText": "收货地址"
 			}
 		}, {
 			"path": "pages/address/addressManage",

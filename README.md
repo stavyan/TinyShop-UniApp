@@ -11,14 +11,15 @@ yarn install || npm i
 ```
 npm run dev:PLATFORM
 ```
-
 值 | 平台
 ---|---
+h5 | H5
 mp-weixin | 微信小程序
 mp-alipay | 支付宝小程序
 mp-baidu | 百度小程序
 mp-toutiao | 头条小程序
 mp-qq | qq 小程序
+
 
 3. 打包至线上部署
 ```
