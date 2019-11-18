@@ -1,12 +1,12 @@
 <template>
-	<view class="content">
+	<view class="content" >
 		<view class="row b-b">
 			<text class="tit">联系人</text>
-			<input class="input" type="text" v-model="addressData.name" placeholder="收货人姓名" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.realname" @change="handleRealNameChange" placeholder="收货人姓名" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">手机号</text>
-			<input class="input" type="number" v-model="addressData.mobile" placeholder="收货人手机号码" placeholder-class="placeholder" />
+			<input class="input" type="number" v-model="addressData.mobile" @change="handleMobileChange" placeholder="收货人手机号码" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">地址</text>
@@ -21,18 +21,20 @@
 		<!--</view>-->
 		<view class="row default-row">
 			<text class="tit">设为默认</text>
-			<switch :checked="addressData.defaule" color="#fa436a" @change="switchChange" />
+			<switch :checked="addressData.default" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @click="confirm">提交</button>
 	</view>
 </template>
 
 <script>
+	import {addressCreate, addressUpdate} from "../../api/userInfo";
+
 	export default {
 		data() {
 			return {
 				addressData: {
-					name: '',
+					realname: '',
 					mobile: '',
 					addressName: '在地图选择',
 					address: '',
@@ -45,8 +47,9 @@
 			let title = '新增收货地址';
 			if(option.type==='edit'){
 				title = '编辑收货地址'
-
 				this.addressData = JSON.parse(option.data)
+				this.addressData.addressName = this.addressData.address_details
+				this.addressData.address = this.addressData.address_details
 			}
 			this.manageType = option.type;
 			uni.setNavigationBarTitle({
@@ -54,25 +57,29 @@
 			})
 		},
 		methods: {
-			switchChange(e){
-				this.addressData.default = e.detail;
+			handleRealNameChange (e) {
+				this.addressData.realname = e.detail.value;
 			},
-
+			handleMobileChange (e) {
+				this.addressData.mobile = e.detail.value;
+			},
+			switchChange(e){
+				this.addressData.default = e.detail.value;
+			},
 			//地图选择地址
 			chooseLocation(){
 				uni.chooseLocation({
 					success: (data)=> {
-						console.log(data)
 						this.addressData.addressName = data.name;
 						this.addressData.address = data.name;
 					}
 				})
 			},
-
 			//提交
 			confirm(){
 				let data = this.addressData;
-				if(!data.name){
+				console.log(data)
+				if(!data.realname){
 					this.$api.msg('请填写收货人姓名');
 					return;
 				}
@@ -84,16 +91,63 @@
 					this.$api.msg('请在地图选择所在位置');
 					return;
 				}
-				if(!data.area){
-					this.$api.msg('请填写门牌号信息');
-					return;
+				if (this.manageType === 'edit') {
+					this.handleAddressUpdate(data)
+				} else {
+					this.handleAddressCreate(data)
 				}
 				//this.$api.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
-				this.$api.prePage().refreshList(data, this.manageType);
-				this.$api.msg(`地址${this.manageType=='edit' ? '修改': '添加'}成功`);
-				setTimeout(()=>{
-					uni.navigateBack()
-				}, 800)
+				// this.$api.prePage().refreshList(data, this.manageType);
+				// this.$api.msg(`地址${this.manageType=='edit' ? '修改': '添加'}成功`);
+				// setTimeout(()=>{
+				// 	uni.navigateBack()
+				// }, 800)
+			},
+			async handleAddressUpdate (data) {
+				uni.showLoading({title:'收货地址修改中...'});
+				await this.$put(`${addressUpdate}?id=${this.addressData.id}`, {
+					realname: data.realname,
+					mobile: data.mobile,
+					address_details: data.address,
+					is_default: data.default ? 1 : 0,
+					province_id: 1,
+					city_id: 1,
+					area_id: 1
+				}).then(r=>{
+					if (r.code === 200) {
+						uni.showToast({ title: '恭喜您, 收货地址修改成功！', icon: "none" });
+						uni.redirectTo({
+							url: '/pages/address/address'
+						})
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			async handleAddressCreate (data) {
+				uni.showLoading({title:'创建中...'});
+				await this.$post(`${addressCreate}`, {
+					realname: data.realname,
+					mobile: data.mobile,
+					address_details: data.address,
+					is_default: data.default ? 1 : 0,
+					province_id: 1,
+					city_id: 1,
+					area_id: 1
+				}).then(r=>{
+					if (r.code === 200) {
+						uni.showToast({ title: '恭喜您, 收货地址创建成功！', icon: "none" });
+						uni.redirectTo({
+							url: '/pages/address/address'
+						})
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 		}
 	}

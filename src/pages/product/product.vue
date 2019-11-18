@@ -2,33 +2,34 @@
 	<view class="container">
 		<view class="carousel">
 			<swiper indicator-dots circular=true duration="400">
-				<swiper-item class="swiper-item" v-for="(item,index) in imgList" :key="index">
+				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
 					<view class="image-wrapper">
 						<image
-							:src="item.src" 
-							class="loaded" 
+							:src="item"
+							class="loaded"
 							mode="aspectFill"
 						></image>
 					</view>
 				</swiper-item>
 			</swiper>
 		</view>
-		
+
 		<view class="introduce-section">
-			<text class="title">恒源祥2019春季长袖白色t恤 新款春装</text>
+			<text class="title">{{ productDetail.name }}</text>
 			<view class="price-box">
 				<text class="price-tip">¥</text>
-				<text class="price">341.6</text>
-				<text class="m-price">¥488</text>
-				<text class="coupon-tip">7折</text>
+				<text class="price">{{ productDetail.minSkuPrice }}</text>
+				<!--<text class="m-price">¥488</text>-->
+				<!--<text class="coupon-tip">7折</text>-->
 			</view>
 			<view class="bot-row">
-				<text>销量: 108</text>
-				<text>库存: 4690</text>
-				<text>浏览量: 768</text>
+				<text>销量: {{ productDetail.sales }}</text>
+				<text>收藏量: {{ productDetail.collect_num }}</text>
+				<text>浏览量: {{ productDetail.view }}</text>
+				<text>评论量: {{ productDetail.comment_num }}</text>
 			</view>
 		</view>
-		
+
 		<!--  分享 -->
 		<view class="share-section" @click="share">
 			<view class="share-icon">
@@ -41,22 +42,22 @@
 				立即分享
 				<text class="yticon icon-you"></text>
 			</view>
-			
+
 		</view>
-		
+
 		<view class="c-list">
 			<view class="c-row b-b" @click="toggleSpec">
 				<text class="tit">购买类型</text>
 				<view class="con">
 					<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-						{{sItem.name}}
+						{{sItem.title}}
 					</text>
 				</view>
 				<text class="yticon icon-you"></text>
 			</view>
 			<view class="c-row b-b">
 				<text class="tit">优惠券</text>
-				<text class="con t-r red">领取优惠券</text>
+				<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
 				<text class="yticon icon-you"></text>
 			</view>
 			<view class="c-row b-b">
@@ -76,7 +77,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 评价 -->
 		<view class="eva-section">
 			<view class="e-header">
@@ -84,7 +85,7 @@
 				<text>(86)</text>
 				<text class="tip">好评率 100%</text>
 				<text class="yticon icon-you"></text>
-			</view> 
+			</view>
 			<view class="eva-box">
 				<image class="portrait" src="http://img3.imgtn.bdimg.com/it/u=1150341365,1327279810&fm=26&gp=0.jpg" mode="aspectFill"></image>
 				<view class="right">
@@ -97,14 +98,14 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="detail-desc">
 			<view class="d-header">
 				<text>图文详情</text>
 			</view>
 			<rich-text :nodes="desc"></rich-text>
 		</view>
-		
+
 		<!-- 底部操作菜单 -->
 		<view class="page-bottom">
 			<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
@@ -119,17 +120,17 @@
 				<text class="yticon icon-shoucang"></text>
 				<text>收藏</text>
 			</view>
-			
+
 			<view class="action-btn-group">
 				<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
-				<button type="primary" class=" action-btn no-border add-cart-btn">加入购物车</button>
+				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addCart">加入购物车</button>
 			</view>
 		</view>
-		
-		
+
+
 		<!-- 规格-模态层弹窗 -->
-		<view 
-			class="popup spec" 
+		<view
+			class="popup spec"
 			:class="specClass"
 			@touchmove.stop.prevent="stopPrevent"
 			@click="toggleSpec"
@@ -138,55 +139,106 @@
 			<view class="mask"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t">
-					<image src="https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg"></image>
+					<image :src="productDetail.picture"></image>
 					<view class="right">
-						<text class="price">¥328.00</text>
-						<text class="stock">库存：188件</text>
+						<text class="title">{{ productDetail.name }}</text>
+						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
+						<!--<text class="stock">库存：188件</text>-->
 						<view class="selected">
 							已选：
 							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-								{{sItem.name}}
+								{{sItem.title}}
 							</text>
 						</view>
 					</view>
 				</view>
 				<view v-for="(item,index) in specList" :key="index" class="attr-list">
-					<text>{{item.name}}</text>
+					<text>{{item.title}}</text>
 					<view class="item-list">
-						<text 
-							v-for="(childItem, childIndex) in specChildList" 
-							v-if="childItem.pid === item.id"
+						<text
+							v-for="(childItem, childIndex) in specChildList"
+							v-if="childItem.base_spec_id === item.base_spec_id"
 							:key="childIndex" class="tit"
 							:class="{selected: childItem.selected}"
-							@click="selectSpec(childIndex, childItem.pid)"
+							@click="selectSpec(childIndex, childItem.base_spec_id)"
 						>
-							{{childItem.name}}
+							{{childItem.title }}
 						</text>
 					</view>
+				</view>
+				<view class="select-count">
+					<text>购买数量</text>
+					<uni-number-box
+						class="step"
+						:min="1"
+						:value="cartCount"
+						@eventChange="numberChange"
+					></uni-number-box>
 				</view>
 				<button class="btn" @click="toggleSpec">完成</button>
 			</view>
 		</view>
 		<!-- 分享 -->
-		<share 
-			ref="share" 
+		<share
+			ref="share"
 			:contentHeight="580"
 			:shareList="shareList"
 		></share>
+		<!-- 优惠券面板 -->
+		<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
+			<view class="mask-content" @click.stop.prevent="stopPrevent">
+				<!-- 优惠券页面，仿mt -->
+				<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
+					<view class="con">
+						<view class="left">
+							<text class="title">{{item.title}}</text>
+							<text class="time">有效期至2019-06-30</text>
+						</view>
+						<view class="right">
+							<text class="price">{{item.price}}</text>
+							<text>满30可用</text>
+						</view>
+
+						<view class="circle l"></view>
+						<view class="circle r"></view>
+					</view>
+					<text class="tips">限新用户使用</text>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
 	import share from '@/components/share';
+	import {cartItemCreate, productDetail} from "../../api/product";
+	import uniNumberBox from '@/components/uni-number-box.vue'
 	export default{
 		components: {
-			share
+			share,
+			uniNumberBox
 		},
 		data() {
 			return {
+				cartType: null,
+				maskState: 0, //优惠券面板显示状态
+				couponList: [
+					{
+						title: '新用户专享优惠券',
+						price: 5,
+					},
+					{
+						title: '庆五一发一波优惠券',
+						price: 10,
+					},
+					{
+						title: '优惠券优惠券优惠券优惠券',
+						price: 15,
+					}
+				],
+				productDetail: {},
 				specClass: 'none',
 				specSelected:[],
-				
 				favorite: true,
 				shareList: [],
 				imgList: [
@@ -209,74 +261,14 @@
 						<img style="width:100%;display:block;" src="https://gd1.alicdn.com/imgextra/i1/479184430/O1CN01Tnm1rU1iaz4aVKcwP_!!479184430.jpg_400x400.jpg" />
 					</div>
 				`,
-				specList: [
-					{
-						id: 1,
-						name: '尺寸',
-					},
-					{	
-						id: 2,
-						name: '颜色',
-					},
-				],
-				specChildList: [
-					{
-						id: 1,
-						pid: 1,
-						name: 'XS',
-					},
-					{
-						id: 2,
-						pid: 1,
-						name: 'S',
-					},
-					{
-						id: 3,
-						pid: 1,
-						name: 'M',
-					},
-					{
-						id: 4,
-						pid: 1,
-						name: 'L',
-					},
-					{
-						id: 5,
-						pid: 1,
-						name: 'XL',
-					},
-					{
-						id: 6,
-						pid: 1,
-						name: 'XXL',
-					},
-					{
-						id: 7,
-						pid: 2,
-						name: '白色',
-					},
-					{
-						id: 8,
-						pid: 2,
-						name: '珊瑚粉',
-					},
-					{
-						id: 9,
-						pid: 2,
-						name: '草木绿',
-					},
-				]
+				specList: [],
+				specChildList: [],
+				cartCount: 1
 			};
 		},
 		async onLoad(options){
-			
-			//接收传值,id里面放的是标题，因为测试数据并没写id 
-			let id = options.id;
-			if(id){
-				this.$api.msg(`点击了${id}`);
-			}
-			
-			
+			//接收传值,id里面放的是标题，因为测试数据并没写id
+			// let id = options.id;
 			//规格 默认选中第一条
 			this.specList.forEach(item=>{
 				for(let cItem of this.specChildList){
@@ -288,11 +280,61 @@
 				}
 			})
 			this.shareList = await this.$api.json('shareList');
+			this.initData(options.id);
 		},
 		methods:{
+			numberChange(data){
+				this.cartCount = data.number;
+			},
+			//显示优惠券面板
+			toggleMask(type){
+				let timer = type === 'show' ? 10 : 300;
+				let	state = type === 'show' ? 1 : 0;
+				this.maskState = 2;
+				setTimeout(()=>{
+					this.maskState = state;
+				}, timer)
+			},
+			/**
+			 *@des 初始化数据
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 15:48:21
+			 */
+			initData(id) {
+				this.getProductDetail(id);
+			},
+			/**
+			 *@des 获取产品详情
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 15:48:34
+			 */
+			async getProductDetail (id) {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${productDetail}`, {
+					id,
+				}).then(r=>{
+					if (r.code === 200) {
+						this.productDetail = r.data
+						this.specList = this.productDetail.base_attribute_format
+						this.specList.forEach(item => {
+							this.specChildList = [ ...this.specChildList, ...item.value ]
+						})
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			//规格弹窗开关
 			toggleSpec() {
 				if(this.specClass === 'show'){
+					if (this.cartType) {
+						this.cartType = null;
+						this.handleCartItemCreate();
+					}
 					this.specClass = 'hide';
 					setTimeout(() => {
 						this.specClass = 'none';
@@ -301,15 +343,48 @@
 					this.specClass = 'show';
 				}
 			},
+			/**
+			 *@des 添加商品至购物车
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 17:45:54
+			 */
+			async handleCartItemCreate () {
+				if (this.specSelected.length < 3) {
+					uni.showToast({ title: "请先选择规格", icon: "none" });
+				}
+				let sku_id;
+				const skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`;
+				this.productDetail && this.productDetail.sku.forEach(item => {
+					if (item.data === skuStr) {
+						sku_id = item.id;
+						return;
+					}
+				})
+				uni.showLoading({title:'加载中...'});
+				await this.$post(`${cartItemCreate}`, {
+					sku_id,
+					num: this.cartCount
+				}).then(r=>{
+					if (r.code === 200) {
+						uni.redirectTo({
+							url: `/pages/cart/cart`
+						})
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			//选择规格
 			selectSpec(index, pid){
 				let list = this.specChildList;
 				list.forEach(item=>{
-					if(item.pid === pid){
+					if(item.base_spec_id === pid){
 						this.$set(item, 'selected', false);
 					}
 				})
-
 				this.$set(list[index], 'selected', true);
 				//存储已选择
 				/**
@@ -317,17 +392,18 @@
 				 * 将这几行代码替换即可
 				 * 选择的规格存放在specSelected中
 				 */
-				this.specSelected = []; 
-				list.forEach(item=>{ 
-					if(item.selected === true){ 
-						this.specSelected.push(item); 
-					} 
+				this.specSelected = [];
+				list.forEach(item=>{
+					if(item.selected === true){
+						this.specSelected.push(item);
+					}
 				})
-				
+				console.log(this.specSelected)
+
 			},
 			//分享
 			share(){
-				this.$refs.share.toggleMask();	
+				this.$refs.share.toggleMask();
 			},
 			//收藏
 			toFavorite(){
@@ -337,6 +413,10 @@
 				uni.navigateTo({
 					url: `/pages/order/createOrder`
 				})
+			},
+			addCart(){
+				this.toggleSpec()
+				this.cartType = 'cart';
 			},
 			stopPrevent(){}
 		},
@@ -374,14 +454,14 @@
 				height: 100%;
 			}
 		}
-		
+
 	}
-	
+
 	/* 标题简介 */
 	.introduce-section{
 		background: #fff;
 		padding: 20upx 30upx;
-		
+
 		.title{
 			font-size: 32upx;
 			color: $font-color-dark;
@@ -412,7 +492,7 @@
 			color: #fff;
 			border-radius: 6upx;
 			line-height: 1;
-			transform: translateY(-4upx); 
+			transform: translateY(-4upx);
 		}
 		.bot-row{
 			display:flex;
@@ -485,7 +565,7 @@
 			color: $uni-color-primary;
 		}
 	}
-	
+
 	.c-list{
 		font-size: $font-sm + 2upx;
 		color: $font-color-base;
@@ -526,7 +606,7 @@
 			color: $uni-color-primary;
 		}
 	}
-	
+
 	/* 评价 */
 	.eva-section{
 		display: flex;
@@ -595,7 +675,7 @@
 			font-size: $font-base + 2upx;
 			color: $font-color-dark;
 			position: relative;
-				
+
 			text{
 				padding: 0 20upx;
 				background: #fff;
@@ -610,14 +690,31 @@
 				width: 300upx;
 				height: 0;
 				content: '';
-				border-bottom: 1px solid #ccc; 
+				border-bottom: 1px solid #ccc;
 			}
 		}
 	}
-	
+
 	/* 规格选择弹窗 */
 	.attr-content{
 		padding: 10upx 30upx;
+		.select-count {
+			padding: 30upx 0 10upx;
+			margin: 20upx 0;
+			border-top: 1px solid #ccc;
+			display: flex;
+			justify-content:space-between;
+			overflow: hidden;
+			position: relative;
+			font-size: $font-base + 6upx;
+			color: $font-color-base;
+			line-height: 60upx;
+			.step {
+				position: absolute;
+				left: 60vw;
+				bottom: 10upx;
+			}
+		}
 		.a-t{
 			display: flex;
 			image{
@@ -676,7 +773,7 @@
 			}
 		}
 	}
-	
+
 	/*  弹出层 */
 	.popup {
 		position: fixed;
@@ -685,7 +782,7 @@
 		right: 0;
 		bottom: 0;
 		z-index: 99;
-		
+
 		&.show {
 			display: block;
 			.mask{
@@ -765,7 +862,7 @@
 			}
 		}
 	}
-	
+
 	/* 底部操作菜单 */
 	.page-bottom{
 		position:fixed;
@@ -780,7 +877,7 @@
 		background: rgba(255,255,255,.9);
 		box-shadow: 0 0 20upx 0 rgba(0,0,0,.5);
 		border-radius: 16upx;
-		
+
 		.p-b-btn{
 			display:flex;
 			flex-direction: column;
@@ -839,5 +936,117 @@
 			}
 		}
 	}
-	
+
+	/* 优惠券面板 */
+	.mask{
+		display: flex;
+		align-items: flex-end;
+		position: fixed;
+		left: 0;
+		top: var(--window-top);
+		bottom: 0;
+		width: 100%;
+		background: rgba(0,0,0,0);
+		z-index: 9995;
+		transition: .3s;
+
+		.mask-content{
+			width: 100%;
+			min-height: 30vh;
+			max-height: 70vh;
+			background: #f3f3f3;
+			transform: translateY(100%);
+			transition: .3s;
+			overflow-y:scroll;
+		}
+		&.none{
+			display: none;
+		}
+		&.show{
+			background: rgba(0,0,0,.4);
+
+			.mask-content{
+				transform: translateY(0);
+			}
+		}
+	}
+
+	/* 优惠券列表 */
+	.coupon-item{
+		display: flex;
+		flex-direction: column;
+		margin: 20upx 24upx;
+		background: #fff;
+		.con{
+			display: flex;
+			align-items: center;
+			position: relative;
+			height: 120upx;
+			padding: 0 30upx;
+			&:after{
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				content: '';
+				width: 100%;
+				height: 0;
+				border-bottom: 1px dashed #f3f3f3;
+				transform: scaleY(50%);
+			}
+		}
+		.left{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			flex: 1;
+			overflow: hidden;
+			height: 100upx;
+		}
+		.title{
+			font-size: 32upx;
+			color: $font-color-dark;
+			margin-bottom: 10upx;
+		}
+		.time{
+			font-size: 24upx;
+			color: $font-color-light;
+		}
+		.right{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			font-size: 26upx;
+			color: $font-color-base;
+			height: 100upx;
+		}
+		.price{
+			font-size: 44upx;
+			color: $base-color;
+			&:before{
+				content: '￥';
+				font-size: 34upx;
+			}
+		}
+		.tips{
+			font-size: 24upx;
+			color: $font-color-light;
+			line-height: 60upx;
+			padding-left: 30upx;
+		}
+		.circle{
+			position: absolute;
+			left: -6upx;
+			bottom: -10upx;
+			z-index: 10;
+			width: 20upx;
+			height: 20upx;
+			background: #f3f3f3;
+			border-radius: 100px;
+			&.r{
+				left: auto;
+				right: -6upx;
+			}
+		}
+	}
 </style>

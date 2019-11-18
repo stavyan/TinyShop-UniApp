@@ -84,6 +84,7 @@
 		mapState
 	} from 'vuex';
 	import uniNumberBox from '@/components/uni-number-box.vue'
+	import {cartItemList} from "../../api/product";
 	export default {
 		components: {
 			uniNumberBox
@@ -98,6 +99,7 @@
 		},
 		onLoad(){
 			this.loadData();
+			this.initData();
 		},
 		watch:{
 			//显示空白页
@@ -112,6 +114,36 @@
 			...mapState(['hasLogin'])
 		},
 		methods: {
+			/**
+			 *@des 初始化数据
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 18:21:31
+			 *@param arguments
+			 */
+			initData() {
+				this.getCartItemList();
+			},
+			/**
+			 *@des 获取购物车列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 18:22:09
+			 */
+			async getCartItemList (id) {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${cartItemList}`, {
+					id,
+				}).then(r=>{
+					if (r.code === 200) {
+						console.log(r)
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			//请求数据
 			async loadData(){
 				let list = await this.$api.json('cartList');

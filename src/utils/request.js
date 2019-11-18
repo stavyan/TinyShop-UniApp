@@ -176,3 +176,49 @@ export function put(url, params = {}, header = {}) {
         }
     })
 }
+
+export function del(url, params = {}, header = {}) {
+    const token = uni.getStorageSync('access_token')
+    if (token) {
+        header = {
+            "x-api-key": token
+        }
+    }
+    return uni.request({
+        url: baseApiUrl + url,
+        method: 'DELETE',
+        data: params,
+        header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            ...header
+        }
+    }).then(res => {
+        uni.hideLoading();
+        return res[1].data
+        // console.log(res)
+        // if (res[1].data.status && res[1].data.code == 200) {
+        // } else {
+        //     throw res[1].data
+        // }
+    }).catch(r => {
+        uni.hideLoading();
+        switch (r.code) {
+            case 400:
+                uni.clearStorageSync()
+                break
+            case 500:
+                uni.showToast({
+                    title: "服务器打瞌睡了~",
+                    icon: 'none'
+                })
+                break
+            default:
+                uni.showToast({
+                    title: r.message,
+                    icon: 'none'
+                })
+                return Promise.reject()
+                break
+        }
+    })
+}

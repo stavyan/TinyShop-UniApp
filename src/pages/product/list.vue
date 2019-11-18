@@ -17,31 +17,31 @@
 			<text class="cate-item yticon icon-fenlei1" @click="toggleCateMask('show')"></text>
 		</view>
 		<view class="goods-list">
-			<view 
+			<view
 				v-for="(item, index) in goodsList" :key="index"
 				class="goods-item"
 				@click="navToDetailPage(item)"
 			>
 				<view class="image-wrapper">
-					<image :src="item.image" mode="aspectFill"></image>
+					<image :src="item.picture" mode="aspectFill"></image>
 				</view>
-				<text class="title clamp">{{item.title}}</text>
+				<text class="title clamp">{{item.name}}</text>
 				<view class="price-box">
-					<text class="price">{{item.price}}</text>
+					<text class="price">{{item.minPriceSku.price}}</text>
 					<text>已售 {{item.sales}}</text>
 				</view>
 			</view>
 		</view>
 		<uni-load-more :status="loadingType"></uni-load-more>
-		
+
 		<view class="cate-mask" :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''" @click="toggleCateMask">
 			<view class="cate-content" @click.stop.prevent="stopPrevent" @touchmove.stop.prevent="stopPrevent">
 				<scroll-view scroll-y class="cate-list">
 					<view v-for="item in cateList" :key="item.id">
 						<view class="cate-item b-b two">{{item.name}}</view>
-						<view 
-							v-for="tItem in item.child" :key="tItem.id" 
-							class="cate-item b-b" 
+						<view
+							v-for="tItem in item.child" :key="tItem.id"
+							class="cate-item b-b"
 							:class="{active: tItem.id==cateId}"
 							@click="changeCate(tItem)">
 							{{tItem.name}}
@@ -50,15 +50,16 @@
 				</scroll-view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import {productList} from "../../api/product";
 	export default {
 		components: {
-			uniLoadMore	
+			uniLoadMore
 		},
 		data() {
 			return {
@@ -66,21 +67,22 @@
 				headerPosition:"fixed",
 				headerTop:"0px",
 				loadingType: 'more', //加载更多状态
-				filterIndex: 0, 
+				filterIndex: 0,
 				cateId: 0, //已选三级分类id
 				priceOrder: 0, //1 价格从低到高 2价格从高到低
 				cateList: [],
 				goodsList: []
 			};
 		},
-		
+
 		onLoad(options){
 			// #ifdef H5
 			this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 			// #endif
 			this.cateId = options.tid;
 			this.loadCateList(options.fid,options.sid);
-			this.loadData();
+			// this.loadData();
+			this.initData();
 		},
 		onPageScroll(e){
 			//兼容iOS端下拉时顶部漂移
@@ -99,11 +101,35 @@
 			this.loadData();
 		},
 		methods: {
+			/**
+			 *@des 初始化数据
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/18 15:34:23
+			 *@param arguments
+			 */
+			initData () {
+				this.getProductList();
+			},
+			async getProductList () {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${productList}`, {
+					cate_id: 6
+				}).then(r=>{
+					if (r.code === 200) {
+						this.goodsList = r.data
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			//加载分类
 			async loadCateList(fid, sid){
 				let list = await this.$api.json('cateList');
 				let cateList = list.filter(item=>item.pid == fid);
-				
+
 				cateList.forEach(item=>{
 					let tempList = list.filter(val=>val.pid == item.id);
 					item.child = tempList;
@@ -121,7 +147,7 @@
 				}else{
 					this.loadingType = 'more'
 				}
-				
+
 				let goodsList = await this.$api.json('goodsList');
 				if(type === 'refresh'){
 					this.goodsList = [];
@@ -138,9 +164,9 @@
 						return b.price - a.price;
 					})
 				}
-				
+
 				this.goodsList = this.goodsList.concat(goodsList);
-				
+
 				//判断是否还有下一页，有是more  没有是nomore(测试数据判断大于20就没有了)
 				this.loadingType  = this.goodsList.length > 20 ? 'nomore' : 'more';
 				if(type === 'refresh'){
@@ -195,10 +221,8 @@
 			},
 			//详情
 			navToDetailPage(item){
-				//测试数据没有写id，用title代替
-				let id = item.title;
 				uni.navigateTo({
-					url: `/pages/product/product?id=${id}`
+					url: `/pages/product/product?id=${item.id}`
 				})
 			},
 			stopPrevent(){}
@@ -299,7 +323,7 @@
 		background: rgba(0,0,0,0);
 		z-index: 95;
 		transition: .3s;
-		
+
 		.cate-content{
 			width: 630upx;
 			height: 100%;
@@ -313,7 +337,7 @@
 		}
 		&.show{
 			background: rgba(0,0,0,.4);
-			
+
 			.cate-content{
 				transform: translateX(0);
 			}
@@ -392,6 +416,6 @@
 			}
 		}
 	}
-	
+
 
 </style>

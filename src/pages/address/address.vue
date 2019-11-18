@@ -1,50 +1,35 @@
 <template>
 	<view class="content b-t">
 		<view class="list b-b" v-for="(item, index) in addressList" :key="index" @click="checkAddress(item)">
-			<view class="wrapper">
+			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
 				<view class="address-box">
-					<text v-if="item.default" class="tag">默认</text>
-					<text class="address">{{item.addressName}} {{item.area}}</text>
+					<text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
+					<text class="address">{{item.address_details}}</text>
 				</view>
 				<view class="u-box">
-					<text class="name">{{item.name}}</text>
+					<text class="name">{{item.realname}}</text>
 					<text class="mobile">{{item.mobile}}</text>
 				</view>
 			</view>
 			<text class="yticon icon-bianji" @click.stop="addAddress('edit', item)"></text>
 		</view>
-		<!--<text style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">-->
-			<!--重要：添加和修改地址回调仅增加了一条数据做演示，实际开发中将回调改为请求后端接口刷新一下列表即可-->
-		<!--</text>-->
+		<text style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
+			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
+		</text>
 
 		<button class="add-btn" @click="addAddress('add')">新增地址</button>
 	</view>
 </template>
 
 <script>
-	import {addressList} from "../../api/userInfo";
+	import {addressDelete, addressList} from "../../api/userInfo";
 
 	export default {
 		data() {
 			return {
+				timeOutEvent: 0,
 				source: 0,
-				addressList: [
-					// {
-					// 	name: '刘晓晓',
-					// 	mobile: '18666666666',
-					// 	addressName: '贵族皇仕牛排(东城店)',
-					// 	address: '北京市东城区',
-					// 	area: 'B区',
-					// 	default: true
-					// },{
-					// 	name: '刘大大',
-					// 	mobile: '18667766666',
-					// 	addressName: '龙回1区12号楼',
-					// 	address: '山东省济南市历城区',
-					// 	area: '西单元302',
-					// 	default: false,
-					// }
-				]
+				addressList: []
 			}
 		},
 		onLoad(option){
@@ -52,6 +37,37 @@
 			this.initData()
 		},
 		methods: {
+			goTouchStart(id){
+			 clearTimeout(this.timeOutEvent);//清除定时器
+			 this.timeOutEvent = 0;
+			 this.timeOutEvent = setTimeout(() => {
+				uni.showModal({
+				    content: '确定要删除该收货地址吗',
+				    success: (e)=>{
+				    	if(e.confirm){
+				    		this.$del(`${addressDelete}?id=${id}`).then(r => {
+									if (r.code === 200) {
+										this.getAddressList();
+									} else {
+										uni.showToast({ title: r.message, icon: "none" });
+									}
+								})
+				    	}
+				    }
+				});
+			 }, 0.5 * 1000);//这里设置定时
+		 },
+		//手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
+		goTouchEnd(){
+				clearTimeout(this.timeOutEvent);
+					if(this.timeOutEvent!=0){
+				 }
+		},
+		//如果手指有移动，则取消所有事件，此时说明用户只是要移动而不是长按
+		goTouchMove(){
+				 clearTimeout(this.timeOutEvent);//清除定时器
+				 this.timeOutEvent = 0;
+		},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com

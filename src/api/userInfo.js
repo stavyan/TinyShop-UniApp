@@ -14,18 +14,22 @@ const memberUpdate = "/addons/rf-tiny-shop/v1/member/member/update";
 // 收货地址列表
 const addressList = "/addons/rf-tiny-shop/v1/member/address/index";
 // 创建收货地址
-const memberCreate = "/addons/rf-tiny-shop/v1/member/address/create";
+const addressCreate = "/addons/rf-tiny-shop/v1/member/address/create";
 // 修改收货地址
 const addressUpdate = "/addons/rf-tiny-shop/v1/member/address/update";
 // 修改收货地址
 const addressDelete = "/addons/rf-tiny-shop/v1/member/address/delete";
+
+// 获取优惠券列表
+const couponList = "/addons/rf-tiny-shop/v1/marketing/coupon-type/index";
 
 export {
     memberInfo,
     memberOrder,
     memberUpdate,
     addressList,
-    memberCreate,
+    addressCreate,
     addressUpdate,
-    addressDelete
+    addressDelete,
+    couponList
 };

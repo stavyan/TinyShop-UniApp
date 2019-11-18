@@ -141,6 +141,11 @@
 				"navigationBarTitleText": "创建订单"
 			}
 		}, {
+			"path": "pages/user/coupon",
+			"style": {
+				"navigationBarTitleText": "我的优惠券"
+			}
+		}, {
 			"path": "pages/address/address",
 			"style": {
 				"navigationBarTitleText": "收货地址"

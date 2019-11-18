@@ -218,7 +218,6 @@
 				}).then(r=>{
 					if (r.code === 200) {
 						this.login(r.data);
-						// ls.setItem("userInfo", r.data);
 						uni.showToast({ title: '恭喜您，登录成功！', icon: "none" });
 						uni.reLaunch({
 							url: '/pages/user/user'
