@@ -1,20 +1,19 @@
 <template>
 	<view class="uni-numbox">
-		<view class="uni-numbox-minus" 
+		<view class="uni-numbox-minus"
 			@click="_calcValue('subtract')"
 		>
 			<text class="yticon icon--jianhao" :class="minDisabled?'uni-numbox-disabled': ''" ></text>
 		</view>
-		<input 
-			class="uni-numbox-value" 
-			type="number" 
+		<input
+			class="uni-numbox-value"
+			type="number"
 			:disabled="disabled"
-			:value="inputValue" 
-			
+			:value="inputValue"
 			@blur="_onBlur"
 		>
-		<view 
-			class="uni-numbox-plus" 
+		<view
+			class="uni-numbox-plus"
 			@click="_calcValue('add')"
 		>
 			<text class="yticon icon-jia2" :class="maxDisabled?'uni-numbox-disabled': ''" ></text>
@@ -34,6 +33,10 @@
 				default: false
 			},
 			index: {
+				type: Number,
+				default: 0
+			},
+			skuId: {
 				type: Number,
 				default: 0
 			},
@@ -74,9 +77,11 @@
 		},
 		watch: {
 			inputValue(number) {
+				console.log(number)
 				const data = {
 					number: number,
-					index: this.index
+					index: this.index,
+					skuId: this.skuId
 				}
 				this.$emit('eventChange', data);
 			}
@@ -87,7 +92,7 @@
 				let value = this.inputValue * scale;
 				let newValue = 0;
 				let step = this.step * scale;
-				
+
 				if(type === 'subtract'){
 					newValue = value - step;
 					if (newValue <= this.min){

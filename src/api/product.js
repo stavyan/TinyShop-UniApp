@@ -15,11 +15,20 @@ const productDetail = "/addons/rf-tiny-shop/v1/product/product/view";
 const cartItemCreate = "/addons/rf-tiny-shop/v1/member/cart-item/create";
 // 产品列表
 const cartItemList = "/addons/rf-tiny-shop/v1/member/cart-item/index";
+// 删除购物车商品
+const cartItemDel = "/addons/rf-tiny-shop/v1/member/cart-item/delete-ids";
+// 清空购物车
+const cartItemClear = "/addons/rf-tiny-shop/v1/member/cart-item/clear";
+// 修改购物车商品数量
+const cartItemUpdateNum = "/addons/rf-tiny-shop/v1/member/cart-item/update-num";
 
 export {
     productCate,
     productList,
     productDetail,
     cartItemCreate,
-    cartItemList
+    cartItemList,
+    cartItemDel,
+    cartItemClear,
+    cartItemUpdateNum
 };

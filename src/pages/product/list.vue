@@ -79,7 +79,7 @@
 			// #ifdef H5
 			this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 			// #endif
-			this.cateId = options.tid;
+			this.cateId = options.cate_id;
 			this.loadCateList(options.fid,options.sid);
 			// this.loadData();
 			this.initData();
@@ -114,7 +114,7 @@
 			async getProductList () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productList}`, {
-					cate_id: 6
+					cate_id: this.cateId
 				}).then(r=>{
 					if (r.code === 200) {
 						this.goodsList = r.data

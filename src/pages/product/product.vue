@@ -143,7 +143,7 @@
 					<view class="right">
 						<text class="title">{{ productDetail.name }}</text>
 						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
-						<!--<text class="stock">库存：188件</text>-->
+						<text class="stock">库存：{{ productDetail.stock }}件</text>
 						<view class="selected">
 							已选：
 							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
@@ -350,25 +350,48 @@
 			 *@date 2019/11/18 17:45:54
 			 */
 			async handleCartItemCreate () {
-				if (this.specSelected.length < 3) {
-					uni.showToast({ title: "请先选择规格", icon: "none" });
-				}
 				let sku_id;
-				const skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`;
-				this.productDetail && this.productDetail.sku.forEach(item => {
-					if (item.data === skuStr) {
-						sku_id = item.id;
-						return;
+				let skuStr;
+				if (this.productDetail.sku.length === 1) {
+					sku_id = this.productDetail.sku[0].id
+				} else {
+					if (this.productDetail.base_attribute_format.length === 1) {
+						if (this.specSelected.length < 1) {
+							uni.showToast({ title: "请先选择规格", icon: "none" });
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}`
+						}
+					} else if (this.productDetail.base_attribute_format.length === 2) {
+						if (this.specSelected.length < 2) {
+							uni.showToast({ title: "请先选择规格", icon: "none" });
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
+						}
+					} else if (this.productDetail.base_attribute_format.length === 3) {
+						if (this.specSelected.length < 3) {
+							uni.showToast({ title: "请先选择规格", icon: "none" });
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
+						}
 					}
-				})
-				uni.showLoading({title:'加载中...'});
+					this.productDetail && this.productDetail.sku.forEach(item => {
+						if (item.data === skuStr) {
+							sku_id = item.id;
+							return;
+						}
+					})
+				}
+				uni.showLoading({title:'正在将商品添加至购物车...'});
 				await this.$post(`${cartItemCreate}`, {
 					sku_id,
 					num: this.cartCount
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.redirectTo({
-							url: `/pages/cart/cart`
+							url: '/pages/cart/cart'
 						})
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });

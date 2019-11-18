@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!-- 空白页 -->
-		<view v-if="!hasLogin || empty===true" class="empty">
+		<view v-if="empty===true" class="empty">
 			<image src="/static/emptyCart.jpg" mode="aspectFit"></image>
 			<view v-if="hasLogin" class="empty-tips">
 				空空如也
@@ -12,7 +12,7 @@
 				<view class="navigator" @click="navToLogin">去登陆></view>
 			</view>
 		</view>
-		<view v-else>
+		<view>
 			<!-- 列表 -->
 			<view class="cart-list">
 				<block v-for="(item, index) in cartList" :key="item.id">
@@ -21,7 +21,7 @@
 						:class="{'b-b': index!==cartList.length-1}"
 					>
 						<view class="image-wrapper">
-							<image :src="item.image"
+							<image :src="item.product_img"
 								:class="[item.loaded]"
 								mode="aspectFill"
 								lazy-load
@@ -35,26 +35,27 @@
 							></view>
 						</view>
 						<view class="item-right">
-							<text class="clamp title">{{item.title}}</text>
-							<text class="attr">{{item.attr_val}}</text>
+							<text class="clamp title">{{item.product_name}}</text>
+							<text class="attr">{{item.sku_name}}</text>
 							<text class="price">¥{{item.price}}</text>
 							<uni-number-box
 								class="step"
 								:min="1"
-								:max="item.stock"
-								:value="item.number>item.stock?item.stock:item.number"
-								:isMax="item.number>=item.stock?true:false"
-								:isMin="item.number===1"
+								:max=" parseInt(item.stock, 10)"
+								:value="parseInt(item.number, 10)>parseInt(item.stock, 10)?parseInt(item.stock, 10):parseInt(item.number, 10)"
+								:isMax="parseInt(item.number, 10)>=parseInt(item.stock, 10)?true:false"
+								:isMin="parseInt(item.number, 10)===1"
 								:index="index"
+								:skuId="parseInt(item.sku_id, 10)"
 								@eventChange="numberChange"
 							></uni-number-box>
 						</view>
-						<text class="del-btn yticon icon-fork" @click="deleteCartItem(index)"></text>
+						<text class="del-btn yticon icon-fork" @click="deleteCartItem(item.id)"></text>
 					</view>
 				</block>
 			</view>
 			<!-- 底部菜单栏 -->
-			<view class="action-section">
+			<view class="action-section" v-if="total > 0">
 				<view class="checkbox">
 					<image
 						:src="allChecked?'/static/selected.png':'/static/select.png'"
@@ -67,11 +68,11 @@
 				</view>
 				<view class="total-box">
 					<text class="price">¥{{total}}</text>
-					<text class="coupon">
-						已优惠
-						<text>74.35</text>
-						元
-					</text>
+<!--					<text class="coupon">-->
+<!--						已优惠-->
+<!--						<text>74.35</text>-->
+<!--						元-->
+<!--					</text>-->
 				</view>
 				<button type="primary" class="no-border confirm-btn" @click="createOrder">去结算</button>
 			</view>
@@ -84,7 +85,7 @@
 		mapState
 	} from 'vuex';
 	import uniNumberBox from '@/components/uni-number-box.vue'
-	import {cartItemList} from "../../api/product";
+	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum} from "../../api/product";
 	export default {
 		components: {
 			uniNumberBox
@@ -98,7 +99,7 @@
 			};
 		},
 		onLoad(){
-			this.loadData();
+			// this.loadData();
 			this.initData();
 		},
 		watch:{
@@ -132,11 +133,9 @@
 			 */
 			async getCartItemList (id) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${cartItemList}`, {
-					id,
-				}).then(r=>{
+				await this.$get(`${cartItemList}`).then(r=>{
 					if (r.code === 200) {
-						console.log(r)
+						this.cartList = r.data
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -182,27 +181,60 @@
 				this.calcTotal(type);
 			},
 			//数量
-			numberChange(data){
+			async numberChange(data) {
 				this.cartList[data.index].number = data.number;
 				this.calcTotal();
+				uni.showLoading({title: '加载中...'});
+				await this.$post(`${cartItemUpdateNum}`, {
+					sku_id: parseInt(data.skuId),
+					num: data.number
+				}).then(r => {
+					if (r.code === 200) {
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			//删除
-			deleteCartItem(index){
-				let list = this.cartList;
-				let row = list[index];
-				let id = row.id;
-
-				this.cartList.splice(index, 1);
-				this.calcTotal();
-				uni.hideLoading();
+			async deleteCartItem(id){
+				// let list = this.cartList;
+				// let row = list[index];
+				// let id = row.id;
+				// this.cartList.splice(index, 1);
+				// this.calcTotal();
+				// uni.hideLoading();
+				uni.showLoading({title:'正在将商品添加至购物车...'});
+				await this.$post(`${cartItemDel}`, {
+					sku_ids: JSON.stringify(id.split(' '))
+				}).then(r=>{
+					if (r.code === 200) {
+						this.getCartItemList();
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			//清空
 			clearCart(){
 				uni.showModal({
 					content: '清空购物车？',
-					success: (e)=>{
-						if(e.confirm){
-							this.cartList = [];
+					success: async (e) => {
+						if (e.confirm) {
+							uni.showLoading({title: '正在清空购物车...'});
+							await this.$post(`${cartItemClear}`).then(r => {
+								if (r.code === 200) {
+									this.total = 0
+									this.getCartItemList();
+								} else {
+									uni.showToast({title: r.message, icon: "none"});
+								}
+							}).catch(err => {
+								console.log(err)
+							})
 						}
 					}
 				})

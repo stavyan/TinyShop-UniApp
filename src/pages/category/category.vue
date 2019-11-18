@@ -10,7 +10,7 @@
 			<view v-for="item in slist" :key="item.id" class="s-list" :id="'main-'+item.id">
 				<text class="s-item">{{item.title}}</text>
 				<view class="t-list">
-					<view @click="navToList(item.id, titem.id)" v-if="titem.pid === item.id" class="t-item" v-for="titem in tlist" :key="titem.id">
+					<view @click="navToList(titem.id)" v-if="titem.pid === item.id" class="t-item" v-for="titem in tlist" :key="titem.id">
 						<image :src="titem.cover"></image>
 						<text>{{titem.title}}</text>
 					</view>
@@ -84,9 +84,6 @@
 						this.tlist.push(item); //3级分类
 					}
 				})
-				console.log('flist', this.flist)
-				console.log('slist', this.slist)
-				console.log('tlist', this.tlist)
 			},
 			//一级分类点击
 			tabTap(item){
@@ -104,8 +101,9 @@
 				}
 				let scrollTop = e.detail.scrollTop;
 				let tabs = this.slist.filter(item=>item.top <= scrollTop).reverse();
+				console.log(tabs)
 				if(tabs.length > 0){
-					this.currentId = tabs[0].id;
+					this.currentId = tabs[0].pid;
 				}
 			},
 			//计算右侧栏每个tab的高度等信息
@@ -123,9 +121,9 @@
 				})
 				this.sizeCalcState = true;
 			},
-			navToList(sid, tid){
+			navToList(id){
 				uni.navigateTo({
-					url: `/pages/product/list?fid=${this.currentId}&sid=${sid}&tid=${tid}`
+					url: `/pages/product/list?cate_id=${id}`
 				})
 			}
 		}
