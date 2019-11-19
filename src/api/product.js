@@ -4,7 +4,6 @@
  *@blog https://stavtop.club
  *@date 2019/11/18 13:57:54
  */
-
 // 产品分类列表
 const productCate = "/addons/rf-tiny-shop/v1/product/cate/index";
 // 产品列表

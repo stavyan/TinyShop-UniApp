@@ -81,6 +81,7 @@
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
 	import Json from '@/Json';
+	import {orderList} from "../../api/userInfo";
 	export default {
 		components: {
 			uniLoadMore,
@@ -142,8 +143,28 @@
 		},
 
 		methods: {
+			/**
+			 *@des 初始化数据
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/19 18:18:54
+			 *@param arguments
+			 */
 			initData () {
-
+				this.getOrderList();
+			},
+			async getOrderList() {
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${orderList}`, {
+				}).then(r => {
+					if (r.code === 200) {
+						this.goodsList = r.data
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			//获取订单列表
 			loadData(source){
