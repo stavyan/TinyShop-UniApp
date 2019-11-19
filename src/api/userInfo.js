@@ -13,6 +13,10 @@ const memberOrder = "/addons/rf-tiny-shop/v1/member/order/index";
 const memberUpdate = "/addons/rf-tiny-shop/v1/member/member/update";
 // 收货地址列表
 const addressList = "/addons/rf-tiny-shop/v1/member/address/index";
+// 默认收货地址
+const addressDefault = "/addons/rf-tiny-shop/v1/member/address/default";
+// 默认收货地址
+const addressDetail = "/addons/rf-tiny-shop/v1/member/address/view";
 // 创建收货地址
 const addressCreate = "/addons/rf-tiny-shop/v1/member/address/create";
 // 修改收货地址
@@ -23,13 +27,19 @@ const addressDelete = "/addons/rf-tiny-shop/v1/member/address/delete";
 // 获取优惠券列表
 const couponList = "/addons/rf-tiny-shop/v1/marketing/coupon-type/index";
 
+// 获取优惠券列表
+const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
+
 export {
     memberInfo,
     memberOrder,
     memberUpdate,
     addressList,
     addressCreate,
+    addressDefault,
+    addressDetail,
     addressUpdate,
     addressDelete,
-    couponList
+    couponList,
+    orderList
 };

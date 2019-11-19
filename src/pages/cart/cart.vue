@@ -3,9 +3,9 @@
 		<!-- 空白页 -->
 		<view v-if="empty===true" class="empty">
 			<image src="/static/emptyCart.jpg" mode="aspectFit"></image>
-			<view v-if="hasLogin" class="empty-tips">
+			<view v-if="token" class="empty-tips">
 				空空如也
-				<navigator class="navigator" v-if="hasLogin" url="../index/index" open-type="switchTab">随便逛逛></navigator>
+				<navigator class="navigator" v-if="token" url="../index/index" open-type="switchTab">随便逛逛></navigator>
 			</view>
 			<view v-else class="empty-tips">
 				空空如也
@@ -96,10 +96,13 @@
 				allChecked: false, //全选状态  true|false
 				empty: false, //空白页现实  true|false
 				cartList: [],
+				token: null
 			};
 		},
+		onShow () {
+			this.initData();
+		},
 		onLoad(){
-			// this.loadData();
 			this.initData();
 		},
 		watch:{
@@ -123,6 +126,7 @@
 			 *@param arguments
 			 */
 			initData() {
+				this.token = uni.getStorageSync('accessToken') || undefined
 				this.getCartItemList();
 			},
 			/**
@@ -131,7 +135,7 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/18 18:22:09
 			 */
-			async getCartItemList (id) {
+			async getCartItemList () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${cartItemList}`).then(r=>{
 					if (r.code === 200) {
@@ -326,6 +330,7 @@
 			position:relative;
 			image{
 				border-radius:8upx;
+				opacity: 1;
 			}
 		}
 		.checkbox{

@@ -2,18 +2,34 @@
 	<view class="content" >
 		<view class="row b-b">
 			<text class="tit">联系人</text>
-			<input class="input" type="text" v-model="addressData.realname" @change="handleRealNameChange" placeholder="收货人姓名" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.realname" @blur="handleRealNameChange" placeholder="收货人姓名" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">手机号</text>
-			<input class="input" type="number" v-model="addressData.mobile" @change="handleMobileChange" placeholder="收货人手机号码" placeholder-class="placeholder" />
+			<input class="input" type="number" v-model="addressData.mobile" @blur="handleMobileChange" placeholder="收货人手机号码" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
-			<text class="tit">地址</text>
-			<text @click="chooseLocation" class="input">
-				{{addressData.addressName}}
-			</text>
-			<text class="yticon icon-shouhuodizhi"></text>
+			<text class="tit">选择地址</text>
+			<view class="uni-list">
+				<view class="uni-list-cell">
+					<picker mode="multiSelector"
+									@columnchange="bindMultiPickerColumnChange"
+									:value="multiIndex"
+									range-key="title"
+									:range="multiArray">
+						<view class="input"> {{ addressData.address_name }}
+						</view>
+					</picker>
+				</view>
+			</view>
+		</view>
+		<view class="row b-b">
+			<text class="tit">详细地址</text>
+			<!--<text @click="chooseLocation" class="input">-->
+				<!--{{addressData.addressName}}-->
+			<!--</text>-->
+			<!--<text class="yticon icon-shouhuodizhi"></text>-->
+			<input class="input" type="text" v-model="addressData.address_details" placeholder="请输入详细地址" placeholder-class="placeholder" />
 		</view>
 		<!--<view class="row b-b">-->
 			<!--<text class="tit">门牌号</text>-->
@@ -21,14 +37,15 @@
 		<!--</view>-->
 		<view class="row default-row">
 			<text class="tit">设为默认</text>
-			<switch :checked="addressData.default" color="#fa436a" @change="switchChange" />
+			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @click="confirm">提交</button>
 	</view>
 </template>
 
 <script>
-	import {addressCreate, addressUpdate} from "../../api/userInfo";
+	import {addressCreate, addressUpdate, addressDetail} from "../../api/userInfo";
+	import {provinceList} from "../../api/basic";
 
 	export default {
 		data() {
@@ -36,27 +53,169 @@
 				addressData: {
 					realname: '',
 					mobile: '',
-					addressName: '在地图选择',
+					address_details: '',
+					address_name: '请选择地址',
 					address: '',
-					area: '',
-					default: false
-				}
-			}
+					is_default: false,
+					province_id: '',
+					city_id: '',
+					area_id: ''
+				},
+				multiArray: [[], [], []],
+				multiIndex: [0, 0, 0],
+		}
 		},
-		onLoad(option){
-			let title = '新增收货地址';
-			if(option.type==='edit'){
-				title = '编辑收货地址'
-				this.addressData = JSON.parse(option.data)
-				this.addressData.addressName = this.addressData.address_details
-				this.addressData.address = this.addressData.address_details
-			}
-			this.manageType = option.type;
-			uni.setNavigationBarTitle({
-				title
-			})
+		onLoad(options){
+			this.initData(options);
 		},
 		methods: {
+			initData(options) {
+				this.getProvinceList();
+				let title = '新增收货地址';
+				if(options.type==='edit'){
+					title = '编辑收货地址'
+					this.getAddressDetail(options.id)
+				}
+				this.manageType = options.type;
+				uni.setNavigationBarTitle({
+					title
+				})
+			},
+			async getAddressDetail(id) {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${addressDetail}`, {
+					id
+				}).then(async r => {
+					if (r.code === 200) {
+						this.addressData = r.data;
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			async getProvinceList() {
+				await this.$get(`${provinceList}`).then(async r => {
+					if (r.code === 200) {
+						this.multiArray[0] = r.data
+						await this.$get(`${provinceList}`, {
+							pid: this.multiArray[0][0].id
+						}).then(async r => {
+							if (r.code === 200) {
+								this.multiArray[1] = r.data
+								await this.$get(`${provinceList}`, {
+									pid: this.multiArray[1][0].id
+								}).then(r => {
+									if (r.code === 200) {
+										this.multiArray[2] = r.data
+										// this.multiIndex = [0, 0, 0]
+										// this.addressData.province_id = this.multiArray[0][0].id
+										// this.addressData.city_id = this.multiArray[1][0].id
+										// this.addressData.area_id = this.multiArray[2][0].id
+									} else {
+										uni.showToast({title: r.message, icon: "none"});
+									}
+								}).catch(err => {
+									console.log(err)
+								})
+							} else {
+								uni.showToast({title: r.message, icon: "none"});
+							}
+						}).catch(err => {
+							console.log(err)
+						})
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			async bindMultiPickerColumnChange(e) {
+				this.multiIndex[e.detail.column] = e.detail.value
+				console.log(e.detail)
+				switch (e.detail.column) {
+					case 0: //拖动第1列
+						switch (this.multiIndex[0]) {
+							case this.multiIndex[0]:
+								this.addressData.province_id = this.multiArray[0][e.detail.value].id;
+								uni.showLoading({title:'加载中...'});
+								await this.$get(`${provinceList}`, {
+									pid: this.multiArray[0][e.detail.value].id
+								}).then(async r => {
+									if (r.code === 200) {
+										this.multiArray[1] = r.data
+										uni.showLoading({title:'加载中...'});
+										await this.$get(`${provinceList}`, {
+											pid: this.multiArray[1][e.detail.column].id
+										}).then(r => {
+											if (r.code === 200) {
+												this.multiArray[2] = r.data
+											} else {
+												uni.showToast({title: r.message, icon: "none"});
+											}
+										}).catch(err => {
+											console.log(err)
+										})
+									} else {
+										uni.showToast({title: r.message, icon: "none"});
+									}
+								}).catch(err => {
+									console.log(err)
+								})
+								break
+						}
+						// this.multiIndex.splice(1, 1, 0)
+						// this.multiIndex.splice(2, 1, 0)
+						break
+					case 1: //拖动第2列
+						switch (this.multiIndex[0]) { //判断第一列是什么
+							case this.multiIndex[0]:
+								switch (this.multiIndex[1]) {
+									case this.multiIndex[1]:
+										console.log("1", this.multiArray[1][e.detail.value])
+										this.addressData.city_id = this.multiArray[1][e.detail.value].id;
+										await this.$get(`${provinceList}`, {
+											pid: this.multiArray[1][e.detail.value].id
+										}).then(r => {
+											if (r.code === 200) {
+												this.multiArray[2] = r.data
+											} else {
+												uni.showToast({title: r.message, icon: "none"});
+											}
+										}).catch(err => {
+											console.log(err)
+										})
+										break
+								}
+								break
+						}
+						break
+					case 2: //拖动第3列
+						switch (this.multiIndex[0]) { //判断第一列是什么
+							case this.multiIndex[0]:
+								switch (this.multiIndex[1]) {
+									case this.multiIndex[1]:
+										switch (this.multiIndex[2]) {
+											case this.multiIndex[2]:
+												console.log("2", this.multiArray[2][e.detail.value])
+												this.addressData.area_id = this.multiArray[2][e.detail.value].id;
+												break
+										}
+									break;
+								}
+								break
+						}
+						break
+				}
+				this.addressData.address_name = `${this.multiArray && this.multiArray[0][this.multiIndex[0]] && this.multiArray[0][this.multiIndex[0]].title},
+				${this.multiArray && this.multiArray[1][this.multiIndex[1]] && this.multiArray[1][this.multiIndex[1]].title},
+				${this.multiArray && this.multiArray[2][this.multiIndex[2]] && this.multiArray[2][this.multiIndex[2]].title}`
+				// this.addressData.province_id = this.multiArray[0][e.detail.value].id;
+				// this.addressData.area_id = this.multiArray[2] && this.multiArray[2][e.detail.value] && this.multiArray[2][e.detail.value].id;
+				this.$forceUpdate()
+			},
 			handleRealNameChange (e) {
 				this.addressData.realname = e.detail.value;
 			},
@@ -64,7 +223,7 @@
 				this.addressData.mobile = e.detail.value;
 			},
 			switchChange(e){
-				this.addressData.default = e.detail.value;
+				this.addressData.is_default = e.detail.value;
 			},
 			//地图选择地址
 			chooseLocation(){
@@ -78,7 +237,6 @@
 			//提交
 			confirm(){
 				let data = this.addressData;
-				console.log(data)
 				if(!data.realname){
 					this.$api.msg('请填写收货人姓名');
 					return;
@@ -87,10 +245,10 @@
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
-				if(!data.address){
-					this.$api.msg('请在地图选择所在位置');
-					return;
-				}
+				// if(!data.address){
+				// 	this.$api.msg('请在地图选择所在位置');
+				// 	return;
+				// }
 				if (this.manageType === 'edit') {
 					this.handleAddressUpdate(data)
 				} else {
@@ -105,14 +263,14 @@
 			},
 			async handleAddressUpdate (data) {
 				uni.showLoading({title:'收货地址修改中...'});
-				await this.$put(`${addressUpdate}?id=${this.addressData.id}`, {
+				await this.$put(`${addressUpdate}?id=${data.id}`, {
 					realname: data.realname,
 					mobile: data.mobile,
-					address_details: data.address,
-					is_default: data.default ? 1 : 0,
-					province_id: 1,
-					city_id: 1,
-					area_id: 1
+					address_details: data.address_details,
+					is_default: data.is_default ? 1 : 0,
+					province_id: data.province_id,
+					city_id: data.city_id,
+					area_id: data.area_id
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.showToast({ title: '恭喜您, 收货地址修改成功！', icon: "none" });
@@ -127,15 +285,16 @@
 				})
 			},
 			async handleAddressCreate (data) {
+				console.log(data)
 				uni.showLoading({title:'创建中...'});
 				await this.$post(`${addressCreate}`, {
 					realname: data.realname,
 					mobile: data.mobile,
-					address_details: data.address,
-					is_default: data.default ? 1 : 0,
-					province_id: 1,
-					city_id: 1,
-					area_id: 1
+					address_details: data.address_details,
+					is_default: data.is_default ? 1 : 0,
+					province_id: data.province_id,
+					city_id: data.city_id,
+					area_id: data.area_id
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.showToast({ title: '恭喜您, 收货地址创建成功！', icon: "none" });
@@ -169,7 +328,7 @@
 
 		.tit{
 			flex-shrink: 0;
-			width: 120upx;
+			width: 140upx;
 			font-size: 30upx;
 			color: $font-color-dark;
 		}

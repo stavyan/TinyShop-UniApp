@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
 		<view class="navbar">
-			<view 
-				v-for="(item, index) in navList" :key="index" 
-				class="nav-item" 
+			<view
+				v-for="(item, index) in navList" :key="index"
+				class="nav-item"
 				:class="{current: tabCurrentIndex === index}"
 				@click="tabClick(index)"
 			>
@@ -13,29 +13,29 @@
 
 		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
 			<swiper-item class="tab-content" v-for="(tabItem,tabIndex) in navList" :key="tabIndex">
-				<scroll-view 
-					class="list-scroll-content" 
+				<scroll-view
+					class="list-scroll-content"
 					scroll-y
 					@scrolltolower="loadData"
 				>
 					<!-- 空白页 -->
 					<empty v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></empty>
-					
+
 					<!-- 订单列表 -->
-					<view 
+					<view
 						v-for="(item,index) in tabItem.orderList" :key="index"
 						class="order-item"
 					>
 						<view class="i-top b-b">
 							<text class="time">{{item.time}}</text>
 							<text class="state" :style="{color: item.stateTipColor}">{{item.stateTip}}</text>
-							<text 
-								v-if="item.state===9" 
+							<text
+								v-if="item.state===9"
 								class="del-btn yticon icon-iconfontshanchu1"
 								@click="deleteOrder(index)"
 							></text>
 						</view>
-						
+
 						<scroll-view v-if="item.goodsList.length > 1" class="goods-box" scroll-x>
 							<view
 								v-for="(goodsItem, goodsIndex) in item.goodsList" :key="goodsIndex"
@@ -44,8 +44,8 @@
 								<image class="goods-img" :src="goodsItem.image" mode="aspectFill"></image>
 							</view>
 						</scroll-view>
-						<view 
-							v-if="item.goodsList.length === 1" 
+						<view
+							v-if="item.goodsList.length === 1"
 							class="goods-box-single"
 							v-for="(goodsItem, goodsIndex) in item.goodsList" :key="goodsIndex"
 						>
@@ -56,7 +56,7 @@
 								<text class="price">{{goodsItem.price}}</text>
 							</view>
 						</view>
-						
+
 						<view class="price-box">
 							共
 							<text class="num">7</text>
@@ -68,14 +68,14 @@
 							<button class="action-btn recom">立即支付</button>
 						</view>
 					</view>
-					 
+
 					<uni-load-more :status="tabItem.loadingType"></uni-load-more>
-					
+
 				</scroll-view>
 			</swiper-item>
 		</swiper>
 	</view>
-</template> 
+</template>
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
@@ -122,7 +122,7 @@
 				],
 			};
 		},
-		
+
 		onLoad(options){
 			/**
 			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
@@ -131,23 +131,27 @@
 			this.tabCurrentIndex = +options.state;
 			// #ifndef MP
 			this.loadData()
+			this.initData()
 			// #endif
 			// #ifdef MP
 			if(options.state == 0){
 				this.loadData()
 			}
 			// #endif
-			
+
 		},
-		 
+
 		methods: {
+			initData () {
+
+			},
 			//获取订单列表
 			loadData(source){
 				//这里是将订单挂载到tab列表下
 				let index = this.tabCurrentIndex;
 				let navItem = this.navList[index];
 				let state = navItem.state;
-				
+
 				if(source === 'tabChange' && navItem.loaded === true){
 					//tab切换只有第一次需要加载数据
 					return;
@@ -156,9 +160,9 @@
 					//防止重复加载
 					return;
 				}
-				
+
 				navItem.loadingType = 'loading';
-				
+
 				setTimeout(()=>{
 					let orderList = Json.orderList.filter(item=>{
 						//添加不同状态下订单的表现形式
@@ -175,11 +179,11 @@
 					})
 					//loaded新字段用于表示数据加载完毕，如果为空可以显示空白页
 					this.$set(navItem, 'loaded', true);
-					
-					//判断是否还有数据， 有改为 more， 没有改为noMore 
+
+					//判断是否还有数据， 有改为 more， 没有改为noMore
 					navItem.loadingType = 'more';
-				}, 600);	
-			}, 
+				}, 600);
+			},
 
 			//swiper 切换
 			changeTab(e){
@@ -209,15 +213,15 @@
 					let {stateTip, stateTipColor} = this.orderStateExp(9);
 					item = Object.assign(item, {
 						state: 9,
-						stateTip, 
+						stateTip,
 						stateTipColor
 					})
-					
+
 					//取消订单后删除待付款中该项
 					let list = this.navList[1].orderList;
 					let index = list.findIndex(val=>val.id === item.id);
 					index !== -1 && list.splice(index, 1);
-					
+
 					uni.hideLoading();
 				}, 600)
 			},
@@ -232,10 +236,10 @@
 					case 2:
 						stateTip = '待发货'; break;
 					case 9:
-						stateTip = '订单已关闭'; 
+						stateTip = '订单已关闭';
 						stateTipColor = '#909399';
 						break;
-						
+
 					//更多自定义
 				}
 				return {stateTip, stateTipColor};
@@ -249,14 +253,14 @@
 		background: $page-color-base;
 		height: 100%;
 	}
-	
+
 	.swiper-box{
 		height: calc(100% - 40px);
 	}
 	.list-scroll-content{
 		height: 100%;
 	}
-	
+
 	.navbar{
 		display: flex;
 		height: 40px;
@@ -383,7 +387,7 @@
 				}
 			}
 		}
-		
+
 		.price-box{
 			display: flex;
 			justify-content: flex-end;
@@ -437,8 +441,8 @@
 			}
 		}
 	}
-	
-	
+
+
 	/* load-more */
 	.uni-load-more {
 		display: flex;
@@ -447,22 +451,22 @@
 		align-items: center;
 		justify-content: center
 	}
-	
+
 	.uni-load-more__text {
 		font-size: 28upx;
 		color: #999
 	}
-	
+
 	.uni-load-more__img {
 		height: 24px;
 		width: 24px;
 		margin-right: 10px
 	}
-	
+
 	.uni-load-more__img>view {
 		position: absolute
 	}
-	
+
 	.uni-load-more__img>view view {
 		width: 6px;
 		height: 2px;
@@ -474,98 +478,98 @@
 		transform-origin: 50%;
 		animation: load 1.56s ease infinite
 	}
-	
+
 	.uni-load-more__img>view view:nth-child(1) {
 		transform: rotate(90deg);
 		top: 2px;
 		left: 9px
 	}
-	
+
 	.uni-load-more__img>view view:nth-child(2) {
 		transform: rotate(180deg);
 		top: 11px;
 		right: 0
 	}
-	
+
 	.uni-load-more__img>view view:nth-child(3) {
 		transform: rotate(270deg);
 		bottom: 2px;
 		left: 9px
 	}
-	
+
 	.uni-load-more__img>view view:nth-child(4) {
 		top: 11px;
 		left: 0
 	}
-	
+
 	.load1,
 	.load2,
 	.load3 {
 		height: 24px;
 		width: 24px
 	}
-	
+
 	.load2 {
 		transform: rotate(30deg)
 	}
-	
+
 	.load3 {
 		transform: rotate(60deg)
 	}
-	
+
 	.load1 view:nth-child(1) {
 		animation-delay: 0s
 	}
-	
+
 	.load2 view:nth-child(1) {
 		animation-delay: .13s
 	}
-	
+
 	.load3 view:nth-child(1) {
 		animation-delay: .26s
 	}
-	
+
 	.load1 view:nth-child(2) {
 		animation-delay: .39s
 	}
-	
+
 	.load2 view:nth-child(2) {
 		animation-delay: .52s
 	}
-	
+
 	.load3 view:nth-child(2) {
 		animation-delay: .65s
 	}
-	
+
 	.load1 view:nth-child(3) {
 		animation-delay: .78s
 	}
-	
+
 	.load2 view:nth-child(3) {
 		animation-delay: .91s
 	}
-	
+
 	.load3 view:nth-child(3) {
 		animation-delay: 1.04s
 	}
-	
+
 	.load1 view:nth-child(4) {
 		animation-delay: 1.17s
 	}
-	
+
 	.load2 view:nth-child(4) {
 		animation-delay: 1.3s
 	}
-	
+
 	.load3 view:nth-child(4) {
 		animation-delay: 1.43s
 	}
-	
+
 	@-webkit-keyframes load {
 		0% {
 			opacity: 1
 		}
-	
+
 		100% {
 			opacity: .2
 		}

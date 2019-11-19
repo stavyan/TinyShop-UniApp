@@ -1,11 +1,11 @@
 function request(url, params, header, method) {
     const baseApiUrl = "https://www.yllook.com/api";
     // const baseApiUrl = "";
-    const token = uni.getStorageSync('access_token')
+    const token = uni.getStorageSync('accessToken');
     if (token) {
         header = {
             "x-api-key": token
-        }
+        };
         params = {
             ...params,
             "access_token": token
@@ -21,29 +21,43 @@ function request(url, params, header, method) {
         }
     }).then(res => {
         uni.hideLoading();
-        return res[1].data
-        // if (res[1].data.status && res[1].data.code == 200) {
-        // } else {
-        //     throw res[1].data
-        // }
+        if (res[1].data.code === 200) {
+            return res[1].data;
+        } else {
+            throw res[1].data;
+        }
     }).catch(r => {
-        uni.hideLoading();
         switch (r.code) {
+            case 401:
+                uni.removeStorage({
+                    key: 'userInfo'
+                })
+                uni.removeStorage({
+                    key: 'access_token'
+                })
+                uni.showToast({
+                    title: "会话已过期， 请重新登录！",
+                    icon: 'none'
+                });
+                uni.reLaunch({
+                    url: '/pages/public/login'
+                })
+                break;
             case 400:
-                uni.clearStorageSync()
-                break
+                uni.clearStorageSync();
+                break;
             case 500:
                 uni.showToast({
                     title: "服务器打瞌睡了~",
                     icon: 'none'
-                })
-                break
+                });
+                break;
             default:
                 uni.showToast({
                     title: r.message,
                     icon: 'none'
-                })
-                return Promise.reject()
+                });
+                return Promise.reject();
                 break
         }
     })

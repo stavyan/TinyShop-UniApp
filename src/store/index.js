@@ -17,7 +17,7 @@ const store = new Vuex.Store({
 			    data: provider
 			})
 			uni.setStorage({//缓存用户登陆状态
-			    key: 'access_token',
+			    key: 'accessToken',
 			    data: provider.access_token
 			})
 		},
@@ -28,7 +28,7 @@ const store = new Vuex.Store({
                 key: 'userInfo'
             })
 			uni.removeStorage({
-                key: 'access_token'
+                key: 'accessToken'
             })
 		}
 	},

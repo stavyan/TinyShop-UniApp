@@ -105,7 +105,7 @@
 			},
 			addAddress(type, item){
 				uni.navigateTo({
-					url: `/pages/address/addressManage?type=${type}&data=${JSON.stringify(item)}`
+					url: `/pages/address/addressManage?type=${type}&id=${item && item.id || undefined}`
 				})
 			},
 			//添加或修改成功之后回调

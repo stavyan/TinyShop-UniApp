@@ -390,7 +390,7 @@
 					num: this.cartCount
 				}).then(r=>{
 					if (r.code === 200) {
-						uni.redirectTo({
+						uni.switchTab({
 							url: '/pages/cart/cart'
 						})
 					} else {
@@ -421,8 +421,6 @@
 						this.specSelected.push(item);
 					}
 				})
-				console.log(this.specSelected)
-
 			},
 			//分享
 			share(){
@@ -433,8 +431,54 @@
 				this.favorite = !this.favorite;
 			},
 			buy(){
+				let sku_id;
+				let skuStr;
+				let sku_str;
+				if (this.productDetail.sku.length === 1) {
+					sku_id = this.productDetail.sku[0].id
+				} else {
+					if (this.productDetail.base_attribute_format.length === 1) {
+						if (this.specSelected.length < 1) {
+							uni.showToast({title: "请先选择规格", icon: "none"});
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}`
+							sku_str = `${this.specSelected[0].title}`
+						}
+					} else if (this.productDetail.base_attribute_format.length === 2) {
+						if (this.specSelected.length < 2) {
+							uni.showToast({title: "请先选择规格", icon: "none"});
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
+							sku_str = `${this.specSelected[0].title} ${this.specSelected[2].title}`
+						}
+					} else if (this.productDetail.base_attribute_format.length === 3) {
+						if (this.specSelected.length < 3) {
+							uni.showToast({title: "请先选择规格", icon: "none"});
+							return;
+						} else {
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
+							sku_str = `${this.specSelected[0].title} ${this.specSelected[1].title} ${this.specSelected[2].title}`
+						}
+					}
+					this.productDetail && this.productDetail.sku.forEach(item => {
+						if (item.data === skuStr) {
+							sku_id = item.id;
+							return;
+						}
+					})
+				}
+				const data = {}
+				data.sku_id = sku_id
+				data.num = this.cartCount
+				data.num = this.cartCount
 				uni.navigateTo({
-					url: `/pages/order/createOrder`
+					url: `/pages/order/createOrder?data=${JSON.stringify(data)}
+					&skuStr=${sku_str}
+					&name=${this.productDetail.name}
+					&picture=${this.productDetail.picture}
+					&price=${this.productDetail.minSkuPrice}`
 				})
 			},
 			addCart(){

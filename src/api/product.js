@@ -21,6 +21,8 @@ const cartItemDel = "/addons/rf-tiny-shop/v1/member/cart-item/delete-ids";
 const cartItemClear = "/addons/rf-tiny-shop/v1/member/cart-item/clear";
 // 修改购物车商品数量
 const cartItemUpdateNum = "/addons/rf-tiny-shop/v1/member/cart-item/update-num";
+// 下单
+const orderCreate = "/addons/rf-tiny-shop/v1/order/order/create";
 
 export {
     productCate,
@@ -30,5 +32,6 @@ export {
     cartItemList,
     cartItemDel,
     cartItemClear,
-    cartItemUpdateNum
+    cartItemUpdateNum,
+    orderCreate
 };

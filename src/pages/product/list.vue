@@ -114,7 +114,8 @@
 			async getProductList () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productList}`, {
-					cate_id: this.cateId
+					cate_id: 6
+					// cate_id: this.cateId
 				}).then(r=>{
 					if (r.code === 200) {
 						this.goodsList = r.data
@@ -129,7 +130,6 @@
 			async loadCateList(fid, sid){
 				let list = await this.$api.json('cateList');
 				let cateList = list.filter(item=>item.pid == fid);
-
 				cateList.forEach(item=>{
 					let tempList = list.filter(val=>val.pid == item.id);
 					item.child = tempList;
