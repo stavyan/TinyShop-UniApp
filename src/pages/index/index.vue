@@ -6,7 +6,7 @@
 			<input class="ser-input" type="text" value="输入关键字搜索" disabled />
 		</view>
 		<!-- #endif -->
-		
+
 		<!-- 头部轮播 -->
 		<view class="carousel-section">
 			<!-- 标题栏和状态栏占位符 -->
@@ -29,7 +29,7 @@
 		<view class="cate-section">
 			<view class="cate-item">
 				<image src="/static/temp/c3.png"></image>
-				<text>环球美食</text>
+				<text>环球美食111</text>
 			</view>
 			<view class="cate-item">
 				<image src="/static/temp/c5.png"></image>
@@ -48,11 +48,11 @@
 				<text>速食生鲜</text>
 			</view>
 		</view>
-		
+
 		<view class="ad-1">
 			<image src="/static/temp/ad1.jpg" mode="scaleToFill"></image>
 		</view>
-		
+
 		<!-- 秒杀楼层 -->
 		<view class="seckill-section m-t">
 			<view class="s-header">
@@ -65,7 +65,7 @@
 			</view>
 			<scroll-view class="floor-list" scroll-x>
 				<view class="scoll-wrapper">
-					<view 
+					<view
 						v-for="(item, index) in goodsList" :key="index"
 						class="floor-item"
 						@click="navToDetailPage(item)"
@@ -77,7 +77,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		
+
 		<!-- 团购楼层 -->
 		<view class="f-header m-t">
 			<image src="/static/temp/h1.png"></image>
@@ -100,10 +100,10 @@
 						<view class="t-box">
 							<text class="title clamp">{{item.title}}</text>
 							<view class="price-box">
-								<text class="price">￥{{item.price}}</text> 
-								<text class="m-price">￥188</text> 
+								<text class="price">￥{{item.price}}</text>
+								<text class="m-price">￥188</text>
 							</view>
-							
+
 							<view class="pro-box">
 							  	<view class="progress-box">
 							  		<progress percent="72" activeColor="#fa436a" active stroke-width="6" />
@@ -111,15 +111,15 @@
 								<text>6人成团</text>
 							</view>
 						</view>
-						            
+
 					</view>
 					<view class="g-item right">
 						<image :src="goodsList[index+1].image" mode="aspectFill"></image>
 						<view class="t-box">
 							<text class="title clamp">{{goodsList[index+1].title}}</text>
 							<view class="price-box">
-								<text class="price">￥{{goodsList[index+1].price}}</text> 
-								<text class="m-price">￥188</text> 
+								<text class="price">￥{{goodsList[index+1].price}}</text>
+								<text class="m-price">￥188</text>
 							</view>
 							<view class="pro-box">
 							  	<view class="progress-box">
@@ -133,9 +133,9 @@
 
 			</swiper>
 		</view>
-		
-		
-		
+
+
+
 		<!-- 分类推荐楼层 -->
 		<view class="f-header m-t">
 			<image src="/static/temp/h1.png"></image>
@@ -151,7 +151,7 @@
 			</view>
 			<scroll-view class="floor-list" scroll-x>
 				<view class="scoll-wrapper">
-					<view 
+					<view
 						v-for="(item, index) in goodsList" :key="index"
 						class="floor-item"
 						@click="navToDetailPage(item)"
@@ -173,7 +173,7 @@
 			</view>
 			<scroll-view class="floor-list" scroll-x>
 				<view class="scoll-wrapper">
-					<view 
+					<view
 						v-for="(item, index) in goodsList" :key="index"
 						class="floor-item"
 						@click="navToDetailPage(item)"
@@ -195,7 +195,7 @@
 			</view>
 			<scroll-view class="floor-list" scroll-x>
 				<view class="scoll-wrapper">
-					<view 
+					<view
 						v-for="(item, index) in goodsList" :key="index"
 						class="floor-item"
 						@click="navToDetailPage(item)"
@@ -221,9 +221,9 @@
 			</view>
 			<text class="yticon icon-you"></text>
 		</view>
-		
+
 		<view class="guess-section">
-			<view 
+			<view
 				v-for="(item, index) in goodsList" :key="index"
 				class="guess-item"
 				@click="navToDetailPage(item)"
@@ -235,7 +235,7 @@
 				<text class="price">￥{{item.price}}</text>
 			</view>
 		</view>
-		
+
 
 	</view>
 </template>
@@ -267,7 +267,7 @@
 				this.titleNViewBackground = carouselList[0].background;
 				this.swiperLength = carouselList.length;
 				this.carouselList = carouselList;
-				
+
 				let goodsList = await this.$api.json('goodsList');
 				this.goodsList = goodsList || [];
 			},
@@ -359,8 +359,8 @@
 		}
 	}
 	/* #endif */
-	
-	
+
+
 	page {
 		background: #f5f5f5;
 	}
@@ -440,7 +440,7 @@
 		justify-content: space-around;
 		align-items: center;
 		flex-wrap:wrap;
-		padding: 30upx 22upx; 
+		padding: 30upx 22upx;
 		background: #fff;
 		.cate-item {
 			display: flex;
@@ -466,7 +466,7 @@
 		background: #fff;
 		image{
 			width:100%;
-			height: 100%; 
+			height: 100%;
 		}
 	}
 	/* 秒杀专区 */
@@ -529,7 +529,7 @@
 			}
 		}
 	}
-	
+
 	.f-header{
 		display:flex;
 		align-items:center;
@@ -735,6 +735,6 @@
 			line-height: 1;
 		}
 	}
-	
+
 
 </style>
