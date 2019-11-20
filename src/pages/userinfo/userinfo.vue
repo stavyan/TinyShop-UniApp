@@ -100,6 +100,7 @@
 						name: '女'
 					}],
 					date: currentDate,
+					token: null
 			};
 		},
     computed: {
@@ -133,7 +134,8 @@
 			 *@date 2019/11/16 11:07:25
 			 */
 			initData () {
-				if (!this.$token) {
+				this.token = uni.getStorageSync('accessToken') || undefined
+				if (!this.token) {
 					uni.reLaunch({
 						url: "/pages/public/login",
 					})

@@ -114,8 +114,9 @@
 			async getProductList () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productList}`, {
-					cate_id: 6
-					// cate_id: this.cateId
+					// cate_id: 6
+					cate_id: this.cateId
+					// pid: this.cateId
 				}).then(r=>{
 					if (r.code === 200) {
 						this.goodsList = r.data

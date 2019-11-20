@@ -2,7 +2,7 @@
 	<view class="app">
 		<view class="price-box">
 			<text>支付金额</text>
-			<text class="price">38.88</text>
+			<text class="price">{{ money }}</text>
 		</view>
 
 		<view class="pay-type-list">
@@ -15,7 +15,6 @@
 				</view>
 				<label class="radio">
 					<radio value="" color="#fa436a" :checked='payType == 1' />
-					</radio>
 				</label>
 			</view>
 			<view class="type-item b-b" @click="changePayType(2)">
@@ -25,52 +24,90 @@
 				</view>
 				<label class="radio">
 					<radio value="" color="#fa436a" :checked='payType == 2' />
-					</radio>
 				</label>
 			</view>
-			<view class="type-item" @click="changePayType(3)">
+			<view class="type-item" @click="changePayType(5)">
 				<text class="icon yticon icon-erjiye-yucunkuan"></text>
 				<view class="con">
 					<text class="tit">预存款支付</text>
-					<text>可用余额 ¥198.5</text>
+					<text>可用余额 {{ userInfo && userInfo.account && userInfo.account.user_money }}</text>
 				</view>
 				<label class="radio">
-					<radio value="" color="#fa436a" :checked='payType == 3' />
-					</radio>
+					<radio value="" color="#fa436a" :checked='payType === 5' />
 				</label>
 			</view>
 		</view>
-		
+
 		<text class="mix-btn" @click="confirm">确认支付</text>
 	</view>
 </template>
 
 <script>
+	import {orderPay} from "../../api/product";
+	import {memberInfo} from "../../api/userInfo";
 
 	export default {
 		data() {
 			return {
 				payType: 1,
-				orderInfo: {}
+				money: 0,
+				orderInfo: {},
+				userInfo: {}
 			};
 		},
 		computed: {
-		
+
 		},
 		onLoad(options) {
-			
+			this.orderInfo = options.data;
+			this.money = options.money;
+			this.userInfo = uni.getStorageSync('userInfo') || undefined;
 		},
-
 		methods: {
 			//选择支付方式
 			changePayType(type) {
 				this.payType = type;
 			},
 			//确认支付
-			confirm: async function() {
-				uni.redirectTo({
-					url: '/pages/money/paySuccess'
-				})
+			async confirm () {
+				if (this.payType === 5) {
+					uni.showLoading({title: '正在支付...'});
+					await this.$post(`${orderPay}`, {
+						data: this.orderInfo,
+						orderGroup: 'goods',
+						tradeType: 'default',
+						payType: this.payType
+					}).then(async r => {
+						if (r.code === 200) {
+							uni.showToast({title: '支付成功', icon: "none"});
+							await this.$get(memberInfo).then(r => {
+								if (r.code === 200) {
+									uni.removeStorage({
+										key: 'userInfo'
+									})
+									uni.setStorage({
+											key: 'userInfo',
+											data: r.data
+									})
+									uni.redirectTo({
+										url: '/pages/money/paySuccess'
+									})
+								} else {
+									uni.showToast({title: r.message, icon: "none"});
+								}
+							})
+						} else {
+							uni.showToast({title: r.message, icon: "none"});
+						}
+					}).catch(err => {
+						console.log(err)
+					})
+				} else {
+					uni.showToast({title: '支付成功', icon: "none"});
+					uni.redirectTo({
+						url: '/pages/money/paySuccess'
+					})
+				}
 			},
 		}
 	}
@@ -106,7 +143,7 @@
 		margin-top: 20upx;
 		background-color: #fff;
 		padding-left: 60upx;
-		
+
 		.type-item{
 			height: 120upx;
 			padding: 20upx 0;
@@ -117,7 +154,7 @@
 			font-size: 30upx;
 			position:relative;
 		}
-		
+
 		.icon{
 			width: 100upx;
 			font-size: 52upx;

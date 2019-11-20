@@ -40,10 +40,6 @@ const prePage = ()=>{
 	return prePage.$vm;
 }
 
-
-const token = uni.getStorageSync('access_token')
-const userInfo = uni.getStorageSync('userInfo')
-
 Vue.config.productionTip = false
 Vue.prototype.$fire = new Vue();
 Vue.prototype.$store = store;
@@ -52,8 +48,6 @@ Vue.prototype.$get = get;
 Vue.prototype.$post = post;
 Vue.prototype.$put = put;
 Vue.prototype.$del = del;
-Vue.prototype.$token = token || undefined;
-Vue.prototype.$userInfo = userInfo || undefined;
 
 App.mpType = 'app'
 

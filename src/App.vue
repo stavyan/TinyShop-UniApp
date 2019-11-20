@@ -10,17 +10,16 @@
 			...mapMutations(['login'])
 		},
 		onLaunch: function() {
-			let userInfo = uni.getStorageSync('userInfo') || '';
-			if(userInfo.id){
-				//更新登陆状态
-				uni.getStorage({
-					key: 'userInfo',
-					success: (res) => {
-						this.login(res.data);
-					}
-				});
-			}
-			
+			// let userInfo = uni.getStorageSync('userInfo') || undefined;
+			// if(userInfo.id){
+			// 	//更新登陆状态
+			// 	uni.getStorage({
+			// 		key: 'userInfo',
+			// 		success: (res) => {
+			// 			this.login(res.data);
+			// 		}
+			// 	});
+			// }
 		},
 		onShow: function() {
 			console.log('App Show')

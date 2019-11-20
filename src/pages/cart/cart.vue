@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!-- 空白页 -->
-		<view v-if="empty===true" class="empty">
+		<view v-if="cartList.length === 0" class="empty">
 			<image src="/static/emptyCart.jpg" mode="aspectFit"></image>
 			<view v-if="token" class="empty-tips">
 				空空如也
@@ -107,12 +107,12 @@
 		},
 		watch:{
 			//显示空白页
-			cartList(e){
-				let empty = e.length === 0 ? true: false;
-				if(this.empty !== empty){
-					this.empty = empty;
-				}
-			}
+			// cartList(e){
+			// 	let empty = e.length === 0 ? true: false;
+			// 	if(this.empty !== empty){
+			// 		this.empty = empty;
+			// 	}
+			// }
 		},
 		computed:{
 			...mapState(['hasLogin'])
@@ -127,7 +127,9 @@
 			 */
 			initData() {
 				this.token = uni.getStorageSync('accessToken') || undefined
-				this.getCartItemList();
+				if (this.token) {
+					this.getCartItemList();
+				}
 			},
 			/**
 			 *@des 获取购物车列表

@@ -69,17 +69,17 @@
 			this.initData(options);
 		},
 		methods: {
-			initData(options) {
-				this.getProvinceList();
+			async initData(options) {
 				let title = '新增收货地址';
 				if(options.type==='edit'){
 					title = '编辑收货地址'
-					this.getAddressDetail(options.id)
+					await this.getAddressDetail(options.id)
 				}
 				this.manageType = options.type;
 				uni.setNavigationBarTitle({
 					title
 				})
+				await this.getProvinceList();
 			},
 			async getAddressDetail(id) {
 				uni.showLoading({title:'加载中...'});
@@ -96,23 +96,72 @@
 				})
 			},
 			async getProvinceList() {
+				let provinceIndex = 0;
+				let cityIndex = 0;
+				let areaIndex = 0;
+				let province_id = null;
+				let city_id = null;
+				let area_id = null;
+				let province_name = null;
+				let city_name = null;
+				let area_name = null;
 				await this.$get(`${provinceList}`).then(async r => {
 					if (r.code === 200) {
-						this.multiArray[0] = r.data
+						this.multiArray[0] = r.data;
+						if (this.addressData.province_id) {
+							r.data.forEach((item, index) => {
+								if (parseInt(item.id, 10) == parseInt(this.addressData.province_id, 10)) {
+									provinceIndex = index;
+									province_id = item.id;
+									province_name = item.title;
+								}
+							});
+						} else {
+							province_id = this.multiArray[0][0].id
+							province_name = this.multiArray[0][0].title
+						}
 						await this.$get(`${provinceList}`, {
-							pid: this.multiArray[0][0].id
+							pid: province_id
 						}).then(async r => {
 							if (r.code === 200) {
-								this.multiArray[1] = r.data
+								this.multiArray[1] = r.data;
+								if (this.addressData.city_id) {
+									r.data.forEach((item, index) => {
+										if (parseInt(item.id, 10) == parseInt(this.addressData.city_id, 10)) {
+											cityIndex = index;
+											city_id = item.id;
+											city_name = item.title;
+										}
+									});
+								} else {
+									city_id = this.multiArray[1][0].id
+									city_name = this.multiArray[1][0].title
+								}
 								await this.$get(`${provinceList}`, {
-									pid: this.multiArray[1][0].id
+									pid: city_id
 								}).then(r => {
 									if (r.code === 200) {
-										this.multiArray[2] = r.data
-										// this.multiIndex = [0, 0, 0]
-										// this.addressData.province_id = this.multiArray[0][0].id
-										// this.addressData.city_id = this.multiArray[1][0].id
-										// this.addressData.area_id = this.multiArray[2][0].id
+										this.multiArray[2] = r.data;
+										console.log(this.multiArray[2] )
+										console.log(this.addressData.area_id)
+										if (this.addressData.area_id) {
+											r.data.forEach((item, index) => {
+												if (parseInt(item.id, 10) == parseInt(this.addressData.area_id, 10)) {
+													areaIndex = index;
+													area_id = item.id;
+													area_name = item.title;
+												}
+											});
+										} else {
+											area_id = this.multiArray[2][0].id;
+											area_name = this.multiArray[2][0].title;
+										}
+										this.multiIndex = [provinceIndex, cityIndex, areaIndex]
+										this.addressData.province_id = province_id
+										this.addressData.city_id = city_id
+										this.addressData.area_id = area_id
+										this.addressData.address_name = `${province_name}, ${city_name}, ${area_name}`
+										console.log(this.addressData)
 									} else {
 										uni.showToast({title: r.message, icon: "none"});
 									}
@@ -133,25 +182,40 @@
 				})
 			},
 			async bindMultiPickerColumnChange(e) {
-				this.multiIndex[e.detail.column] = e.detail.value
-				console.log(e.detail)
+				this.multiIndex[e.detail.column] = e.detail.value;
+				let provinceIndex = 0;
+				let cityIndex = 0;
+				let areaIndex = 0;
+				let province_id = null;
+				let city_id = null;
+				let area_id = null;
+				let province_name = null;
+				let city_name = null;
+				let area_name = null;
 				switch (e.detail.column) {
 					case 0: //拖动第1列
 						switch (this.multiIndex[0]) {
 							case this.multiIndex[0]:
-								this.addressData.province_id = this.multiArray[0][e.detail.value].id;
+								province_id = this.multiArray[0][e.detail.value].id;
+								province_name = this.multiArray[0][e.detail.value].title;
 								uni.showLoading({title:'加载中...'});
 								await this.$get(`${provinceList}`, {
 									pid: this.multiArray[0][e.detail.value].id
 								}).then(async r => {
 									if (r.code === 200) {
-										this.multiArray[1] = r.data
+										this.multiArray[1] = r.data;
+										city_id = this.multiArray[1][0].id;
+										city_name = this.multiArray[1][0].title;
+										provinceIndex = e.detail.value;
+										this.multiIndex = [provinceIndex, 0, 0];
 										uni.showLoading({title:'加载中...'});
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.column].id
 										}).then(r => {
 											if (r.code === 200) {
 												this.multiArray[2] = r.data
+												area_id = this.multiArray[2][0].id;
+												area_name = this.multiArray[2][0].title;
 											} else {
 												uni.showToast({title: r.message, icon: "none"});
 											}
@@ -163,19 +227,21 @@
 									}
 								}).catch(err => {
 									console.log(err)
-								})
+								});
 								break
 						}
-						// this.multiIndex.splice(1, 1, 0)
-						// this.multiIndex.splice(2, 1, 0)
-						break
+						break;
 					case 1: //拖动第2列
 						switch (this.multiIndex[0]) { //判断第一列是什么
 							case this.multiIndex[0]:
 								switch (this.multiIndex[1]) {
 									case this.multiIndex[1]:
-										console.log("1", this.multiArray[1][e.detail.value])
-										this.addressData.city_id = this.multiArray[1][e.detail.value].id;
+										province_id = this.multiArray[0][this.multiIndex[0]].id;
+										province_name = this.multiArray[0][this.multiIndex[0]].title;
+										city_id = this.multiArray[1][e.detail.value].id;
+										city_name = this.multiArray[1][e.detail.value].title;
+										cityIndex = e.detail.value;
+										this.multiIndex = [this.multiIndex[0], cityIndex, 0];
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.value].id
 										}).then(r => {
@@ -200,7 +266,14 @@
 										switch (this.multiIndex[2]) {
 											case this.multiIndex[2]:
 												console.log("2", this.multiArray[2][e.detail.value])
-												this.addressData.area_id = this.multiArray[2][e.detail.value].id;
+												province_id = this.multiArray[0][this.multiIndex[0]].id;
+												province_name = this.multiArray[0][this.multiIndex[0]].title;
+												city_id = this.multiArray[1][this.multiIndex[1]].id;
+												city_name = this.multiArray[1][this.multiIndex[1]].title;
+												area_id = this.multiArray[2][e.detail.value].id;
+												area_name = this.multiArray[2][e.detail.value].title;
+												areaIndex = e.detail.value;
+												this.multiIndex = [this.multiIndex[0], this.multiIndex[1], areaIndex];
 												break
 										}
 									break;
@@ -209,11 +282,12 @@
 						}
 						break
 				}
-				this.addressData.address_name = `${this.multiArray && this.multiArray[0][this.multiIndex[0]] && this.multiArray[0][this.multiIndex[0]].title},
-				${this.multiArray && this.multiArray[1][this.multiIndex[1]] && this.multiArray[1][this.multiIndex[1]].title},
-				${this.multiArray && this.multiArray[2][this.multiIndex[2]] && this.multiArray[2][this.multiIndex[2]].title}`
-				// this.addressData.province_id = this.multiArray[0][e.detail.value].id;
-				// this.addressData.area_id = this.multiArray[2] && this.multiArray[2][e.detail.value] && this.multiArray[2][e.detail.value].id;
+				this.addressData.address_name = `${province_name}, ${city_name}, ${area_name}`;
+				this.addressData.province_id = province_id;
+				this.addressData.city_id = city_id;
+				this.addressData.area_id = area_id;
+				console.log(this.addressData.address_name)
+				console.log(this.addressData.province_id, this.addressData.city_id, this.addressData.area_id)
 				this.$forceUpdate()
 			},
 			handleRealNameChange (e) {

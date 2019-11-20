@@ -11,10 +11,10 @@ const store = new Vuex.Store({
 	mutations: {
 		login(state, provider) {
 			state.hasLogin = true;
-			state.userInfo = provider;
+			state.userInfo = provider.member;
 			uni.setStorage({//缓存用户登陆状态
 			    key: 'userInfo',
-			    data: provider
+			    data: provider.member
 			})
 			uni.setStorage({//缓存用户登陆状态
 			    key: 'accessToken',

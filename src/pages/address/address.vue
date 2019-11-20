@@ -4,7 +4,7 @@
 			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
 				<view class="address-box">
 					<text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
-					<text class="address">{{item.address_details}}</text>
+					<text class="address">{{item.address_name}} {{item.address_details}}</text>
 				</view>
 				<view class="u-box">
 					<text class="name">{{item.realname}}</text>

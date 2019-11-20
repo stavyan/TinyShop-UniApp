@@ -2,13 +2,16 @@ function request(url, params, header, method) {
     const baseApiUrl = "https://www.yllook.com/api";
     // const baseApiUrl = "";
     const token = uni.getStorageSync('accessToken');
-    if (token) {
+    const userInfo = uni.getStorageSync('userInfo');
+    if (token && userInfo) {
         header = {
-            "x-api-key": token
+            "x-api-key": token,
+            "merchant-id": userInfo.merchant_id
         };
         params = {
             ...params,
-            "access_token": token
+            "access_token": token,
+            "merchant_id": userInfo.merchant_id
         }
     }
     return uni.request({

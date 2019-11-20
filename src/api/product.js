@@ -22,6 +22,10 @@ const cartItemClear = "/addons/rf-tiny-shop/v1/member/cart-item/clear";
 const cartItemUpdateNum = "/addons/rf-tiny-shop/v1/member/cart-item/update-num";
 // 下单
 const orderCreate = "/addons/rf-tiny-shop/v1/order/order/create";
+// 取消未支付订单
+const orderClose = "/addons/rf-tiny-shop/v1/member/order/close";
+// 订单支付
+const orderPay= "/addons/rf-tiny-shop/v1/common/pay/create";
 
 export {
     productCate,
@@ -32,5 +36,7 @@ export {
     cartItemDel,
     cartItemClear,
     cartItemUpdateNum,
-    orderCreate
+    orderCreate,
+    orderClose,
+    orderPay
 };

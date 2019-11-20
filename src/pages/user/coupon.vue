@@ -4,9 +4,9 @@
 				<!-- 优惠券页面，仿mt -->
 				<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
 					<view class="con">
-						<view class="left">
+						<view class="left" @click="getCoupon(item.id)">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期{{ item.start_time }} - {{ item.end_time }}</text>
+							<text class="time">有效期{{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>
 						<view class="right">
 							<text class="price">{{item.money}}</text>
@@ -33,15 +33,22 @@
 </template>
 
 <script>
-	import {couponList} from "../../api/userInfo";
+	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
 	export default {
 		data() {
 			return {
-				couponList: []
+				couponList: [],
+				type: null
 			}
 		},
-		onLoad(){
-			this.initData()
+		filters: {
+			time(val) {
+				return moment(val * 1000).format('YY-MM-DD HH:mm')
+			}
+		},
+		onLoad(options){
+			this.type = options.type;
+			this.initData(options.type);
 		},
 		methods: {
 			/**
@@ -50,8 +57,12 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/18 09:57:30
 			 */
-			initData () {
-				this.getCouponList();
+			initData (type) {
+				if (type) {
+					this.getMyCouponList();
+				} else {
+					this.getCouponList();
+				}
 			},
 			/**
 			 *@des 获取收货地址列表
@@ -66,6 +77,40 @@
 						this.couponList = r.data
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 *@des 获取我的收货地址列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/20 18:16:58
+			 */
+			async getMyCouponList () {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${myCouponList}`).then(r=>{
+					if (r.code === 200) {
+						this.couponList = r.data
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			async getCoupon(id) {
+				if (this.type) return;
+				uni.showLoading({title: '正在领取优惠券...'});
+				await this.$post(`${couponReceive}`, {
+					id
+				}).then(r => {
+					if (r.code === 200) {
+						this.getCouponList();
+						uni.showToast({title: '领取成功', icon: "none"});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
 					}
 				}).catch(err => {
 					console.log(err)

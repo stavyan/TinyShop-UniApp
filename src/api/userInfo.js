@@ -26,6 +26,11 @@ const addressDelete = "/addons/rf-tiny-shop/v1/member/address/delete";
 
 // 获取优惠券列表
 const couponList = "/addons/rf-tiny-shop/v1/marketing/coupon-type/index";
+// 获取我的优惠券列表
+const myCouponList = "/addons/rf-tiny-shop/v1/member/coupon/index";
+
+// 领取优惠券
+const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
 
 // 获取优惠券列表
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
@@ -41,5 +46,7 @@ export {
     addressUpdate,
     addressDelete,
     couponList,
-    orderList
+    myCouponList,
+    orderList,
+    couponReceive
 };

@@ -4,11 +4,11 @@
 			<image class="bg" src="/static/user-bg.jpg"></image>
 			<view class="user-info-box" @click="navTo('login')">
 				<view class="portrait-box">
-					<image class="portrait" :src="(profileInfo && profileInfo.portrait) || '/static/missing-face.png'"></image>
+					<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || '/static/missing-face.png'"></image>
 				</view>
 				<view class="info-box">
 					<text class="username">
-						{{ profileInfo && profileInfo.member && (profileInfo.member.nickname || profileInfo.member.realname) ||'游客'}}
+						{{ userInfo && (userInfo.nickname || userInfo.realname) ||'游客'}}
 					</text>
 				</view>
 			</view>
@@ -21,8 +21,8 @@
 					<text class="yticon icon-iLinkapp-"></text>
 					欢迎来到RageFrame商城
 				</view>
-				<text class="e-m">DCloud Union</text>
-				<text class="e-b">开通会员开发无bug 一测就上线</text>
+				<text class="e-m">RageFrame</text>
+				<text class="e-b">正在开发中...</text>
 			</view>
 		</view>
 		<view
@@ -37,35 +37,43 @@
 		>
 			<image class="arc" src="/static/arc.png"></image>
 
-			<view class="tj-sction">
+			<view class="tj-sction" v-if="token">
 				<view class="tj-item">
-					<text class="num">128.8</text>
+					<text class="num">
+						{{ userInfo && userInfo.account && userInfo.account.user_money }}
+					</text>
 					<text>余额</text>
 				</view>
-				<view class="tj-item" @click="navTo('/pages/user/coupon')">
+				<view class="tj-item" @click="navTo('/pages/user/coupon?type=1')">
 					<text class="num">0</text>
 					<text>优惠券</text>
 				</view>
 				<view class="tj-item">
-					<text class="num">20</text>
+					<text class="num">
+						{{ userInfo && userInfo.account && userInfo.account.user_integral }}
+					</text>
 					<text>积分</text>
 				</view>
 			</view>
 			<!-- 订单 -->
 			<view class="order-section">
 				<view class="order-item" @click="navTo('/pages/order/order?state=0')" hover-class="common-hover"  :hover-stay-time="50">
-					<text class="yticon icon-shouye"></text>
-					<text>全部订单</text>
-				</view>
-				<view class="order-item" @click="navTo('/pages/order/order?state=1')"  hover-class="common-hover" :hover-stay-time="50">
 					<text class="yticon icon-daifukuan"></text>
 					<text>待付款</text>
+				</view>
+				<view class="order-item" @click="navTo('/pages/order/order?state=1')"  hover-class="common-hover" :hover-stay-time="50">
+					<text class="yticon icon-shouye "></text>
+					<text>待发货</text>
 				</view>
 				<view class="order-item" @click="navTo('/pages/order/order?state=2')" hover-class="common-hover"  :hover-stay-time="50">
 					<text class="yticon icon-yishouhuo"></text>
 					<text>待收货</text>
 				</view>
-				<view class="order-item" @click="navTo('/pages/order/order?state=4')" hover-class="common-hover"  :hover-stay-time="50">
+				<view class="order-item" @click="navTo('/pages/order/order?state=3')" hover-class="common-hover"  :hover-stay-time="50">
+					<text class="yticon icon-pingjia"></text>
+					<text>评价</text>
+				</view>
+				<view class="order-item" @click="navTo('/pages/order/order?state=-1')" hover-class="common-hover"  :hover-stay-time="50">
 					<text class="yticon icon-shouhoutuikuan"></text>
 					<text>退款/售后</text>
 				</view>
@@ -109,12 +117,16 @@
 				coverTransform: 'translateY(0px)',
 				coverTransition: '0s',
 				moving: false,
-				profileInfo: {},
+				userInfo: {},
 				token: null
 			}
 		},
 		async onLoad(){
-			this.profileInfo = uni.getStorageSync('userInfo') || undefined
+			this.userInfo = uni.getStorageSync('userInfo') || undefined
+			this.token = uni.getStorageSync('accessToken') || undefined
+		},
+		async onShow(){
+			this.userInfo = uni.getStorageSync('userInfo') || undefined
 			this.token = uni.getStorageSync('accessToken') || undefined
 		},
 		// #ifndef MP

@@ -8,7 +8,7 @@
 						<text class="name">{{addressData.realname}}</text>
 						<text class="mobile">{{addressData.mobile}}</text>
 					</view>
-					<text class="address">{{addressData.address_details}}</text>
+					<text class="address">{{ addressData.address_name }} {{addressData.address_details}}</text>
 				</view>
 				<view class="no-default-address" v-else>
 					请选择收货地址
@@ -220,8 +220,10 @@
 					address_id: this.addressData.id
 				}).then(r => {
 					if (r.code === 200) {
+						const data = {}
+						data.order_id = parseInt(r.data.id, 10);
 						uni.redirectTo({
-							url: '/pages/money/pay'
+							url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${r.data.product_money}`
 						})
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
