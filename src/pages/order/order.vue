@@ -37,7 +37,7 @@
 							></text>
 						</view>
 
-						<scroll-view v-if="item.product.length > 1" class="goods-box" scroll-x>
+						<scroll-view v-if="item && item.product && item.product.length > 1" class="goods-box" scroll-x>
 							<view
 								v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
 								class="goods-item"
@@ -46,7 +46,7 @@
 							</view>
 						</scroll-view>
 						<view
-							v-if="item.product.length === 1"
+							v-if="item && item.product && item.product.length === 1"
 							class="goods-box-single"
 							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
 						>
@@ -70,7 +70,7 @@
 						</view>
 					</view>
 
-					<uni-load-more :status="tabItem.loadingType"></uni-load-more>
+					<uni-load-more :status="loadingType"></uni-load-more>
 
 				</scroll-view>
 			</swiper-item>
@@ -94,38 +94,35 @@
 		data() {
 			return {
 				tabCurrentIndex: 0,
+				loadingType: 'more',
 				navList: [
 					{
 						state: undefined,
 						text: '全部',
-						loadingType: 'more',
 						orderList: []
 					},
 					{
 						state: 0,
 						text: '待付款',
-						loadingType: 'more',
 						orderList: []
 					},
 					{
 						state: 1,
 						text: '待发货',
-						loadingType: 'more',
 						orderList: []
 					},
 					{
 						state: 2,
 						text: '待收货',
-						loadingType: 'more',
 						orderList: []
 					},
 					{
 						state: 3,
 						text: '评价',
-						loadingType: 'more',
 						orderList: []
 					}
 				],
+				page: 1
 			};
 		},
 		computed: {
@@ -146,16 +143,18 @@
 			 * 替换onLoad下代码即可
 			 */
 			this.tabCurrentIndex = +options.state + 1;
-			// #ifndef MP
-			// this.loadData()
 			this.initData()
-			// #endif
-			// #ifdef MP
-			// if(options.state == 0){
-			// 	this.loadData()
-			// }
-			// #endif
-
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.page = 1;
+			this.navList[this.tabCurrentIndex].orderList = [];
+			this.getOrderList('refresh');
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getOrderList();
 		},
 		methods: {
 			/**
@@ -213,17 +212,22 @@
 			initData () {
 				this.getOrderList();
 			},
-			async getOrderList() {
+			async getOrderList(type) {
 				//这里是将订单挂载到tab列表下
 				let index = this.tabCurrentIndex;
 				let navItem = this.navList[index];
 				let synthesize_status = navItem.state;
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderList}`, {
+					page: this.page,
 					synthesize_status
 				}).then(r => {
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
-						this.navList[index].orderList = r.data;
+						this.navList[index].orderList = [ ...this.navList[index].orderList, ...r.data ];
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

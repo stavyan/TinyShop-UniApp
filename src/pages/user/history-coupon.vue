@@ -179,7 +179,6 @@
 			 *@date 2019/11/20 18:16:58
 			 */
 			async getMyCouponList (type) {
-				this.couponList = []
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${myCouponList}`, {
 					page: this.page,

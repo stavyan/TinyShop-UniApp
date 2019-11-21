@@ -137,6 +137,7 @@
 		}, {
 			"path": "pages/order/order",
 			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "我的订单",
 				"app-plus": {
 					"bounce": "none"

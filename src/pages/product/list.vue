@@ -358,7 +358,7 @@
 	.cate-mask{
 		position: fixed;
 		left: 0;
-		top: var(--window-top);
+		top: 40px;
 		bottom: 0;
 		width: 100%;
 		background: rgba(0,0,0,0);
