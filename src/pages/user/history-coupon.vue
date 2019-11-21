@@ -13,65 +13,41 @@
 		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
 			<swiper-item class="tab-content" v-for="(tabItem,tabIndex) in navList" :key="tabIndex">
 				<scroll-view
-					class="list-scroll-content"
+					class="list-scroll-content mask-content"
 					scroll-y
 					@scrolltolower="loadData"
 				>
 					<!-- 空白页 -->
-					<empty v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></empty>
+					<empty v-if="couponList.length === 0"></empty>
 					<!-- 订单列表 -->
-					<view
-						v-for="(item,index) in tabItem.orderList" :key="index"
-						class="order-item"
-					>
-						<view class="i-top b-b">
-							<text class="time">{{item.created_at | time}}</text>
-							<view class="example-body" v-show="parseInt(item.order_status, 10) ===0">
-								<uni-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
-							</view>
-							<!--<text class="state" :style="{color: item.stateTipColor}">{{item.stateTip}}</text>-->
-							<text
-								v-if="item.state===9"
-								class="del-btn yticon icon-iconfontshanchu1"
-								@click="deleteOrder(index)"
-							></text>
-						</view>
+						<!-- 优惠券页面，仿mt -->
+						<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
+							<view class="con">
+								<view class="left" @click="getCoupon(item.id)">
+									<text class="title">{{item.title}}</text>
+									<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
+								</view>
+								<view class="right">
+									<text class="price">{{item.money}}</text>
+									<text>满{{ item.at_least }}可用</text>
+								</view>
 
-						<scroll-view v-if="item.product.length > 1" class="goods-box" scroll-x>
-							<view
-								v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
-								class="goods-item"
-							>
-								<image class="goods-img" :src="goodsItem.image" mode="aspectFill"></image>
+								<view class="circle l"></view>
+								<view class="circle r"></view>
 							</view>
-						</scroll-view>
-						<view
-							v-if="item.product.length === 1"
-							class="goods-box-single"
-							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
-						>
-							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
-							<view class="right">
-								<text class="title clamp">{{goodsItem.product_name}}</text>
-								<text class="attr-box">{{goodsItem.sku_name}}  x {{goodsItem.num}}</text>
-								<text class="price">{{goodsItem.cost_price}}</text>
+							<view class="tips">
+									<text v-show="item.range_type && item.max_fetch">
+										{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}
+									</text>
+									<text>
+										{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效
+									</text>
 							</view>
 						</view>
-
-						<view class="price-box">
-							共
-							<text class="num">{{ item.product_count }}</text>
-							件商品 实付款
-							<text class="price">{{ item.product_money }}</text>
-						</view>
-						<view class="action-box b-t" v-if="item.state != 9">
-							<button class="action-btn" @click="handleOrderClose(item.id)">取消订单</button>
-							<button class="action-btn recom" @click="handlePayment(item)">立即支付</button>
-						</view>
-					</view>
-
-					<uni-load-more :status="tabItem.loadingType"></uni-load-more>
-
+						<!--<view class="coupon-none" v-show="couponList.length === 0">-->
+							<!--暂无优惠券-->
+						<!--</view>-->
+					<uni-load-more :status="loadingType"></uni-load-more>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -79,12 +55,10 @@
 </template>
 
 <script>
+	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
-	import Json from '@/Json';
-	import {orderList} from "../../api/userInfo";
 	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
-	import {orderClose} from "../../api/product";
 	export default {
 		components: {
 			uniLoadMore,
@@ -93,224 +67,144 @@
 		},
 		data() {
 			return {
+				couponList: [],
+				state: 2,
+				token: null,
 				tabCurrentIndex: 0,
+				loadingType: 'more',
 				navList: [
 					{
-						state: undefined,
-						text: '全部',
-						loadingType: 'more',
-						orderList: []
-					},
-					{
-						state: 0,
-						text: '待付款',
-						loadingType: 'more',
-						orderList: []
-					},
-					{
-						state: 1,
-						text: '待发货',
-						loadingType: 'more',
-						orderList: []
-					},
-					{
 						state: 2,
-						text: '待收货',
+						text: '已使用',
 						loadingType: 'more',
 						orderList: []
 					},
 					{
 						state: 3,
-						text: '评价',
+						text: '已过期',
 						loadingType: 'more',
 						orderList: []
 					}
 				],
-			};
-		},
-		computed: {
-			second() {
-				return function (val) {
-					return Math.floor(15 * 60 - (new Date() / 1000 - val))
-				}
+				page: 1
 			}
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
+				return moment(val * 1000).format('YY/MM/DD HH:mm')
 			}
 		},
-		onLoad(options){
-			/**
-			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
-			 * 替换onLoad下代码即可
-			 */
-			this.tabCurrentIndex = +options.state + 1;
-			// #ifndef MP
-			// this.loadData()
-			this.initData()
-			// #endif
-			// #ifdef MP
-			// if(options.state == 0){
-			// 	this.loadData()
-			// }
-			// #endif
-
+		onLoad(){
+			this.initData();
+		},
+		onPageScroll(e){
+			//兼容iOS端下拉时顶部漂移
+			if(e.scrollTop>=0){
+				this.headerPosition = "fixed";
+			}else{
+				this.headerPosition = "absolute";
+			}
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.page = 1;
+			this.couponList = [];
+			this.getMyCouponList('refresh');
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getMyCouponList();
 		},
 		methods: {
 			/**
-			 *@des 到时间回调
+			 *@des 切换tab
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
-			 *@date 2019/11/20 11:59:19
-			 *@param id 订单id
+			 *@date 2019/11/21 16:11:55
+			 *@param e
 			 */
-			timeUp(item) {
-				if (parseInt(item.order_status, 10) !== 0) return;
-				this.handleOrderClose(item.id);
+			changeTab(e){
+				this.tabCurrentIndex = e.target.current;
+				this.state = this.navList[this.tabCurrentIndex].state;
+				this.getMyCouponList();
 			},
 			/**
-			 *@des 取消订单
+			 *@des 顶部tab点击
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
-			 *@date 2019/11/20 12:00:48
+			 *@date 2019/11/21 16:12:40
+			 *@param index tab序号
 			 */
-			async handleOrderClose(id) {
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${orderClose}`, {
-					id,
-				}).then(r => {
-					if (r.code === 200) {
-						this.getOrderList();
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			},
-			/**
-			 *@des 订单支付
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/20 13:49:55
-			 *@param id 订单id
-			 */
-			async handlePayment(item) {
-				const data = {}
-				data.order_id = parseInt(item.id, 10);
-				uni.navigateTo({
-					url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${item.product_money}`
-				})
+			tabClick(index){
+				this.tabCurrentIndex = index;
+				this.state = this.navList[this.tabCurrentIndex].state;
+				this.getMyCouponList();
 			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
-			 *@date 2019/11/19 18:18:54
-			 *@param arguments
+			 *@date 2019/11/18 09:57:30
 			 */
 			initData () {
-				this.getOrderList();
+				this.token = uni.getStorageSync('accessToken') || undefined;
+				if (this.token) {
+					this.getMyCouponList();
+				}
 			},
-			async getOrderList() {
-				//这里是将订单挂载到tab列表下
-				let index = this.tabCurrentIndex;
-				let navItem = this.navList[index];
-				let synthesize_status = navItem.state;
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${orderList}`, {
-					synthesize_status
-				}).then(r => {
+			/**
+			 *@des 统一跳转接口
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 15:41:30
+			 *@param url 跳转地址
+			 */
+			navTo(url){
+				if(!this.token){
+					url = '/pages/public/login';
+				}
+				if (url === 'login') {
+					 return
+				} else {
+					uni.navigateTo({
+						url
+					})
+				}
+			},
+			/**
+			 *@des 获取我的收货地址列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/20 18:16:58
+			 */
+			async getMyCouponList (type) {
+				this.couponList = []
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${myCouponList}`, {
+					page: this.page,
+					state: this.state
+				}).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
-						this.navList[index].orderList = r.data;
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.couponList = [ ...this.couponList, ...r.data ];
 					} else {
-						uni.showToast({title: r.message, icon: "none"});
+						uni.showToast({ title: r.message, icon: "none" });
 					}
 				}).catch(err => {
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					console.log(err)
 				})
-			},
-			//获取订单列表
-			loadData(source){
-				//这里是将订单挂载到tab列表下
-				let index = this.tabCurrentIndex;
-				let navItem = this.navList[index];
-				let state = navItem.state;
-				if(source === 'tabChange' && navItem.loaded === true){
-					//tab切换只有第一次需要加载数据
-					return;
-				}
-				if(navItem.loadingType === 'loading'){
-					//防止重复加载
-					return;
-				}
-				navItem.loadingType = 'loading';
-				setTimeout(()=>{
-					let orderList = Json.orderList.filter(item=>{
-						//添加不同状态下订单的表现形式
-						item = Object.assign(item, this.orderStateExp(item.state));
-						//演示数据所以自己进行状态筛选
-						if(state === 0){
-							//0为全部订单
-							return item;
-						}
-						return item.state === state
-					});
-					orderList.forEach(item=>{
-						navItem.orderList.push(item);
-					})
-					//loaded新字段用于表示数据加载完毕，如果为空可以显示空白页
-					this.$set(navItem, 'loaded', true);
-
-					//判断是否还有数据， 有改为 more， 没有改为noMore
-					navItem.loadingType = 'more';
-				}, 600);
-			},
-			//swiper 切换
-			changeTab(e){
-				this.tabCurrentIndex = e.target.current;
-				this.getOrderList()
-				// this.loadData('tabChange');
-			},
-			//顶部tab点击
-			tabClick(index){
-				this.tabCurrentIndex = index;
-				this.getOrderList();
-			},
-			//删除订单
-			deleteOrder(index){
-				uni.showLoading({
-					title: '请稍后'
-				})
-				setTimeout(()=>{
-					this.navList[this.tabCurrentIndex].orderList.splice(index, 1);
-					uni.hideLoading();
-				}, 600)
-			},
-			//订单状态文字和颜色
-			orderStateExp(state){
-				let stateTip = '',
-					stateTipColor = '#fa436a';
-				switch(+state){
-					case 1:
-						stateTip = '待付款'; break;
-					case 2:
-						stateTip = '待发货'; break;
-					case 9:
-						stateTip = '订单已关闭';
-						stateTipColor = '#909399';
-						break;
-
-					//更多自定义
-				}
-				return {stateTip, stateTipColor};
 			}
-		},
+		}
 	}
 </script>
-
-<style lang="scss">
+<style lang='scss'>
 	page, .content{
 		background: $page-color-base;
 		height: 100%;
@@ -634,6 +528,87 @@
 
 		100% {
 			opacity: .2
+		}
+	}
+	.coupon-item{
+		display: flex;
+		flex-direction: column;
+		margin: 20upx 24upx;
+		background: #fff;
+		.con{
+			display: flex;
+			align-items: center;
+			position: relative;
+			height: 120upx;
+			padding: 0 30upx;
+			&:after{
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				content: '';
+				width: 100%;
+				height: 0;
+				border-bottom: 1px dashed #f3f3f3;
+				transform: scaleY(50%);
+			}
+		}
+		.left{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			flex: 1;
+			overflow: hidden;
+			height: 100upx;
+		}
+		.title{
+			font-size: 32upx;
+			color: $font-color-dark;
+			margin-bottom: 10upx;
+		}
+		.time{
+			font-size: 24upx;
+			color: $font-color-light;
+		}
+		.right{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			font-size: 26upx;
+			color: $font-color-base;
+			height: 100upx;
+		}
+		.price{
+			font-size: 44upx;
+			color: $base-color;
+			&:before{
+				content: '￥';
+				font-size: 34upx;
+			}
+		}
+		.tips{
+			font-size: 24upx;
+			color: $font-color-light;
+			line-height: 60upx;
+			padding-left: 30upx;
+			overflow: hidden;
+			display:inline-flex;
+			justify-content: space-between;
+			margin-right: 30upx;
+		}
+		.circle{
+			position: absolute;
+			left: -6upx;
+			bottom: -10upx;
+			z-index: 10;
+			width: 20upx;
+			height: 20upx;
+			background: #f3f3f3;
+			border-radius: 100px;
+			&.r{
+				left: auto;
+				right: -6upx;
+			}
 		}
 	}
 </style>

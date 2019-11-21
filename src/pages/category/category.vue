@@ -34,10 +34,14 @@
 				currentId: 1
 			}
 		},
-		onLoad(){
+		onShow(){
 			// this.loadData();
 			this.initData();
 		},
+		// onLoad(){
+		// 	// this.loadData();
+		// 	this.initData();
+		// },
 		methods: {
 			/**
 			 *@des 初始化数据
@@ -49,6 +53,9 @@
 				this.getProductCate();
 			},
 			async getProductCate () {
+				this.flist = [];
+				this.slist = [];
+				this.tlist = [];
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {

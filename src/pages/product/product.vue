@@ -213,6 +213,7 @@
 	import share from '@/components/share';
 	import {cartItemCreate, productDetail} from "../../api/product";
 	import uniNumberBox from '@/components/uni-number-box.vue'
+	import {collectCreate, collectDel} from "../../api/basic";
 	export default{
 		components: {
 			share,
@@ -239,7 +240,7 @@
 				productDetail: {},
 				specClass: 'none',
 				specSelected:[],
-				favorite: true,
+				favorite: false,
 				shareList: [],
 				imgList: [
 					{
@@ -263,7 +264,8 @@
 				`,
 				specList: [],
 				specChildList: [],
-				cartCount: 1
+				cartCount: 1,
+				product_id: null
 			};
 		},
 		async onLoad(options){
@@ -279,6 +281,7 @@
 					}
 				}
 			})
+			this.product_id = options.id
 			this.shareList = await this.$api.json('shareList');
 			this.initData(options.id);
 		},
@@ -316,7 +319,8 @@
 					id,
 				}).then(r=>{
 					if (r.code === 200) {
-						this.productDetail = r.data
+						this.productDetail = r.data;
+						this.favorite = this.productDetail.myCollect ? true : false;
 						this.specList = this.productDetail.base_attribute_format
 						this.specList.forEach(item => {
 							this.specChildList = [ ...this.specChildList, ...item.value ]
@@ -426,9 +430,60 @@
 			share(){
 				this.$refs.share.toggleMask();
 			},
-			//收藏
-			toFavorite(){
-				this.favorite = !this.favorite;
+			/**
+			 *@des 收藏
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 17:00:45
+			 */
+			async toFavorite() {
+				if (this.favorite) {
+					this.handleCollectDel()
+				} else {
+					this.handleCollectCreate()
+				}
+
+			},
+			/**
+			 *@des 收藏商品
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 17:09:02
+			 */
+			async handleCollectCreate() {
+				uni.showLoading({title: '正在将商品添加至购物车...'});
+				await this.$post(`${collectCreate}`, {
+					topic_id: this.product_id,
+					topic_type: 'product'
+				}).then(r => {
+					if (r.code === 200) {
+						this.favorite = !this.favorite;
+						uni.showToast({title: '收藏成功', icon: "none"});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 *@des 取消收藏商品
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 17:09:32
+			 */
+			async handleCollectDel() {
+				uni.showLoading({title: '加载中'});
+				await this.$del(`${collectDel}?id=${this.productDetail.myCollect.id}`).then(r => {
+					if (r.code === 200) {
+						this.favorite = !this.favorite;
+						uni.showToast({title: '取消收藏成功', icon: "none"});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			buy(){
 				let sku_id;

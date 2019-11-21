@@ -134,8 +134,6 @@
 			</swiper>
 		</view>
 
-
-
 		<!-- 分类推荐楼层 -->
 		<view class="f-header m-t">
 			<image src="/static/temp/h1.png"></image>
@@ -211,7 +209,6 @@
 				</view>
 			</scroll-view>
 		</view>
-
 		<!-- 猜你喜欢 -->
 		<view class="f-header m-t">
 			<image src="/static/temp/h1.png"></image>
@@ -221,7 +218,6 @@
 			</view>
 			<text class="yticon icon-you"></text>
 		</view>
-
 		<view class="guess-section">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
@@ -235,15 +231,11 @@
 				<text class="price">￥{{item.price}}</text>
 			</view>
 		</view>
-
-
 	</view>
 </template>
 
 <script>
-
 	export default {
-
 		data() {
 			return {
 				titleNViewBackground: '',
@@ -253,7 +245,6 @@
 				goodsList: []
 			};
 		},
-
 		onLoad() {
 			this.loadData();
 		},
@@ -288,8 +279,10 @@
 		},
 		// #ifndef MP
 		// 标题栏input搜索框点击
-		onNavigationBarSearchInputClicked: async function(e) {
-			this.$api.msg('点击了搜索框');
+		async onNavigationBarSearchInputClicked () {
+				uni.navigateTo({
+					url: `/pages/search/search`
+				})
 		},
 		//点击导航栏 buttons 时触发
 		onNavigationBarButtonTap(e) {

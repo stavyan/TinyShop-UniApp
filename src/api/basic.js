@@ -8,6 +8,12 @@
 
 // 获取省市区列表
 const provinceList = "/addons/rf-tiny-shop/v1/common/provinces/index";
+// 收藏商品
+const collectCreate = "/addons/rf-tiny-shop/v1/common/collect/create";
+// 删除收藏商品
+const collectDel = "/addons/rf-tiny-shop/v1/common/collect/delete";
 export {
-    provinceList
+    provinceList,
+    collectCreate,
+    collectDel
 };

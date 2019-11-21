@@ -33,33 +33,43 @@
 			</view>
 		</view>
 		<uni-load-more :status="loadingType"></uni-load-more>
-
-		<view class="cate-mask" :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''" @click="toggleCateMask">
+		<empty v-if="goodsList.length === 0"></empty>
+		<view class="cate-mask"
+					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
+					@click="toggleCateMask">
 			<view class="cate-content" @click.stop.prevent="stopPrevent" @touchmove.stop.prevent="stopPrevent">
 				<scroll-view scroll-y class="cate-list">
 					<view v-for="item in cateList" :key="item.id">
-						<view class="cate-item b-b two">{{item.name}}</view>
+						<view class="cate-item one" @click.stop="changeCate(item.id)">{{item.title}}</view>
 						<view
-							v-for="tItem in item.child" :key="tItem.id"
-							class="cate-item b-b"
-							:class="{active: tItem.id==cateId}"
-							@click="changeCate(tItem)">
-							{{tItem.name}}
+							v-for="sItem in item.child" :key="sItem.id"
+							class="cate-item two"
+							:class="{active: sItem.id==cateId}"
+							@click.stop="changeCate(sItem.id)">
+								{{sItem.title}}
+							<view
+								v-for="tItem in sItem.child" :key="tItem.id"
+								class="cate-item three"
+								:class="{active: tItem.id==cateId}"
+								@click.stop="changeCate(tItem.id)">
+								{{tItem.title}}
+							</view>
 						</view>
 					</view>
 				</scroll-view>
 			</view>
 		</view>
-
 	</view>
 </template>
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
-	import {productList} from "../../api/product";
+	import empty from "@/components/empty";
+	import {productCate, productList} from "../../api/product";
 	export default {
 		components: {
-			uniLoadMore
+			uniLoadMore,
+			empty
 		},
 		data() {
 			return {
@@ -71,18 +81,14 @@
 				cateId: 0, //已选三级分类id
 				priceOrder: 0, //1 价格从低到高 2价格从高到低
 				cateList: [],
-				goodsList: []
+				goodsList: [],
+				keyword: null,
+				page: 1
 			};
 		},
-
 		onLoad(options){
-			// #ifdef H5
-			this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
-			// #endif
-			this.cateId = options.cate_id;
-			this.loadCateList(options.fid,options.sid);
 			// this.loadData();
-			this.initData();
+			this.initData(options);
 		},
 		onPageScroll(e){
 			//兼容iOS端下拉时顶部漂移
@@ -94,11 +100,14 @@
 		},
 		//下拉刷新
 		onPullDownRefresh(){
-			this.loadData('refresh');
+			this.page = 1;
+			this.goodsList = [];
+			this.getProductList('refresh');
 		},
 		//加载更多
 		onReachBottom(){
-			this.loadData();
+			this.page ++;
+			this.getProductList();
 		},
 		methods: {
 			/**
@@ -108,18 +117,38 @@
 			 *@date 2019/11/18 15:34:23
 			 *@param arguments
 			 */
-			initData () {
+			initData (options) {
+				this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
+				this.cateId = options.cate_id;
+				this.keyword = options.keyword;
+				this.getProductCate()
 				this.getProductList();
 			},
-			async getProductList () {
+			/**
+			 *@des 获取商品列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 14:26:16
+			 *@param type [refresh -> 刷新]
+			 */
+			async getProductList (type) {
+				const params = {}
+				if (this.keyword) {
+					params.keyword = this.keyword
+				} else if (this.cateId) {
+					params.cate_id = this.cateId
+				}
+				params.page = this.page;
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productList}`, {
-					// cate_id: 6
-					cate_id: this.cateId
-					// pid: this.cateId
+					...params
 				}).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
-						this.goodsList = r.data
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.goodsList = [ ...this.goodsList, ...r.data ];
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -127,15 +156,23 @@
 					console.log(err)
 				})
 			},
-			//加载分类
-			async loadCateList(fid, sid){
-				let list = await this.$api.json('cateList');
-				let cateList = list.filter(item=>item.pid == fid);
-				cateList.forEach(item=>{
-					let tempList = list.filter(val=>val.pid == item.id);
-					item.child = tempList;
+			/**
+			 *@des 获取商品分类
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 14:26:07
+			 */
+			async getProductCate () {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${productCate}`).then(r=>{
+					if (r.code === 200) {
+						this.cateList = r.data
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
 				})
-				this.cateList = cateList;
 			},
 			//加载商品 ，带下拉刷新和上滑加载
 			async loadData(type='add', loading) {
@@ -180,23 +217,26 @@
 			},
 			//筛选点击
 			tabClick(index){
-				if(this.filterIndex === index && index !== 2){
-					return;
-				}
-				this.filterIndex = index;
-				if(index === 2){
-					this.priceOrder = this.priceOrder === 1 ? 2: 1;
-				}else{
-					this.priceOrder = 0;
-				}
-				uni.pageScrollTo({
-					duration: 300,
-					scrollTop: 0
-				})
-				this.loadData('refresh', 1);
-				uni.showLoading({
-					title: '正在加载'
-				})
+				this.page = 1;
+				this.goodsList = [];
+				this.getProductList();
+				// if(this.filterIndex === index && index !== 2){
+				// 	return;
+				// }
+				// this.filterIndex = index;
+				// if(index === 2){
+				// 	this.priceOrder = this.priceOrder === 1 ? 2: 1;
+				// }else{
+				// 	this.priceOrder = 0;
+				// }
+				// uni.pageScrollTo({
+				// 	duration: 300,
+				// 	scrollTop: 0
+				// })
+				// this.loadData('refresh', 1);
+				// uni.showLoading({
+				// 	title: '正在加载'
+				// })
 			},
 			//显示分类面板
 			toggleCateMask(type){
@@ -208,17 +248,17 @@
 				}, timer)
 			},
 			//分类点击
-			changeCate(item){
-				this.cateId = item.id;
+			changeCate(id){
+				this.cateId = id;
+				this.keyword = undefined;
 				this.toggleCateMask();
 				uni.pageScrollTo({
 					duration: 300,
 					scrollTop: 0
 				})
-				this.loadData('refresh', 1);
-				uni.showLoading({
-					title: '正在加载'
-				})
+				this.page = 1;
+				this.goodsList = [];
+				this.getProductList('refresh');
 			},
 			//详情
 			navToDetailPage(item){
@@ -293,7 +333,7 @@
 				transform: scaleY(-1);
 			}
 		}
-		.cate-item{
+		.cate-item {
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -353,15 +393,24 @@
 			align-items: center;
 			height: 90upx;
 			padding-left: 30upx;
- 			font-size: 28upx;
+ 			font-size: 34upx;
 			color: #555;
 			position: relative;
+			color: $font-color-dark;
+		}
+		.one {
+			background: #eee;
 		}
 		.two{
-			height: 64upx;
-			color: #303133;
-			font-size: 30upx;
 			background: #f8f8f8;
+			color: $font-color-base;
+			height: 64upx;
+			font-size: 31upx;
+			margin-left: 20upx;
+		}
+		.three {
+			font-size: 28upx;
+			color: $font-color-base;
 		}
 		.active{
 			color: $base-color;
@@ -387,6 +436,7 @@
 			width: 100%;
 			height: 330upx;
 			border-radius: 3px;
+			margin-top: 15upx;
 			overflow: hidden;
 			image{
 				width: 100%;

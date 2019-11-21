@@ -49,7 +49,7 @@
 				<view class="input-item">
 					<text class="tit">生日</text>
 					<picker mode="date" :value="date" @change="bindDateChange">
-						<view class="uni-input">{{ profileInfo.birthday || date }}</view>
+						<view class="uni-input">{{ date }}</view>
 					</picker>
 				</view>
 				<view class="input-item">
@@ -81,9 +81,9 @@
 	const graceChecker = require("../../common/graceChecker.js");
 	export default {
 		data() {
-        const currentDate = this.getDate({
-            format: true
-        })
+			const currentDate = this.getDate({
+					format: true
+			})
 			return {
 				profileInfo: {},
 				genders: [
@@ -109,8 +109,8 @@
 			this.initData()
 		},
 		methods: {
-        bindDateChange: function(e) {
-            this.date = e.target.value
+        bindDateChange(e) {
+					this.date = e.target.value
         },
 			getDate(type) {
             const date = new Date();
@@ -147,6 +147,7 @@
 				await this.$get(memberInfo).then(r => {
 					if (r.code === 200) {
 						this.profileInfo = r.data
+						this.date = this.profileInfo.birthday;
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -246,6 +247,10 @@
 		height: 120upx;
 		border-radius: 4px;
 		margin-bottom: 50upx;
+			.uni-input {
+				font-size: $font-lg;
+				color: $font-color-dark;
+			}
 			&:last-child{
 				margin-bottom: 0;
 			}

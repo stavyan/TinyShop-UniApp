@@ -6,7 +6,7 @@
 					<view class="con">
 						<view class="left" @click="getCoupon(item.id)">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期{{ item.start_time | time }} - {{ item.end_time | time }}</text>
+							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>
 						<view class="right">
 							<text class="price">{{item.money}}</text>
@@ -17,8 +17,8 @@
 						<view class="circle r"></view>
 					</view>
 					<view class="tips">
-							<text>
-								{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}
+							<text v-show="item.range_type && item.max_fetch">
+								{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}
 							</text>
 						 	<text>
 								{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效
@@ -29,6 +29,10 @@
 					<!--暂无优惠券-->
 				<!--</view>-->
 			</view>
+		<view class="coupon-bottom-nav" v-show="parseInt(type, 10) === 1">
+			<text class="coupon-bottom-btn" @click="navTo('/pages/user/history-coupon')">优惠券历史记录<text class="yticon icon-you right" size="20"/></text>
+			<text class="coupon-bottom-btn" @click="navTo('/pages/user/coupon')">去领券中心<text class="yticon icon-you right" size="20"/></text>
+		</view>
 	</view>
 </template>
 
@@ -38,16 +42,16 @@
 		data() {
 			return {
 				couponList: [],
-				type: null
+				type: null,
+				token: null
 			}
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YY-MM-DD HH:mm')
+				return moment(val * 1000).format('YY/MM/DD HH:mm')
 			}
 		},
 		onLoad(options){
-			this.type = options.type;
 			this.initData(options.type);
 		},
 		methods: {
@@ -58,10 +62,36 @@
 			 *@date 2019/11/18 09:57:30
 			 */
 			initData (type) {
-				if (type) {
-					this.getMyCouponList();
+			this.type = type;
+			uni.setNavigationBarTitle({
+				title: parseInt(this.type, 10) === 1 ? '我的优惠券' : '领券中心'
+			})
+				this.token = uni.getStorageSync('accessToken') || undefined;
+				if (this.token) {
+					if (type) {
+						this.getMyCouponList();
+					} else {
+						this.getCouponList();
+					}
+				}
+			},
+			/**
+			 *@des 统一跳转接口
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/21 15:41:30
+			 *@param url 跳转地址
+			 */
+			navTo(url){
+				if(!this.token){
+					url = '/pages/public/login';
+				}
+				if (url === 'login') {
+					 return
 				} else {
-					this.getCouponList();
+					uni.navigateTo({
+						url
+					})
 				}
 			},
 			/**
@@ -215,5 +245,29 @@
 		text-align: center;
 		font-size: $font-color-base;
 		margin: 40upx 0;
+	}
+	.coupon-bottom-nav {
+		background: #fff;
+		height: 100upx;
+		line-height: 60upx;
+		position: fixed;
+		overflow: hidden;
+		bottom: 0;
+		padding: 30upx 0 10upx;
+		display: flex;
+		width: 100%;
+		.coupon-bottom-btn {
+			text-align: center;
+			color: $font-color-dark;
+			font-size: $font-lg - 2upx;
+			flex: 1;
+			.right {
+				font-size: $font-color-light;
+				margin-left: 8upx;
+			}
+		}
+		.coupon-bottom-btn:first-child {
+			border-right: 1px solid rgba(0, 0, 0, 0.12); // 边框
+		}
 	}
 </style>

@@ -102,9 +102,9 @@
 		onShow () {
 			this.initData();
 		},
-		onLoad(){
-			this.initData();
-		},
+		// onLoad(){
+		// 	this.initData();
+		// },
 		watch:{
 			//显示空白页
 			// cartList(e){

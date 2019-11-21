@@ -58,6 +58,16 @@
 			"style": {
 				"navigationBarTitleText": "修改资料"
 			}
+		},{
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": "商品搜索",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleNView": false,
+					"animationType": "slide-in-bottom"
+				}
+			}
 		}, {
 			"path": "pages/cart/cart",
 			"style": {
@@ -143,7 +153,14 @@
 		}, {
 			"path": "pages/user/coupon",
 			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "我的优惠券"
+			}
+		}, {
+			"path": "pages/user/history-coupon",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "优惠券历史记录"
 			}
 		}, {
 			"path": "pages/address/address",

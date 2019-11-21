@@ -7,10 +7,9 @@
 
 // 个人信息
 const memberInfo = "/addons/rf-tiny-shop/v1/member/member/index";
-// 我的订单
-const memberOrder = "/addons/rf-tiny-shop/v1/member/order/index";
 // 个人信息修改
 const memberUpdate = "/addons/rf-tiny-shop/v1/member/member/update";
+
 // 收货地址列表
 const addressList = "/addons/rf-tiny-shop/v1/member/address/index";
 // 默认收货地址
@@ -28,16 +27,22 @@ const addressDelete = "/addons/rf-tiny-shop/v1/member/address/delete";
 const couponList = "/addons/rf-tiny-shop/v1/marketing/coupon-type/index";
 // 获取我的优惠券列表
 const myCouponList = "/addons/rf-tiny-shop/v1/member/coupon/index";
-
 // 领取优惠券
 const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
 
-// 获取优惠券列表
+// 获取我的订单
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
+
+// 获取我的足迹
+const footPrintList = "/addons/rf-tiny-shop/v1/member/footprint/index";
+// 删除我的足迹
+const footPrintDel = "/addons/rf-tiny-shop/v1/member/footprint/delete";
+
+// 收藏列表
+const collectList = "/addons/rf-tiny-shop/v1/member/collect/index";
 
 export {
     memberInfo,
-    memberOrder,
     memberUpdate,
     addressList,
     addressCreate,
@@ -48,5 +53,8 @@ export {
     couponList,
     myCouponList,
     orderList,
-    couponReceive
+    couponReceive,
+    footPrintList,
+    footPrintDel,
+    collectList
 };
