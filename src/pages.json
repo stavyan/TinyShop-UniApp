@@ -151,6 +151,32 @@
 			"style": {
 				"navigationBarTitleText": "创建订单"
 			}
+		},{
+			"path": "pages/collection/collection",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "我的收藏",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+		},{
+			"path": "pages/footprint/footprint",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "我的足迹",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
 		}, {
 			"path": "pages/user/coupon",
 			"style": {
@@ -204,13 +230,20 @@
             "path" : "pages/product/list",
             "style" : {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "商品列表"
+				"navigationBarTitleText": "商品列表",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
 			}
         }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "RageFrame商城",
 		"navigationBarBackgroundColor": "#FFFFFF",
 		"backgroundColor": "#f8f8f8"
 	},

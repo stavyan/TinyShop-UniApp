@@ -10,8 +10,7 @@
 		</view>
 		<view class="row b-b">
 			<text class="tit">选择地址</text>
-			<view class="uni-list">
-				<view class="uni-list-cell">
+				<view>
 					<picker mode="multiSelector"
 									@columnchange="bindMultiPickerColumnChange"
 									:value="multiIndex"
@@ -20,7 +19,6 @@
 						<view class="input"> {{ addressData.address_name }}
 						</view>
 					</picker>
-				</view>
 			</view>
 		</view>
 		<view class="row b-b">

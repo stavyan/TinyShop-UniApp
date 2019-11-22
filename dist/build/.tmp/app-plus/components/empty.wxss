@@ -1,2 +1,0 @@
-.empty-content{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;position:fixed;left:0;top:0;right:0;bottom:0;background:#f8f8f8;padding-bottom:120rpx}.empty-content-image{width:200rpx;height:200rpx}
-

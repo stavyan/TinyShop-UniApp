@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "详情展示",
-  "titleNView": {
-    "type": "transparent"
-  },
-  "usingComponents": {
-    "share": "/components/share"
-  }
-}

@@ -5,13 +5,23 @@
 				综合排序
 			</view>
 			<view class="nav-item" :class="{current: filterIndex === 1}" @click="tabClick(1)">
-				销量优先
+				<text>销量</text>
+				<view class="p-box">
+					<text :class="{active: salesOrder === 1 && filterIndex === 1}" class="yticon icon-shang"></text>
+					<text :class="{active: salesOrder === 2 && filterIndex === 1}" class="yticon icon-shang xia"></text>
+				</view>
 			</view>
 			<view class="nav-item" :class="{current: filterIndex === 2}" @click="tabClick(2)">
+				浏览量
+			</view>
+			<view class="nav-item" :class="{current: filterIndex === 3}" @click="tabClick(3)">
+				收藏
+			</view>
+			<view class="nav-item" :class="{current: filterIndex === 4}" @click="tabClick(4)">
 				<text>价格</text>
 				<view class="p-box">
-					<text :class="{active: priceOrder === 1 && filterIndex === 2}" class="yticon icon-shang"></text>
-					<text :class="{active: priceOrder === 2 && filterIndex === 2}" class="yticon icon-shang xia"></text>
+					<text :class="{active: priceOrder === 1 && filterIndex === 4}" class="yticon icon-shang"></text>
+					<text :class="{active: priceOrder === 2 && filterIndex === 4}" class="yticon icon-shang xia"></text>
 				</view>
 			</view>
 			<text class="cate-item yticon icon-fenlei1" @click="toggleCateMask('show')"></text>
@@ -27,13 +37,15 @@
 				</view>
 				<text class="title clamp">{{item.name}}</text>
 				<view class="price-box">
-					<text class="price">{{item.minPriceSku.price}}</text>
-					<text>已售 {{item.sales}}</text>
+					<text class="price">{{item.minPriceSku.price}}
+						<text class="m-price" v-if="item.minPriceSku.market_price > item.minPriceSku.price">¥ {{ item.minPriceSku.market_price }}</text>
+					</text>
+					<text>已售{{item.sales}}</text>
 				</view>
 			</view>
 		</view>
 		<uni-load-more :status="loadingType"></uni-load-more>
-		<empty v-if="goodsList.length === 0"></empty>
+		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
 					@click="toggleCateMask">
@@ -80,10 +92,12 @@
 				filterIndex: 0,
 				cateId: 0, //已选三级分类id
 				priceOrder: 0, //1 价格从低到高 2价格从高到低
+				salesOrder: 0, //1 价格从低到高 2价格从高到低
 				cateList: [],
 				goodsList: [],
 				keyword: null,
-				page: 1
+				page: 1,
+				filterParams: {}
 			};
 		},
 		onLoad(options){
@@ -100,6 +114,7 @@
 		},
 		//下拉刷新
 		onPullDownRefresh(){
+			this.filterParams = {}
 			this.page = 1;
 			this.goodsList = [];
 			this.getProductList('refresh');
@@ -118,7 +133,9 @@
 			 *@param arguments
 			 */
 			initData (options) {
-				this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
+				if (navigator) {
+					this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
+				}
 				this.cateId = options.cate_id;
 				this.keyword = options.keyword;
 				this.getProductCate()
@@ -141,7 +158,8 @@
 				params.page = this.page;
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productList}`, {
-					...params
+					...params,
+					...this.filterParams
 				}).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
@@ -217,26 +235,41 @@
 			},
 			//筛选点击
 			tabClick(index){
+				this.filterParams = {}
+				if(this.filterIndex === index && index !== 4 && index !== 1){
+					return;
+				}
+				this.filterIndex = index;
+				if (index === 0) {
+					this.filterParams = {}
+				} else if (index === 1) {
+					if(this.salesOrder === 1) {
+						this.filterParams.sales = 'desc'
+						this.salesOrder = 2;
+					} else {
+						this.filterParams.sales = 'asc'
+						this.salesOrder = 1;
+					}
+				}  else if (index === 2) {
+					this.filterParams.view = 'desc';
+				}  else if (index === 3) {
+					this.filterParams.collect = 'desc';
+				} else if(index === 4) {
+					if(this.priceOrder === 1) {
+						this.filterParams.price = 'desc'
+						this.priceOrder = 2;
+					} else {
+						this.filterParams.price = 'asc'
+						this.priceOrder = 1;
+					}
+				}
+				uni.pageScrollTo({
+					duration: 300,
+					scrollTop: 0
+				})
 				this.page = 1;
 				this.goodsList = [];
 				this.getProductList();
-				// if(this.filterIndex === index && index !== 2){
-				// 	return;
-				// }
-				// this.filterIndex = index;
-				// if(index === 2){
-				// 	this.priceOrder = this.priceOrder === 1 ? 2: 1;
-				// }else{
-				// 	this.priceOrder = 0;
-				// }
-				// uni.pageScrollTo({
-				// 	duration: 300,
-				// 	scrollTop: 0
-				// })
-				// this.loadData('refresh', 1);
-				// uni.showLoading({
-				// 	title: '正在加载'
-				// })
 			},
 			//显示分类面板
 			toggleCateMask(type){
@@ -258,6 +291,7 @@
 				})
 				this.page = 1;
 				this.goodsList = [];
+				this.filterParams = {}
 				this.getProductList('refresh');
 			},
 			//详情
@@ -394,7 +428,6 @@
 			height: 90upx;
 			padding-left: 30upx;
  			font-size: 34upx;
-			color: #555;
 			position: relative;
 			color: $font-color-dark;
 		}
@@ -406,7 +439,7 @@
 			color: $font-color-base;
 			height: 64upx;
 			font-size: 31upx;
-			margin-left: 20upx;
+			padding-left: 50upx;
 		}
 		.three {
 			font-size: 28upx;
@@ -458,12 +491,18 @@
 			color: $font-color-light;
 		}
 		.price{
-			font-size: $font-lg;
+			font-size: $font-base;
 			color: $uni-color-primary;
 			line-height: 1;
 			&:before{
 				content: '￥';
 				font-size: 26upx;
+			}
+			.m-price{
+				margin-left: 8upx;
+				color: $font-color-light;
+				font-size: $font-base - 4upx;
+				text-decoration: line-through;
 			}
 		}
 	}

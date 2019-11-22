@@ -23,6 +23,10 @@
 		},
 		onShow: function() {
 			console.log('App Show')
+			// uni.setTabBarBadge({
+			// 	index: 2,
+			// 	text: '1'
+			// })
 		},
 		onHide: function() {
 			console.log('App Hide')
@@ -31,6 +35,7 @@
 </script>
 
 <style lang='scss'>
+  @import "@/common/css/uni";
 	/*
 		全局公共样式和字体图标
 	*/

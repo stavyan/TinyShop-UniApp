@@ -98,12 +98,12 @@
 			this.initData();
 		},
 		onPageScroll(e){
-			//兼容iOS端下拉时顶部漂移
-			if(e.scrollTop>=0){
-				this.headerPosition = "fixed";
-			}else{
-				this.headerPosition = "absolute";
-			}
+			// //兼容iOS端下拉时顶部漂移
+			// if(e.scrollTop>=0){
+			// 	this.headerPosition = "fixed";
+			// }else{
+			// 	this.headerPosition = "absolute";
+			// }
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -137,6 +137,7 @@
 			 *@param index tab序号
 			 */
 			tabClick(index){
+				this.couponList = [];
 				this.tabCurrentIndex = index;
 				this.state = this.navList[this.tabCurrentIndex].state;
 				this.getMyCouponList();

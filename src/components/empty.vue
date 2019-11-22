@@ -1,6 +1,7 @@
 <template>
 	<view class="empty-content">
 		<image class="empty-content-image" :src="setSrc" mode="aspectFit"></image>
+		<text class="empty-content-info">{{info}}</text>
 	</view>
 </template>
 
@@ -10,6 +11,10 @@
 			src: {
 				type: String,
 				default: 'empty'
+			},
+			info: {
+				type: String,
+				default: ''
 			},
 		},
 
@@ -35,7 +40,6 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
-		
 		position: fixed;
 		left: 0;
 		top: 0;
@@ -43,6 +47,11 @@
 		bottom: 0;
 		background: $page-color-base;
 		padding-bottom: 120upx;
+		.empty-content-info {
+			color: $font-color-base;
+			font-size: $font-base - 2upx;
+			margin-top: 20upx;
+		}
 
 		&-image {
 			width: 200upx;
