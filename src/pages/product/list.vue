@@ -425,9 +425,9 @@
 		.cate-item{
 			display: flex;
 			align-items: center;
-			height: 90upx;
+			height: 70upx;
 			padding-left: 30upx;
- 			font-size: 34upx;
+ 			font-size: 30upx;
 			position: relative;
 			color: $font-color-dark;
 		}
@@ -437,12 +437,12 @@
 		.two{
 			background: #f8f8f8;
 			color: $font-color-base;
-			height: 64upx;
-			font-size: 31upx;
+			height: 60upx;
+			font-size: 28upx;
 			padding-left: 50upx;
 		}
 		.three {
-			font-size: 28upx;
+			font-size: 26upx;
 			color: $font-color-base;
 		}
 		.active{
