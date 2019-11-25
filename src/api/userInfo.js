@@ -41,6 +41,9 @@ const footPrintDel = "/addons/rf-tiny-shop/v1/member/footprint/delete";
 // 收藏列表
 const collectList = "/addons/rf-tiny-shop/v1/member/collect/index";
 
+// 积分余额日志
+const creditsLogList = "/addons/rf-tiny-shop/v1/member/credits-log/index";
+
 export {
     memberInfo,
     memberUpdate,
@@ -56,5 +59,6 @@ export {
     couponReceive,
     footPrintList,
     footPrintDel,
-    collectList
+    collectList,
+    creditsLogList
 };

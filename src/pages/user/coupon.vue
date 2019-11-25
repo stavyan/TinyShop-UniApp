@@ -25,9 +25,8 @@
 							</text>
 					</view>
 				</view>
-				<!--<view class="coupon-none" v-show="couponList.length === 0">-->
-					<!--暂无优惠券-->
-				<!--</view>-->
+				<uni-load-more :status="loadingType"></uni-load-more>
+				<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 			</view>
 		<view class="coupon-bottom-nav" v-show="parseInt(type, 10) === 1">
 			<text class="coupon-bottom-btn" @click="navTo('/pages/user/history-coupon')">优惠券历史记录<text class="yticon icon-you right" size="20"/></text>
@@ -38,11 +37,18 @@
 
 <script>
 	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import empty from "@/components/empty";
 	export default {
+		components: {
+			uniLoadMore,
+			empty
+		},
 		data() {
 			return {
 				couponList: [],
 				type: null,
+				loadingType: 'more',
 				token: null
 			}
 		},
@@ -52,7 +58,23 @@
 			}
 		},
 		onLoad(options){
-			this.initData(options.type);
+			this.type = options.type;
+			this.initData();
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.page = 1;
+			this.couponList = [];
+			if (this.type) {
+				this.getMyCouponList('refresh');
+			} else {
+				this.getCouponList('refresh');
+			}
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getMyCouponList();
 		},
 		methods: {
 			/**
@@ -61,14 +83,13 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/18 09:57:30
 			 */
-			initData (type) {
-			this.type = type;
-			uni.setNavigationBarTitle({
-				title: parseInt(this.type, 10) === 1 ? '我的优惠券' : '领券中心'
-			})
+			initData () {
+				uni.setNavigationBarTitle({
+					title: parseInt(this.type, 10) === 1 ? '我的优惠券' : '领券中心'
+				});
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
-					if (type) {
+					if (this.type) {
 						this.getMyCouponList();
 					} else {
 						this.getCouponList();
@@ -100,16 +121,20 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/18 09:58:15
 			 */
-			async getCouponList () {
+			async getCouponList (type) {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${couponList}`).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
-						this.couponList = r.data
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.couponList = [ ...this.couponList, ...r.data ]
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
 				}).catch(err => {
-					console.log(err)
+					console.log(err);
 				})
 			},
 			/**
@@ -118,11 +143,16 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/20 18:16:58
 			 */
-			async getMyCouponList () {
+			async getMyCouponList (type) {
+				console.log('my')
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${myCouponList}`).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
-						this.couponList = r.data
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.couponList = [ ...this.couponList, ...r.data ]
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -130,9 +160,15 @@
 					console.log(err)
 				})
 			},
+			/**
+			 *@des 获取优惠券
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/25 13:41:19
+			 */
 			async getCoupon(id) {
 				if (this.type) return;
-				uni.showLoading({title: '正在领取优惠券...'});
+				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
 					id
 				}).then(r => {

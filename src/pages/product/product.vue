@@ -13,35 +13,37 @@
 				</swiper-item>
 			</swiper>
 		</view>
-
 		<view class="introduce-section">
 			<text class="title">{{ productDetail.name }}</text>
 			<view class="price-box">
 				<text class="price-tip">¥</text>
 				<text class="price">{{ productDetail.minSkuPrice }}</text>
-				<!--<text class="m-price">¥488</text>-->
+				<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
 				<!--<text class="coupon-tip">7折</text>-->
 			</view>
 			<view class="bot-row">
 				<text>销量: {{ productDetail.sales }}</text>
 				<text>收藏量: {{ productDetail.collect_num }}</text>
 				<text>浏览量: {{ productDetail.view }}</text>
+			</view>
+			<view class="bot-row">
+				<text>评分: {{ productDetail.star }}</text>
 				<text>评论量: {{ productDetail.comment_num }}</text>
+				<text>分享量: {{ productDetail.transmit_num }}</text>
 			</view>
 		</view>
-
 		<!--  分享 -->
-		<view class="share-section" @click="share">
+		<view class="share-section">
 			<view class="share-icon">
 				<text class="yticon icon-xingxing"></text>
 				 返
 			</view>
-			<text class="tit">该商品分享可领49减10红包</text>
+			<button open-type="contact" class="tit">该商品分享可领49减10红包</button>
 			<text class="yticon icon-bangzhu1"></text>
-			<view class="share-btn">
+			<button class="share-btn" open-type="share">
 				立即分享
 				<text class="yticon icon-you"></text>
-			</view>
+			</button>
 
 		</view>
 
@@ -55,18 +57,25 @@
 				</view>
 				<text class="yticon icon-you"></text>
 			</view>
+			<!--<view class="c-row b-b">-->
+				<!--<text class="tit">优惠券</text>-->
+				<!--<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>-->
+				<!--<text class="yticon icon-you"></text>-->
+			<!--</view>-->
 			<view class="c-row b-b">
-				<text class="tit">优惠券</text>
-				<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
-				<text class="yticon icon-you"></text>
+				<text class="tit">限购说明</text>
+				<view class="con-list">
+					<text v-show="productDetail.point_exchange_type">{{ productDetail.max_buy | maxBuyFilter }}</text>
+				</view>
 			</view>
 			<view class="c-row b-b">
-				<text class="tit">促销活动</text>
+				<text class="tit">积分活动</text>
 				<view class="con-list">
-					<text>新人首单送20元无门槛代金券</text>
-					<text>订单满50减10</text>
-					<text>订单满100减30</text>
-					<text>单笔购买满两件免邮费</text>
+					<text v-show="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
+					<text>积分赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
+					<text>赠送积分: {{ productDetail | givePointFilter }} </text>
+					<text>兑换所需积分: {{ productDetail.point_exchange }} </text>
+					<text>最大可使用积分: {{ productDetail.max_use_point }} </text>
 				</view>
 			</view>
 			<view class="c-row b-b">
@@ -219,6 +228,24 @@
 			share,
 			uniNumberBox
 		},
+		filters: {
+			maxBuyFilter(val) {
+				return parseInt(val, 10) === 0 ? '不限购' : `最大购买量：${val}`;
+			},
+			pointExchangeTypeFilter(val) {
+				const type = ['', '非积分兑换', '积分加现金', '积分兑换或直接购买', '只支持积分兑换'];
+				return type[parseInt(val, 10)];
+			},
+			integralGiveTypeFilter(val) {
+				const type = ['固定积分', '百分比'];
+				return type[parseInt(val, 10)];
+			},
+			givePointFilter(val) {
+				return parseInt(val.integral_give_type, 10) === 1 ?
+						`至少获得 ${Math.round(parseInt(val.give_point, 10) * parseInt(val.minSkuPrice, 10))}` :
+						parseInt(val.integral_give_type, 10);
+			}
+		},
 		data() {
 			return {
 				cartType: null,
@@ -281,9 +308,16 @@
 					}
 				}
 			})
-			this.product_id = options.id
+			this.product_id = options.id;
 			this.shareList = await this.$api.json('shareList');
 			this.initData(options.id);
+		},
+		onShareAppMessage(res) {
+			console.log(res)
+			return {
+				title: this.productDetail.name,
+				path: `/pages/product/product?id=${this.productDetail.id}`
+			}
 		},
 		methods:{
 			numberChange(data){
@@ -427,8 +461,16 @@
 				})
 			},
 			//分享
-			share(){
-				this.$refs.share.toggleMask();
+			share(res){
+				console.log(res.from);
+				// this.$refs.share.toggleMask();
+					if (res.from === 'button') {// 来自页面内分享按钮
+						console.log(res.target)
+					}
+					return {
+						title: '自定义分享标题',
+						path: '/pages/test/test?id=123'
+					}
 			},
 			/**
 			 *@des 收藏
@@ -685,6 +727,11 @@
 			font-size: $font-sm;
 			margin-left: 4upx;
 			color: $uni-color-primary;
+		}
+		button {
+			background: none;
+			position: static;
+			border: none;
 		}
 	}
 

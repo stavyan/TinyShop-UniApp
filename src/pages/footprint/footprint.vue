@@ -92,6 +92,7 @@ export default {
 	},
 	methods:{
 		async handleDateChange(e) {
+			this.page = 1;
 			this.footPrintList = [];
 			this.startTime = await moment(`${e.year}-${e.month}-${e.date} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
 			this.endTime = await moment(`${e.year}-${e.month}-${e.date + 1} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;

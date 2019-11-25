@@ -60,6 +60,8 @@
 		<view class="register-section">
 			还没有账号?
 			<text @click="toRegister">马上注册</text>
+			或者
+			<text @click="toRegister">返回主页</text>
 		</view>
 	</view>
 </template>
@@ -403,6 +405,9 @@
 		text{
 			color: $font-color-spec;
 			margin-left: 10upx;
+		}
+		text:first-child {
+			margin-right: 10upx;
 		}
 	}
 </style>

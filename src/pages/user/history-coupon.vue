@@ -18,7 +18,7 @@
 					@scrolltolower="loadData"
 				>
 					<!-- 空白页 -->
-					<empty v-if="couponList.length === 0"></empty>
+					<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 					<!-- 订单列表 -->
 						<!-- 优惠券页面，仿mt -->
 						<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
@@ -55,15 +55,13 @@
 </template>
 
 <script>
-	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
+	import {myCouponList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
-	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
 	export default {
 		components: {
 			uniLoadMore,
-			empty,
-			uniCountDown
+			empty
 		},
 		data() {
 			return {
@@ -127,6 +125,8 @@
 			changeTab(e){
 				this.tabCurrentIndex = e.target.current;
 				this.state = this.navList[this.tabCurrentIndex].state;
+				this.page = 1;
+				this.couponList = [];
 				this.getMyCouponList();
 			},
 			/**
@@ -137,10 +137,10 @@
 			 *@param index tab序号
 			 */
 			tabClick(index){
-				this.couponList = [];
 				this.tabCurrentIndex = index;
 				this.state = this.navList[this.tabCurrentIndex].state;
-				this.getMyCouponList();
+				this.page = 1;
+				this.couponList = [];
 			},
 			/**
 			 *@des 初始化数据
@@ -165,13 +165,9 @@
 				if(!this.token){
 					url = '/pages/public/login';
 				}
-				if (url === 'login') {
-					 return
-				} else {
-					uni.navigateTo({
-						url
-					})
-				}
+				uni.navigateTo({
+					url
+				})
 			},
 			/**
 			 *@des 获取我的收货地址列表

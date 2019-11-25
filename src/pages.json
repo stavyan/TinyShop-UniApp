@@ -76,7 +76,7 @@
 		}, {
 			"path": "pages/public/login",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom",
 				"app-plus": {
 					"titleNView": false,
@@ -86,7 +86,7 @@
 		}, {
 			"path": "pages/public/register",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "注册",
 				"navigationStyle": "custom",
 				"app-plus": {
 					"titleNView": false,
@@ -140,8 +140,13 @@
 				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "我的订单",
 				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    },
 					"bounce": "none"
-				}
+                }
 			}
 		}, {
 			"path": "pages/money/money",
@@ -156,6 +161,19 @@
 			"style": {
 				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "我的收藏",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+		},{
+			"path": "pages/integral/integral",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "积分记录",
 				"app-plus": {
                     "pullToRefresh": {
                         "support": true,
@@ -181,13 +199,27 @@
 			"path": "pages/user/coupon",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "我的优惠券"
+				"navigationBarTitleText": "我的优惠券",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
 			}
 		}, {
 			"path": "pages/user/history-coupon",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "优惠券历史记录"
+				"navigationBarTitleText": "优惠券历史记录",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
 			}
 		}, {
 			"path": "pages/address/address",

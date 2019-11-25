@@ -8,7 +8,7 @@
 					</view>
 					<view class="info-box">
 						<text class="username">
-							{{ userInfo && (userInfo.nickname || userInfo.realname) ||'游客'}}
+							{{ userInfo && (userInfo.nickname || userInfo.realname) ||'请先登录'}}
 						</text>
 					</view>
 				</view>
@@ -37,20 +37,20 @@
 			>
 				<image class="arc" src="/static/arc.png"></image>
 
-				<view class="tj-sction" v-if="token">
-					<view class="tj-item">
+				<view class="tj-sction">
+					<view class="tj-item" @click="navTo('/pages/integral/integral?type=1')">
 						<text class="num">
-							{{ userInfo && userInfo.account && userInfo.account.user_money || 0 }}
+							{{ userInfo && userInfo.account && userInfo.account.user_money || '??' }}
 						</text>
 						<text>余额</text>
 					</view>
 					<view class="tj-item" @click="navTo('/pages/user/coupon?type=1')">
-						<text class="num">{{ userInfo && userInfo.coupon_num || 0 }}</text>
+						<text class="num">{{ userInfo && userInfo.coupon_num || '??' }}</text>
 						<text>优惠券</text>
 					</view>
-					<view class="tj-item">
+					<view class="tj-item" @click="navTo('/pages/integral/integral')">
 						<text class="num">
-							{{ userInfo && userInfo.account && userInfo.account.user_integral || 0 }}
+							{{ userInfo && userInfo.account && userInfo.account.user_integral || '??' }}
 						</text>
 						<text>积分</text>
 					</view>
@@ -96,20 +96,27 @@
 					<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="navTo('/pages/user/coupon')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 					<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')"></list-cell>
 					<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏"></list-cell>
-					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="navTo()" tips="邀请好友赢10万大礼"></list-cell>
+					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="share" tips="邀请好友赢10万大礼"></list-cell>
 					<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>
 					<list-cell icon="icon-shezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 				</view>
 			</view>
+			<share
+				ref="share"
+				:contentHeight="580"
+				:shareList="shareList"
+			></share>
 		</view>
 </template>
 <script>
 	import listCell from '@/components/mix-list-cell';
-	import {footPrintList} from "../../api/userInfo";
+  import {footPrintList, memberInfo} from "../../api/userInfo";
+	import share from '@/components/share';
 	let startY = 0, moveY = 0, pageAtTop = true;
     export default {
 		components: {
-			listCell
+			listCell,
+			share
 		},
 		data(){
 			return {
@@ -118,7 +125,29 @@
 				moving: false,
 				userInfo: {},
 				token: null,
-				footList: []
+				footList: [],
+				shareList: [
+					{
+						type: 1,
+						icon: '/static/temp/share_wechat.png',
+						text: '微信好友'
+					},
+					{
+						type: 2,
+						icon: '/static/temp/share_moment.png',
+						text: '朋友圈'
+					},
+					{
+						type: 3,
+						icon: '/static/temp/share_qq.png',
+						text: 'QQ好友'
+					},
+					{
+						type: 4,
+						icon: '/static/temp/share_qqzone.png',
+						text: 'QQ空间'
+					}
+				]
 			}
 		},
 		// async onLoad(){
@@ -151,18 +180,44 @@
 		// #endif
 		methods: {
 			/**
+			 *@des 分享
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/25 15:53:35
+			 */
+			share(){
+				this.$refs.share.toggleMask();
+			},
+			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/11/21 09:34:58
-			 */
-			initData () {
+			 */ async initData() {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				this.token = uni.getStorageSync('accessToken') || undefined;
+				this.shareList = await this.$api.json('shareList');
 				if (this.token) {
-					this.getFootPrintList();
+					await this.getFootPrintList();
+					await this.getMemberInfo();
 				}
 			},
+      async getMemberInfo() {
+         this.$get(memberInfo).then(r => {
+            if (r.code === 200) {
+                uni.removeStorage({
+                    key: 'userInfo'
+                })
+                uni.setStorage({
+                    key: 'userInfo',
+                    data: r.data
+                })
+                this.userInfo = r.data || undefined;
+            } else {
+                uni.showToast({title: r.message, icon: "none"});
+            }
+        })
+      },
 			/**
 			 *@des 获取足迹列表
 			 *@author stav stavyan@qq.com
@@ -187,17 +242,25 @@
 			navTo(url){
 				if(!this.token){
 					url = '/pages/public/login';
-				}
+          uni.showModal({
+            content: '你暂未登陆，是否跳转登录页面？',
+            success: (confirmRes)=> {
+              if (confirmRes.confirm) {
+                uni.navigateTo({
+                  url
+                })
+              }
+            }
+          });
+				} else {
+          uni.navigateTo({
+            url
+          })
+        }
 				if (!url) {
 					uni.showToast({title: '我还没写', icon: "none"});
 				}
-				if (url === 'login') {
-					 return
-				} else {
-					uni.navigateTo({
-						url
-					})
-				}
+
 			},
 			/**
 			 *  会员卡下拉和回弹
@@ -240,6 +303,66 @@
 	}
 </script>
 <style lang='scss' scoped>
+	/* 分享 */
+	.share-section{
+		display:flex;
+		align-items:center;
+		color: $font-color-base;
+		background: linear-gradient(left, #fdf5f6, #fbebf6);
+		padding: 12upx 30upx;
+		.share-icon{
+			display:flex;
+			align-items:center;
+			width: 70upx;
+			height: 30upx;
+			line-height: 1;
+			border: 1px solid $uni-color-primary;
+			border-radius: 4upx;
+			position:relative;
+			overflow: hidden;
+			font-size: 22upx;
+			color: $uni-color-primary;
+			&:after{
+				content: '';
+				width: 50upx;
+				height: 50upx;
+				border-radius: 50%;
+				left: -20upx;
+				top: -12upx;
+				position:absolute;
+				background: $uni-color-primary;
+			}
+		}
+		.icon-xingxing{
+			position:relative;
+			z-index: 1;
+			font-size: 24upx;
+			margin-left: 2upx;
+			margin-right: 10upx;
+			color: #fff;
+			line-height: 1;
+		}
+		.tit{
+			font-size: $font-base;
+			margin-left:10upx;
+		}
+		.icon-bangzhu1{
+			padding: 10upx;
+			font-size: 30upx;
+			line-height: 1;
+		}
+		.share-btn{
+			flex: 1;
+			text-align:right;
+			font-size: $font-sm;
+			color: $uni-color-primary;
+		}
+		.icon-you{
+			font-size: $font-sm;
+			margin-left: 4upx;
+			color: $uni-color-primary;
+		}
+	}
 	%flex-center {
 	 display:flex;
 	 flex-direction: column;
