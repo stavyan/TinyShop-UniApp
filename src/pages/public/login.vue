@@ -61,7 +61,7 @@
 			还没有账号?
 			<text @click="toRegister">马上注册</text>
 			或者
-			<text @click="toRegister">返回主页</text>
+			<text @click="toHome">返回主页</text>
 		</view>
 	</view>
 </template>
@@ -162,6 +162,11 @@
 			toRegister(){
 				uni.navigateTo({
 					url: '/pages/public/register'
+				})
+			},
+			toRegister(){
+				uni.navigateTo({
+					url: '/pages/index/index'
 				})
 			},
 			async toLogin(e){

@@ -38,13 +38,12 @@
 				<text class="yticon icon-xingxing"></text>
 				 返
 			</view>
-			<button open-type="contact" class="tit">该商品分享可领49减10红包</button>
+			<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
 			<text class="yticon icon-bangzhu1"></text>
 			<button class="share-btn" open-type="share">
 				立即分享
 				<text class="yticon icon-you"></text>
 			</button>
-
 		</view>
 
 		<view class="c-list">
@@ -54,6 +53,10 @@
 					<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
 						{{sItem.title}}
 					</text>
+          <text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
+          <text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
+            {{ productDetail.name }} * 1
+          </text>
 				</view>
 				<text class="yticon icon-you"></text>
 			</view>
@@ -81,8 +84,8 @@
 			<view class="c-row b-b">
 				<text class="tit">服务</text>
 				<view class="bz-list con">
-					<text>7天无理由退换货 ·</text>
-					<text>假一赔十 ·</text>
+					<text>7天无理由退换货 </text>
+					<text>假一赔十 </text>
 				</view>
 			</view>
 		</view>
@@ -136,7 +139,6 @@
 			</view>
 		</view>
 
-
 		<!-- 规格-模态层弹窗 -->
 		<view
 			class="popup spec"
@@ -158,6 +160,9 @@
 							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
 								{{sItem.title}}
 							</text>
+              <text v-show="specSelected.length > 0">
+                 * {{ cartCount }}
+              </text>
 						</view>
 					</view>
 				</view>
@@ -221,8 +226,8 @@
 <script>
 	import share from '@/components/share';
 	import {cartItemCreate, productDetail} from "../../api/product";
-	import uniNumberBox from '@/components/uni-number-box.vue'
-	import {collectCreate, collectDel} from "../../api/basic";
+	import uniNumberBox from '@/components/uni-number-box.vue';
+  import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
 	export default{
 		components: {
 			share,
@@ -296,6 +301,7 @@
 			};
 		},
 		async onLoad(options){
+			this.initData(options.id);
 			//接收传值,id里面放的是标题，因为测试数据并没写id
 			// let id = options.id;
 			//规格 默认选中第一条
@@ -310,14 +316,23 @@
 			})
 			this.product_id = options.id;
 			this.shareList = await this.$api.json('shareList');
-			this.initData(options.id);
 		},
 		onShareAppMessage(res) {
-			console.log(res)
-			return {
-				title: this.productDetail.name,
-				path: `/pages/product/product?id=${this.productDetail.id}`
-			}
+      this.$post(`${transmitCreate}`, {
+        topic_type: 'product',
+        topic_id: this.productDetail.id,
+      }).then(r=>{
+        if (r.code === 200) {
+          return {
+            title: this.productDetail.name,
+            path: `/pages/product/product?id=${this.productDetail.id}`
+          }
+        } else {
+          uni.showToast({ title: r.message, icon: "none" });
+        }
+      }).catch(err => {
+        console.log(err)
+      })
 		},
 		methods:{
 			numberChange(data){
@@ -338,8 +353,8 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/18 15:48:21
 			 */
-			initData(id) {
-				this.getProductDetail(id);
+			async initData(id) {
+				await this.getProductDetail(id);
 			},
 			/**
 			 *@des 获取产品详情
@@ -359,6 +374,16 @@
 						this.specList.forEach(item => {
 							this.specChildList = [ ...this.specChildList, ...item.value ]
 						})
+            let list = this.productDetail.base_attribute_format;
+            /**
+             * 修复选择规格存储错误
+             * 将这几行代码替换即可
+             * 选择的规格存放在specSelected中
+             */
+            this.specSelected = [];
+            r.data.base_attribute_format.forEach(item=>{
+              this.specSelected.push(item.value[0]);
+            })
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -369,6 +394,10 @@
 			//规格弹窗开关
 			toggleSpec() {
 				if(this.specClass === 'show'){
+          if (this.specSelected.length < this.productDetail.base_attribute_format.length){
+            uni.showToast({ title: "请先选择规格", icon: "none" });
+            return;
+          }
 					if (this.cartType) {
 						this.cartType = null;
 						this.handleCartItemCreate();
@@ -389,7 +418,7 @@
 			 */
 			async handleCartItemCreate () {
 				let sku_id;
-				let skuStr;
+				let skuStr = null;
 				if (this.productDetail.sku.length === 1) {
 					sku_id = this.productDetail.sku[0].id
 				} else {
@@ -532,15 +561,15 @@
 				let skuStr;
 				let sku_str;
 				if (this.productDetail.sku.length === 1) {
-					sku_id = this.productDetail.sku[0].id
+					sku_id = this.productDetail.sku[0].id;
 				} else {
 					if (this.productDetail.base_attribute_format.length === 1) {
 						if (this.specSelected.length < 1) {
 							uni.showToast({title: "请先选择规格", icon: "none"});
 							return;
 						} else {
-							skuStr = `${this.specSelected[0].base_spec_value_id}`
-							sku_str = `${this.specSelected[0].title}`
+							skuStr = `${this.specSelected[0].base_spec_value_id}`;
+							sku_str = `${this.specSelected[0].title}`;
 						}
 					} else if (this.productDetail.base_attribute_format.length === 2) {
 						if (this.specSelected.length < 2) {
@@ -566,16 +595,21 @@
 						}
 					})
 				}
-				const data = {}
-				data.sku_id = sku_id
-				data.num = this.cartCount
-				data.num = this.cartCount
+				const list = [];
+        const productItem = {};
+				const data = {};
+				data.sku_id = sku_id;
+				data.num = this.cartCount;
+				productItem.data = data;
+				productItem.name = this.productDetail.name;
+				productItem.picture = this.productDetail.picture;
+				productItem.price = this.productDetail.minSkuPrice;
+				if (sku_str) {
+				  productItem.skuStr = sku_str;
+        }
+				list.push(productItem)
 				uni.navigateTo({
-					url: `/pages/order/createOrder?data=${JSON.stringify(data)}
-					&skuStr=${sku_str}
-					&name=${this.productDetail.name}
-					&picture=${this.productDetail.picture}
-					&price=${this.productDetail.minSkuPrice}`
+					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`
 				})
 			},
 			addCart(){
@@ -722,16 +756,15 @@
 			text-align:right;
 			font-size: $font-sm;
 			color: $uni-color-primary;
+			background: none;
 		}
+    .share-btn:after {
+      border: none;
+    }
 		.icon-you{
 			font-size: $font-sm;
 			margin-left: 4upx;
 			color: $uni-color-primary;
-		}
-		button {
-			background: none;
-			position: static;
-			border: none;
 		}
 	}
 
@@ -985,7 +1018,6 @@
 			z-index: 99;
 			bottom: 0;
 			width: 100%;
-			min-height: 40vh;
 			border-radius: 10upx 10upx 0 0;
 			background-color: #fff;
 			.btn{

@@ -24,14 +24,14 @@
 				<text class="name">商品列表</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item">
-				<image :src="options.picture"></image>
+			<view class="g-item" v-for="item in productList">
+				<image :src="item.picture" mode="aspectFill"></image>
 				<view class="right">
-					<text class="title clamp">{{ options.name }}</text>
-					<text class="spec">{{ options.skuStr }}</text>
+					<text class="title clamp">{{ item.name }}</text>
+					<text class="spec">{{ item.skuStr || '基本款' }}</text>
 					<view class="price-box">
-						<text class="price">￥ {{options.price}}</text>
-						<text class="number">x {{ JSON.parse(options.data).num }}</text>
+						<text class="price">￥ {{item.price}}</text>
+						<text class="number"> * {{ item.data.num }}</text>
 					</view>
 				</view>
 			</view>
@@ -45,26 +45,33 @@
 				</view>
 				<text class="cell-tit clamp">优惠券</text>
 				<text class="cell-tip active">
-					选择优惠券
+					{{ couponItem.title || '选择优惠券' }}
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" @click="toggleMask('show')">
+			<view class="yt-list-cell b-b" @click="showSinglePicker">
 				<view class="cell-icon">
 					寄
 				</view>
 				<text class="cell-tit clamp">配送方式</text>
 				<text class="cell-tip active">
-					选择配送方式
+					{{ currentShippingType.label || '选择配送方式' }}
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
+			<!--<view class="yt-list-cell b-b">-->
+				<!--<view class="cell-icon hb">-->
+					<!--减-->
+				<!--</view>-->
+				<!--<text class="cell-tit clamp">商家促销</text>-->
+				<!--<text class="cell-tip disabled">暂无可用优惠</text>-->
+			<!--</view>-->
 			<view class="yt-list-cell b-b">
 				<view class="cell-icon hb">
 					减
 				</view>
-				<text class="cell-tit clamp">商家促销</text>
-				<text class="cell-tip disabled">暂无可用优惠</text>
+				<text class="cell-tit clamp">积分抵用</text>
+				<text class="cell-tip disabled">暂无可用</text>
 			</view>
 		</view>
 		<!-- 金额明细 -->
@@ -103,72 +110,109 @@
 				<!-- 优惠券页面，仿mt -->
 				<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
 					<view class="con">
-						<view class="left">
+						<view class="left" @click="selectCoupon(item)">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期至2019-06-30</text>
+							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>
 						<view class="right">
-							<text class="price">{{item.price}}</text>
-							<text>满30可用</text>
+							<text class="price">{{item.money}}</text>
+							<text>满{{ item.at_least }}可用</text>
 						</view>
 
 						<view class="circle l"></view>
 						<view class="circle r"></view>
 					</view>
-					<text class="tips">限新用户使用</text>
+					<view class="tips">
+							<text v-show="item.range_type && item.max_fetch">
+								{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}
+							</text>
+						 	<text>
+								{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效
+							</text>
+					</view>
 				</view>
+				<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 			</view>
 		</view>
+		<mpvue-picker
+				themeColor="#fa436a"
+				ref="shippingTypePicker"
+				mode="selector"
+				:deepLength="1"
+				@onConfirm="onConfirm"
+				:pickerValueArray="pickerShippingType" />
 	</view>
 </template>
 
 <script>
-	import {addressDefault} from "../../api/userInfo";
+	import {addressDefault, myCouponList} from "../../api/userInfo";
 	import {orderCreate} from "../../api/product";
-
+	import empty from "@/components/empty";
+	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
 	export default {
+		components: {
+			mpvuePicker,
+			empty
+		},
 		data() {
 			return {
 				maskState: 0, //优惠券面板显示状态
 				desc: '', //备注
 				payType: 1, //1微信 2支付宝
-				couponList: [
-					{
-						title: '新用户专享优惠券',
-						price: 5,
-					},
-					{
-						title: '庆五一发一波优惠券',
-						price: 10,
-					},
-					{
-						title: '优惠券优惠券优惠券优惠券',
-						price: 15,
-					}
-				],
+				couponList: [],
+				couponItem: {},
 				addressData: {},
-				options: {}
+				productList: [],
+				pickerShippingType: [
+						{ label: '物流配送', value: 1 },
+						{ label: '买家自提', value: 2 },
+						{ label: '本地配送', value: 3 }
+				],
+				currentShippingType: {},
+				cartIds: null
 			}
 		},
 		computed: {
 			amountGoods(){
-				return JSON.parse(this.options.data).num * this.options.price;
+				let amount = 0;
+				this.productList.forEach(item => {
+					amount += parseInt(item.data.num, 10) * parseInt(item.price, 10)
+				})
+				return amount;
 			},
 			discountAmount(){
-				return 0;
+				return this.couponItem.discount ? (100 - this.couponItem.discount) / 100 * this.amountGoods : this.couponItem.money || 0;
 			},
 			realAmount(){
 				return this.amountGoods - this.discountAmount;
 			}
 		},
+		filters: {
+			time(val) {
+				return moment(val * 1000).format('YY/MM/DD HH:mm')
+			}
+		},
 		onLoad(options){
-			this.options = options
+			this.productList = JSON.parse(options.data);
+			this.cartIds = options.id;
 			//商品数据
 			//let data = JSON.parse(option.data);
 			//console.log(data);
 			this.initData();
 		},
 		methods: {
+			/**
+			 *@des 单列选择
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/26 16:14:05
+			 */
+			showSinglePicker() {
+				this.$refs.shippingTypePicker.show()
+			},
+			onConfirm(e) {
+				this.currentShippingType = e;
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -177,6 +221,7 @@
 			 */
 			initData() {
 				this.getDefaultAddress();
+				this.getMyCouponList();
 			},
 			/**
 			 *@des 获取默认收货地址
@@ -196,7 +241,30 @@
 					console.log(err)
 				})
 			},
-			//显示优惠券面板
+			/**
+			 *@des 获取我的优惠券列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/26 15:22:43
+			 */
+			async getMyCouponList() {
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${myCouponList}`).then(r => {
+					if (r.code === 200) {
+						this.couponList = r.data
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 *@des 优惠券面板 切换
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/26 15:23:08
+			 */
 			toggleMask(type){
 				let timer = type === 'show' ? 10 : 300;
 				let	state = type === 'show' ? 1 : 0;
@@ -213,11 +281,24 @@
 			},
 			async submit() {
 				uni.showLoading({title: '加载中...'});
+				const params = {};
+				if (this.cartIds) {
+					params.type = 'cart';
+					params.data = this.cartIds;
+				} else {
+					params.data = JSON.stringify(this.productList.data);
+					params.type = 'buy_now';
+				}
+				params.address_id = this.addressData.id;
+				if (this.couponItem.id) {
+					params.type = 'cart';
+					params.coupon_id = this.couponItem.id;
+				}
+				if (this.currentShippingType.value) {
+					params.shipping_type = this.currentShippingType.value;
+				}
 				await this.$post(`${orderCreate}`, {
-					type: 'buy_now',
-					data: this.options.data,
-					shipping_type: 1,
-					address_id: this.addressData.id
+					...params
 				}).then(r => {
 					if (r.code === 200) {
 						const data = {}
@@ -232,7 +313,16 @@
 					console.log(err)
 				})
 			},
-			stopPrevent(){}
+			stopPrevent(){
+			},
+			selectCoupon(item){
+				if (this.amountGoods < item.at_least) {
+					uni.showToast({ title: '不满足优惠券使用条件~', icon: "none" });
+					return;
+				}
+				this.maskState = 0;
+				this.couponItem = item;
+			}
 		}
 	}
 </script>
@@ -332,12 +422,11 @@
 		.g-item {
 			display: flex;
 			margin: 20upx 30upx;
-
 			image {
 				flex-shrink: 0;
 				display: block;
-				width: 140upx;
-				height: 140upx;
+				width: 180upx;
+				height: 150upx;
 				border-radius: 4upx;
 			}
 
@@ -556,7 +645,6 @@
 
 		.mask-content{
 			width: 100%;
-			min-height: 30vh;
 			max-height: 70vh;
 			background: #f3f3f3;
 			transform: translateY(100%);

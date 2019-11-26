@@ -144,7 +144,6 @@
 			 *@date 2019/11/20 18:16:58
 			 */
 			async getMyCouponList (type) {
-				console.log('my')
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${myCouponList}`).then(r=>{
 					if (type === 'refresh') {
@@ -173,6 +172,8 @@
 					id
 				}).then(r => {
 					if (r.code === 200) {
+						this.page = 1;
+						this.couponList = [];
 						this.getCouponList();
 						uni.showToast({title: '领取成功', icon: "none"});
 					} else {

@@ -12,8 +12,12 @@ const provinceList = "/addons/rf-tiny-shop/v1/common/provinces/index";
 const collectCreate = "/addons/rf-tiny-shop/v1/common/collect/create";
 // 删除收藏商品
 const collectDel = "/addons/rf-tiny-shop/v1/common/collect/delete";
+
+// 分享/转发
+const transmitCreate = "/addons/rf-tiny-shop/v1/common/transmit/create";
 export {
     provinceList,
     collectCreate,
-    collectDel
+    collectDel,
+    transmitCreate
 };

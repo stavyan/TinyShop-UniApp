@@ -266,23 +266,48 @@
 			},
 			//创建订单
 			createOrder(){
+				// data: "{"sku_id":"115","num":1}↵					"
+				// name: "夏季T恤白色上衣 好好看耶 赚到了 赚到了 赚到了 赚到了 赚到了 赚到了 赚到了↵					"
+				// picture: "http://merchants.rageframe.com/attachment/images/2019/10/14/image_157103589897565548.jpg↵					"
+				// price: "18.00"
+				// skuStr: "可爱 大 红↵
 				let list = this.cartList;
 				let goodsData = [];
+				const ids = [];
+        // const productItem = {};
+				// const data = {};
+				// data.sku_id = sku_id;
+				// data.num = this.cartCount;
+				// productItem.data = data;
+				// productItem.name = this.productDetail.name;
+				// productItem.picture = this.productDetail.picture;
+				// productItem.price = this.productDetail.minSkuPrice;
+				// if (sku_str) {
+				//   productItem.skuStr = sku_str;
+        // }
+				// list.push(productItem)
 				list.forEach(item=>{
 					if(item.checked){
+						ids.push(item.id)
 						goodsData.push({
-							attr_val: item.attr_val,
-							number: item.number
+							data: { sku_id: item.sku_id, num: item.number },
+							name: item.product_name,
+							picture: item.product_img,
+							price: item.price,
+							skuStr: item.sku_name
 						})
 					}
 				})
-
+				// uni.navigateTo({
+				// 	url: `/pages/order/createOrder?data=${JSON.stringify({
+				// 		goodsData: goodsData
+				// 	})}`
+				// })
+				// this.$api.msg('跳转下一页 sendData');
+				// const list = [];
 				uni.navigateTo({
-					url: `/pages/order/createOrder?data=${JSON.stringify({
-						goodsData: goodsData
-					})}`
+					url: `/pages/order/createOrder?data=${JSON.stringify(goodsData)}&id=${ids.join(',')}`
 				})
-				this.$api.msg('跳转下一页 sendData');
 			}
 		}
 	}

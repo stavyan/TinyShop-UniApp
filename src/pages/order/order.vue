@@ -15,13 +15,13 @@
 				<scroll-view
 					class="list-scroll-content"
 					scroll-y
-					@scrolltolower="loadData"
+					@scrolltolower="getOrderList"
 				>
 					<!-- 空白页 -->
-					<empty v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></empty>
+					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
 					<!-- 订单列表 -->
 					<view
-						v-for="(item,index) in tabItem.orderList" :key="index"
+						v-for="(item,index) in orderList" :key="index"
 						class="order-item"
 					>
 						<view class="i-top b-b">
@@ -37,16 +37,19 @@
 							></text>
 						</view>
 
-						<scroll-view v-if="item && item.product && item.product.length > 1" class="goods-box" scroll-x>
+						<scroll-view v-if="item && item.product && item.product.length > 1"
+												 class="goods-box" scroll-x>
 							<view
-								v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
+								v-for="(goodsItem, goodsIndex) in item.product"
+								:key="goodsIndex"
 								class="goods-item"
 							>
-								<image class="goods-img" :src="goodsItem.image" mode="aspectFill"></image>
+								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
+								<text class="goods-title">{{goodsItem.product_name}}</text>
 							</view>
 						</scroll-view>
 						<view
-							v-if="item && item.product && item.product.length === 1"
+							v-if="item.product && item.product.length === 1"
 							class="goods-box-single"
 							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
 						>
@@ -64,14 +67,12 @@
 							件商品 实付款
 							<text class="price">{{ item.product_money }}</text>
 						</view>
-						<view class="action-box b-t" v-if="item.state != 9">
+						<view class="action-box b-t" v-if="tabCurrentIndex === 1">
 							<button class="action-btn" @click="handleOrderClose(item.id)">取消订单</button>
 							<button class="action-btn recom" @click="handlePayment(item)">立即支付</button>
 						</view>
 					</view>
-
 					<uni-load-more :status="loadingType"></uni-load-more>
-
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -98,30 +99,26 @@
 				navList: [
 					{
 						state: undefined,
-						text: '全部',
-						orderList: []
+						text: '全部'
 					},
 					{
 						state: 0,
-						text: '待付款',
-						orderList: []
+						text: '待付款'
 					},
 					{
 						state: 1,
-						text: '待发货',
-						orderList: []
+						text: '待发货'
 					},
 					{
 						state: 2,
-						text: '待收货',
-						orderList: []
+						text: '待收货'
 					},
 					{
 						state: 3,
-						text: '评价',
-						orderList: []
+						text: '评价'
 					}
 				],
+				orderList: [],
 				page: 1
 			};
 		},
@@ -148,7 +145,7 @@
 		//下拉刷新
 		onPullDownRefresh(){
 			this.page = 1;
-			this.navList[this.tabCurrentIndex].orderList = [];
+			this.orderList = [];
 			this.getOrderList('refresh');
 		},
 		//加载更多
@@ -213,21 +210,24 @@
 				this.getOrderList();
 			},
 			async getOrderList(type) {
-				//这里是将订单挂载到tab列表下
 				let index = this.tabCurrentIndex;
 				let navItem = this.navList[index];
-				let synthesize_status = navItem.state;
+				const params = {};
+				console.log(navItem.state)
+				if (navItem.state || navItem.state === 0) {
+					params.synthesize_status = navItem.state;
+				}
+				params.page = this.page;
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderList}`, {
-					page: this.page,
-					synthesize_status
+					...params
 				}).then(r => {
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
 					if (r.code === 200) {
-						this.navList[index].orderList = [ ...this.navList[index].orderList, ...r.data ];
 						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.orderList = [ ...this.orderList, ...r.data ]
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
@@ -273,14 +273,16 @@
 			},
 			//swiper 切换
 			changeTab(e){
+				this.page = 1;
+				this.orderList = [];
 				this.tabCurrentIndex = e.target.current;
-				this.getOrderList()
-				// this.loadData('tabChange');
+				this.getOrderList();
 			},
 			//顶部tab点击
 			tabClick(index){
+				this.page = 1;
+				this.orderList = [];
 				this.tabCurrentIndex = index;
-				this.getOrderList();
 			},
 			//删除订单
 			deleteOrder(index){
@@ -402,8 +404,8 @@
 		}
 		/* 多条商品 */
 		.goods-box{
-			height: 160upx;
-			padding: 20upx 0;
+			height: 180upx;
+			padding-top: 20upx;
 			white-space: nowrap;
 			.goods-item{
 				width: 120upx;
@@ -415,6 +417,15 @@
 				display: block;
 				width: 100%;
 				height: 100%;
+			}
+			.goods-title {
+				display: -webkit-box !important;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				word-break: break-all;
+				-webkit-box-orient: vertical !important;
+				-webkit-line-clamp: 1;
+				font-size: $font-sm - 10upx;
 			}
 		}
 		/* 单条商品 */
@@ -458,7 +469,7 @@
 			display: flex;
 			justify-content: flex-end;
 			align-items: baseline;
-			padding: 20upx 30upx;
+			padding: 15upx 30upx;
 			font-size: $font-sm + 2upx;
 			color: $font-color-light;
 			.num{

@@ -37,8 +37,8 @@
 				</view>
 				<text class="title clamp">{{item.name}}</text>
 				<view class="price-box">
-					<text class="price">{{item.minPriceSku.price}}
-						<text class="m-price" v-if="item.minPriceSku.market_price > item.minPriceSku.price">¥ {{ item.minPriceSku.market_price }}</text>
+					<text class="price">{{item.price}}
+						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
 					</text>
 					<text>已售{{item.sales}}</text>
 				</view>
