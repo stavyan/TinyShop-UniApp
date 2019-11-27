@@ -164,7 +164,7 @@
 					url: '/pages/public/register'
 				})
 			},
-			toRegister(){
+			toHome(){
 				uni.navigateTo({
 					url: '/pages/index/index'
 				})

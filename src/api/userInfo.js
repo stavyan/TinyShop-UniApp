@@ -32,6 +32,8 @@ const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
 
 // 获取我的订单
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
+// 订单确认收货
+const orderTakeDelivery = "/addons/rf-tiny-shop/v1/member/order/take-delivery";
 
 // 获取我的足迹
 const footPrintList = "/addons/rf-tiny-shop/v1/member/footprint/index";
@@ -43,6 +45,9 @@ const collectList = "/addons/rf-tiny-shop/v1/member/collect/index";
 
 // 积分余额日志
 const creditsLogList = "/addons/rf-tiny-shop/v1/member/credits-log/index";
+
+// 创建订单评价
+const evaluateCreate = "/addons/rf-tiny-shop/v1/member/evaluate/create";
 
 export {
     memberInfo,
@@ -56,9 +61,11 @@ export {
     couponList,
     myCouponList,
     orderList,
+    orderTakeDelivery,
     couponReceive,
     footPrintList,
     footPrintDel,
     collectList,
-    creditsLogList
+    creditsLogList,
+    evaluateCreate
 };

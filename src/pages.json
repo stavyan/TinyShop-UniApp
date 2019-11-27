@@ -94,6 +94,11 @@
 				}
 			}
 		}, {
+			"path": "pages/evaluation/evaluation",
+			"style": {
+				"navigationBarTitleText": "发布评价"
+			}
+		}, {
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的",
@@ -168,6 +173,11 @@
                         "style": "default"
                     }
                 }
+			}
+		},{
+			"path": "pages/order/orderItem",
+			"style": {
+				"navigationBarTitleText": "选择商品评价"
 			}
 		},{
 			"path": "pages/integral/integral",

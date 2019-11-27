@@ -131,7 +131,7 @@
 							</text>
 					</view>
 				</view>
-				<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
+				<text class="no-coupon" v-if="couponList.length === 0">暂无优惠券</text>
 			</view>
 		</view>
 		<mpvue-picker
@@ -646,10 +646,16 @@
 		.mask-content{
 			width: 100%;
 			max-height: 70vh;
+			min-height: 16vh;
 			background: #f3f3f3;
 			transform: translateY(100%);
 			transition: .3s;
 			overflow-y:scroll;
+      .no-coupon {
+        display: flex;
+ 	      justify-content: center;	/* 水平居中 */
+        line-height: 16vh;
+      }
 		}
 		&.none{
 			display: none;

@@ -15,7 +15,7 @@
 				<scroll-view
 					class="list-scroll-content"
 					scroll-y
-					@scrolltolower="getOrderList"
+					@scrolltolower="getMoreOrderList"
 				>
 					<!-- 空白页 -->
 					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
@@ -67,10 +67,15 @@
 							件商品 实付款
 							<text class="price">{{ item.product_money }}</text>
 						</view>
-						<view class="action-box b-t" v-if="tabCurrentIndex === 1">
-							<button class="action-btn" @click="handleOrderClose(item.id)">取消订单</button>
-							<button class="action-btn recom" @click="handlePayment(item)">立即支付</button>
-						</view>
+						<view class="action-box b-t">
+							<button class="action-btn" v-show="tabCurrentIndex === 1" @click="handleOrderClose(item.id)">取消订单</button>
+							<button class="action-btn recom" v-show="tabCurrentIndex === 1" @click="handlePayment(item)">立即支付</button>
+						  <button class="action-btn recom" v-show="tabCurrentIndex === 2" @click="handleOrderClose(item.id)">申请退款</button>
+						  <button class="action-btn" v-show="tabCurrentIndex === 3 || tabCurrentIndex === 4" @click="handleOrderOperation(item, 'shipping')">查看物流</button>
+              <button class="action-btn" v-show="tabCurrentIndex === 3" @click="handleOrderClose(item.id)">申请退货</button>
+              <button class="action-btn recom" v-show="tabCurrentIndex === 3" @click="handleOrderOperation(item, 'delivery')">确认收货</button>
+						  <button class="action-btn recom" v-show="tabCurrentIndex === 4" @click="handleOrderOperation(item, 'evaluation')">我要评价</button>
+            </view>
 					</view>
 					<uni-load-more :status="loadingType"></uni-load-more>
 				</scroll-view>
@@ -83,7 +88,8 @@
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
 	import Json from '@/Json';
-	import {orderList} from "../../api/userInfo";
+	import moment from 'moment';
+  import {orderList, orderTakeDelivery} from "../../api/userInfo";
 	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
 	import {orderClose} from "../../api/product";
 	export default {
@@ -165,6 +171,36 @@
 				if (parseInt(item.order_status, 10) !== 0) return;
 				this.handleOrderClose(item.id);
 			},
+      /**
+       *@des
+       *@author stav stavyan@qq.com
+       *@blog https://stavtop.club
+       *@date 2019/11/27 10:14:47
+       *@param arguments
+       */
+      handleOrderOperation (item, type) {
+        switch (type) {
+          case 'evaluation': // 我要评价
+              this.handleOrderEvaluation(item);
+            break;
+          case 'shipping': // 查看物流
+            break;
+          case 'delivery': // 确认收货
+            this.handleOrderTakeDelivery(item.id);
+            break;
+        }
+      },
+      handleOrderEvaluation(item) {
+        if(item.product_count > 1) {
+          uni.navigateTo({
+            url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}`
+          })
+        } else {
+          uni.navigateTo({
+            url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
+          })
+        }
+      },
 			/**
 			 *@des 取消订单
 			 *@author stav stavyan@qq.com
@@ -177,6 +213,28 @@
 					id,
 				}).then(r => {
 					if (r.code === 200) {
+						this.getOrderList();
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+      /**
+       *@des 确认收货
+       *@author stav stavyan@qq.com
+       *@blog https://stavtop.club
+       *@date 2019/11/27 17:48:34
+       */
+			async handleOrderTakeDelivery(id) {
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${orderTakeDelivery}`, {
+					id,
+				}).then(r => {
+					if (r.code === 200) {
+            this.page = 1;
+            this.orderList = [];
 						this.getOrderList();
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
@@ -213,7 +271,6 @@
 				let index = this.tabCurrentIndex;
 				let navItem = this.navList[index];
 				const params = {};
-				console.log(navItem.state)
 				if (navItem.state || navItem.state === 0) {
 					params.synthesize_status = navItem.state;
 				}
@@ -283,6 +340,11 @@
 				this.page = 1;
 				this.orderList = [];
 				this.tabCurrentIndex = index;
+			},
+			//顶部tab点击
+			getMoreOrderList(){
+        this.page ++;
+        this.getOrderList();
 			},
 			//删除订单
 			deleteOrder(index){
