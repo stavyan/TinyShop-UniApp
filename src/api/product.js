@@ -27,6 +27,9 @@ const orderClose = "/addons/rf-tiny-shop/v1/member/order/close";
 // 订单支付
 const orderPay= "/addons/rf-tiny-shop/v1/common/pay/create";
 
+// 商品评论列表
+const evaluateList = "/addons/rf-tiny-shop/v1/product/evaluate/index";
+
 export {
     productCate,
     productList,
@@ -38,5 +41,6 @@ export {
     cartItemUpdateNum,
     orderCreate,
     orderClose,
-    orderPay
+    orderPay,
+    evaluateList
 };

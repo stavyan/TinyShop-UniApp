@@ -34,6 +34,8 @@ const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
 // 订单确认收货
 const orderTakeDelivery = "/addons/rf-tiny-shop/v1/member/order/take-delivery";
+// 获取订单详情
+const orderDetail = "/addons/rf-tiny-shop/v1/member/order/view";
 
 // 获取我的足迹
 const footPrintList = "/addons/rf-tiny-shop/v1/member/footprint/index";
@@ -61,6 +63,7 @@ export {
     couponList,
     myCouponList,
     orderList,
+    orderDetail,
     orderTakeDelivery,
     couponReceive,
     footPrintList,

@@ -20,15 +20,6 @@
 				active-color="#fa436a" />
 			</view>
 		</view>
-		<view class="product-explain-type">
-			评价级别
-			<radio-group class="product-explain-type-radio">
-				<label class="item" v-for="(item, index) in explainType" :key="index">
-					<radio class="radio" :checked="evaluate.explain_type === item.value" :value="item.value" color="#fa436a" />
-					<text class="text">{{ item.name }}</text>
-				</label>
-			</radio-group>
-		</view>
 		<view class="product-textarea">
        <textarea class="textarea" maxlength="140"
 								 @input="handleContentChange"
@@ -81,26 +72,12 @@
 				content: '',
 				anonymousText: '不匿名',
 				evaluate: {
-							'scores' : 3,
-							'content' : '',
-							'is_anonymous' : '0',
-							'covers' : '',
-							'explain_type' : '2',
-							'order_product_id' : ''
-						},
-				explainType: [
-					{
-						value: '1',
-						name: '差评'
-					},
-					{
-						value: '2',
-						name: '中评'
-					},
-					{
-						value: '3',
-						name: '好评'
-					}]
+					'scores' : 3,
+					'content' : '',
+					'is_anonymous' : '0',
+					'covers' : '',
+					'order_product_id' : ''
+				}
 			}
 		},
 		computed: {
@@ -181,7 +158,7 @@
 				}).then(r => {
 					if (r.code === 200) {
 						uni.navigateBack({
-							delta: 1
+							delta: 2
 						});
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
@@ -223,21 +200,10 @@
 		.product-rate {
 			font-size: $font-lg;
 			color: $font-color-dark;
-			padding-top: 20upx;
-			.product-rate-wrapper {
-				display: inline-block;
-			}
-		}
-		.product-explain-type {
 			padding: 20upx 0;
 			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-			.product-explain-type-radio {
-				width: 80%;
+			.product-rate-wrapper {
 				display: inline-block;
-				margin-left: 20upx;
-				.item {
-					margin-right: 15upx;
-				}
 			}
 		}
 		.product-textarea {

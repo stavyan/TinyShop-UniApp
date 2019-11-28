@@ -28,7 +28,7 @@
 				<image :src="item.picture" mode="aspectFill"></image>
 				<view class="right">
 					<text class="title clamp">{{ item.name }}</text>
-					<text class="spec">{{ item.skuStr || '基本款' }}</text>
+					<text class="spec">{{ item.skuStr || '基础款' }}</text>
 					<view class="price-box">
 						<text class="price">￥ {{item.price}}</text>
 						<text class="number"> * {{ item.data.num }}</text>
@@ -286,7 +286,8 @@
 					params.type = 'cart';
 					params.data = this.cartIds;
 				} else {
-					params.data = JSON.stringify(this.productList.data);
+					params.data = JSON.stringify(this.productList[0].data);
+					params.type = 'buy_now';
 					params.type = 'buy_now';
 				}
 				params.address_id = this.addressData.id;

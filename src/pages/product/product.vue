@@ -27,7 +27,7 @@
 				<text>浏览量: {{ productDetail.view }}</text>
 			</view>
 			<view class="bot-row">
-				<text>评分: {{ productDetail.star }}</text>
+				<text>评分: {{ productDetail.match_point || 0 }}</text>
 				<text>评论量: {{ productDetail.comment_num }}</text>
 				<text>分享量: {{ productDetail.transmit_num }}</text>
 			</view>
@@ -55,7 +55,8 @@
 					</text>
           <text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
           <text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
-            {{ productDetail.name }} * 1
+            <!--{{ productDetail.name }} * 1-->
+            基本款 * {{ cartCount }}
           </text>
 				</view>
 				<text class="yticon icon-you"></text>
@@ -91,21 +92,37 @@
 		</view>
 
 		<!-- 评价 -->
-		<view class="eva-section">
+		<view class="eva-section" @click="toEvaluateList">
 			<view class="e-header">
 				<text class="tit">评价</text>
-				<text>(86)</text>
-				<text class="tip">好评率 100%</text>
+				<text>({{ productDetail.comment_num }})</text>
+				<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
+				<text class="tip" v-else>暂无评价信息</text>
 				<text class="yticon icon-you"></text>
 			</view>
-			<view class="eva-box">
+			<!--again_addtime: "0"-->
+			<!--again_content: ""-->
+			<!--again_covers: []-->
+			<!--again_explain: ""-->
+			<!--content: "我的觉得ok！"-->
+			<!--covers: ["blob:http://192.168.20.45:9527/b4abfa1c-7387-436c-883d-5d0fabb650ff",…]-->
+			<!--created_at: "1574912184"-->
+			<!--explain_first: ""-->
+			<!--explain_type: "2"-->
+			<!--is_anonymous: "0"-->
+			<!--member_head_portrait: null-->
+			<!--member_id: "2"-->
+			<!--member_nickname: "stavyan"-->
+			<!--product_id: "43"-->
+			<!--scores: "3"-->
+			<view class="eva-box" v-show="productDetail.evaluate && productDetail.evaluate.length > 0">
 				<image class="portrait" src="http://img3.imgtn.bdimg.com/it/u=1150341365,1327279810&fm=26&gp=0.jpg" mode="aspectFill"></image>
 				<view class="right">
-					<text class="name">Leo yo</text>
-					<text class="con">商品收到了，79元两件，质量不错，试了一下有点瘦，但是加个外罩很漂亮，我很喜欢</text>
+					<text class="name">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname }}</text>
+					<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content }}</text>
 					<view class="bot">
 						<text class="attr">购买类型：XL 红色</text>
-						<text class="time">2019-04-01 19:21</text>
+						<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
 					</view>
 				</view>
 			</view>
@@ -234,6 +251,9 @@
 			uniNumberBox
 		},
 		filters: {
+			time(val) {
+				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
+			},
 			maxBuyFilter(val) {
 				return parseInt(val, 10) === 0 ? '不限购' : `最大购买量：${val}`;
 			},
@@ -335,6 +355,18 @@
       })
 		},
 		methods:{
+			/**
+			 *@des 跳转至评论列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/28 15:32:26
+			 *@param arguments
+			 */
+			toEvaluateList () {
+				uni.navigateTo({
+					url: `/pages/evaluation/list?product_id=${this.productDetail.id}`
+				})
+			},
 			numberChange(data){
 				this.cartCount = data.number;
 			},
@@ -607,10 +639,10 @@
 				if (sku_str) {
 				  productItem.skuStr = sku_str;
         }
-				list.push(productItem)
+				list.push(productItem);
 				uni.navigateTo({
 					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`
-				})
+				});
 			},
 			addCart(){
 				this.toggleSpec()

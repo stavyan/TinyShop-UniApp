@@ -68,7 +68,7 @@
 							<text class="price">{{ item.product_money }}</text>
 						</view>
 						<view class="action-box b-t">
-							<button class="action-btn" v-show="tabCurrentIndex === 1" @click="handleOrderClose(item.id)">取消订单</button>
+							<button class="action-btn" v-show="tabCurrentIndex === 1" @click="handleOrderOperation(item, 'close')">取消订单</button>
 							<button class="action-btn recom" v-show="tabCurrentIndex === 1" @click="handlePayment(item)">立即支付</button>
 						  <button class="action-btn recom" v-show="tabCurrentIndex === 2" @click="handleOrderClose(item.id)">申请退款</button>
 						  <button class="action-btn" v-show="tabCurrentIndex === 3 || tabCurrentIndex === 4" @click="handleOrderOperation(item, 'shipping')">查看物流</button>
@@ -183,6 +183,9 @@
           case 'evaluation': // 我要评价
               this.handleOrderEvaluation(item);
             break;
+          case 'close': // 取消订单
+              this.handleOrderClose(item.id)
+            break;
           case 'shipping': // 查看物流
             break;
           case 'delivery': // 确认收货
@@ -191,7 +194,8 @@
         }
       },
       handleOrderEvaluation(item) {
-        if(item.product_count > 1) {
+      	console.log(item)
+        if(item.product.length > 1) {
           uni.navigateTo({
             url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}`
           })
@@ -213,6 +217,8 @@
 					id,
 				}).then(r => {
 					if (r.code === 200) {
+            this.page = 1;
+            this.orderList = [];
 						this.getOrderList();
 					} else {
 						uni.showToast({title: r.message, icon: "none"});

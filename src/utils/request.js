@@ -10,6 +10,7 @@
  */
 function request(url, params, header, method) {
     const baseApiUrl = "https://www.yllook.com/api";
+    // const baseApiUrl = "";
     const token = uni.getStorageSync('accessToken');
     const userInfo = uni.getStorageSync('userInfo');
     if (token && userInfo) {
