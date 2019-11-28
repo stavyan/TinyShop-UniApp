@@ -40,12 +40,20 @@
 			</view>
 		</view>
 		<view class="upload-image">
-			<image
-				 mode="aspectFill"
-				 class="image"
-				 v-for="item in imageList"
-				 :key="item"
-				 :src="item"></image>
+			<view class="upload-image-wrapper"
+					 v-for="(item, index) in imageList"
+					 :key="item">
+				<image
+					 mode="aspectFill"
+					 class="image"
+					 :src="item"></image>
+					<uni-icons
+							class="image-close"
+							color="#333"
+							@click="handleImageDelete(index)"
+							type="close"
+							size="20" />
+			</view>
 			<view class="add" @click="uploadImage">+</view>
 		</view>
 
@@ -63,11 +71,13 @@
 	 */
 	import uniRate from "@/components/uni-rate/uni-rate.vue"
 	import {evaluateCreate} from "../../api/userInfo";
+	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default{
-		components: { uniRate },
+		components: { uniRate, uniIcons },
 		data(){
 			return {
 				productInfo: {},
+				token: null,
 				imageList: [],
 				content: '',
 				anonymousText: '不匿名',
@@ -87,6 +97,7 @@
 		},
 		onLoad(options){
 			this.productInfo = JSON.parse(options.data);
+			this.token = uni.getStorageSync('accessToken') || undefined;
 		},
 		methods: {
 			/**
@@ -98,6 +109,15 @@
 			 */
 			handleContentChange (e) {
 				this.evaluate.content = e.detail.value;
+			},
+			/**
+			 *@des 删除定制已删除图片
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/28 17:39:04
+			 */
+			handleImageDelete (index) {
+				this.imageList.splice(index, 1)
 			},
 			/**
 			 *@des 监听是否匿名
@@ -122,8 +142,18 @@
 					sizeType: ['original', 'compressed'],
 					sourceType: ['album'],
 					success: function(res) {
-						_this.imageList = res.tempFilePaths
-						_this.evaluate.covers = res.tempFilePaths;
+						_this.handleUploadFile(res.tempFilePaths)
+						// _this.$post(`${uploadFile}`, {
+						// 	file: res.tempFilePaths[0]
+						// }).then(r=>{
+						// 	if (r.code === 200) {
+						// 		console.log(r)
+						// 	} else {
+						// 		uni.showToast({ title: r.message, icon: "none" });
+						// 	}
+						// }).catch(err => {
+						// 	console.log(err)
+						// })
 							// // 预览图片
 							// uni.previewImage({
 							// 		urls: res.tempFilePaths,
@@ -140,6 +170,33 @@
 					}
 				});
 			},
+			handleUploadFile (data) {
+				const _this = this;
+				data.forEach(item => {
+					uni.uploadFile({
+					url : 'https://www.yllook.com/api/v1/file/images',
+					filePath: item,
+					name: 'file',
+					header: {
+						"x-api-key": _this.token,
+						"merchant-id": 1
+					},
+					formData: {
+						'access-token': _this.token,
+						"merchant-id": 1
+					},
+					success (r) {
+						uni.hideLoading();
+						const data = JSON.parse(r.data);
+						if (data.code === 200) {
+							_this.imageList.push(data.data.url)
+						} else {
+							uni.showToast({ title: data.message, icon: "none" });
+						}
+					}
+				 });
+				})
+			},
 			/**
 			 *@des 提交评价
 			 *@author stav stavyan@qq.com
@@ -147,11 +204,11 @@
 			 *@date 2019/11/27 16:50:56
 			 */ async handleEvaluate() {
 				this.evaluate.order_product_id = this.productInfo.id;
+				this.evaluate.covers = this.imageList;
 				const params = {};
 				const data = [];
 				data.push(this.evaluate)
 				params.evaluate = JSON.stringify(data);
-				console.log(params)
 				uni.showLoading({title: '评论中...'});
 				await this.$post(`${evaluateCreate}`, {
 					...params
@@ -238,14 +295,25 @@
 		.upload-image {
 			overflow: hidden;
 			margin: 40upx 0;
-			.image {
+			.upload-image-wrapper {
 				display: inline-block;
-				width: 180upx;
-				height: 180upx;
-				margin: 0 20upx 20upx 0;
+				position: relative;
+				width: 200upx;
+				height: 200upx;
+				padding: 10upx;
+				margin: 10upx;
+				.image {
+					display: inline-block;
+					width: 180upx;
+					height: 180upx;
+				}
+				.image-close {
+					position: absolute;
+					top: -10upx;
+					right: -10upx;
+				}
 			}
 			.add {
-				margin: 0 20upx 20upx 0;
 				display: inline-block;
 				overflow: hidden;
 				width: 180upx;

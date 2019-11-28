@@ -15,9 +15,13 @@ const collectDel = "/addons/rf-tiny-shop/v1/common/collect/delete";
 
 // 分享/转发
 const transmitCreate = "/addons/rf-tiny-shop/v1/common/transmit/create";
+
+// 分享/转发
+const uploadFile = "/v1/file/images";
 export {
     provinceList,
     collectCreate,
     collectDel,
-    transmitCreate
+    transmitCreate,
+    uploadFile
 };

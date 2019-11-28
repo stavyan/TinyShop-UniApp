@@ -2,9 +2,11 @@
   <view class="container">
     <view class="uni-padding-wrap">
 			<view class="uni-comment">
-				<view class="uni-comment-list" v-for="item in evaluationList" :key="item.id">
+				<view class="uni-comment-list" v-for="(item, index) in evaluationList" :key="item.id">
 					<view class="uni-comment-face">
-            <image :src="item.member_head_portrait || '/static/missing-face.png'" mode="widthFix"></image>
+            <image
+               :src="item.member_head_portrait || '/static/missing-face.png'"
+              mode="widthFix"></image>
           </view>
 					<view class="uni-comment-body">
 						<view class="uni-comment-top">
@@ -12,22 +14,31 @@
 						</view>
 						<view class="uni-comment-date">
 							<text>{{ item.updated_at | time }}</text>
+              <text> {{ item.sku_name || '基础款' }}</text>
+              <!--<text>{{ item.product_name }} {{ item.sku_name }}</text>-->
 						</view>
 						<view class="uni-comment-content">{{ item.content }}</view>
-            <view>
-            <image
-               mode="aspectFill"
-               class="image"
-               v-for="imgItem in item.covers"
-               :key="imgItem"
-               :src="imgItem"></image>
+						<view class="comment-image">
+							<view
+							 class="image-wrapper-fill"
+               v-for="(imgItem, index2) in item.covers"
+               :key="index2">
+								<image
+									 mode="aspectFill"
+									 class="image"
+									 :src="imgItem"
+									 @error="onImageError(index, index2)"
+								/>
             </view>
+						</view>
 					</view>
 				</view>
 			</view>
+		  <empty :info="'该商品暂无评价'" v-if="evaluationList.length === 0"></empty>
 			<!-- 评论区 end -->
 		  <uni-load-more :status="loadingType" />
 		</view>
+
   </view>
 </template>
 
@@ -35,17 +46,22 @@
 import {evaluateList} from "../../api/product";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import moment from 'moment';
+import empty from "@/components/empty";
+import errorImg from './../../static/errorImage.jpg';
 export default {
   name: 'list',
 	components: {
-		uniLoadMore
+		uniLoadMore,
+    empty
 	},
   data () {
     return {
       id: '',
+      errorImg: errorImg,
       loadingType: 'more', //加载更多状态
       evaluationList: [],
-      page: 1
+      page: 1,
+			img: '11'
     }
   },
   filters: {
@@ -70,6 +86,10 @@ export default {
     this.getEvaluationList();
   },
   methods: {
+		onImageError(index, index2) {
+			this.evaluationList[index].covers[index2] = this.errorImg;
+			console.log(this.evaluationList)
+		},
     /**
      *@des 初始化数据
      *@author stav stavyan@qq.com
@@ -103,11 +123,16 @@ export default {
 }
 </script>
 
-<style scoped>
-.image {
-  display: inline-block;
-  width: 180upx;
-  height: 180upx;
-  margin: 0 10upx 10upx 0;
+<style scoped lang="scss">
+.comment-image {
+	display: flex;
+	.image-wrapper-fill {
+		display: inline-block;
+		margin: 0 10upx 0 0;
+		.image {
+			width: 180upx;
+			height: 180upx;
+		}
+	}
 }
 </style>
