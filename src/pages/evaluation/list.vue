@@ -60,8 +60,8 @@ export default {
   },
   //下拉刷新
   onPullDownRefresh(){
+    this.evaluationList = [];
     this.page = 1;
-    this.goodsList = [];
     this.getEvaluationList('refresh');
   },
   //加载更多
