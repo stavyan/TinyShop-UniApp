@@ -255,6 +255,16 @@
 				"navigationBarTitleText": ""
 			}
 		}, {
+			"path": "pages/invoice/invoice",
+			"style": {
+				"navigationBarTitleText": "发票管理"
+			}
+		}, {
+			"path": "pages/invoice/invoiceManage",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
 			"path": "pages/money/pay",
 			"style": {
 				"navigationBarTitleText": "支付"

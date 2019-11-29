@@ -242,7 +242,7 @@
 
 <script>
 	import share from '@/components/share';
-	import {cartItemCreate, productDetail} from "../../api/product";
+	import {cartItemCreate, orderPreview, productDetail} from "../../api/product";
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
 	export default{
@@ -554,7 +554,7 @@
 			 *@date 2019/11/21 17:09:02
 			 */
 			async handleCollectCreate() {
-				uni.showLoading({title: '正在将商品添加至购物车...'});
+				uni.showLoading({title: '正在收藏...'});
 				await this.$post(`${collectCreate}`, {
 					topic_id: this.product_id,
 					topic_type: 'product'
@@ -588,7 +588,7 @@
 					console.log(err)
 				})
 			},
-			buy(){
+			async buy() {
 				let sku_id;
 				let skuStr;
 				let sku_str;
@@ -628,20 +628,32 @@
 					})
 				}
 				const list = [];
-        const productItem = {};
+				const productItem = {};
 				const data = {};
 				data.sku_id = sku_id;
 				data.num = this.cartCount;
-				productItem.data = data;
-				productItem.name = this.productDetail.name;
-				productItem.picture = this.productDetail.picture;
-				productItem.price = this.productDetail.minSkuPrice;
-				if (sku_str) {
-				  productItem.skuStr = sku_str;
-        }
-				list.push(productItem);
-				uni.navigateTo({
-					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`
+				// productItem.data = data;
+				// productItem.name = this.productDetail.name;
+				// productItem.picture = this.productDetail.picture;
+				// productItem.price = this.productDetail.minSkuPrice;
+				// if (sku_str) {
+				// 	productItem.skuStr = sku_str;
+				// }
+				list.type = 'buy_now';
+				list.data = JSON.stringify(data);
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${orderPreview}`, {
+					...list
+				}).then(r => {
+					if (r.code === 200) {
+						uni.navigateTo({
+							url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&product=${list.data}`
+						});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
 				});
 			},
 			addCart(){

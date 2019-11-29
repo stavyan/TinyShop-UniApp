@@ -85,7 +85,7 @@
 		mapState
 	} from 'vuex';
 	import uniNumberBox from '@/components/uni-number-box.vue'
-	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum} from "../../api/product";
+	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum, orderPreview} from "../../api/product";
 	export default {
 		components: {
 			uniNumberBox
@@ -265,16 +265,17 @@
 				this.total = Number(total.toFixed(2));
 			},
 			//创建订单
-			createOrder(){
+			async createOrder() {
 				// data: "{"sku_id":"115","num":1}↵					"
 				// name: "夏季T恤白色上衣 好好看耶 赚到了 赚到了 赚到了 赚到了 赚到了 赚到了 赚到了↵					"
 				// picture: "http://merchants.rageframe.com/attachment/images/2019/10/14/image_157103589897565548.jpg↵					"
 				// price: "18.00"
 				// skuStr: "可爱 大 红↵
 				let list = this.cartList;
-				let goodsData = [];
+				// let goodsData = [];
+				const data = {};
 				const ids = [];
-        // const productItem = {};
+				// const productItem = {};
 				// const data = {};
 				// data.sku_id = sku_id;
 				// data.num = this.cartCount;
@@ -284,20 +285,22 @@
 				// productItem.price = this.productDetail.minSkuPrice;
 				// if (sku_str) {
 				//   productItem.skuStr = sku_str;
-        // }
+				// }
 				// list.push(productItem)
-				list.forEach(item=>{
-					if(item.checked){
+				list.forEach(item => {
+					if (item.checked) {
 						ids.push(item.id)
-						goodsData.push({
-							data: { sku_id: item.sku_id, num: item.number },
-							name: item.product_name,
-							picture: item.product_img,
-							price: item.price,
-							skuStr: item.sku_name
-						})
+						// goodsData.push({
+						// 	data: {sku_id: item.sku_id, num: item.number},
+						// 	name: item.product_name,
+						// 	picture: item.product_img,
+						// 	price: item.price,
+						// 	skuStr: item.sku_name
+						// })
 					}
 				})
+				data.type = 'cart';
+				data.data = ids.join(',');
 				// uni.navigateTo({
 				// 	url: `/pages/order/createOrder?data=${JSON.stringify({
 				// 		goodsData: goodsData
@@ -305,9 +308,19 @@
 				// })
 				// this.$api.msg('跳转下一页 sendData');
 				// const list = [];
-				uni.navigateTo({
-					url: `/pages/order/createOrder?data=${JSON.stringify(goodsData)}&id=${ids.join(',')}`
-				})
+				await this.$get(`${orderPreview}`, {
+					...data
+				}).then(r => {
+					if (r.code === 200) {
+						uni.navigateTo({
+							url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&id=${ids.join(',')}`
+						});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				});
 			}
 		}
 	}

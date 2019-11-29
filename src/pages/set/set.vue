@@ -8,6 +8,10 @@
 			<text class="cell-tit">收货地址</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
+		<view class="list-cell b-b" @click="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">发票管理</text>
+			<text class="cell-more yticon icon-you"></text>
+		</view>
 		<!--<view class="list-cell" @click="navTo('实名认证')" hover-class="cell-hover" :hover-stay-time="50">-->
 			<!--<text class="cell-tit">实名认证</text>-->
 			<!--<text class="cell-more yticon icon-you"></text>-->

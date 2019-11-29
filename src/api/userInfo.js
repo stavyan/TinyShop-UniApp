@@ -51,6 +51,19 @@ const creditsLogList = "/addons/rf-tiny-shop/v1/member/credits-log/index";
 // 创建订单评价
 const evaluateCreate = "/addons/rf-tiny-shop/v1/member/evaluate/create";
 
+// 发票列表
+const invoiceList = "/addons/rf-tiny-shop/v1/member/invoice/index";
+// 发票列表
+const invoiceCreate = "/addons/rf-tiny-shop/v1/member/invoice/create";
+// 发票编辑
+const invoiceUpdate = "/addons/rf-tiny-shop/v1/member/invoice/update";
+// 发票详情
+const invoiceDetail = "/addons/rf-tiny-shop/v1/member/invoice/view";
+// 默认发票
+const invoiceDefault = "/addons/rf-tiny-shop/v1/member/invoice/default";
+// 默认发票
+const invoiceDel = "/addons/rf-tiny-shop/v1/member/invoice/delete";
+
 export {
     memberInfo,
     memberUpdate,
@@ -70,5 +83,11 @@ export {
     footPrintDel,
     collectList,
     creditsLogList,
-    evaluateCreate
+    evaluateCreate,
+    invoiceList,
+    invoiceCreate,
+    invoiceUpdate,
+    invoiceDetail,
+    invoiceDefault,
+    invoiceDel
 };

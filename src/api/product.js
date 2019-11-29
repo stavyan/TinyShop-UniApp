@@ -20,8 +20,12 @@ const cartItemDel = "/addons/rf-tiny-shop/v1/member/cart-item/delete-ids";
 const cartItemClear = "/addons/rf-tiny-shop/v1/member/cart-item/clear";
 // 修改购物车商品数量
 const cartItemUpdateNum = "/addons/rf-tiny-shop/v1/member/cart-item/update-num";
-// 下单
+
+// 订单创建
 const orderCreate = "/addons/rf-tiny-shop/v1/order/order/create";
+// 订单预览
+const orderPreview = "/addons/rf-tiny-shop/v1/order/order/preview";
+
 // 取消未支付订单
 const orderClose = "/addons/rf-tiny-shop/v1/member/order/close";
 // 订单支付
@@ -42,5 +46,6 @@ export {
     orderCreate,
     orderClose,
     orderPay,
-    evaluateList
+    evaluateList,
+    orderPreview
 };
