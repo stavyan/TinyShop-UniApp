@@ -74,7 +74,7 @@
 					uni.showLoading({title: '正在支付...'});
 					await this.$post(`${orderPay}`, {
 						data: this.orderInfo,
-						orderGroup: 'goods',
+						orderGroup: 'order',
 						tradeType: 'default',
 						payType: this.payType
 					}).then(async r => {

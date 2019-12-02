@@ -116,12 +116,13 @@
 			<!--product_id: "43"-->
 			<!--scores: "3"-->
 			<view class="eva-box" v-show="productDetail.evaluate && productDetail.evaluate.length > 0">
-				<image class="portrait" src="http://img3.imgtn.bdimg.com/it/u=1150341365,1327279810&fm=26&gp=0.jpg" mode="aspectFill"></image>
+				<image class="portrait"
+               :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
 				<view class="right">
 					<text class="name">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname }}</text>
-					<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content }}</text>
+					<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
 					<view class="bot">
-						<text class="attr">购买类型：XL 红色</text>
+						<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name }}</text>
 						<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
 					</view>
 				</view>

@@ -5,6 +5,7 @@
 			"style": {
 				// #ifdef MP
 				"navigationBarTitleText": "RageFrame商城",
+				"enablePullDownRefresh": true,
 				//"navigationStyle": "custom",
 				// #endif
 				"app-plus": {

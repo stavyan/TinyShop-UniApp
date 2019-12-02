@@ -80,15 +80,21 @@
 				<view class="cell-icon hb">
 					减
 				</view>
-				<text class="cell-tit clamp">积分抵用</text>
-				<text class="cell-tip disabled">暂无可用</text>
+				<text class="cell-tit clamp">可用{{ maxUsePoint }}积分抵用{{ maxUsePointFee }}元</text>
+				<text class="cell-tip disabled"></text>
+				<text class="cell-tip disabled" v-if="!orderDetail.point_config.is_open">暂无可用</text>
+				<view class="cell-tip red" v-else>
+						<label class="radio">
+							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :checked="isUsePoint" />
+						</label>
+				</view>
 			</view>
 		</view>
 		<!-- 金额明细 -->
 		<view class="yt-list">
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">商品金额</text>
-				<text class="cell-tip">￥{{ amountGoods }}</text>
+				<text class="cell-tip red">￥{{ amountGoods }}</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">优惠金额</text>
@@ -96,16 +102,21 @@
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">运费</text>
+				<text class="cell-tip red">
+					<text>-￥ {{ shippingMoney }}</text>
+				</text>
+			</view>
+			<view class="yt-list-cell b-b">
+				<text class="cell-tit clamp">赠送积分</text>
 				<text class="cell-tip">
-					<text v-if="orderDetail.is_full_mail"></text>
-					<text>{{ orderDetail.shipping_money || '免运费' }}</text>
+					<text>{{ orderDetail.preview.give_point }} 积分</text>
 				</text>
 			</view>
 			<navigator url="/pages/invoice/invoice?source=1">
 				<view class="yt-list-cell b-b">
 					<text class="cell-tit clamp">开具发票</text>
 					<text class="cell-tip">
-						<text v-if="invoiceItem">{{ `${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}</text>
+						<text v-if="invoiceItem.type">{{ `${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}</text>
 						<text v-else>本次不开具发票</text>
 					</text>
 				</view>
@@ -174,7 +185,7 @@
 </template>
 
 <script>
-	import {orderCreate} from "../../api/product";
+	import {orderCreate, orderFreightFee} from "../../api/product";
 	import empty from "@/components/empty";
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
 	import moment from 'moment';
@@ -189,6 +200,7 @@
 				desc: '', //备注
 				payType: 1, //1微信 2支付宝
 				orderDetail: {},
+				loadingType: 'more', //加载更多状态
 				pickerShippingType: [
 					{ label: '物流配送', value: 1 },
 					{ label: '买家自提', value: 2 }
@@ -199,7 +211,9 @@
 				invoiceItem: {},
 				addressData: {},
 				couponItem: {},
-				product: null
+				product: null,
+				shippingMoney: 0,
+				isUsePoint: false
 			}
 		},
 		computed: {
@@ -207,14 +221,23 @@
 				let amount = 0;
 				this.orderDetail.products.forEach(item => {
 					amount += parseInt(item.num, 10) * parseInt(item.price, 10)
-				})
+				});
 				return amount;
 			},
-			discountAmount(){
+			discountAmount() {
 				return this.couponItem.discount ? (100 - this.couponItem.discount) / 100 * this.amountGoods : this.couponItem.money || 0;
 			},
 			realAmount(){
-				return this.amountGoods - this.discountAmount;
+				const realAmount = this.amountGoods - this.discountAmount - this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
+				const invoiceAmount = this.invoiceItem.type ? this.orderDetail.invoice.order_invoice_tax / 100 * realAmount : 0;
+				return (realAmount + invoiceAmount).toFixed(2);
+			},
+			maxUsePoint() {
+				return this.orderDetail.max_use_point > uni.getStorageSync('userInfo').account.user_integral
+						? uni.getStorageSync('userInfo').account.user_integral : this.orderDetail.max_use_point;
+			},
+			maxUsePointFee() {
+				return this.maxUsePoint * this.orderDetail.point_config.convert_rate;
 			}
 		},
 		filters: {
@@ -222,10 +245,16 @@
 				return moment(val * 1000).format('YY/MM/DD HH:mm')
 			}
 		},
+		onShow() {
+			this.getOrderFreightFee();
+		},
 		onLoad(options){
 			this.initData(options);
 		},
 		methods: {
+			handleIsUsePoint () {
+				this.isUsePoint = !this.isUsePoint;
+			},
 			/**
 			 *@des 单列物流
 			 *@author stav stavyan@qq.com
@@ -247,9 +276,40 @@
 			onConfirm(e) {
 				this.currentShippingType = e;
 			},
-			onCompanyConfirm(e) {
-				console.log(e)
-				this.currentCompany = e;
+			async onCompanyConfirm(e) {
+				e.value = e.value[0]
+        this.currentCompany = e;
+				this.getOrderFreightFee();
+      },
+			/**
+			 *@des 计算运费
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/02 10:43:11
+			 */
+			async getOrderFreightFee() {
+				uni.showLoading({title: '加载中...'});
+				const params = {};
+				if (this.cartIds) {
+					params.type = 'cart';
+					params.data = this.cartIds;
+				} else {
+					params.data = this.product;
+					params.type = 'buy_now';
+				}
+				params.address_id = this.addressData.id;
+				params.company_id = this.currentCompany.value;
+				await this.$get(`${orderFreightFee}`, {
+					...params
+				}).then(r => {
+					if (r.code === 200) {
+						this.shippingMoney = r.data.shipping_money;
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			/**
 			 *@des 初始化数据
@@ -259,14 +319,17 @@
 			 */
 			initData(options) {
 				this.orderDetail = JSON.parse(options.data);
+				console.log(this.orderDetail);
 				this.addressData = this.orderDetail.address;
 				this.product = options.product;
-				console.log(this.orderDetail)
+				this.currentShippingType = this.pickerShippingType[0]
 				this.orderDetail.company.forEach(item => {
 					item.label = item.title;
 					item.value = item.id;
 				});
 				this.cartIds = options.id;
+				this.currentCompany = this.orderDetail.company[0];
+				this.getOrderFreightFee();
 			},
 			/**
 			 *@des 优惠券面板 切换
@@ -306,7 +369,7 @@
 					params.invoice_id = this.invoiceItem.id;
 				}
 				if (this.currentCompany.value) {
-					params.company_id = this.currentCompany.value[0];
+					params.company_id = this.currentCompany.value;
 				}
 				if (this.currentShippingType.value) {
 					params.shipping_type = this.currentShippingType.value;
@@ -318,7 +381,7 @@
 						const data = {}
 						data.order_id = parseInt(r.data.id, 10);
 						uni.redirectTo({
-							url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${r.data.product_money}`
+							url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${this.realAmount}`
 						})
 					} else {
 						uni.showToast({title: r.message, icon: "none"});

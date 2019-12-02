@@ -134,7 +134,7 @@
 			 */
 			initData (options) {
 				if (navigator) {
-					this.headerTop = document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
+					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
 				this.cateId = options.cate_id;
 				this.keyword = options.keyword;

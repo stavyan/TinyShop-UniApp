@@ -346,7 +346,7 @@
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.showToast({ title: '恭喜您, 收货地址修改成功！', icon: "none" });
-						uni.redirectTo({
+						uni.navigateBack({
 							url: '/pages/address/address'
 						})
 					} else {

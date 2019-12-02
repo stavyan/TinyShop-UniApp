@@ -6,6 +6,8 @@
  */
 // 产品分类列表
 const productCate = "/addons/rf-tiny-shop/v1/product/cate/index";
+// 首页推荐分类
+const productCateList = "/addons/rf-tiny-shop/v1/product/cate/list";
 // 产品列表
 const productList = "/addons/rf-tiny-shop/v1/product/product/index";
 // 产品列表
@@ -30,12 +32,15 @@ const orderPreview = "/addons/rf-tiny-shop/v1/order/order/preview";
 const orderClose = "/addons/rf-tiny-shop/v1/member/order/close";
 // 订单支付
 const orderPay= "/addons/rf-tiny-shop/v1/common/pay/create";
+// 选择快递运费计算
+const orderFreightFee = "/addons/rf-tiny-shop/v1/order/order/freight-fee";
 
 // 商品评论列表
 const evaluateList = "/addons/rf-tiny-shop/v1/product/evaluate/index";
 
 export {
     productCate,
+    productCateList,
     productList,
     productDetail,
     cartItemCreate,
@@ -46,6 +51,7 @@ export {
     orderCreate,
     orderClose,
     orderPay,
+    orderFreightFee,
     evaluateList,
     orderPreview
 };
