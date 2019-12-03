@@ -34,6 +34,10 @@ const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
 // 订单确认收货
 const orderTakeDelivery = "/addons/rf-tiny-shop/v1/member/order/take-delivery";
+// 退货/退款申请
+const orderRefundApply = "/addons/rf-tiny-shop/v1/member/order-product/refund-apply";
+// 关闭退货/退款申请
+const closeOrderRefundApply = "/addons/rf-tiny-shop/v1/member/order-product/refund-close";
 // 获取订单详情
 const orderDetail = "/addons/rf-tiny-shop/v1/member/order/view";
 
@@ -61,7 +65,7 @@ const invoiceUpdate = "/addons/rf-tiny-shop/v1/member/invoice/update";
 const invoiceDetail = "/addons/rf-tiny-shop/v1/member/invoice/view";
 // 默认发票
 const invoiceDefault = "/addons/rf-tiny-shop/v1/member/invoice/default";
-// 默认发票
+// 删除发票
 const invoiceDel = "/addons/rf-tiny-shop/v1/member/invoice/delete";
 
 export {
@@ -76,6 +80,8 @@ export {
     couponList,
     myCouponList,
     orderList,
+    orderRefundApply,
+    closeOrderRefundApply,
     orderDetail,
     orderTakeDelivery,
     couponReceive,

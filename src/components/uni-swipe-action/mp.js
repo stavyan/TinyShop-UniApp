@@ -56,10 +56,11 @@ export default {
       this.$set(this.position, 0, valueObj)
       // console.log('改变', e);
     },
-    onClick (index, item) {
+    onClick (index, item, data) {
       this.$emit('click', {
         content: item,
-        index
+        index,
+        data
       })
     },
     getSize () {

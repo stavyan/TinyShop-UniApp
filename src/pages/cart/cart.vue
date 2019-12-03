@@ -18,6 +18,7 @@
 				<block v-for="(item, index) in cartList" :key="item.id">
 					<view
 						class="cart-item"
+						@click.prevent="navToDetailPage(item.product_id)"
 						:class="{'b-b': index!==cartList.length-1}"
 					>
 						<view class="image-wrapper">
@@ -31,7 +32,7 @@
 							<view
 								class="yticon icon-xuanzhong2 checkbox"
 								:class="{checked: item.checked}"
-								@click="check('item', index)"
+								@click.stop="check('item', index)"
 							></view>
 						</view>
 						<view class="item-right">
@@ -50,7 +51,7 @@
 								@eventChange="numberChange"
 							></uni-number-box>
 						</view>
-						<text class="del-btn yticon icon-fork" @click="deleteCartItem(item.id)"></text>
+						<text class="del-btn yticon icon-fork" @click.stop="deleteCartItem(item.sku_id)"></text>
 					</view>
 				</block>
 			</view>
@@ -118,6 +119,12 @@
 			...mapState(['hasLogin'])
 		},
 		methods: {
+			//详情页
+			navToDetailPage(id) {
+				uni.navigateTo({
+					url: `/pages/product/product?id=${id}`
+				})
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com

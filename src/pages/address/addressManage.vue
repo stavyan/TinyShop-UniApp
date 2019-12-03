@@ -76,7 +76,7 @@
 				this.manageType = options.type;
 				uni.setNavigationBarTitle({
 					title
-				})
+				});
 				await this.getProvinceList();
 			},
 			async getAddressDetail(id) {

@@ -206,7 +206,7 @@
 			<view
 				v-for="(item, index) in newGoodsList" :key="index"
 				class="guess-item"
-				@click="navToDetailPage(item)"
+				@click="navToDetailPage(item.id)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
@@ -234,7 +234,7 @@
 			<view
 				v-for="(item, index) in goodsList" :key="index"
 				class="guess-item"
-				@click="navToDetailPage(item)"
+				@click="navToDetailPage(item.id)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
@@ -384,9 +384,7 @@
 				this.swiperCurrent = index;
 			},
 			//详情页
-			navToDetailPage(item) {
-				//测试数据没有写id，用title代替
-				let id = item.title;
+			navToDetailPage(id) {
 				uni.navigateTo({
 					url: `/pages/product/product?id=${id}`
 				})

@@ -68,13 +68,13 @@
 							<text class="price">{{ item.product_money }}</text>
 						</view>
 						<view class="action-box b-t">
-							<button class="action-btn" v-show="tabCurrentIndex === 1" @click="handleOrderOperation(item, 'close')">取消订单</button>
-							<button class="action-btn recom" v-show="tabCurrentIndex === 1" @click="handlePayment(item)">立即支付</button>
-						  <button class="action-btn recom" v-show="tabCurrentIndex === 2" @click="handleOrderClose(item.id)">申请退款</button>
-						  <button class="action-btn" v-show="tabCurrentIndex === 3 || tabCurrentIndex === 4" @click="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn" v-show="tabCurrentIndex === 3" @click="handleOrderClose(item.id)">申请退货</button>
-              <button class="action-btn recom" v-show="tabCurrentIndex === 3" @click="handleOrderOperation(item, 'delivery')">确认收货</button>
-						  <button class="action-btn recom" v-show="tabCurrentIndex === 4" @click="handleOrderOperation(item, 'evaluation')">我要评价</button>
+							<button class="action-btn" v-show="item.order_status == 0" @click="handleOrderOperation(item, 'close')">取消订单</button>
+							<button class="action-btn recom" v-show="item.order_status == 0" @click="handlePayment(item)">立即支付</button>
+						  <button class="action-btn recom" v-show="item.order_status == 1" @click="handleOrderOperation(item, 'refund', 1)">申请退款</button>
+						  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @click="handleOrderOperation(item, 'shipping')">查看物流</button>
+              <button class="action-btn" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'refund', 2)">申请退货</button>
+              <button class="action-btn recom" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'delivery')">确认收货</button>
+						  <button class="action-btn recom" v-show="item.order_status == 4" @click="handleOrderOperation(item, 'evaluation')">我要评价</button>
             </view>
 					</view>
 					<uni-load-more :status="loadingType"></uni-load-more>
@@ -89,7 +89,7 @@
 	import empty from "@/components/empty";
 	import Json from '@/Json';
 	import moment from 'moment';
-  import {orderList, orderTakeDelivery} from "../../api/userInfo";
+	import {orderList, orderTakeDelivery} from "../../api/userInfo";
 	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
 	import {orderClose} from "../../api/product";
 	export default {
@@ -140,6 +140,11 @@
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 			}
 		},
+		// onShow(){
+		// 	this.page = 1;
+		// 	this.orderList = [];
+		// 	this.getOrderList();
+		// },
 		onLoad(options){
 			/**
 			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
@@ -178,31 +183,40 @@
        *@date 2019/11/27 10:14:47
        *@param arguments
        */
-      handleOrderOperation (item, type) {
+      handleOrderOperation (item, type, refund_type) {
         switch (type) {
           case 'evaluation': // 我要评价
-              this.handleOrderEvaluation(item);
+              this.handleOrderEvaluation(item, 'evaluation');
             break;
           case 'close': // 取消订单
-              this.handleOrderClose(item.id)
+              this.handleOrderClose(item)
             break;
           case 'shipping': // 查看物流
+						uni.showToast({title: "后台没写", icon: "none"});
+            break;
+          case 'refund': // 退货/退款
+						this.handleOrderEvaluation(item, 'refund', refund_type);
             break;
           case 'delivery': // 确认收货
             this.handleOrderTakeDelivery(item.id);
             break;
         }
       },
-      handleOrderEvaluation(item) {
-      	console.log(item)
+      handleOrderEvaluation(item, type, refund_type) {
         if(item.product.length > 1) {
           uni.navigateTo({
-            url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}`
+            url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}&orderStatus=${item.order_status}`
           })
         } else {
-          uni.navigateTo({
-            url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
-          })
+        	if (type === 'refund') {
+						uni.navigateTo({
+							url: `/pages/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
+						})
+					}
         }
       },
 			/**

@@ -4,7 +4,7 @@
 			您现在拥有<text class="total-num">{{ parseInt(integralList[0] && integralList[0].new_num, 10) }}</text> {{ type ? '元' : '积分' }}
 		</view>
 		<view class="list b-b" v-for="(item, index) in integralList" :key="index" @click="checkAddress(item)">
-			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
+			<view class="wrapper">
 				<view class="address-box">
 					{{item.remark }}
 				</view>
@@ -62,6 +62,13 @@
 		},
 		methods: {
 			initData () {
+				let title = '积分记录';
+				if(parseInt(this.type, 10) === 1){
+					title = '余额记录'
+				}
+				uni.setNavigationBarTitle({
+					title
+				})
 				this.getIntegralListList();
 			},
 			async getIntegralListList (type) {

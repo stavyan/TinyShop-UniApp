@@ -319,7 +319,6 @@
 			 */
 			initData(options) {
 				this.orderDetail = JSON.parse(options.data);
-				console.log(this.orderDetail);
 				this.addressData = this.orderDetail.address;
 				this.product = options.product;
 				this.currentShippingType = this.pickerShippingType[0]
