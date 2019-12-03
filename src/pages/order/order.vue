@@ -203,21 +203,21 @@
         }
       },
       handleOrderEvaluation(item, type, refund_type) {
-        if(item.product.length > 1) {
+        // if(item.product.length > 1) {
           uni.navigateTo({
             url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}&orderStatus=${item.order_status}`
           })
-        } else {
-        	if (type === 'refund') {
-						uni.navigateTo({
-							url: `/pages/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
-						})
-					} else {
-						uni.navigateTo({
-							url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
-						})
-					}
-        }
+        // } else {
+        // 	if (type === 'refund') {
+				// 		uni.navigateTo({
+				// 			url: `/pages/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
+				// 		})
+				// 	} else {
+				// 		uni.navigateTo({
+				// 			url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
+				// 		})
+				// 	}
+        // }
       },
 			/**
 			 *@des 取消订单
