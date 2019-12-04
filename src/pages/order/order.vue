@@ -26,15 +26,16 @@
 					>
 						<view class="i-top b-b">
 							<text class="time">{{item.created_at | time}}</text>
+							<text class="state" v-show="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
 							<view class="example-body" v-show="parseInt(item.order_status, 10) ===0">
 								<uni-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
 							</view>
-							<!--<text class="state" :style="{color: item.stateTipColor}">{{item.stateTip}}</text>-->
-							<text
-								v-if="item.state===9"
-								class="del-btn yticon icon-iconfontshanchu1"
-								@click="deleteOrder(index)"
-							></text>
+              <!--:style="{color: item.stateTipColor}"-->
+							<!--<text-->
+								<!--v-show="parseInt(item.order_status, 10) === 0"-->
+								<!--class="del-btn yticon icon-iconfontshanchu1"-->
+								<!--@click="deleteOrder(index)"-->
+							<!--&gt;</text>-->
 						</view>
 
 						<scroll-view v-if="item && item.product && item.product.length > 1"
@@ -68,6 +69,7 @@
 							<text class="price">{{ item.product_money }}</text>
 						</view>
 						<view class="action-box b-t">
+              <button class="action-btn" @click="handleOrderOperation(item, 'detail')">订单详情</button>
 							<button class="action-btn" v-show="item.order_status == 0" @click="handleOrderOperation(item, 'close')">取消订单</button>
 							<button class="action-btn recom" v-show="item.order_status == 0" @click="handlePayment(item)">立即支付</button>
 						  <button class="action-btn recom" v-show="item.order_status == 1" @click="handleOrderOperation(item, 'refund', 1)">申请退款</button>
@@ -75,6 +77,7 @@
               <button class="action-btn" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'refund', 2)">申请退货</button>
               <button class="action-btn recom" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'delivery')">确认收货</button>
 						  <button class="action-btn recom" v-show="item.order_status == 4" @click="handleOrderOperation(item, 'evaluation')">我要评价</button>
+						  <button class="action-btn recom" v-show="item.order_status == -4" @click="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
 					<uni-load-more :status="loadingType"></uni-load-more>
@@ -138,7 +141,28 @@
 		filters: {
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
-			}
+			},
+      orderStatusFilter (orderStatus) {
+			  let status = null;
+				const orderStatusList = [
+					{key: 0, value: '待付款'},
+					{key: 1, value: '待发货'},
+					{key: 2, value: '已发货'},
+					{key: 3, value: '已收货'},
+					{key: 4, value: '已完成'},
+					{key: -1, value: '退货申请'},
+					{key: -2, value: '退款中'},
+					{key: -3, value: '退款完成'},
+					{key: -4, value: '已关闭'},
+					{key: -5, value: '撤销申请'},
+				];
+				orderStatusList.forEach(orderItem => {
+					if (orderItem.key == orderStatus) {
+						 status = orderItem.value
+					}
+				})
+        return status;
+      }
 		},
 		// onShow(){
 		// 	this.page = 1;
@@ -185,11 +209,17 @@
        */
       handleOrderOperation (item, type, refund_type) {
         switch (type) {
+          case 'detail': // 订单详情
+              this.toOrderDetail(item.id);
+            break;
           case 'evaluation': // 我要评价
               this.handleOrderEvaluation(item, 'evaluation');
             break;
           case 'close': // 取消订单
-              this.handleOrderClose(item)
+              this.handleOrderClose(item.id)
+            break;
+          case 'delete': // 删除订单
+						uni.showToast({title: '删除订单', icon: "none"});
             break;
           case 'shipping': // 查看物流
 						uni.showToast({title: "后台没写", icon: "none"});
@@ -218,6 +248,11 @@
 				// 		})
 				// 	}
         // }
+      },
+      toOrderDetail(id) {
+        uni.navigateTo({
+          url: `/pages/order/detail?id=${id}`
+        })
       },
 			/**
 			 *@des 取消订单

@@ -180,7 +180,12 @@
 			"style": {
 				"navigationBarTitleText": "创建订单"
 			}
-		},{
+		}, {
+			"path": "pages/order/detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		}, {
 			"path": "pages/collection/collection",
 			"style": {
 				"enablePullDownRefresh": true,
