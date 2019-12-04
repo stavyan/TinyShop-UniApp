@@ -66,7 +66,7 @@
 							共
 							<text class="num">{{ item.product_count }}</text>
 							件商品 实付款
-							<text class="price">{{ item.product_money }}</text>
+							<text class="price">{{ item.pay_money }}</text>
 						</view>
 						<view class="action-box b-t">
               <button class="action-btn" @click="handleOrderOperation(item, 'detail')">订单详情</button>
