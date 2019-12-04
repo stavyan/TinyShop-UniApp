@@ -231,14 +231,14 @@
 				return amount;
 			},
 			discountAmount() {
-				return this.couponItem.discount ? (100 - this.couponItem.discount) / 100 * this.amountGoods : this.couponItem.money || 0;
+				return this.couponItem.discount ? ((100 - this.couponItem.discount) / 100 * this.amountGoods).toFixed(2) : this.couponItem.money || 0;
 			},
 			realAmount(){
-				const realAmount = this.amountGoods - this.discountAmount - this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
+				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
 				return (parseInt(this.invoiceAmount, 10) + realAmount).toFixed(2) || 0;
 			},
       invoiceAmount () {
-			  const realAmount = this.amountGoods - this.discountAmount - this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
+			  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
 			  return this.invoiceItem.type ? (this.orderDetail.invoice.order_invoice_tax / 100 * realAmount).toFixed(2) : 0;
       },
 			maxUsePoint() {

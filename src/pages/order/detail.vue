@@ -91,6 +91,12 @@
 				</text>
 			</view>
 			<view class="yt-list-cell b-b">
+				<text class="cell-tit clamp">开具发票</text>
+				<text class="cell-tip red in1line">
+					<text>{{ `电子发票 - ${parseInt(orderDetail.invoice && orderDetail.invoice.type, 10) === 1 ? '公司' : '个人'}- ${orderDetail.invoice && orderDetail.invoice.title}` }}</text>
+				</text>
+			</view>
+			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">发票税费</text>
 				<text class="cell-tip red">
 					<text>￥ {{ orderDetail.tax_money }}</text>

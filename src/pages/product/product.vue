@@ -85,8 +85,7 @@
 			<view class="c-row b-b">
 				<text class="tit">服务</text>
 				<view class="bz-list con">
-					<text>7天无理由退换货 </text>
-					<text>假一赔十 </text>
+					<text v-for="item in productDetail.tags">{{ item }} </text>
 				</view>
 			</view>
 		</view>
@@ -268,7 +267,7 @@
 			},
 			givePointFilter(val) {
 				return parseInt(val.integral_give_type, 10) === 1 ?
-						`至少获得 ${Math.round(parseInt(val.give_point, 10) * parseInt(val.minSkuPrice, 10))}` :
+						`${Math.round(parseInt(val.give_point, 10) / 100 * parseInt(val.minSkuPrice, 10))} 起` :
 						parseInt(val.integral_give_type, 10);
 			}
 		},
