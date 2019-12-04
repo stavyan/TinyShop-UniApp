@@ -18,6 +18,7 @@
 		<view class="goods-section">
 			<view class="g-header b-b">
 				<text class="name">商品列表</text>
+				<text class="name red">{{ orderDetail.order_status | orderStatusFilter  }}</text>
 			</view>
 			<!-- 商品列表 -->
 			<view class="g-item" v-for="item in orderDetail.product">
@@ -26,8 +27,11 @@
 					<text class="title clamp">{{ item.product_name }}</text>
 					<text class="spec">{{ item.sku_name || '基础款' }}</text>
 					<view class="price-box">
-						<text class="price">￥ {{item.price}}</text>
-						<text class="number"> * {{ item.num }}</text>
+						<text>
+							<text class="price">￥ {{item.price}}</text>
+							<text class="number"> * {{ item.num }}</text>
+						</text>
+						<text class="status"> {{ item | filterProductStatus }}</text>
 					</view>
 				</view>
 			</view>
@@ -55,7 +59,7 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" v-show="parseInt(orderDetail.shipping_type, 10) === 1">
+			<view class="yt-list-cell b-b" v-show="orderDetail.company_name">
 				<view class="cell-icon">
 					司
 				</view>
@@ -90,7 +94,7 @@
 					<text>￥ {{ orderDetail.shipping_money }}</text>
 				</text>
 			</view>
-			<view class="yt-list-cell b-b">
+			<view class="yt-list-cell b-b" v-show="orderDetail.invoice">
 				<text class="cell-tit clamp">开具发票</text>
 				<text class="cell-tip red in1line">
 					<text>{{ `电子发票 - ${parseInt(orderDetail.invoice && orderDetail.invoice.type, 10) === 1 ? '公司' : '个人'}- ${orderDetail.invoice && orderDetail.invoice.title}` }}</text>
@@ -124,61 +128,63 @@
 				<!--<input class="desc" type="text" v-model="desc" placeholder="请填写备注信息" placeholder-class="placeholder" />-->
 			<!--</view>-->
 		</view>
-
-		<!--&lt;!&ndash; 底部 &ndash;&gt;-->
-		<!--<view class="footer">-->
-			<!--<view class="price-content">-->
-				<!--<text>实付款</text>-->
-				<!--<text class="price-tip">￥</text>-->
-				<!--<text class="price">{{ realAmount }}</text>-->
-			<!--</view>-->
-			<!--<text class="submit" @click="submit">提交订单</text>-->
-		<!--</view>-->
-
-		<!--&lt;!&ndash; 优惠券面板 &ndash;&gt;-->
-		<!--<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">-->
-			<!--<view class="mask-content" @click.stop.prevent="stopPrevent">-->
-				<!--&lt;!&ndash; 优惠券页面，仿mt &ndash;&gt;-->
-				<!--<view class="coupon-item" v-for="(item,index) in orderDetail.coupons" :key="index">-->
-					<!--<view class="con">-->
-						<!--<view class="left" @click="selectCoupon(item)">-->
-							<!--<text class="title">{{item.title}}</text>-->
-							<!--<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>-->
-						<!--</view>-->
-						<!--<view class="right">-->
-							<!--<text class="price">{{item.money}}</text>-->
-							<!--<text>满{{ item.at_least }}可用</text>-->
-						<!--</view>-->
-
-						<!--<view class="circle l"></view>-->
-						<!--<view class="circle r"></view>-->
-					<!--</view>-->
-					<!--<view class="tips">-->
-							<!--<text v-show="item.range_type && item.max_fetch">-->
-								<!--{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}-->
-							<!--</text>-->
-						 	<!--<text>-->
-								<!--{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效-->
-							<!--</text>-->
-					<!--</view>-->
-				<!--</view>-->
-				<!--<text class="no-coupon" v-if="orderDetail.coupons.length === 0">暂无优惠券</text>-->
-			<!--</view>-->
-		<!--</view>-->
-		<!--<mpvue-picker-->
-				<!--themeColor="#fa436a"-->
-				<!--ref="shippingTypePicker"-->
-				<!--mode="selector"-->
-				<!--:deepLength="1"-->
-				<!--@onConfirm="onConfirm"-->
-				<!--:pickerValueArray="pickerShippingType" />-->
-		<!--<mpvue-picker-->
-			<!--themeColor="#fa436a"-->
-			<!--ref="companyTypePicker"-->
-			<!--mode="selector"-->
-			<!--:deepLength="1"-->
-			<!--@onConfirm="onCompanyConfirm"-->
-			<!--:pickerValueArray="orderDetail.company" />-->
+		<view class="uni-timeline" style="padding: 30upx 20upx; background-color: #fff;">
+			<view class="uni-timeline-item uni-timeline-first-item">
+				<view class="uni-timeline-item-divider"></view>
+				<view class="uni-timeline-item-content">
+					<view>
+						订单创建
+					</view>
+					<view class="datetime">
+						{{ orderDetail.created_at | time }}
+					</view>
+				</view>
+			</view>
+			<view class="uni-timeline-item ">
+				<view class="uni-timeline-item-divider"></view>
+				<view class="uni-timeline-item-content">
+					<view>
+						订单支付
+					</view>
+					<view class="datetime">
+						{{ orderDetail.pay_time | time }}
+					</view>
+				</view>
+			</view>
+			<view class="uni-timeline-item ">
+				<view class="uni-timeline-item-divider"></view>
+				<view class="uni-timeline-item-content">
+					<view>
+						卖家发货
+					</view>
+					<view class="datetime">
+						{{ orderDetail.consign_time | time }}
+					</view>
+				</view>
+			</view>
+			<view class="uni-timeline-item ">
+				<view class="uni-timeline-item-divider"></view>
+				<view class="uni-timeline-item-content">
+					<view>
+						买家确认收货
+					</view>
+					<view class="datetime">
+						{{ orderDetail.sign_time | time }}
+					</view>
+				</view>
+			</view>
+			<view class="uni-timeline-item uni-timeline-last-item">
+				<view class="uni-timeline-item-divider"></view>
+				<view class="uni-timeline-item-content">
+					<view>
+						订单完成
+					</view>
+					<view class="datetime">
+						{{ orderDetail.finish_time | time }}
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -223,7 +229,78 @@
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YY/MM/DD HH:mm')
+				return val == 0 ? '暂未操作' : moment(val * 1000).format('YY/MM/DD HH:mm')
+			},
+      orderStatusFilter (orderStatus) {
+			  let status = null;
+				const orderStatusList = [
+					{key: 0, value: '待付款'},
+					{key: 1, value: '待发货'},
+					{key: 2, value: '已发货'},
+					{key: 3, value: '已收货'},
+					{key: 4, value: '已完成'},
+					{key: -1, value: '退货申请'},
+					{key: -2, value: '退款中'},
+					{key: -3, value: '退款完成'},
+					{key: -4, value: '已关闭'},
+					{key: -5, value: '撤销申请'},
+				];
+				orderStatusList.forEach(orderItem => {
+					if (orderItem.key == orderStatus) {
+						 status = orderItem.value
+					}
+				})
+        return status;
+      },
+			filterProductStatus(item) {
+				let status = null;
+				if (parseInt(item.refund_status, 10) !== 0) {
+					const refundStatusList = [
+						{key: 1, value: '退款申请'},
+						{key: 2, value: '等待退货'},
+						{key: 3, value: '等待确认收货'},
+						{key: 4, value: '等待确认退款'},
+						{key: 5, value: '同意退款'},
+						{key: -1, value: '退款已拒绝'},
+						{key: -2, value: '退款已关闭'},
+						{key: -3, value: '退款不通过'},
+					];
+					refundStatusList.forEach(refundItem => {
+						if (refundItem.key == item.refund_status) {
+							 status = refundItem.value
+						}
+					})
+				} else if (parseInt(item.order_status, 10) === 4) {
+					const evaluateStatusList = [
+						{key: 0, value: '未评价'},
+						{key: 1, value: '已评价'},
+						{key: 2, value: '已追评'},
+					];
+					evaluateStatusList.forEach(evaluateItem => {
+						if (evaluateItem.key == item.is_evaluate) {
+							 status = evaluateItem.value
+						}
+					})
+				} else {
+					const orderStatusList = [
+						{key: 0, value: '待付款'},
+						{key: 1, value: '待发货'},
+						{key: 2, value: '已发货'},
+						{key: 3, value: '已收货'},
+						{key: 4, value: '已完成'},
+						{key: -1, value: '退货申请'},
+						{key: -2, value: '退款中'},
+						{key: -3, value: '退款完成'},
+						{key: -4, value: '已关闭'},
+						{key: -5, value: '撤销申请'},
+					];
+					orderStatusList.forEach(orderItem => {
+						if (orderItem.key == item.order_status) {
+							 status = orderItem.value
+						}
+					})
+				}
+				return status;
 			},
 			filterShippingType (value) {
 				const data = ['', '物流配送', '买家自提', '本地配送'];
@@ -487,9 +564,13 @@
 		.g-header {
 			display: flex;
 			align-items: center;
+			justify-content:space-between;
 			height: 84upx;
 			padding: 0 30upx;
 			position: relative;
+			.red {
+				color: $base-color;
+			}
 		}
 
 		.logo {
@@ -535,10 +616,10 @@
 			.price-box {
 				display: flex;
 				align-items: center;
+				justify-content:space-between;
 				font-size: 32upx;
 				color: $font-color-dark;
 				padding-top: 10upx;
-
 				.price {
 					margin-bottom: 4upx;
 				}
@@ -546,6 +627,10 @@
 					font-size: 26upx;
 					color: $font-color-base;
 					margin-left: 20upx;
+				}
+				.status {
+					font-size: 24upx;
+					color: $font-color-spec;
 				}
 			}
 

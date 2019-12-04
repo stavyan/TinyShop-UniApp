@@ -59,13 +59,24 @@ function request(url, params, header, method) {
                 }, 1.5 * 1000);
                 break;
             case 400:
-                uni.clearStorageSync();
+                // uni.clearStorageSync();
+                uni.showToast({title: "错误的请求", icon: 'none'});
+                break;
+            case 405:
+                // uni.clearStorageSync();
+                uni.showToast({title: "当前操作不被允许", icon: 'none'});
+                break;
+            case 404:
+                uni.showToast({title: "你似乎到了未知领取~", icon: 'none'});
+                break;
+            case 422:
+                uni.showToast({title: "数据验证失败~", icon: 'none'});
+                break;
+            case 429:
+                uni.showToast({title: "请求过多，先休息一下吧~", icon: 'none'});
                 break;
             case 500:
-                uni.showToast({
-                    title: "服务器打瞌睡了~",
-                    icon: 'none'
-                });
+                uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
                 break;
             default:
                 uni.showToast({

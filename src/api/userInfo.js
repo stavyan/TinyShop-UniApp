@@ -40,6 +40,8 @@ const orderRefundApply = "/addons/rf-tiny-shop/v1/member/order-product/refund-ap
 const closeOrderRefundApply = "/addons/rf-tiny-shop/v1/member/order-product/refund-close";
 // 获取订单详情
 const orderDetail = "/addons/rf-tiny-shop/v1/member/order/view";
+// 删除已关闭订单
+const orderDelete = "/addons/rf-tiny-shop/v1/member/order/delete";
 
 // 获取我的足迹
 const footPrintList = "/addons/rf-tiny-shop/v1/member/footprint/index";
@@ -83,6 +85,7 @@ export {
     orderRefundApply,
     closeOrderRefundApply,
     orderDetail,
+    orderDelete,
     orderTakeDelivery,
     couponReceive,
     footPrintList,

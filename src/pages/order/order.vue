@@ -38,7 +38,7 @@
 							<!--&gt;</text>-->
 						</view>
 
-						<scroll-view v-if="item && item.product && item.product.length > 1"
+						<scroll-view @click="toOrderDetail(item.id)" v-if="item && item.product && item.product.length > 1"
 												 class="goods-box" scroll-x>
 							<view
 								v-for="(goodsItem, goodsIndex) in item.product"
@@ -52,6 +52,7 @@
 						<view
 							v-if="item.product && item.product.length === 1"
 							class="goods-box-single"
+              @click="toOrderDetail(item.id)"
 							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
 						>
 							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
@@ -92,7 +93,7 @@
 	import empty from "@/components/empty";
 	import Json from '@/Json';
 	import moment from 'moment';
-	import {orderList, orderTakeDelivery} from "../../api/userInfo";
+  import {orderDelete, orderList, orderTakeDelivery} from "../../api/userInfo";
 	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
 	import {orderClose} from "../../api/product";
 	export default {
@@ -216,10 +217,11 @@
               this.handleOrderEvaluation(item, 'evaluation');
             break;
           case 'close': // 取消订单
-              this.handleOrderClose(item.id)
+              this.handleOrderClose(item.id);
             break;
           case 'delete': // 删除订单
 						uni.showToast({title: '删除订单', icon: "none"});
+              this.handleOrderDelete(item.id);
             break;
           case 'shipping': // 查看物流
 						uni.showToast({title: "后台没写", icon: "none"});
@@ -263,6 +265,29 @@
 			async handleOrderClose(id) {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderClose}`, {
+					id,
+				}).then(r => {
+					if (r.code === 200) {
+            this.page = 1;
+            this.orderList = [];
+						this.getOrderList();
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+      /**
+       *@des 删除已关闭订单
+       *@author stav stavyan@qq.com
+       *@blog https://stavtop.club
+       *@date 2019/12/04 17:20:22
+       *@param id 订单id
+       */
+			async handleOrderDelete(id) {
+				uni.showLoading({title: '加载中...'});
+				await this.$del(`${orderDelete}`, {
 					id,
 				}).then(r => {
 					if (r.code === 200) {
