@@ -69,9 +69,6 @@ function request(url, params, header, method) {
             case 404:
                 uni.showToast({title: "你似乎到了未知领取~", icon: 'none'});
                 break;
-            case 422:
-                uni.showToast({title: "数据验证失败~", icon: 'none'});
-                break;
             case 429:
                 uni.showToast({title: "请求过多，先休息一下吧~", icon: 'none'});
                 break;

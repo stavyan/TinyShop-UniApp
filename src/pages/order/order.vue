@@ -70,12 +70,12 @@
 							<text class="price">{{ item.pay_money }}</text>
 						</view>
 						<view class="action-box b-t">
-              <button class="action-btn" @click="handleOrderOperation(item, 'detail')">订单详情</button>
 							<button class="action-btn" v-show="item.order_status == 0" @click="handleOrderOperation(item, 'close')">取消订单</button>
+              <button class="action-btn" @click="handleOrderOperation(item, 'detail')">订单详情</button>
 							<button class="action-btn recom" v-show="item.order_status == 0" @click="handlePayment(item)">立即支付</button>
 						  <button class="action-btn recom" v-show="item.order_status == 1" @click="handleOrderOperation(item, 'refund', 1)">申请退款</button>
 						  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @click="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'refund', 2)">申请退货</button>
+              <button class="action-btn recom" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'refund', 2)">申请退货</button>
               <button class="action-btn recom" v-show="item.order_status == 2" @click="handleOrderOperation(item, 'delivery')">确认收货</button>
 						  <button class="action-btn recom" v-show="item.order_status == 4" @click="handleOrderOperation(item, 'evaluation')">我要评价</button>
 						  <button class="action-btn recom" v-show="item.order_status == -4" @click="handleOrderOperation(item, 'delete')">删除订单</button>

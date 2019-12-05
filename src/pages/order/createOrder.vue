@@ -154,7 +154,8 @@
 							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>
 						<view class="right">
-							<text class="price">{{item.money}}</text>
+							<text class="price" v-if="parseInt(item.couponType.type, 10) === 1">{{item.money}}</text>
+							<text class="price-discount" v-else>{{item.discount / 10}}折</text>
 							<text>满{{ item.at_least }}可用</text>
 						</view>
 
@@ -231,11 +232,11 @@
 				return amount;
 			},
 			discountAmount() {
-				return this.couponItem.discount ? ((100 - this.couponItem.discount) / 100 * this.amountGoods).toFixed(2) : this.couponItem.money || 0;
+				return parseInt(this.couponItem.type, 10) === 2 ? ((100 - this.couponItem.discount) / 100 * this.amountGoods).toFixed(2) : this.couponItem.money || 0;
 			},
 			realAmount(){
 				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
-				return (parseInt(this.invoiceAmount, 10) + realAmount).toFixed(2) || 0;
+				return (parseFloat(this.invoiceAmount) + realAmount).toFixed(2) || 0;
 			},
       invoiceAmount () {
 			  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
@@ -407,6 +408,7 @@
 			stopPrevent(){
 			},
 			selectCoupon(item){
+				console.log(item)
 				if (this.amountGoods < item.at_least) {
 					uni.showToast({ title: '不满足优惠券使用条件~', icon: "none" });
 					return;
@@ -810,12 +812,16 @@
 			height: 100upx;
 		}
 		.price{
-			font-size: 44upx;
+			font-size: 40upx;
 			color: $base-color;
 			&:before{
 				content: '￥';
 				font-size: 34upx;
 			}
+		}
+		.price-discount {
+			font-size: 36upx;
+			color: $base-color;
 		}
 		.tips{
 			font-size: 24upx;

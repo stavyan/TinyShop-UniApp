@@ -15,7 +15,7 @@
 				<scroll-view
 					class="list-scroll-content mask-content"
 					scroll-y
-					@scrolltolower="loadData"
+					@scrolltolower="getMoreMyCouponList"
 				>
 					<!-- 空白页 -->
 					<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
@@ -25,7 +25,7 @@
 							<view class="con">
 								<view class="left" @click="getCoupon(item.id)">
 									<text class="title">{{item.title}}</text>
-									<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
+									<text class="time">{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
 								</view>
 								<view class="right">
 									<text class="price">{{item.money}}</text>
@@ -36,12 +36,11 @@
 								<view class="circle r"></view>
 							</view>
 							<view class="tips">
-									<text v-show="item.range_type && item.max_fetch">
-										{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}
-									</text>
 									<text>
-										{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效
+										{{ parseInt(item.couponType.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}
 									</text>
+								<text class="btn" @click="show(item)" v-show="parseInt(state, 10) === 2">已使用的商品</text>
+								<text class="state" v-show="parseInt(state, 10) === 3">已过期</text>
 							</view>
 						</view>
 						<!--<view class="coupon-none" v-show="couponList.length === 0">-->
@@ -51,6 +50,14 @@
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		<uni-drawer :visible="showRight" mode="right" @close="closeDrawer()">
+				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
+					<uni-list-item :title="item.name" @click="navTo(`/pages/product/product?id=${item.id}`)"/>
+				</uni-list>
+				<view class="close">
+					<button class="btn" plain="true" size="small" type="primary" @click="hide">关闭</button>
+				</view>
+		</uni-drawer>
 	</view>
 </template>
 
@@ -58,10 +65,17 @@
 	import {myCouponList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
+	import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
+	import uniList from '@/components/uni-list/uni-list.vue'
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
+	import moment from 'moment'
 	export default {
 		components: {
 			uniLoadMore,
-			empty
+			empty,
+			uniDrawer,
+			uniList,
+			uniListItem
 		},
 		data() {
 			return {
@@ -84,12 +98,14 @@
 						orderList: []
 					}
 				],
-				page: 1
+				page: 1,
+				showRight: false,
+				currentCoupon: {}
 			}
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YY/MM/DD HH:mm')
+				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			}
 		},
 		onLoad(){
@@ -112,9 +128,26 @@
 		//加载更多
 		onReachBottom(){
 			this.page ++;
+			console.log(this.page)
 			this.getMyCouponList();
 		},
 		methods: {
+			show(item) {
+				if (item.usableProduct.length === 0) return;
+				this.currentCoupon = item;
+				this.showRight = true
+			},
+			hide() {
+				this.showRight = false
+			},
+			closeDrawer() {
+				this.showRight = false
+			},
+			//顶部tab点击
+			getMoreMyCouponList(){
+        this.page ++;
+        this.getMyCouponList();
+			},
 			/**
 			 *@des 切换tab
 			 *@author stav stavyan@qq.com
@@ -591,6 +624,13 @@
 			display:inline-flex;
 			justify-content: space-between;
 			margin-right: 30upx;
+			.state {
+				color: $base-color;
+				text-decoration:line-through;
+			}
+			.btn {
+				color: $font-color-base;
+			}
 		}
 		.circle{
 			position: absolute;
@@ -607,4 +647,10 @@
 			}
 		}
 	}
+	.close {
+		.btn {
+			width: 240upx;
+			margin: 20upx auto;
+		}
+}
 </style>

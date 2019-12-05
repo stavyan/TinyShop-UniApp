@@ -128,62 +128,67 @@
 				<!--<input class="desc" type="text" v-model="desc" placeholder="请填写备注信息" placeholder-class="placeholder" />-->
 			<!--</view>-->
 		</view>
-		<view class="uni-timeline" style="padding: 30upx 20upx; background-color: #fff;">
-			<view class="uni-timeline-item uni-timeline-first-item">
+		<view class="uni-timeline" style="padding: 30upx 40upx; background-color: #fff;">
+			 <!--uni-timeline-first-item-->
+			<view
+					class="uni-timeline-item"
+					:class="{'uni-timeline-first-item': index === 0, 'uni-timeline-last-item': index === orderTimeLine.length - 1, }"
+					v-for="(item, index) in orderTimeLine"
+					:key="index">
 				<view class="uni-timeline-item-divider"></view>
 				<view class="uni-timeline-item-content">
 					<view>
-						订单创建
+						{{ item.value }}
 					</view>
 					<view class="datetime">
-						{{ orderDetail.created_at | time }}
+						{{ item.time | time }}
 					</view>
 				</view>
 			</view>
-			<view class="uni-timeline-item ">
-				<view class="uni-timeline-item-divider"></view>
-				<view class="uni-timeline-item-content">
-					<view>
-						订单支付
-					</view>
-					<view class="datetime">
-						{{ orderDetail.pay_time | time }}
-					</view>
-				</view>
-			</view>
-			<view class="uni-timeline-item ">
-				<view class="uni-timeline-item-divider"></view>
-				<view class="uni-timeline-item-content">
-					<view>
-						卖家发货
-					</view>
-					<view class="datetime">
-						{{ orderDetail.consign_time | time }}
-					</view>
-				</view>
-			</view>
-			<view class="uni-timeline-item ">
-				<view class="uni-timeline-item-divider"></view>
-				<view class="uni-timeline-item-content">
-					<view>
-						买家确认收货
-					</view>
-					<view class="datetime">
-						{{ orderDetail.sign_time | time }}
-					</view>
-				</view>
-			</view>
-			<view class="uni-timeline-item uni-timeline-last-item">
-				<view class="uni-timeline-item-divider"></view>
-				<view class="uni-timeline-item-content">
-					<view>
-						订单完成
-					</view>
-					<view class="datetime">
-						{{ orderDetail.finish_time | time }}
-					</view>
-				</view>
-			</view>
+			<!--<view class="uni-timeline-item ">-->
+				<!--<view class="uni-timeline-item-divider"></view>-->
+				<!--<view class="uni-timeline-item-content">-->
+					<!--<view>-->
+						<!--订单支付-->
+					<!--</view>-->
+					<!--<view class="datetime">-->
+						<!--{{ orderDetail.pay_time | time }}-->
+					<!--</view>-->
+				<!--</view>-->
+			<!--</view>-->
+			<!--<view class="uni-timeline-item ">-->
+				<!--<view class="uni-timeline-item-divider"></view>-->
+				<!--<view class="uni-timeline-item-content">-->
+					<!--<view>-->
+						<!--卖家发货-->
+					<!--</view>-->
+					<!--<view class="datetime">-->
+						<!--{{ orderDetail.consign_time | time }}-->
+					<!--</view>-->
+				<!--</view>-->
+			<!--</view>-->
+			<!--<view class="uni-timeline-item ">-->
+				<!--<view class="uni-timeline-item-divider"></view>-->
+				<!--<view class="uni-timeline-item-content">-->
+					<!--<view>-->
+						<!--买家确认收货-->
+					<!--</view>-->
+					<!--<view class="datetime">-->
+						<!--{{ orderDetail.sign_time | time }}-->
+					<!--</view>-->
+				<!--</view>-->
+			<!--</view>-->
+			<!--<view class="uni-timeline-item uni-timeline-last-item">-->
+				<!--<view class="uni-timeline-item-divider"></view>-->
+				<!--<view class="uni-timeline-item-content">-->
+					<!--<view>-->
+						<!--订单完成-->
+					<!--</view>-->
+					<!--<view class="datetime">-->
+						<!--{{ orderDetail.finish_time | time }}-->
+					<!--</view>-->
+				<!--</view>-->
+			<!--</view>-->
 		</view>
 	</view>
 </template>
@@ -200,36 +205,39 @@
 		},
 		data() {
 			return {
-				orderDetail: {},
+				orderDetail: {}
 			}
 		},
 		computed: {
-			// amountGoods(){
-			// 	let amount = 0;
-			// 	this.orderDetail.products.forEach(item => {
-			// 		amount += parseInt(item.num, 10) * parseInt(item.price, 10)
-			// 	});
-			// 	return amount;
-			// },
-			// discountAmount() {
-			// 	return this.couponItem.discount ? (100 - this.couponItem.discount) / 100 * this.amountGoods : this.couponItem.money || 0;
-			// },
-			// realAmount(){
-			// 	const realAmount = this.amountGoods - this.discountAmount - this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
-			// 	const invoiceAmount = this.invoiceItem.type ? this.orderDetail.invoice.order_invoice_tax / 100 * realAmount : 0;
-			// 	return (realAmount + invoiceAmount).toFixed(2) > 0 ? (realAmount + invoiceAmount).toFixed(2) : 0;
-			// },
-			// maxUsePoint() {
-			// 	return this.orderDetail.max_use_point > uni.getStorageSync('userInfo').account.user_integral
-			// 			? uni.getStorageSync('userInfo').account.user_integral : this.orderDetail.max_use_point;
-			// },
-			// maxUsePointFee() {
-			// 	return this.maxUsePoint * this.orderDetail.point_config.convert_rate;
-			// }
+			orderTimeLine () {
+				const timeLine = []
+				if (this.orderDetail.created_at != 0) {
+					timeLine.push({ time: this.orderDetail.created_at, value: '订单创建' });
+				}
+				if (this.orderDetail.close_time < (new Date().getTime() / 1000 && this.orderDetail.pay_time != 0)) {
+					timeLine.push({ time: this.orderDetail.close_time, value: '未付款订单关闭时间' });
+				}
+				if (this.orderDetail.pay_time != 0) {
+					timeLine.push({ time: this.orderDetail.pay_time, value: '订单支付' });
+				}
+				if (this.orderDetail.shipping_time != 0) {
+					timeLine.push({ time: this.orderDetail.shipping_time, value: '买家要求发货' });
+				}
+				if (this.orderDetail.consign_time != 0) {
+					timeLine.push({ time: this.orderDetail.consign_time, value: '卖家发货' });
+				}
+				if (this.orderDetail.sign_time != 0) {
+					timeLine.push({ time: this.orderDetail.sign_time, value: '买家确认收货' });
+				}
+				if (this.orderDetail.finish_time != 0) {
+					timeLine.push({ time: this.orderDetail.finish_time, value: '订单完成' });
+				}
+				return timeLine;
+			}
 		},
 		filters: {
 			time(val) {
-				return val == 0 ? '暂未操作' : moment(val * 1000).format('YY/MM/DD HH:mm')
+				return val == 0 ? '暂未操作' : moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 			},
       orderStatusFilter (orderStatus) {
 			  let status = null;
@@ -249,7 +257,7 @@
 					if (orderItem.key == orderStatus) {
 						 status = orderItem.value
 					}
-				})
+				});
         return status;
       },
 			filterProductStatus(item) {
@@ -309,44 +317,12 @@
 			filterShippingType (value) {
 				const data = ['', '物流配送', '买家自提', '本地配送'];
 				return data[parseInt(value, 10)]
-			},
-		},
-		onShow() {
-			// this.getOrderFreightFee();
+			}
 		},
 		onLoad(options){
 			this.initData(options);
 		},
 		methods: {
-			handleIsUsePoint () {
-				this.isUsePoint = !this.isUsePoint;
-			},
-			/**
-			 *@des 单列物流
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/26 16:14:05
-			 */
-			showSinglePicker() {
-				this.$refs.shippingTypePicker.show()
-			},
-			/**
-			 *@des 选择快递公司
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/29 17:28:22
-			 */
-			showCompanylePicker() {
-				this.$refs.companyTypePicker.show()
-			},
-			onConfirm(e) {
-				this.currentShippingType = e;
-			},
-			async onCompanyConfirm(e) {
-				e.value = e.value[0]
-        this.currentCompany = e;
-				this.getOrderFreightFee();
-      },
 			/**
 			 *@des 计算运费
 			 *@author stav stavyan@qq.com
@@ -385,17 +361,6 @@
 			 */
 			initData(options) {
 				this.getOrderDetail(options.id)
-				// this.orderDetail = JSON.parse(options.data);
-				// this.addressData = this.orderDetail.address;
-				// this.product = options.product;
-				// this.currentShippingType = this.pickerShippingType[0]
-				// this.orderDetail.company.forEach(item => {
-				// 	item.label = item.title;
-				// 	item.value = item.id;
-				// });
-				// this.cartIds = options.id;
-				// this.currentCompany = this.orderDetail.company[0];
-				// this.getOrderFreightFee();
 			},
 			/**
 			 *@des 获取工单详情
@@ -417,75 +382,6 @@
 					console.log(err)
 				})
 			},
-			/**
-			 *@des 优惠券面板 切换
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/26 15:23:08
-			 */
-			toggleMask(type){
-				let timer = type === 'show' ? 10 : 300;
-				let	state = type === 'show' ? 1 : 0;
-				this.maskState = 2;
-				setTimeout(()=>{
-					this.maskState = state;
-				}, timer)
-			},
-			numberChange(data) {
-				this.number = data.number;
-			},
-			changePayType(type){
-				this.payType = type;
-			},
-			async submit() {
-				uni.showLoading({title: '加载中...'});
-				const params = {};
-				if (this.cartIds) {
-					params.type = 'cart';
-					params.data = this.cartIds;
-				} else {
-					params.data = this.product;
-					params.type = 'buy_now';
-				}
-				params.address_id = this.addressData.id;
-				if (this.couponItem.id) {
-					params.coupon_id = this.couponItem.id;
-				}
-				if (this.invoiceItem.id) {
-					params.invoice_id = this.invoiceItem.id;
-				}
-				if (this.currentCompany.value) {
-					params.company_id = this.currentCompany.value;
-				}
-				if (this.currentShippingType.value) {
-					params.shipping_type = this.currentShippingType.value;
-				}
-				await this.$post(`${orderCreate}`, {
-					...params
-				}).then(r => {
-					if (r.code === 200) {
-						const data = {}
-						data.order_id = parseInt(r.data.id, 10);
-						uni.redirectTo({
-							url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${this.realAmount}`
-						})
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			},
-			stopPrevent(){
-			},
-			selectCoupon(item){
-				if (this.amountGoods < item.at_least) {
-					uni.showToast({ title: '不满足优惠券使用条件~', icon: "none" });
-					return;
-				}
-				this.maskState = 0;
-				this.couponItem = item;
-			}
 		}
 	}
 </script>

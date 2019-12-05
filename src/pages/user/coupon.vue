@@ -4,24 +4,33 @@
 				<!-- 优惠券页面，仿mt -->
 				<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
 					<view class="con">
-						<view class="left" @click="getCoupon(item.id)">
+						<view class="left" @click="getCoupon(item)">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
+							<text class="time" v-if="parseInt(item.term_of_validity_type || item.couponType.term_of_validity_type, 10) === 0 || type">{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
+							<text class="time" v-else>自领取之日 {{ item.fixed_term || item.couponType.fixed_term }}天内有效</text>
 						</view>
 						<view class="right">
-							<text class="price">{{item.money}}</text>
+							<text class="price" v-if="item.money">{{item.money }}</text>
+							<text class="price-discount" v-else>{{ `${item.discount}折` }}</text>
 							<text>满{{ item.at_least }}可用</text>
 						</view>
-
 						<view class="circle l"></view>
 						<view class="circle r"></view>
 					</view>
 					<view class="tips">
-							<text v-show="item.range_type && item.max_fetch">
-								{{ parseInt(item.range_type, 10) === 0 ? '部分产品使用' : '全场产品使用' }}  领取上限{{item.max_fetch}}
+							<text v-show="item.range_type || item.couponType.range_type">
+								{{ parseInt(item.range_type || item.couponType.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
 							</text>
-						 	<text>
-								{{ parseInt(item.term_of_validity_type, 10) === 0 ? '固定时间' : '领取之日起' }}生效
+							<text v-show="type">
+								<text style="margin-right: 15upx;" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 0">可使用商品</text>
+								<text class="btn" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 2" @click="show(item)">查看商品</text>
+								<text class="btn" @click="navTo('/pages/category/category', 'tab')">去使用</text>
+							</text>
+						 	<text v-if="item.myGet" v-show="!type">
+								 {{parseInt(item.max_fetch, 10) === 0 ? '不限' : `每人限领${item.max_fetch}` }} 已领{{ item.myGet.count || item.couponType.count }} <text v-show="item.percentage">剩余{{ item.percentage }}%</text>
+							</text>
+						 	<text v-else v-show="!type">
+								 {{parseInt(item.max_fetch, 10) === 0 ? '不限' : `限领${item.max_fetch}` }}
 							</text>
 					</view>
 				</view>
@@ -32,6 +41,14 @@
 			<text class="coupon-bottom-btn" @click="navTo('/pages/user/history-coupon')">优惠券历史记录<text class="yticon icon-you right" size="20"/></text>
 			<text class="coupon-bottom-btn" @click="navTo('/pages/user/coupon')">去领券中心<text class="yticon icon-you right" size="20"/></text>
 		</view>
+		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
+				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
+					<uni-list-item :title="item.name" @click="navTo(`/pages/product/product?id=${item.id}`)"/>
+				</uni-list>
+				<view class="close">
+					<button class="btn" plain="true" size="small" type="primary" @click="hide">关闭</button>
+				</view>
+		</uni-drawer>
 	</view>
 </template>
 
@@ -39,22 +56,32 @@
 	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
+	import moment from 'moment';
+	import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
+	import uniList from '@/components/uni-list/uni-list.vue'
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
 	export default {
 		components: {
 			uniLoadMore,
-			empty
+			empty,
+			uniDrawer,
+			uniList,
+			uniListItem
 		},
 		data() {
 			return {
 				couponList: [],
 				type: null,
 				loadingType: 'more',
-				token: null
+				token: null,
+				page: 1,
+				showRight: false,
+				currentCoupon: {}
 			}
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YY/MM/DD HH:mm')
+				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			}
 		},
 		onLoad(options){
@@ -74,9 +101,24 @@
 		//加载更多
 		onReachBottom(){
 			this.page ++;
-			this.getMyCouponList();
+			if (this.type) {
+				this.getMyCouponList();
+			} else {
+				this.getCouponList();
+			}
 		},
 		methods: {
+			show(item) {
+				if (item.usableProduct.length === 0) return;
+				this.currentCoupon = item;
+				this.showRight = true
+			},
+			hide() {
+				this.showRight = false
+			},
+			closeDrawer() {
+				this.showRight = false
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -103,9 +145,12 @@
 			 *@date 2019/11/21 15:41:30
 			 *@param url 跳转地址
 			 */
-			navTo(url){
+			navTo(url, type){
 				if(!this.token){
 					url = '/pages/public/login';
+				}
+				if (type) {
+					uni.switchTab({url});
 				}
 				if (url === 'login') {
 					 return
@@ -123,7 +168,9 @@
 			 */
 			async getCouponList (type) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${couponList}`).then(r=>{
+				await this.$get(`${couponList}`, {
+					page: this.page
+				}).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
@@ -145,7 +192,9 @@
 			 */
 			async getMyCouponList (type) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${myCouponList}`).then(r=>{
+				await this.$get(`${myCouponList}`, {
+					page: this.page
+				}).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
@@ -165,11 +214,15 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/25 13:41:19
 			 */
-			async getCoupon(id) {
+			async getCoupon(item) {
 				if (this.type) return;
+				if (parseInt(item.is_get, 10) === 0) {
+						uni.showToast({title: '该优惠券不可领取', icon: "none"});
+						return;
+				}
 				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
-					id
+					id: item.id
 				}).then(r => {
 					if (r.code === 200) {
 						this.page = 1;
@@ -192,91 +245,107 @@
 		padding-bottom: 120upx;
 		background: #f3f3f3;
 	}
+	.close {
+		.btn {
+			width: 240upx;
+			margin: 20upx auto;
+		}
+	}
 	.mask-content{
 			width: 100%;
 			transition: .3s;
 			overflow-y:scroll;
 			.coupon-item{
-		display: flex;
-		flex-direction: column;
-		margin: 20upx 24upx;
-		background: #fff;
-		.con{
-			display: flex;
-			align-items: center;
-			position: relative;
-			height: 120upx;
-			padding: 0 30upx;
-			&:after{
-				position: absolute;
-				left: 0;
-				bottom: 0;
-				content: '';
-				width: 100%;
-				height: 0;
-				border-bottom: 1px dashed #f3f3f3;
-				transform: scaleY(50%);
+				display: flex;
+				flex-direction: column;
+				margin: 20upx 24upx;
+				border-radius: 12upx;
+				background: #fff;
+				.con{
+					display: flex;
+					align-items: center;
+					position: relative;
+					height: 120upx;
+					padding: 0 30upx;
+					&:after{
+						position: absolute;
+						left: 0;
+						bottom: 0;
+						content: '';
+						width: 100%;
+						height: 0;
+						border-bottom: 1px dashed #f3f3f3;
+						transform: scaleY(50%);
+					}
+				}
+				.left{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					flex: 1;
+					overflow: hidden;
+					height: 100upx;
+				}
+				.title{
+					font-size: 32upx;
+					color: $font-color-dark;
+					margin-bottom: 10upx;
+				}
+				.time{
+					font-size: 24upx;
+					color: $font-color-light;
+				}
+				.right{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					font-size: 26upx;
+					color: $font-color-base;
+					height: 100upx;
+				}
+				.price {
+					font-size: 44upx;
+					color: $base-color;
+					&:before{
+						content: '￥';
+						font-size: 34upx;
+					}
+				}
+				.price-discount {
+					font-size: 44upx;
+					color: $base-color;
+				}
+				.tips{
+					font-size: 24upx;
+					color: $font-color-light;
+					line-height: 60upx;
+					padding-left: 30upx;
+					overflow: hidden;
+					display:inline-flex;
+					justify-content: space-between;
+					margin-right: 30upx;
+					.btn {
+						margin-left: 20upx;
+						color: $font-color-base;
+						font-size: $font-base;
+					}
+				}
+				.circle{
+					position: absolute;
+					left: -6upx;
+					bottom: -10upx;
+					z-index: 10;
+					width: 20upx;
+					height: 20upx;
+					background: #f3f3f3;
+					border-radius: 100px;
+					&.r{
+						left: auto;
+						right: -6upx;
+					}
+				}
 			}
-		}
-		.left{
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			flex: 1;
-			overflow: hidden;
-			height: 100upx;
-		}
-		.title{
-			font-size: 32upx;
-			color: $font-color-dark;
-			margin-bottom: 10upx;
-		}
-		.time{
-			font-size: 24upx;
-			color: $font-color-light;
-		}
-		.right{
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			font-size: 26upx;
-			color: $font-color-base;
-			height: 100upx;
-		}
-		.price{
-			font-size: 44upx;
-			color: $base-color;
-			&:before{
-				content: '￥';
-				font-size: 34upx;
-			}
-		}
-		.tips{
-			font-size: 24upx;
-			color: $font-color-light;
-			line-height: 60upx;
-			padding-left: 30upx;
-			overflow: hidden;
-			display:inline-flex;
-			justify-content: space-between;
-			margin-right: 30upx;
-		}
-		.circle{
-			position: absolute;
-			left: -6upx;
-			bottom: -10upx;
-			z-index: 10;
-			width: 20upx;
-			height: 20upx;
-			background: #f3f3f3;
-			border-radius: 100px;
-			&.r{
-				left: auto;
-				right: -6upx;
-			}
-		}
-	}
 		}
 	.coupon-none {
 		text-align: center;
