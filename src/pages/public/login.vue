@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="left-bottom-sign"></view>
+		<!--<view class="left-bottom-sign"></view>-->
 		<view class="back-btn yticon icon-zuojiantou-up" @click="navBack"></view>
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
@@ -43,7 +43,7 @@
 							data-key="mobile"
 						/>
 						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode()">
-							<span v-if="!smsCodeBtnDisabled">获取验证码</span>
+							<span class="btn" v-if="!smsCodeBtnDisabled">获取验证码</span>
 							<span v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</span>
 						</button>
 					</view>
@@ -165,7 +165,7 @@
 				})
 			},
 			toHome(){
-				uni.navigateTo({
+				uni.switchTab({
 					url: '/pages/index/index'
 				})
 			},
@@ -366,7 +366,7 @@
 		position: relative;
 		.sms-code-btn {
 			position: absolute;
-			color: #333;
+			color: #111;
 			right: 20upx;
 			bottom: 20upx;
 			font-size: 28upx;
@@ -400,9 +400,7 @@
 		margin-top: 40upx;
 	}
 	.register-section{
-		position:absolute;
-		left: 0;
-		bottom: 50upx;
+    margin: 30upx 0 50upx 0;
 		width: 100%;
 		font-size: $font-sm+2upx;
 		color: $font-color-base;

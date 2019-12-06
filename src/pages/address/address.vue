@@ -36,6 +36,9 @@
 			this.source = option.source;
 			this.initData()
 		},
+		onShow() {
+			this.getAddressList();
+		},
 		methods: {
 			goTouchStart(id){
 			 clearTimeout(this.timeOutEvent);//清除定时器

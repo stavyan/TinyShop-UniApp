@@ -40,17 +40,17 @@
 				<view class="tj-sction">
 					<view class="tj-item" @click="navTo('/pages/integral/integral?type=1')">
 						<text class="num">
-							{{ userInfo && userInfo.account && userInfo.account.user_money || '??' }}
+							{{ userInfo && userInfo.account && userInfo.account.user_money || '0' }}
 						</text>
 						<text>余额</text>
 					</view>
 					<view class="tj-item" @click="navTo('/pages/user/coupon?type=1')">
-						<text class="num">{{ userInfo && userInfo.coupon_num || '??' }}</text>
+						<text class="num">{{ userInfo && userInfo.coupon_num || '0' }}</text>
 						<text>优惠券</text>
 					</view>
 					<view class="tj-item" @click="navTo('/pages/integral/integral')">
 						<text class="num">
-							{{ userInfo && userInfo.account && userInfo.account.user_integral || '??' }}
+							{{ userInfo && userInfo.account && userInfo.account.user_integral || '0' }}
 						</text>
 						<text>积分</text>
 					</view>
@@ -96,7 +96,7 @@
 					<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="navTo('/pages/user/coupon')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 					<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')"></list-cell>
 					<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏"></list-cell>
-					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="share" tips="邀请好友赢10万大礼"></list-cell>
+					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="navTo()" tips="邀请好友赢10万大礼"></list-cell>
 					<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>
 					<list-cell icon="icon-shezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 				</view>
@@ -240,6 +240,10 @@
 			 * navigator标签现在默认没有转场动画，所以用navToview
 			 */
 			navTo(url){
+				if (!url) {
+					uni.showToast({title: '我还没写', icon: "none"});
+					return;
+				}
 				if(!this.token){
 					url = '/pages/public/login';
           uni.showModal({
@@ -257,10 +261,6 @@
             url
           })
         }
-				if (!url) {
-					uni.showToast({title: '我还没写', icon: "none"});
-				}
-
 			},
 			/**
 			 *  会员卡下拉和回弹
@@ -404,7 +404,7 @@
 			border-radius: 50%;
 		}
 		.username{
-			font-size: $font-lg + 10upx;
+			font-size: $font-lg + 6upx;
 			color: $font-color-dark;
 			margin-left: 20upx;
 		}

@@ -27,7 +27,7 @@
 				<!--{{addressData.addressName}}-->
 			<!--</text>-->
 			<!--<text class="yticon icon-shouhuodizhi"></text>-->
-			<input class="input" type="text" v-model="addressData.address_details" placeholder="请输入详细地址" placeholder-class="placeholder" />
+			<input class="input" type="text" @change="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
 		</view>
 		<!--<view class="row b-b">-->
 			<!--<text class="tit">门牌号</text>-->
@@ -291,6 +291,9 @@
 			handleRealNameChange (e) {
 				this.addressData.realname = e.detail.value;
 			},
+			bindAddressDetailsChange (e) {
+				this.addressData.address_details = e.detail.value;
+			},
 			handleMobileChange (e) {
 				this.addressData.mobile = e.detail.value;
 			},
@@ -346,9 +349,7 @@
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.showToast({ title: '恭喜您, 收货地址修改成功！', icon: "none" });
-						uni.navigateBack({
-							url: '/pages/address/address'
-						})
+						uni.navigateBack();
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -370,9 +371,7 @@
 				}).then(r=>{
 					if (r.code === 200) {
 						uni.showToast({ title: '恭喜您, 收货地址创建成功！', icon: "none" });
-						uni.redirectTo({
-							url: '/pages/address/address'
-						})
+						uni.navigateBack();
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}

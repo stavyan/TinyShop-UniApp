@@ -31,7 +31,7 @@
 		</view>
 		<view class="list-cell">
 			<text class="cell-tit">当前版本</text>
-			<text class="cell-tip">当前版本 开发版本</text>
+			<text class="cell-tip">当前版本 beta 0.1</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell log-out-btn" @click="toLogout">

@@ -72,7 +72,22 @@
 		}, {
 			"path": "pages/cart/cart",
 			"style": {
-				"navigationBarTitleText": "购物车"
+				"enablePullDownRefresh": true,
+				"navigationBarTextStyle":"black",
+				"app-plus": {
+					"titleNView": false ,//禁用原生导航栏
+					"softinputNavBar":"none",
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    },
+					"subNVues":[{
+						"id": "cartTitleNvue", // 唯一标识
+						"path": "pages/tabBar/cart/subNvue/cartTitleNvue", // 页面路径
+						"type":"navigationBar"
+					}]
+				}
 			}
 		}, {
 			"path": "pages/public/login",

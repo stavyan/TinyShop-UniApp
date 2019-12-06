@@ -42,15 +42,10 @@ function request(url, params, header, method) {
     }).catch(r => {
         switch (r.code) {
             case 401:
+                uni.clearStorageSync();
                 uni.showToast({
                     title: "会话已过期， 请重新登录！",
                     icon: 'none'
-                });
-                uni.removeStorage({
-                    key: 'userInfo'
-                });
-                uni.removeStorage({
-                    key: 'access_token'
                 });
                 setTimeout(() => {
                     uni.reLaunch({

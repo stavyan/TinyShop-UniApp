@@ -256,7 +256,7 @@
 			}
 		},
 		onShow() {
-			this.getOrderFreightFee();
+			// this.getOrderFreightFee();
 		},
 		onLoad(options){
 			this.initData(options);
@@ -307,8 +307,12 @@
 					params.data = this.product;
 					params.type = 'buy_now';
 				}
-				params.address_id = this.addressData.id;
-				params.company_id = this.currentCompany.value;
+				if (this.addressData) {
+					params.address_id = this.addressData.id;
+				}
+				if (this.currentCompany) {
+					params.company_id = this.currentCompany.value;
+				}
 				await this.$get(`${orderFreightFee}`, {
 					...params
 				}).then(r => {
@@ -338,7 +342,7 @@
 				});
 				this.cartIds = options.id;
 				this.currentCompany = this.orderDetail.company[0];
-				this.getOrderFreightFee();
+				// this.getOrderFreightFee();
 			},
 			/**
 			 *@des 优惠券面板 切换
@@ -370,11 +374,13 @@
 					params.data = this.product;
 					params.type = 'buy_now';
 				}
+				if (this.addressData && this.addressData.id) {
 				params.address_id = this.addressData.id;
-				if (this.couponItem.id) {
+				}
+				if (this.couponItem && this.couponItem.id) {
 					params.coupon_id = this.couponItem.id;
 				}
-				if (this.invoiceItem.id) {
+				if (this.invoiceItem && this.invoiceItem.id) {
 					params.invoice_id = this.invoiceItem.id;
 				}
 				if (this.currentCompany.value) {

@@ -75,7 +75,7 @@
 				</view>
 				<text class="cell-tit clamp">积分抵扣</text>
 				<text class="cell-tip disabled"></text>
-				<text class="cell-tip disabled">已用{{ orderDetail.point }}积分抵用{{ orderDetail.point_money }}元</text>
+				<text class="cell-tip disabled">已用{{ orderDetail.point || 0 }}积分抵用{{ orderDetail.point_money || 0 }}元</text>
 			</view>
 		</view>
 		<!-- 金额明细 -->
