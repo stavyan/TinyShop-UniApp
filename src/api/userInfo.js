@@ -29,6 +29,7 @@ const couponList = "/addons/rf-tiny-shop/v1/marketing/coupon-type/index";
 const myCouponList = "/addons/rf-tiny-shop/v1/member/coupon/index";
 // 领取优惠券
 const couponReceive = "/addons/rf-tiny-shop/v1/marketing/coupon-type/create";
+const couponClear = "/addons/rf-tiny-shop/v1/member/coupon/clear";
 
 // 获取我的订单
 const orderList = "/addons/rf-tiny-shop/v1/member/order/index";
@@ -81,6 +82,7 @@ export {
     addressDelete,
     couponList,
     myCouponList,
+    couponClear,
     orderList,
     orderRefundApply,
     closeOrderRefundApply,

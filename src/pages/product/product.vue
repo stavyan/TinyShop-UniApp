@@ -84,8 +84,11 @@
 			</view>
 			<view class="c-row b-b">
 				<text class="tit">服务</text>
-				<view class="bz-list con">
+				<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
 					<text v-for="item in productDetail.tags">{{ item }} </text>
+				</view>
+				<view class="bz-list con" v-else>
+					暂无服务
 				</view>
 			</view>
 		</view>
@@ -128,12 +131,12 @@
 			</view>
 		</view>
 
-		<view class="detail-desc">
-			<view class="d-header">
-				<text>图文详情</text>
-			</view>
-			<rich-text :nodes="desc"></rich-text>
-		</view>
+		<!--<view class="detail-desc">-->
+			<!--<view class="d-header">-->
+				<!--<text>图文详情</text>-->
+			<!--</view>-->
+			<!--<rich-text :nodes="desc"></rich-text>-->
+		<!--</view>-->
 
 		<!-- 底部操作菜单 -->
 		<view class="page-bottom">
@@ -151,8 +154,8 @@
 			</view>
 
 			<view class="action-btn-group">
-				<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
-				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addCart">加入购物车</button>
+				<button type="primary" class=" action-btn no-border buy-now-btn" @click="addCart('buy')">立即购买</button>
+				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addCart('cart')">加入购物车</button>
 			</view>
 		</view>
 
@@ -164,7 +167,7 @@
 			@click="toggleSpec"
 		>
 			<!-- 遮罩层 -->
-			<view class="mask"></view>
+			<view class="mask" @click="hideSpec"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t">
 					<image :src="productDetail.picture"></image>
@@ -172,7 +175,7 @@
 						<text class="title">{{ productDetail.name }}</text>
 						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
 						<text class="stock">库存：{{ productDetail.stock }}件</text>
-						<view class="selected">
+						<view class="selected" v-if="specSelected.length > 0">
 							已选：
 							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
 								{{sItem.title}}
@@ -245,6 +248,7 @@
 	import {cartItemCreate, orderPreview, productDetail} from "../../api/product";
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
+  import moment from 'moment';
 	export default{
 		components: {
 			share,
@@ -275,20 +279,7 @@
 			return {
 				cartType: null,
 				maskState: 0, //优惠券面板显示状态
-				couponList: [
-					{
-						title: '新用户专享优惠券',
-						price: 5,
-					},
-					{
-						title: '庆五一发一波优惠券',
-						price: 10,
-					},
-					{
-						title: '优惠券优惠券优惠券优惠券',
-						price: 15,
-					}
-				],
+				couponList: [],
 				productDetail: {},
 				specClass: 'none',
 				specSelected:[],
@@ -406,7 +397,6 @@
 						this.specList.forEach(item => {
 							this.specChildList = [ ...this.specChildList, ...item.value ]
 						})
-            let list = this.productDetail.base_attribute_format;
             /**
              * 修复选择规格存储错误
              * 将这几行代码替换即可
@@ -414,6 +404,7 @@
              */
             this.specSelected = [];
             r.data.base_attribute_format.forEach(item=>{
+							item.value[0].selected = true
               this.specSelected.push(item.value[0]);
             })
 					} else {
@@ -430,17 +421,24 @@
             uni.showToast({ title: "请先选择规格", icon: "none" });
             return;
           }
-					if (this.cartType) {
+					if (this.cartType === 'cart') {
 						this.cartType = null;
 						this.handleCartItemCreate();
+					} else if (this.cartType === 'buy') {
+						this.cartType = null;
+						this.buy();
 					}
 					this.specClass = 'hide';
 					setTimeout(() => {
 						this.specClass = 'none';
 					}, 250);
-				}else if(this.specClass === 'none'){
-					this.specClass = 'show';
 				}
+			},
+			hideSpec() {
+				this.specClass = 'hide';
+				setTimeout(() => {
+					this.specClass = 'none';
+				}, 250);
 			},
 			/**
 			 *@des 添加商品至购物车
@@ -449,6 +447,11 @@
 			 *@date 2019/11/18 17:45:54
 			 */
 			async handleCartItemCreate () {
+				const type = parseInt(this.productDetail.point_exchange_type , 10)
+				if ( type === 2 || type === 4) {
+					uni.showToast({ title: "该商品不支持添加至购物车，请直接下单购买", icon: "none" });
+					return;
+				}
 				let sku_id;
 				let skuStr = null;
 				if (this.productDetail.sku.length === 1) {
@@ -523,7 +526,6 @@
 			},
 			//分享
 			share(res){
-				console.log(res.from);
 				// this.$refs.share.toggleMask();
 					if (res.from === 'button') {// 来自页面内分享按钮
 						console.log(res.target)
@@ -656,11 +658,12 @@
 					console.log(err)
 				});
 			},
-			addCart(){
-				this.toggleSpec()
-				this.cartType = 'cart';
+			addCart(type){
+				this.specClass = 'show';
+				this.cartType = type
 			},
-			stopPrevent(){}
+			stopPrevent(){
+			}
 		},
 
 	}

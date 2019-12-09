@@ -1,137 +1,307 @@
 <template>
-  <view class="container">
-    <view class="uni-padding-wrap">
-			<view class="uni-comment">
-				<view class="uni-comment-list" v-for="(item, index) in evaluationList" :key="item.id">
-					<view class="uni-comment-face">
-            <image
-               :src="item.member_head_portrait || '/static/missing-face.png'"
-              mode="widthFix"></image>
-          </view>
-					<view class="uni-comment-body">
-						<view class="uni-comment-top">
-							<text>{{ item.member_nickname }}</text>
+	<view>
+		<view class="content">
+
+			<view class="label">
+				<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList('', index, label.type)" :key="index">
+					{{label.name}}
+					<!--({{label.number}})-->
+				</view>
+			</view>
+			<view class="list">
+				<view class="row" v-for="(row, index) in evaluationList" :key="index">
+					<view class="left">
+						<view class="face">
+							<image
+								 :src="row.member_head_portrait || '/static/missing-face.png'"
+								mode="widthFix"></image>
 						</view>
-						<view class="uni-comment-date">
-							<text>{{ item.updated_at | time }}</text>
-              <text> {{ item.sku_name || '基础款' }}</text>
-              <!--<text>{{ item.product_name }} {{ item.sku_name }}</text>-->
+					</view>
+					<view class="right">
+						<view class="name-date">
+							<view class="username">
+								{{row.member_nickname || '无名氏'}}
+							</view>
+							<view class="date">
+								{{ row.updated_at | time }}
+							</view>
 						</view>
-						<view class="uni-comment-content">{{ item.content }}</view>
-						<view class="comment-image">
-							<view
-							 class="image-wrapper-fill"
-               v-for="(imgItem, index2) in item.covers"
-               :key="index2">
-								<image
-									 mode="aspectFill"
-									 class="image"
-									 :src="imgItem"
-									 @error="onImageError(index, index2)"
-								/>
-            </view>
+						<view class="spec">
+							规格: {{ row.sku_name || '基础款' }}
+						</view>
+						<view class="first">
+							<view class="rat">
+								{{row.content}}
+							</view>
+							<view class="img-video">
+								<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
+									<image mode="aspectFill" :src="item"></image>
+								</view>
+							</view>
+						</view>
+						<view class="append" v-if="row.append">
+							<view class="date">
+								{{row.append.date}}天后追加
+							</view>
+							<view class="rat">
+								{{row.append.content}}
+							</view>
+							<view class="img-video">
+								<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
+									<image mode="aspectFill" :src="item"></image>
+								</view>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		  <empty :info="'该商品暂无评价'" v-if="evaluationList.length === 0"></empty>
-			<!-- 评论区 end -->
-		  <uni-load-more :status="loadingType" />
 		</view>
-
-  </view>
+	</view>
 </template>
 
 <script>
-import {evaluateList} from "../../api/product";
-import uniLoadMore from '@/components/uni-load-more/uni-load-more';
-import moment from 'moment';
-import empty from "@/components/empty";
-import errorImg from './../../static/errorImage.jpg';
-export default {
-  name: 'list',
-	components: {
-		uniLoadMore,
-    empty
-	},
-  data () {
-    return {
-      id: '',
-      errorImg: errorImg,
-      loadingType: 'more', //加载更多状态
-      evaluationList: [],
-      page: 1,
-			img: '11'
-    }
-  },
-  filters: {
-    time(val) {
-      return moment(val * 1000).format('YYYY-MM-DD HH:mm')
-    }
-  },
-  onLoad(options) {
-    this.initData(options);
-  },
-  onPageScroll(e){
-  },
-  //下拉刷新
-  onPullDownRefresh(){
-    this.evaluationList = [];
-    this.page = 1;
-    this.getEvaluationList('refresh');
-  },
-  //加载更多
-  onReachBottom(){
-    this.page ++;
-    this.getEvaluationList();
-  },
-  methods: {
-		onImageError(index, index2) {
-			this.evaluationList[index].covers[index2] = this.errorImg;
-			console.log(this.evaluationList)
+	import {evaluateList} from "../../api/product";
+	import moment from 'moment';
+	export default {
+		data() {
+			return {
+				labelList:[
+					{name:'全部',number:25,type: {}},
+					{name:'好评',number:23,type: { explain_type: 1 }},
+					{name:'中评',number:1,type: { explain_type: 2 }},
+					{name:'差评',number:1,type: { explain_type: 3 }},
+					{name:'无图',number:12,type: { has_content: 1 }},
+					{name:'有图',number:12,type: { has_cover: 1 }},
+					{name:'视频',number:2,type: { has_video: 1 }},
+					{name:'追加',number:2,type: { has_again: 1 }}
+				],
+				labelIndex: 0,
+				evaluationList: [],
+				page: 1
+			};
 		},
-    /**
-     *@des 初始化数据
-     *@author stav stavyan@qq.com
-     *@blog https://stavtop.club
-     *@date 2019/11/28 15:41:29
-     */
-    initData (options) {
-      this.id = options.product_id;
-      this.getEvaluationList();
-    },
-    async getEvaluationList(type) {
-      uni.showLoading({title: '加载中...'});
-      await this.$get(`${evaluateList}`, {
-        product_id: this.id,
-        page: this.page
-      }).then(r => {
-          if (type === 'refresh') {
-              uni.stopPullDownRefresh();
-          }
-          if (r.code === 200) {
-              this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
-              this.evaluationList = [...this.evaluationList, ...r.data];
-          } else {
-              uni.showToast({title: r.message, icon: "none"});
-          }
-      }).catch(err => {
-          console.log(err)
-      })
-    }
-  }
-}
+		filters: {
+			time(val) {
+				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
+			}
+		},
+		onLoad(options) {
+			this.initData(options);
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.evaluationList = [];
+			this.page = 1;
+			this.getEvaluationList('refresh');
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getEvaluationList();
+		},
+		methods: {
+			onImageError(index, index2) {
+				this.evaluationList[index].covers[index2] = this.errorImg;
+				console.log(this.evaluationList)
+			},
+			/**
+			 *@des 初始化数据
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/11/28 15:41:29
+			 */
+			initData (options) {
+				this.id = options.product_id;
+				this.getEvaluationList();
+			},
+			async getEvaluationList(type, index = 0, params) {
+				if (params) {
+					this.page = 1;
+					this.evaluationList = [];
+				}
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${evaluateList}`, {
+					product_id: this.id,
+					page: this.page,
+					...params
+				}).then(r => {
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
+					if (r.code === 200) {
+						this.labelIndex = index;
+						this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+						this.evaluationList = [...this.evaluationList, ...r.data];
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+						console.log(err)
+				})
+			},
+			showBigImg(src, srclist){
+				uni.previewImage({
+					current:src,
+					urls: srclist
+				});
+			}
+		},
+	}
 </script>
 
-<style scoped lang="scss">
-.comment-image {
-	display: flex;
-	.image-wrapper-fill {
-		display: inline-block;
-		margin: 0 10upx 0 0;
-		.image {
-			width: 180upx;
-			height: 180upx;
+<style lang="scss">
+	page{
+		background-color: #fff;
+	}
+
+.myVideo{
+	position: fixed;
+	top: 50%;
+	right: 100%;
+}
+.content{
+	view{
+		display: flex;
+	}
+	width: 94%;
+	padding: 0 3%;
+
+	.label{
+		width: 100%;
+		flex-wrap:wrap;
+		view{
+			padding: 0 20upx;
+			height: 50upx;
+			border-radius: 40upx;
+			border:solid 1upx #ddd;
+			align-items: center;
+			color: #555;
+			font-size: 26upx;
+			background-color: #f9f9f9;
+			margin: 10upx 20upx 10upx 0;
+			&.on{
+				border:solid 1upx #f06c7a;
+				color: #f06c7a;
+			}
+		}
+	}
+	.list{
+		width: 100%;
+		flex-wrap: wrap;
+		padding: 20upx 0;
+		.row{
+			width: 100%;
+			margin-top: 30upx;
+			.left{
+				width: 10vw;
+				flex-shrink: 0;
+				margin-right: 10upx;
+				.face{
+					width: 100%;
+					image{
+						width: 10vw;
+						height: 10vw;
+						border-radius: 100%;
+					}
+
+				}
+			}
+			.right{
+				width: 100%;
+				flex-wrap: wrap;
+				.name-date{
+					width: 100%;
+					justify-content: space-between;
+					align-items: baseline;
+					.username{
+						font-size: 32upx;
+						color: #555;
+					}
+					.date{
+						font-size:28upx;
+						color: #aaa;
+					}
+				}
+				.spec{
+					width: 100%;
+					color: #aaa;
+					font-size: 26upx;
+				}
+				.first{
+					width: 100%;
+					flex-wrap: wrap;
+					.rat{
+						font-size: 30upx;
+					}
+					.img-video{
+						width: 100%;
+						flex-wrap: wrap;
+						.box{
+							width: calc((84.6vw - 50upx)/4);
+							height: calc((84.6vw - 50upx)/4);
+							margin: 5upx 5upx;
+							position: relative;
+							justify-content: center;
+							align-items: center;
+							image{
+								position: absolute;
+								width: 100%;
+								height: 100%;
+								border-radius: 10upx;
+							}
+							.playbtn{
+								position: absolute;
+								.icon{
+									font-size: 80upx;
+									color: rgba(255,255,255,.9)
+								}
+							}
+						}
+					}
+				}
+
+				.append{
+					width: 100%;
+					flex-wrap: wrap;
+					.date{
+						width: 100%;
+						height: 40upx;
+						border-left: 10upx solid #f06c7a;
+						padding-left: 10upx;
+						align-items: center;
+						font-size: 32upx;
+						margin: 20upx 0;
+					}
+					.rat{
+						font-size: 30upx;
+					}
+					.img-video{
+						width: 100%;
+						flex-wrap: wrap;
+						.box{
+							width: calc((84.6vw - 10upx - (10upx * 4))/4);
+							height: calc((84.6vw - 10upx - (10upx * 4))/4);
+							margin: 5upx 5upx;
+							position: relative;
+							justify-content: center;
+							align-items: center;
+							image{
+								position: absolute;
+								width: 100%;
+								height: 100%;
+								border-radius: 10upx;
+							}
+							.playbtn{
+								position: absolute;
+								.icon{
+									font-size: 80upx;
+									color: rgba(255,255,255,.9);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

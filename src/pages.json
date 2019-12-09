@@ -258,10 +258,10 @@
                 }
 			}
 		}, {
-			"path": "pages/user/history-coupon",
+			"path": "pages/user/coupon-center",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "优惠券历史记录",
+				"navigationBarTitleText": "领券中心",
 				"app-plus": {
                     "pullToRefresh": {
                         "support": true,

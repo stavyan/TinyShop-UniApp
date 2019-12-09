@@ -40,7 +40,7 @@
 					<text class="price">{{item.price}}
 						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
 					</text>
-					<text>已售{{item.sales}}</text>
+					<text>{{item.sales}}人付款</text>
 				</view>
 			</view>
 		</view>

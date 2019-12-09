@@ -429,7 +429,6 @@
 	}
 	.goods-list{
 		width: 100%;
-		padding: 20upx 0 120upx 0;
 		.tis{
 			width: 100%;
 			height: 60upx;

@@ -24,6 +24,7 @@
 	import {creditsLogList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
+	import moment from 'moment';
 	export default {
 		components: {
 			uniLoadMore,

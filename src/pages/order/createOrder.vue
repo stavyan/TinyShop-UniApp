@@ -85,7 +85,7 @@
 				<text class="cell-tip disabled" v-if="!orderDetail.point_config.is_open">暂无可用</text>
 				<view class="cell-tip red" v-else>
 						<label class="radio">
-							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :checked="isUsePoint" />
+							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :disabled="isUsePointDisabled" :checked="isUsePoint" />
 						</label>
 				</view>
 			</view>
@@ -220,7 +220,8 @@
 				couponItem: {},
 				product: null,
 				shippingMoney: 0,
-				isUsePoint: false
+				isUsePoint: false,
+				isUsePointDisabled: true
 			}
 		},
 		computed: {
@@ -263,7 +264,17 @@
 		},
 		methods: {
 			handleIsUsePoint () {
-				this.isUsePoint = !this.isUsePoint;
+				const pointExchangeType = [];
+				this.orderDetail.products.forEach(item => {
+					pointExchangeType.push(item.point_exchange_type)
+				});
+				if (pointExchangeType.join(',').indexOf('1') !== -1) {
+					uni.showToast({title: '本单不支持积分抵扣', icon: "none"});
+					return;
+				} else {
+					this.isUsePointDisabled = false;
+					this.isUsePoint = !this.isUsePoint;
+				}
 			},
 			/**
 			 *@des 单列物流
