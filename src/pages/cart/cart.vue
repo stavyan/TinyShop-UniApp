@@ -328,22 +328,28 @@
 				}
 				data.type = 'cart';
 				data.data = ids.join(',');
-				await this.$get(`${orderPreview}`, {
-					...data
-				}).then(r => {
-					if (r.code === 200) {
-						this.selectedList.length = 0;
-						this.isAllselected = false;
-						this.sumPrice = 0;
-						uni.navigateTo({
-							url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&id=${ids.join(',')}`
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				});
+                this.selectedList.length = 0;
+                this.isAllselected = false;
+                this.sumPrice = 0;
+                uni.navigateTo({
+                    url: `/pages/order/createOrder?data=${JSON.stringify(data)}`
+                });
+				// await this.$get(`${orderPreview}`, {
+				// 	...data
+				// }).then(r => {
+				// 	if (r.code === 200) {
+				// 		this.selectedList.length = 0;
+				// 		this.isAllselected = false;
+				// 		this.sumPrice = 0;
+				// 		uni.navigateTo({
+				// 			url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&id=${ids.join(',')}`
+				// 		});
+				// 	} else {
+				// 		uni.showToast({title: r.message, icon: "none"});
+				// 	}
+				// }).catch(err => {
+				// 	console.log(err)
+				// });
 			},
 			// 合计
 			sum(e,index){

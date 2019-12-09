@@ -82,7 +82,7 @@
 				</view>
 				<text class="cell-tit clamp">可用{{ maxUsePoint }}积分抵用{{ maxUsePointFee }}元</text>
 				<text class="cell-tip disabled"></text>
-				<text class="cell-tip disabled" v-if="!orderDetail.point_config.is_open">暂无可用</text>
+				<text class="cell-tip disabled" v-if="!orderDetail && pointConfig.is_open">暂无可用</text>
 				<view class="cell-tip red" v-else>
 						<label class="radio">
 							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :disabled="isUsePointDisabled" :checked="isUsePoint" />
@@ -115,7 +115,7 @@
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">赠送积分</text>
 				<text class="cell-tip">
-					<text>{{ orderDetail.preview.give_point }} 积分</text>
+					<text>{{ orderDetail.preview && orderDetail.preview.give_point }} 积分</text>
 				</text>
 			</view>
 			<navigator url="/pages/invoice/invoice?source=1">
@@ -171,7 +171,7 @@
 							</text>
 					</view>
 				</view>
-				<text class="no-coupon" v-if="orderDetail.coupons.length === 0">暂无优惠券</text>
+				<text class="no-coupon" v-if="orderDetail.coupons && orderDetail.coupons.length === 0">暂无优惠券</text>
 			</view>
 		</view>
 		<mpvue-picker
@@ -192,7 +192,7 @@
 </template>
 
 <script>
-	import {orderCreate, orderFreightFee} from "../../api/product";
+	import {orderCreate, orderFreightFee, orderPreview} from "../../api/product";
 	import empty from "@/components/empty";
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
 	import moment from 'moment';
@@ -218,17 +218,19 @@
 				invoiceItem: {},
 				addressData: {},
 				couponItem: {},
+				pointConfig: {},
 				product: null,
 				shippingMoney: 0,
 				isUsePoint: false,
-				isUsePointDisabled: true
+				isUsePointDisabled: true,
+				data: {}
 			}
 		},
 		computed: {
 			amountGoods(){
 				let amount = 0;
-				this.orderDetail.products.forEach(item => {
-					amount += parseInt(item.num, 10) * parseInt(item.price, 10)
+				this.orderDetail.products && this.orderDetail.products.forEach(item => {
+					amount += parseInt(item.num, 10) * parseFloat(item.price)
 				});
 				return amount;
 			},
@@ -239,16 +241,16 @@
 				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
 				return (parseFloat(this.invoiceAmount) + realAmount).toFixed(2) || 0;
 			},
-      invoiceAmount () {
-			  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
-			  return this.invoiceItem.type ? (this.orderDetail.invoice.order_invoice_tax / 100 * realAmount).toFixed(2) : 0;
-      },
+		  invoiceAmount () {
+				  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
+				  return this.invoiceItem.type ? (this.orderDetail.invoice.order_invoice_tax / 100 * realAmount).toFixed(2) : 0;
+		  },
 			maxUsePoint() {
 				return this.orderDetail.max_use_point > uni.getStorageSync('userInfo').account.user_integral
 						? uni.getStorageSync('userInfo').account.user_integral : this.orderDetail.max_use_point;
 			},
 			maxUsePointFee() {
-				return this.maxUsePoint * this.orderDetail.point_config.convert_rate;
+				return this.maxUsePoint * this.pointConfig.convert_rate;
 			}
 		},
 		filters: {
@@ -311,13 +313,6 @@
 			async getOrderFreightFee() {
 				uni.showLoading({title: '加载中...'});
 				const params = {};
-				if (this.cartIds) {
-					params.type = 'cart';
-					params.data = this.cartIds;
-				} else {
-					params.data = this.product;
-					params.type = 'buy_now';
-				}
 				if (this.addressData) {
 					params.address_id = this.addressData.id;
 				}
@@ -325,7 +320,8 @@
 					params.company_id = this.currentCompany.value;
 				}
 				await this.$get(`${orderFreightFee}`, {
-					...params
+					...params,
+					...this.data
 				}).then(r => {
 					if (r.code === 200) {
 						this.shippingMoney = r.data.shipping_money;
@@ -342,18 +338,31 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/19 13:44:25
 			 */
-			initData(options) {
-				this.orderDetail = JSON.parse(options.data);
-				this.addressData = this.orderDetail.address;
-				this.product = options.product;
-				this.currentShippingType = this.pickerShippingType[0]
-				this.orderDetail.company.forEach(item => {
-					item.label = item.title;
-					item.value = item.id;
-				});
-				this.cartIds = options.id;
-				this.currentCompany = this.orderDetail.company[0];
+			async initData(options) {
+				this.data = await JSON.parse(options.data)
+				await this.getOrderDetail(this.data);
 				// this.getOrderFreightFee();
+			},
+			async getOrderDetail(data) {
+				await this.$get(`${orderPreview}`, {
+					...data
+				}).then(r => {
+					if (r.code === 200) {
+						this.orderDetail = r.data;
+						this.pointConfig = this.orderDetail.point_config
+						this.addressData = this.orderDetail.address;
+						this.currentShippingType = this.pickerShippingType[0]
+						this.orderDetail.company.forEach(item => {
+							item.label = item.title;
+							item.value = item.id;
+						});
+						this.currentCompany = this.orderDetail.company[0];
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				});
 			},
 			/**
 			 *@des 优惠券面板 切换
@@ -378,13 +387,6 @@
 			async submit() {
 				uni.showLoading({title: '加载中...'});
 				const params = {};
-				if (this.cartIds) {
-					params.type = 'cart';
-					params.data = this.cartIds;
-				} else {
-					params.data = this.product;
-					params.type = 'buy_now';
-				}
 				if (this.addressData && this.addressData.id) {
 				params.address_id = this.addressData.id;
 				}
@@ -401,7 +403,8 @@
 					params.shipping_type = this.currentShippingType.value;
 				}
 				await this.$post(`${orderCreate}`, {
-					...params
+					...params,
+					...this.data
 				}).then(r => {
 					if (r.code === 200) {
 						const data = {}
@@ -425,7 +428,6 @@
 			stopPrevent(){
 			},
 			selectCoupon(item){
-				console.log(item)
 				if (this.amountGoods < item.at_least) {
 					uni.showToast({ title: '不满足优惠券使用条件~', icon: "none" });
 					return;

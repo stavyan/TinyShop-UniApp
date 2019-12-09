@@ -396,7 +396,7 @@
 						this.specList = this.productDetail.base_attribute_format
 						this.specList.forEach(item => {
 							this.specChildList = [ ...this.specChildList, ...item.value ]
-						})
+						});
             /**
              * 修复选择规格存储错误
              * 将这几行代码替换即可
@@ -629,33 +629,14 @@
 						}
 					})
 				}
-				const list = [];
-				const productItem = {};
+				const list = {};
 				const data = {};
 				data.sku_id = sku_id;
 				data.num = this.cartCount;
-				// productItem.data = data;
-				// productItem.name = this.productDetail.name;
-				// productItem.picture = this.productDetail.picture;
-				// productItem.price = this.productDetail.minSkuPrice;
-				// if (sku_str) {
-				// 	productItem.skuStr = sku_str;
-				// }
 				list.type = 'buy_now';
 				list.data = JSON.stringify(data);
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${orderPreview}`, {
-					...list
-				}).then(r => {
-					if (r.code === 200) {
-						uni.navigateTo({
-							url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&product=${list.data}`
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				uni.navigateTo({
+					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`
 				});
 			},
 			addCart(type){
