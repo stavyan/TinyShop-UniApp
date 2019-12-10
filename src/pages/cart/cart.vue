@@ -352,22 +352,100 @@
 				// });
 			},
 			// 合计
-			sum(e,index){
+			sum(){
 				this.sumPrice=0;
 				let len = this.cartList.length;
+				const arr = []
 				for(let i=0;i<len;i++){
 					if(this.cartList[i].selected) {
-						if(e && i==index){
-							this.sumPrice = this.sumPrice + (e.detail.value*this.cartList[i].price);
-						}else{
-							this.sumPrice = this.sumPrice + (this.cartList[i].number*this.cartList[i].price);
-						}
+						arr.push(this.cartList[i]);
+						// const list = this.arrSort(arr);
+						// list.forEach(item => {
+						// 	const ladderPreferential = item.data[0].ladderPreferential;
+						// 	for (let j = 0; j < ladderPreferential.length; j++) {
+						// 		console.log(parseInt(ladderPreferential[j].quantity))
+						// 		console.log(item.num)
+						// 		console.log(j)
+						// 		if (item.num >= parseInt(ladderPreferential[j].quantity, 10)) {
+						// 			console.log(ladderPreferential[j]);
+						// 			break;
+						// 		}
+						// 	}
+							// try {
+							// 	item.data[0].ladderPreferential.forEach(item2 => {
+							// 		if (item.num >= parseInt(item2.quantity, 10)) {
+							// 			console.log(item2)
+							// 		}
+							// 	});
+							// } catch(e) {
+							// 			if(e.message!="EndIterative") throw e;
+							// 	};
+						// });
+						this.sumPrice = this.floor(this.arrSort(arr));
 					}
 				}
 				this.sumPrice = this.sumPrice.toFixed(2);
 			},
+			floor(val) {
+				return Math.floor(val * 100) / 100;
+			},
 			discard() {
 				//丢弃
+			},
+			arrSort (arr) {
+				let discount = 0
+				const map = {},
+    		dest = [];
+				for(let i = 0; i < arr.length; i++){
+					const ai = arr[i];
+					if(!map[ai.product.id]){
+						dest.push({
+							id: ai.product.id,
+							num: 0,
+							price: 0,
+							data: [ai]
+						});
+						map[ai.product.id] = ai;
+					}else{
+						for(let j = 0; j < dest.length; j++){
+							const dj = dest[j];
+							if(dj.data[0].product.id === ai.product.id){
+									dj.data.push(ai);
+									break;
+							}
+						}
+					}
+				}
+				const arr2 = []
+				dest.forEach(item => {
+					item.data.forEach(item2 => {
+						item.num += parseInt(item2.number, 10)
+						item.price += parseInt(item2.number, 10) * parseInt(item2.price, 10)
+					})
+					const ladderPreferential = item.data[0].ladderPreferential;
+					for (let i = 0; i < ladderPreferential.length; i++) {
+						if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
+							arr2.push(ladderPreferential[i])
+							break;
+						}
+					}
+					discount = 0
+					console.log(arr)
+					arr2.forEach(item2 => {
+						if (parseInt(item2.type, 10) === 1) {
+							discount += item2.price * item.num
+						} else {
+							discount += item.price * item2.price / 100
+						}
+					})
+				});
+				let amount = 0;
+				dest.forEach(item => {
+					amount += item.price
+				})
+				// console.log(amount)
+				// console.log(discount)
+				return amount - discount;
 			}
 		}
 	}

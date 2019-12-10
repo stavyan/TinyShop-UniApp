@@ -419,7 +419,7 @@
               });
             } else {
               uni.redirectTo({
-                url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${this.realAmount}`
+                url: `/pages/money/pay?id=${r.data.id}`
               })
             }
 					} else {

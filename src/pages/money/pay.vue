@@ -51,7 +51,9 @@
 			return {
 				payType: 1,
 				money: 0,
-				userInfo: {}
+				userInfo: {},
+				orderDetail: {},
+				orderInfo: {}
 			};
 		},
 		computed: {
@@ -69,6 +71,7 @@
 			 *@param arguments
 			 */
 			initData(options) {
+				this.orderInfo.order_id = parseInt(options.id, 10);
 				this.getOrderDetail(options.id);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 			},
@@ -105,7 +108,7 @@
 				}
 				uni.showLoading({title: '正在支付...'});
 				await this.$post(`${orderPay}`, {
-					data: this.orderInfo,
+					data: JSON.stringify(this.orderInfo),
 					orderGroup: 'order',
 					tradeType: 'default',
 					payType: this.payType
