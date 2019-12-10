@@ -273,6 +273,9 @@
 						this.getOrderList();
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
+            this.page = 1;
+            this.orderList = [];
+						this.getOrderList();
 					}
 				}).catch(err => {
 					console.log(err)
@@ -331,10 +334,11 @@
 			 *@param id 订单id
 			 */
 			async handlePayment(item) {
-				const data = {}
-				data.order_id = parseInt(item.id, 10);
+				// const data = {}
+				// data.order_id = parseInt(item.id, 10);
 				uni.navigateTo({
-					url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${item.product_money}`
+					// url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${item.product_money}`
+					url: `/pages/money/pay?id=${item.id}`
 				})
 			},
 			/**

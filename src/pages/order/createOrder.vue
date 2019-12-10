@@ -232,18 +232,19 @@
 				this.orderDetail.products && this.orderDetail.products.forEach(item => {
 					amount += parseInt(item.num, 10) * parseFloat(item.price)
 				});
-				return amount;
+				return this.floor(amount);
 			},
 			discountAmount() {
-				return parseInt(this.couponItem.type, 10) === 2 ? ((100 - this.couponItem.discount) / 100 * this.amountGoods).toFixed(2) : this.couponItem.money || 0;
+				const discountMoney = this.floor((100 - this.couponItem.discount) / 100 * this.amountGoods);
+				return parseInt(this.couponItem.type, 10) === 2 ? discountMoney : this.couponItem.money || 0;
 			},
 			realAmount(){
 				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
-				return (parseFloat(this.invoiceAmount) + realAmount).toFixed(2) || 0;
+				return this.floor(parseFloat(this.invoiceAmount) + realAmount) || 0;
 			},
 		  invoiceAmount () {
 				  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
-				  return this.invoiceItem.type ? (this.orderDetail.invoice.order_invoice_tax / 100 * realAmount).toFixed(2) : 0;
+				  return this.invoiceItem.type ? this.floor(this.orderDetail.invoice.order_invoice_tax / 100 * realAmount) : 0;
 		  },
 			maxUsePoint() {
 				return this.orderDetail.max_use_point > uni.getStorageSync('userInfo').account.user_integral
@@ -265,6 +266,9 @@
 			this.initData(options);
 		},
 		methods: {
+			floor(val) {
+				return Math.floor(val * 100) / 100;
+			},
 			handleIsUsePoint () {
 				const pointExchangeType = [];
 				this.orderDetail.products.forEach(item => {

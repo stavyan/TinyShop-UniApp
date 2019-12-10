@@ -44,14 +44,13 @@
 
 <script>
 	import {orderPay} from "../../api/product";
-	import {memberInfo} from "../../api/userInfo";
+	import {memberInfo, orderDetail} from "../../api/userInfo";
 
 	export default {
 		data() {
 			return {
 				payType: 1,
 				money: 0,
-				orderInfo: {},
 				userInfo: {}
 			};
 		},
@@ -59,55 +58,82 @@
 
 		},
 		onLoad(options) {
-			this.orderInfo = options.data;
-			this.money = options.money;
-			this.userInfo = uni.getStorageSync('userInfo') || undefined;
+			this.initData(options);
 		},
 		methods: {
+			/**
+			 *@des 数据初始化
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/10 11:45:36
+			 *@param arguments
+			 */
+			initData(options) {
+				this.getOrderDetail(options.id);
+				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+			},
 			//选择支付方式
 			changePayType(type) {
 				this.payType = type;
 			},
+			/**
+			 *@des 获取订单费用
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/10 11:47:30
+			 *@param id 订单id
+			 */
+			async getOrderDetail(id) {
+				await this.$get(`${orderDetail}`, {
+					id,
+					simplify: 1
+				}).then(r => {
+					if (r.code === 200) {
+						this.money = r.data.order_money
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				});
+			},
 			//确认支付
 			async confirm () {
-				if (this.payType === 5) {
-					uni.showLoading({title: '正在支付...'});
-					await this.$post(`${orderPay}`, {
-						data: this.orderInfo,
-						orderGroup: 'order',
-						tradeType: 'default',
-						payType: this.payType
-					}).then(async r => {
-						if (r.code === 200) {
-							uni.showToast({title: '支付成功', icon: "none"});
-							await this.$get(memberInfo).then(r => {
-								if (r.code === 200) {
-									uni.removeStorage({
-										key: 'userInfo'
-									});
-									uni.setStorage({
-											key: 'userInfo',
-											data: r.data
-									});
-									uni.redirectTo({
-										url: '/pages/money/paySuccess'
-									});
-								} else {
-									uni.showToast({title: r.message, icon: "none"});
-								}
-							})
-						} else {
-							uni.showToast({title: r.message, icon: "none"});
-						}
-					}).catch(err => {
-						console.log(err)
-					})
-				} else {
-					uni.showToast({title: '支付成功', icon: "none"});
-					uni.redirectTo({
-						url: '/pages/money/paySuccess'
-					})
+				if (this.payType !== 5) {
+					uni.showToast({title: '暂时只提供余额支付~', icon: "none"});
+					return
 				}
+				uni.showLoading({title: '正在支付...'});
+				await this.$post(`${orderPay}`, {
+					data: this.orderInfo,
+					orderGroup: 'order',
+					tradeType: 'default',
+					payType: this.payType
+				}).then(async r => {
+					if (r.code === 200) {
+						uni.showToast({title: '支付成功', icon: "none"});
+						await this.$get(memberInfo).then(r => {
+							if (r.code === 200) {
+								uni.removeStorage({
+									key: 'userInfo'
+								});
+								uni.setStorage({
+										key: 'userInfo',
+										data: r.data
+								});
+								uni.redirectTo({
+									url: '/pages/money/paySuccess'
+								});
+							} else {
+								uni.showToast({title: r.message, icon: "none"});
+							}
+						})
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 		}
 	}
