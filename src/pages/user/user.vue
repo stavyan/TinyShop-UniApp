@@ -165,7 +165,6 @@
 		},
 		// #ifndef MP
 		onNavigationBarButtonTap(e) {
-			console.log(e)
 			const index = e.index;
 			if (index === 0) {
 				this.navTo('/pages/set/set');
@@ -202,7 +201,6 @@
 			 */ async initData() {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				this.token = uni.getStorageSync('accessToken') || undefined;
-				console.log(this.token)
 				this.shareList = await this.$api.json('shareList');
 				if (this.token) {
 					await this.getFootPrintList();
@@ -252,7 +250,6 @@
 					return;
 				}
 				if(!this.token){
-					console.log(11)
 					url = '/pages/public/login';
           uni.showModal({
             content: '你暂未登陆，是否跳转登录页面？',

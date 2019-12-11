@@ -24,7 +24,7 @@
 		<view class="goods-list" v-else>
        <view class="row" v-for="(row,index) in cartList" :key="index" >
 				<!-- 删除按钮 -->
-				<view class="menu" @tap.stop="deleteCartItem(row.sku_id)">
+				<view class="menu" @tap.stop="deleteCartItem(row.sku_id, 'one')">
 					<view class="icon shanchu"></view>
 				</view>
 				<!-- 商品 -->
@@ -70,6 +70,7 @@
 				</view>
 				<view class="text">全选</view>
 			</view>
+			<view class="delBtn del" @tap="deleteCartItem" v-if="selectedList.length>0">删除</view>
 			<view class="delBtn" @tap="clearCart" v-if="selectedList.length>0">清空</view>
 			<view class="settlement">
 				<view class="sum">合计:<view class="money">￥{{sumPrice}}</view></view>
@@ -126,15 +127,28 @@
 		},
 		methods: {
 			//删除
-			async deleteCartItem(id){
+			async deleteCartItem(id, type){
 				const sku_ids = []
-				sku_ids.push(parseInt(id, 10))
+				if (type) {
+					sku_ids.push(parseInt(id, 10))
+				} else {
+					for(let i=0;i<this.cartList.length;i++){
+						if(this.cartList[i].selected) {
+							sku_ids.push(parseInt(this.cartList[i].id, 10));
+						}
+					}
+				}
 				uni.showLoading({title:'正在将商品从购物车移除...'});
 				await this.$post(`${cartItemDel}`, {
 					sku_ids: JSON.stringify(sku_ids)
 				}).then(r=>{
 					if (r.code === 200) {
+						this.selectedList.length = 0;
+						this.isAllselected = false;
+						this.sumPrice = 0;
 						this.getCartItemList();
+						this.oldIndex = null;
+						this.theIndex = null;
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -729,15 +743,16 @@
 		.delBtn{
 			border: solid 1upx $base-color;
 			color: $base-color;
-			padding: 0 30upx;
-			height: 50upx;
-			border-radius: 30upx;
+			padding: 0 16upx;
+			height: 46upx;
+			border-radius: 24upx;
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			margin-left: 5px;
 		}
 		.settlement{
-			width: 60%;
+			width: 56%;
 			display: flex;
 			justify-content: flex-end;
 			align-items: center;

@@ -18,7 +18,7 @@
 					<view class="carrier">
 						<view class="left">
 							<view class="in1line title">
-								<text class="cell-icon">{{ parseInt(row.couponType.range_type, 10) === 0 ? '限' : '全' }}</text>
+								<text class="cell-icon">{{ parseInt(row.couponType.range_type, 10) === 2 ? '限' : '全' }}</text>
 								{{row.title}}
 							</view>
 							<view class="term" v-if="state !== 2">
@@ -44,7 +44,7 @@
 							<view class="criteria">
 								满{{row.at_least}}使用
 							</view>
-							<view class="use view" v-show="parseInt(row.couponType.range_type, 10) === 0">
+							<view class="use view" @click="show(row)" v-show="parseInt(row.couponType.range_type, 10) === 2">
 								商品
 							</view>
 							<view class="use" v-if="state == 1" @click="navTo('/pages/category/category', 'tab')">

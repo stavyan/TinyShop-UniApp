@@ -1,12 +1,12 @@
 <template>
 	<view class="content">
-		<scroll-view scroll-y class="left-aside">
+		<scroll-view scroll-y class="left-aside" v-if="flist.length > 0">
 			<!--v-show="item.child.length > 0"-->
 			<view v-for="item in flist" :key="item.id" class="f-item b-b" :class="{active: item.id === currentId}" @click="tabTap(item)">
 				{{item.title}}
 			</view>
 		</scroll-view>
-		<scroll-view scroll-with-animation scroll-y class="right-aside" @scroll="asideScroll" :scroll-top="tabScrollTop">
+		<scroll-view v-if="flist.length > 0" scroll-with-animation scroll-y class="right-aside" @scroll="asideScroll" :scroll-top="tabScrollTop">
 			<view v-for="item in slist" :key="item.id" class="s-list" :id="'main-'+item.id">
 				<text class="s-item">{{item.title}}</text>
 				<view class="t-list">
@@ -17,13 +17,17 @@
 				</view>
 			</view>
 		</scroll-view>
-	</view>
+		<empty :info="'赶紧通知老板进货'" v-else></empty>
+    </view>
 </template>
 
 <script>
 	import {productCate} from "../../api/product";
-
+	import empty from "@/components/empty";
 	export default {
+		components: {
+			empty
+		},
 		data() {
 			return {
 				sizeCalcState: false,

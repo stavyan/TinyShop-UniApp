@@ -1,5 +1,6 @@
 import axios from './uni-axios'
 import {refreshToken} from "../api/login";
+import {post} from './request'
 
 // 创建自定义接口服务实例
 const http = axios.create({
@@ -13,21 +14,34 @@ const http = axios.create({
         'Content-Type': 'application/json'
         //'X-Requested-With': 'XMLHttpRequest',
     },
-})
+});
 
 // 拦截器 在请求之前拦截
 http.interceptors.request.use(config => {
     const token = uni.getStorageSync('accessToken');
+    const userInfo = uni.getStorageSync('userInfo');
+    let paramsCommon = {};
+    let headerCommon = {};
+    if (token && userInfo) {
+        headerCommon = {
+            "x-api-key": token,
+            "merchant-id": userInfo.merchant_id
+        };
+        paramsCommon = {
+            "access_token": token,
+            "merchant_id": userInfo.merchant_id
+        }
+    }
+    config.headers = { ...config.headers, ...headerCommon };
     if (!token) {
         return config
     }
-    const userInfo = uni.getStorageSync('userInfo');
     const user = uni.getStorageSync('user');
     const loginTime = uni.getStorageSync('loginTime');
-    const currentTime = new Date().getTime() / 1000
-    console.log(currentTime - loginTime)
-    return;
-    if (currentTime - loginTime > user.expiration_time) {
+    const currentTime = new Date().getTime() / 1000;
+    if (currentTime + 5 - loginTime < user.expiration_time) {
+        return config
+    } else {
         post(refreshToken, {
             refresh_token: user.refresh_token,
             group: 'tinyShopMiniProgram'
@@ -36,7 +50,11 @@ http.interceptors.request.use(config => {
                 uni.setStorage({
                     key: 'accessToken',
                     data: r.data.access_token
-                })
+                });
+                uni.setStorage({
+                    key: 'user',
+                    data: r.data
+                });
                 uni.setStorage({
                     key: 'loginTime',
                     data: new Date().getTime() / 1000
@@ -44,9 +62,14 @@ http.interceptors.request.use(config => {
                 uni.setStorage({
                     key: 'refreshToken',
                     data: r.data.refresh_token
-                })
+                });
+                headerCommon = {
+                    "x-api-key": r.data.assess_token,
+                    "merchant-id": r.data.member.merchant_id
+                };
+                config.headers = { ...config.headers, ...headerCommon };
+                return config;
             } else {
-                uni.showToast({ title: r.message, icon: "none" });
                 uni.clearStorageSync();
                 uni.showToast({
                     title: "会话已过期， 请重新登录！",
@@ -58,8 +81,7 @@ http.interceptors.request.use(config => {
                     });
                 }, 1.5 * 1000);
             }
-        }).catch(err => {
-            console.log(err)
+        }).catch(() =>{
             uni.clearStorageSync();
             uni.showToast({
                 title: "会话已过期， 请重新登录！",
@@ -72,19 +94,6 @@ http.interceptors.request.use(config => {
             }, 1.5 * 1000);
         })
     }
-    let paramsCommon = {}
-    let headerCommon = {}
-    if (token && userInfo) {
-        headerCommon = {
-            "x-api-key": token,
-            "merchant-id": userInfo.merchant_id
-        };
-        paramsCommon = {
-            "access_token": token,
-            "merchant_id": userInfo.merchant_id
-        }
-    }
-    config.headers = { ...config.headers, ...headerCommon }
     // code...
     // 获取本地存储的Cookie
     // const cookie = uni.getStorageSync('cookie')
@@ -92,8 +101,7 @@ http.interceptors.request.use(config => {
     // config.headers.Cookie = cookie
     // console.log(config)
     // _reqlog(config)
-    return config
-})
+});
 
 // 拦截器 在请求之后拦截
 http.interceptors.response.use(response => {
@@ -101,7 +109,7 @@ http.interceptors.response.use(response => {
     switch (response.data.code) {
         case 200:
             return response.data;
-            break
+            break;
         case 401:
             uni.clearStorageSync();
             uni.removeStorage({
@@ -121,7 +129,6 @@ http.interceptors.response.use(response => {
             }, 1.5 * 1000);
             break;
         case 400:
-            // uni.clearStorageSync();
             uni.showToast({title: "错误的请求", icon: 'none'});
             break;
         case 405:
@@ -148,56 +155,7 @@ http.interceptors.response.use(response => {
 }, error => {
     uni.hideLoading();
     return Promise.reject(error.message)
-})
+});
 
-export function get(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    http
-      .get(url,{
-          params,
-      })
-      .then(response => {
-        resolve(response);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-export function post(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    http
-      .post(url, params)
-      .then(response => {
-        resolve(response);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-export function put(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    http
-      .post(url, { ...paramsCommon, ...params })
-      .then(response => {
-        resolve(response);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-export function del(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    http
-      .post(url, { ...paramsCommon, ...params })
-      .then(response => {
-        resolve(response);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
+export default http;
 
