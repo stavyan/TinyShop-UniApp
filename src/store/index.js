@@ -10,8 +10,17 @@ const store = new Vuex.Store({
 	},
 	mutations: {
 		login(state, provider) {
+			uni.clearStorageSync();
 			state.hasLogin = true;
 			state.userInfo = provider.member;
+			uni.setStorage({//缓存用户登陆状态
+			    key: 'user',
+			    data: provider
+			});
+			uni.setStorage({//缓存用户登陆状态
+			    key: 'loginTime',
+			    data: new Date().getTime() / 1000
+			});
 			uni.setStorage({//缓存用户登陆状态
 			    key: 'userInfo',
 			    data: provider.member
@@ -19,6 +28,10 @@ const store = new Vuex.Store({
 			uni.setStorage({//缓存用户登陆状态
 			    key: 'accessToken',
 			    data: provider.access_token
+			})
+			uni.setStorage({//缓存用户登陆状态
+			    key: 'refreshToken',
+			    data: provider.refresh_token
 			})
 		},
 		logout(state) {
@@ -33,7 +46,6 @@ const store = new Vuex.Store({
 		}
 	},
 	actions: {
-
 	}
 })
 

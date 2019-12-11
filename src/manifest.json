@@ -104,6 +104,9 @@
     }
   },
   "h5": {
+    "router" : {
+      "mode" : "history"
+    },
     "devServer": {
       "port": 9527,
       "disableHostCheck": true,

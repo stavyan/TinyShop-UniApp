@@ -202,6 +202,7 @@
 			 */ async initData() {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				this.token = uni.getStorageSync('accessToken') || undefined;
+				console.log(this.token)
 				this.shareList = await this.$api.json('shareList');
 				if (this.token) {
 					await this.getFootPrintList();

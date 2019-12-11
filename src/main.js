@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import store from './store';
 import App from './App';
-import { post, get, put, del } from '@/utils/request';
+// import { post, get, put, del } from '@/utils/request';
+import { get, post, put, del } from '@/utils/http';
 import Json from './Json' //测试用数据
 /**
  *  因工具函数属于公司资产, 所以直接在Vue实例挂载几个常用的函数

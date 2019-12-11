@@ -8,7 +8,9 @@
  *@param header 请求头 可选
  *@param method 请求方式 GET POST PUT DELETE
  */
-function request(url, params, header, method) {
+import {refreshToken} from "../api/login";
+
+function request(url, params, header, method, that) {
     const baseApiUrl = "https://www.yllook.com/api";
     // const baseApiUrl = "";
     const token = uni.getStorageSync('accessToken');
@@ -39,19 +41,70 @@ function request(url, params, header, method) {
         } else {
             throw res[1].data;
         }
-    }).catch(r => {
+    }).catch(async r => {
         switch (r.code) {
             case 401:
-                uni.clearStorageSync();
-                uni.showToast({
-                    title: "会话已过期， 请重新登录！",
-                    icon: 'none'
-                });
-                setTimeout(() => {
-                    uni.reLaunch({
-                        url: '/pages/public/login'
+                const refresh_token = uni.getStorageSync('refreshToken');
+                if (!refresh_token) {
+                    uni.clearStorageSync();
+                    uni.showToast({
+                        title: "会话已过期， 请重新登录！",
+                        icon: 'none'
                     });
-                }, 1.5 * 1000);
+                    setTimeout(() => {
+                        uni.reLaunch({
+                            url: '/pages/public/login'
+                        });
+                    }, 1.5 * 1000);
+                    return;
+                }
+                await request(refreshToken, {
+                        refresh_token,
+                        group: 'tinyShopMiniProgram'
+                    }, {}, 'POST'
+                ).then(async r => {
+                    if (r.code === 200) {
+                        uni.removeStorage({
+                            key: 'accessToken'
+                        })
+                        uni.setStorage({
+                            key: 'accessToken',
+                            data: r.data.access_token
+                        })
+                        uni.removeStorage({
+                            key: 'refreshToken'
+                        })
+                        uni.setStorage({
+                            key: 'refreshToken',
+                            data: r.data.refresh_token
+                        })
+                        setTimeout(() => {
+                            that.onLoad();
+                        }, 1 * 1000);
+                    } else {
+                        uni.removeStorage({
+                            key: 'accessToken'
+                        })
+                        uni.removeStorage({
+                            key: 'refreshToken'
+                        })
+                        uni.removeStorage({
+                            key: 'userInfo'
+                        })
+                        uni.showToast({title: r.message, icon: "none"});
+                    }
+                }).catch(err => {
+                    uni.removeStorage({
+                        key: 'accessToken'
+                    })
+                    uni.removeStorage({
+                        key: 'refreshToken'
+                    })
+                    uni.removeStorage({
+                        key: 'userInfo'
+                    })
+                    console.log(err)
+                })
                 break;
             case 400:
                 // uni.clearStorageSync();
@@ -82,9 +135,9 @@ function request(url, params, header, method) {
 }
 
 // GET 请求封装
-export function get(url, params = {}, header = {}) {
+export function get(url, params = {}, header = {}, that) {
     const method = "GET";
-    return request(url, params, header, method);
+    return request(url, params, header, method, that);
 }
 // POST 请求封装
 export function post(url, params = {}, header = {}) {

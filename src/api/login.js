@@ -21,10 +21,14 @@ const smsCode = "/addons/rf-tiny-shop/v1/site/sms-code";
 // 退出登录
 const logout = "/addons/rf-tiny-shop/v1/site/logout";
 
+// 退出登录
+const refreshToken = "/addons/rf-tiny-shop/v1/site/refresh";
+
 export {
     registerByPass,
     loginByPass,
     smsCode,
     loginBySmsCode,
-    logout
+    logout,
+    refreshToken
 };

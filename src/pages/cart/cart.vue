@@ -174,7 +174,7 @@
 			 */
 			async getCartItemList (type) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${cartItemList}`).then(r=>{
+				await this.$get(`${cartItemList}`, {}, {}, this).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
