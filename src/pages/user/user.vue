@@ -5,11 +5,17 @@
 				<view class="user-info-box" @click="navTo('login')">
 					<view class="portrait-box">
 						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || '/static/missing-face.png'"></image>
-					</view>
-					<view class="info-box">
 						<text class="username">
 							{{ userInfo && (userInfo.nickname || userInfo.realname) ||'请先登录'}}
 						</text>
+					</view>
+					<!--<view class="info-box">-->
+					<!--</view>-->
+					<view class="recharge" v-if="token">
+						<view class="img" @click.stop="navTo('/pages/user/recharge')">
+							<view class="icon chongzhi"></view>
+							<view class="text">充值</view>
+						</view>
 					</view>
 				</view>
 				<view class="vip-card-box">
@@ -245,6 +251,7 @@
 					return;
 				}
 				if(!this.token){
+					console.log(11)
 					url = '/pages/public/login';
           uni.showModal({
             content: '你暂未登陆，是否跳转登录页面？',
@@ -397,16 +404,36 @@
 		align-items:center;
 		position:relative;
 		z-index: 1;
-		.portrait{
-			width: 130upx;
-			height: 130upx;
-			border:5upx solid #fff;
-			border-radius: 50%;
+		justify-content: space-between;
+		.portrait-box {
+			display: flex;
+			align-items: center;
+			.portrait{
+				width: 130upx;
+				height: 130upx;
+				border:5upx solid #fff;
+				border-radius: 50%;
+			}
+			.username {
+				font-size: $font-lg + 6upx;
+				color: $font-color-dark;
+				margin-left: 20upx;
+				margin-top: 20upx;
+			}
 		}
-		.username{
-			font-size: $font-lg + 6upx;
-			color: $font-color-dark;
-			margin-left: 20upx;
+		.recharge {
+			margin-right: 10upx;
+			text-align: center;
+			.icon {
+				color: $base-color;
+				font-size: $font-lg + 16upx;
+				line-height: 1.2;
+				margin: 5upx 0;
+			}
+			.text {
+				color: $font-color-base;
+				font-size: $font-sm;
+			}
 		}
 	}
 

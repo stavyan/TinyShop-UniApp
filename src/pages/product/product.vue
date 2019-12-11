@@ -77,13 +77,22 @@
 				<view class="con-list">
 					<text v-show="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
 					<text>积分赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
-					<text>赠送积分: {{ productDetail | givePointFilter }} </text>
-					<text>兑换所需积分: {{ productDetail.point_exchange }} </text>
-					<text>最大可使用积分: {{ productDetail.max_use_point }} </text>
+					<text>最少可获得: {{ productDetail | givePointFilter }} </text>
+					<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
+					<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
 				</view>
 			</view>
 			<view class="c-row b-b">
 				<text class="tit">服务</text>
+				<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
+					<text v-for="item in productDetail.tags">{{ item }} </text>
+				</view>
+				<view class="bz-list con" v-else>
+					暂无服务
+				</view>
+			</view>
+			<view class="c-row b-b">
+				<text class="tit">阶梯优惠</text>
 				<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
 					<text v-for="item in productDetail.tags">{{ item }} </text>
 				</view>
@@ -155,7 +164,10 @@
 
 			<view class="action-btn-group">
 				<button type="primary" class=" action-btn no-border buy-now-btn" @click="addCart('buy')">立即购买</button>
-				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addCart('cart')">加入购物车</button>
+				<button type="primary"
+								:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
+								class=" action-btn no-border add-cart-btn"
+								@click="addCart('cart')">加入购物车</button>
 			</view>
 		</view>
 
@@ -259,7 +271,7 @@
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			},
 			maxBuyFilter(val) {
-				return parseInt(val, 10) === 0 ? '不限购' : `最大购买量：${val}`;
+				return parseInt(val, 10) === 0 ? '不限购' : `限购：${val}`;
 			},
 			pointExchangeTypeFilter(val) {
 				const type = ['', '非积分兑换', '积分加现金', '积分兑换或直接购买', '只支持积分兑换'];
@@ -271,7 +283,7 @@
 			},
 			givePointFilter(val) {
 				return parseInt(val.integral_give_type, 10) === 1 ?
-						`${Math.round(parseInt(val.give_point, 10) / 100 * parseInt(val.minSkuPrice, 10))} 起` :
+						`${Math.round(parseInt(val.give_point, 10) / 100 * parseInt(val.minSkuPrice, 10))} 积分` :
 						parseInt(val.integral_give_type, 10);
 			}
 		},
@@ -432,6 +444,8 @@
 					setTimeout(() => {
 						this.specClass = 'none';
 					}, 250);
+				} else if(this.specClass === 'none'){
+					this.specClass = 'show';
 				}
 			},
 			hideSpec() {
@@ -447,11 +461,11 @@
 			 *@date 2019/11/18 17:45:54
 			 */
 			async handleCartItemCreate () {
-				const type = parseInt(this.productDetail.point_exchange_type , 10)
-				if ( type === 2 || type === 4) {
-					uni.showToast({ title: "该商品不支持添加至购物车，请直接下单购买", icon: "none" });
-					return;
-				}
+				// const type = parseInt(this.productDetail.point_exchange_type , 10)
+				// if ( type === 2 || type === 4) {
+				// 	uni.showToast({ title: "该商品不支持添加至购物车，请直接下单购买", icon: "none" });
+				// 	return;
+				// }
 				let sku_id;
 				let skuStr = null;
 				if (this.productDetail.sku.length === 1) {
@@ -492,9 +506,10 @@
 					num: this.cartCount
 				}).then(r=>{
 					if (r.code === 200) {
-						uni.switchTab({
-							url: '/pages/cart/cart'
-						})
+						// uni.switchTab({
+						// 	url: '/pages/cart/cart'
+						// })
+						uni.showToast({ title: '添加成功，在购物车等亲', icon: "none" });
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -1099,7 +1114,7 @@
 		bottom:30upx;
 		z-index: 95;
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
 		width: 690upx;
 		height: 100upx;
@@ -1140,7 +1155,7 @@
 			box-shadow: 0 20upx 40upx -16upx #fa436a;
 			box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
 			background: linear-gradient(to right, #ffac30,#fa436a,#F56C6C);
-			margin-left: 20upx;
+			margin: 0 20upx;
 			position:relative;
 			&:after{
 				content: '';

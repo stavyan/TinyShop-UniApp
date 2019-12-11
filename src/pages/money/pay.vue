@@ -115,22 +115,9 @@
 				}).then(async r => {
 					if (r.code === 200) {
 						uni.showToast({title: '支付成功', icon: "none"});
-						await this.$get(memberInfo).then(r => {
-							if (r.code === 200) {
-								uni.removeStorage({
-									key: 'userInfo'
-								});
-								uni.setStorage({
-										key: 'userInfo',
-										data: r.data
-								});
-								uni.redirectTo({
-									url: '/pages/money/paySuccess'
-								});
-							} else {
-								uni.showToast({title: r.message, icon: "none"});
-							}
-						})
+						uni.redirectTo({
+							url: '/pages/money/paySuccess'
+						});
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

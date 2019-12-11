@@ -257,6 +257,11 @@
                     }
                 }
 			}
+		},{
+			"path": "pages/user/recharge",
+			"style": {
+				"navigationBarTitleText": "充值中心"
+			}
 		}, {
 			"path": "pages/user/coupon-center",
 			"style": {

@@ -96,7 +96,8 @@
 				oldIndex:null,
 				isStop:false,
 				cartList: [],
-				token: null
+				token: null,
+				oldDiscount: 0
 			}
 		},
 		onPageScroll(e){
@@ -294,10 +295,10 @@
 			// 增加数量
 			add(item, index){
 				this.cartList[index].number++;
-				this.numberChange(item);
+				this.numberChange(item, undefined, index, 'add');
 			},
 			//数量
-			async numberChange(item, data, index) {
+			async numberChange(item, data, index, type) {
 				if (data) {
 					this.cartList[index].number = data.detail.value;
 				}
@@ -309,9 +310,15 @@
 					if (r.code === 200) {
 						this.sum();
 					} else {
+						if (type === 'add'){
+							this.cartList[index].number--;
+						}
 						uni.showToast({title: r.message, icon: "none"});
 					}
 				}).catch(err => {
+					if (type === 'add'){
+						this.cartList[index].number--;
+					}
 					console.log(err)
 				})
 			},
@@ -381,7 +388,10 @@
 							// 			if(e.message!="EndIterative") throw e;
 							// 	};
 						// });
-						this.sumPrice = this.floor(this.arrSort(arr));
+						// this.sumPrice = this.sumPrice + (this.cartList[i].number * this.cartList[i].price) - this.arrSort(arr) + this.oldDiscount;
+						// this.sumPrice = this.sumPrice + (this.cartList[i].number * this.cartList[i].price);
+						// this.oldDiscount = this.arrSort(arr);
+						this.sumPrice = this.arrSort(arr);
 					}
 				}
 				this.sumPrice = this.sumPrice.toFixed(2);
@@ -389,11 +399,13 @@
 			floor(val) {
 				return Math.floor(val * 100) / 100;
 			},
+			ceil(val) {
+				return Math.ceil(val * 100) / 100;
+			},
 			discard() {
 				//丢弃
 			},
 			arrSort (arr) {
-				let discount = 0
 				const map = {},
     		dest = [];
 				for(let i = 0; i < arr.length; i++){
@@ -416,36 +428,38 @@
 						}
 					}
 				}
-				const arr2 = []
+				const discountArr = []
 				dest.forEach(item => {
 					item.data.forEach(item2 => {
 						item.num += parseInt(item2.number, 10)
-						item.price += parseInt(item2.number, 10) * parseInt(item2.price, 10)
+						item.price += parseInt(item2.number, 10) * item2.price;
 					})
 					const ladderPreferential = item.data[0].ladderPreferential;
 					for (let i = 0; i < ladderPreferential.length; i++) {
 						if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
-							arr2.push(ladderPreferential[i])
+							ladderPreferential[i].num = item.num
+							ladderPreferential[i].totalPrice = item.price
+							discountArr.push(ladderPreferential[i])
 							break;
 						}
 					}
-					discount = 0
-					console.log(arr)
-					arr2.forEach(item2 => {
-						if (parseInt(item2.type, 10) === 1) {
-							discount += item2.price * item.num
-						} else {
-							discount += item.price * item2.price / 100
-						}
-					})
 				});
 				let amount = 0;
+				let discount = 0;
+				discountArr.forEach(item2 => {
+					if (parseInt(item2.type, 10) === 1) {
+						discount += item2.price * item2.num
+					} else {
+						discount += item2.totalPrice * (100 - item2.price) / 100
+					}
+					console.error('discount', discount)
+				});
 				dest.forEach(item => {
-					amount += item.price
-				})
-				// console.log(amount)
-				// console.log(discount)
-				return amount - discount;
+					amount += item.price;
+				});
+				console.error('discount', discount)
+				console.warn('amount', amount)
+				return amount - this.ceil(discount);
 			}
 		}
 	}
