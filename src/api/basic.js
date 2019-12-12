@@ -16,7 +16,7 @@ const collectDel = "/rf-tiny-shop/v1/common/collect/delete";
 // 分享/转发
 const transmitCreate = "/rf-tiny-shop/v1/common/transmit/create";
 
-// 分享/转发
+// 上传文件/图片
 const uploadFile = "/v1/file/images";
 
 // 广告

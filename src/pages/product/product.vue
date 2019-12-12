@@ -46,6 +46,7 @@
 			</button>
 		</view>
 
+		<!--购买类型-->
 		<view class="c-list">
 			<view class="c-row b-b" @click="toggleSpec">
 				<text class="tit">购买类型</text>
@@ -61,11 +62,11 @@
 				</view>
 				<text class="yticon icon-you"></text>
 			</view>
-			<!--<view class="c-row b-b">-->
-				<!--<text class="tit">优惠券</text>-->
-				<!--<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>-->
-				<!--<text class="yticon icon-you"></text>-->
-			<!--</view>-->
+			<view class="c-row b-b">
+				<text class="tit">优惠券</text>
+				<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
+				<text class="yticon icon-you"></text>
+			</view>
 			<view class="c-row b-b">
 				<text class="tit">限购说明</text>
 				<view class="con-list">
@@ -251,21 +252,31 @@
 		<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
 			<view class="mask-content" @click.stop.prevent="stopPrevent">
 				<!-- 优惠券页面，仿mt -->
-				<view class="coupon-item" v-for="(item,index) in couponList" :key="index">
+				<view class="coupon-item" v-for="(item,index) in productDetail.canReceiveCoupon" :key="index" @click="getCoupon(item)">
 					<view class="con">
 						<view class="left">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期至2019-06-30</text>
+							<text class="time" v-if="parseInt(item.term_of_validity_type, 10) === 0">{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
+							<text class="time" v-else>自领取之日 {{ item.fixed_term }}天内有效</text>
 						</view>
 						<view class="right">
-							<text class="price">{{item.price}}</text>
-							<text>满30可用</text>
+							<text class="price" v-if="item.money">{{item.money }}</text>
+							<text class="price-discount" v-else>{{ `${item.discount}折` }}</text>
+							<text>满{{ item.at_least }}可用</text>
 						</view>
-
 						<view class="circle l"></view>
 						<view class="circle r"></view>
 					</view>
-					<text class="tips">限新用户使用</text>
+					<view class="tips">
+							<text v-show="item.range_type">
+								{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
+							</text>
+							<text v-show="type">
+								<text style="margin-right: 15upx;" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 0">可使用商品</text>
+								<text class="btn" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 2" @click="show(item)">查看商品</text>
+								<text class="btn" @click="navTo('/pages/category/category', 'tab')">去使用</text>
+							</text>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -279,6 +290,7 @@
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
   import moment from 'moment';
 	import errorImg from './../../static/errorImage.jpg';
+	import {couponReceive} from "../../api/userInfo";
 	export default{
 		components: {
 			share,
@@ -380,6 +392,33 @@
       })
 		},
 		methods:{
+			/**
+			 *@des 获取优惠券
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/12 15:17:34
+			 *@param arguments
+			 */
+			async getCoupon(item) {
+				if (this.type) return;
+				if (parseInt(item.is_get, 10) === 0) {
+						uni.showToast({title: '该优惠券不可领取', icon: "none"});
+						return;
+				}
+				uni.showLoading({title: '领取中...'});
+				await this.$post(`${couponReceive}`, {
+					id: item.id
+				}).then(r => {
+					if (r.code === 200) {
+						this.maskState = 0
+						uni.showToast({title: '领取成功', icon: "none"});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			/**
 			 *@des 跳转至评论列表
 			 *@author stav stavyan@qq.com
@@ -1327,6 +1366,10 @@
 				content: '￥';
 				font-size: 34upx;
 			}
+		}
+		.price-discount {
+			font-size: 44upx;
+			color: $base-color;
 		}
 		.tips{
 			font-size: 24upx;
