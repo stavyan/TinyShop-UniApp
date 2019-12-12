@@ -20,26 +20,21 @@ const http = axios.create({
 http.interceptors.request.use(config => {
     const token = uni.getStorageSync('accessToken');
     const userInfo = uni.getStorageSync('userInfo');
-    let paramsCommon = {};
-    let headerCommon = {};
+    let commonHeader = {};
     if (token && userInfo) {
-        headerCommon = {
+        commonHeader = {
             "x-api-key": token,
             "merchant-id": userInfo.merchant_id
         };
-        paramsCommon = {
-            "access_token": token,
-            "merchant_id": userInfo.merchant_id
-        }
     }
-    config.headers = { ...config.headers, ...headerCommon };
+    config.headers = { ...config.headers, ...commonHeader };
     if (!token) {
         return config
     }
     const user = uni.getStorageSync('user');
     const loginTime = uni.getStorageSync('loginTime');
     const currentTime = new Date().getTime() / 1000;
-    if (currentTime + 5 - loginTime < user.expiration_time) {
+    if (currentTime + 500 - loginTime < user.expiration_time) {
         return config
     } else {
         post(refreshToken, {
@@ -55,6 +50,10 @@ http.interceptors.request.use(config => {
                     key: 'user',
                     data: r.data
                 });
+                uni.setStorage({//缓存用户登陆状态
+                    key: 'userInfo',
+                    data: r.data.member
+                })
                 uni.setStorage({
                     key: 'loginTime',
                     data: new Date().getTime() / 1000
@@ -63,11 +62,11 @@ http.interceptors.request.use(config => {
                     key: 'refreshToken',
                     data: r.data.refresh_token
                 });
-                headerCommon = {
-                    "x-api-key": r.data.assess_token,
+                commonHeader = {
+                    "x-api-key": r.data.access_token,
                     "merchant-id": r.data.member.merchant_id
                 };
-                config.headers = { ...config.headers, ...headerCommon };
+                config.headers = { 'Content-Type': 'application/json', ...commonHeader };
                 return config;
             } else {
                 uni.clearStorageSync();
@@ -145,11 +144,7 @@ http.interceptors.response.use(response => {
             uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
             break;
         default:
-            uni.showToast({
-                title: r.message,
-                icon: 'none'
-            });
-            return Promise.reject();
+            return response.data;
             break
     }
 }, error => {
@@ -159,3 +154,17 @@ http.interceptors.response.use(response => {
 
 export default http;
 
+export function get(url, params = {}) {
+  return new Promise((resolve, reject) => {
+    http
+      .get(url,{
+          params,
+      })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+}

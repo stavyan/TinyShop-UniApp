@@ -85,7 +85,7 @@
 			}
 		},
 		onLoad(){
-
+      uni.clearStorageSync();
 		},
 		methods: {
 			...mapMutations(['login']),
@@ -117,7 +117,7 @@
 					usage: 'login'
 				}).then(r=>{
 					if (r.code === 200) {
-						uni.showToast({ title: '验证码发送成功', icon: "none" });
+						uni.showToast({ title: `验证码发送成功, 验证码是${r.data}`, icon: "none" });
 						this.smsCodeBtnDisabled = true;
 						let time = 59;
 						let timer = setInterval(() => {

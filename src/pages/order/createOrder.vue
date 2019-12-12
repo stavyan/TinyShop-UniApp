@@ -122,7 +122,10 @@
 				<view class="yt-list-cell b-b">
 					<text class="cell-tit clamp">开具发票</text>
 					<text class="cell-tip">
-						<text v-if="invoiceItem.type">{{ `电子发票 - ${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}</text>
+						<text v-if="invoiceItem.type">
+							{{ `电子发票 - ${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}
+							<text @click.stop="closeInvoice" class="yticon icon-shanchu4"></text>
+						</text>
 						<text v-else>本次不开具发票</text>
 					</text>
 				</view>
@@ -266,6 +269,9 @@
 			this.initData(options);
 		},
 		methods: {
+			closeInvoice() {
+				this.invoiceItem = {}
+			},
 			floor(val) {
 				return Math.floor(val * 100) / 100;
 			},
@@ -653,6 +659,11 @@
 			}
 			&.red{
 				color: $base-color;
+			}
+			.icon-shanchu4 {
+				font-size: $font-base + 2upx;
+				color: $base-color;
+				margin-left: 4upx;
 			}
 		}
 

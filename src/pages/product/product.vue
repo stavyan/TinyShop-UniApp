@@ -93,8 +93,11 @@
 			</view>
 			<view class="c-row b-b">
 				<text class="tit">阶梯优惠</text>
-				<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
-					<text v-for="item in productDetail.tags">{{ item }} </text>
+				<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
+					<text v-for="item in productDetail.ladderPreferential">
+						满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
+																		<text v-if="parseInt(item.type, 10) === 2">总价{{ parseInt(item.price, 10) }}折</text>
+					</text>
 				</view>
 				<view class="bz-list con" v-else>
 					暂无服务
@@ -182,11 +185,11 @@
 			<view class="mask" @click="hideSpec"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t">
-					<image :src="productDetail.picture"></image>
+					<image :src="showTypeImage || productDetail.picture"></image>
 					<view class="right">
 						<text class="title">{{ productDetail.name }}</text>
 						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
-						<text class="stock">库存：{{ productDetail.stock }}件</text>
+						<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
 						<view class="selected" v-if="specSelected.length > 0">
 							已选：
 							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
@@ -201,15 +204,29 @@
 				<view v-for="(item,index) in specList" :key="index" class="attr-list">
 					<text>{{item.title}}</text>
 					<view class="item-list">
-						<text
+						<view class="tit"
 							v-for="(childItem, childIndex) in specChildList"
 							v-if="childItem.base_spec_id === item.base_spec_id"
-							:key="childIndex" class="tit"
+							:key="childIndex"
 							:class="{selected: childItem.selected}"
-							@click="selectSpec(childIndex, childItem.base_spec_id)"
+							:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
+							@click="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
 						>
-							{{childItem.title }}
-						</text>
+							<text v-show="parseInt(item.show_type) === 1">
+								{{childItem.title }}
+							</text>
+							<text v-show="parseInt(item.show_type) === 2">
+								{{childItem.title }}
+							</text>
+							<view v-show="parseInt(item.show_type) === 3">
+								<image
+									class="img"
+									:src="childItem.data || productDetail.picture"
+									mode="aspectFill"
+								></image>
+								{{childItem.title }}
+							</view>
+						</view>
 					</view>
 				</view>
 				<view class="select-count">
@@ -261,6 +278,7 @@
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
   import moment from 'moment';
+	import errorImg from './../../static/errorImage.jpg';
 	export default{
 		components: {
 			share,
@@ -289,14 +307,18 @@
 		},
 		data() {
 			return {
+				errorImg: errorImg,
 				cartType: null,
 				maskState: 0, //优惠券面板显示状态
 				couponList: [],
 				productDetail: {},
+				styleObject: {},
+				showTypeImage: null,
 				specClass: 'none',
 				specSelected:[],
 				favorite: false,
 				shareList: [],
+				currentStock: null,
 				imgList: [
 					{
 						src: 'https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg'
@@ -419,6 +441,16 @@
 							item.value[0].selected = true
               this.specSelected.push(item.value[0]);
             })
+						let skuStr = []
+						this.specSelected.forEach(item => {
+							skuStr.push(item.base_spec_value_id)
+						})
+						this.productDetail.sku.forEach(item => {
+								if (item.data === skuStr.join('-')) {
+									this.currentStock = item.stock;
+									return;
+								}
+							})
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -518,13 +550,22 @@
 				})
 			},
 			//选择规格
-			selectSpec(index, pid){
+			selectSpec(index, pid, type){
 				let list = this.specChildList;
 				list.forEach(item=>{
 					if(item.base_spec_id === pid){
 						this.$set(item, 'selected', false);
 					}
 				})
+				if (parseInt(type, 10) === 3) {
+					this.showTypeImage = list[index].data;
+				}
+				if (parseInt(type, 10) === 2) {
+					this.styleObject = {
+						color: list[index].data,
+						// border: `1px solid ${list[index].data}`,
+					};
+				}
 				this.$set(list[index], 'selected', true);
 				//存储已选择
 				/**
@@ -538,6 +579,16 @@
 						this.specSelected.push(item);
 					}
 				})
+				let skuStr = []
+				this.specSelected.forEach(item => {
+					skuStr.push(item.base_spec_value_id)
+				})
+				this.productDetail.sku.forEach(item => {
+						if (item.data === skuStr.join('-')) {
+							this.currentStock = item.stock;
+							return;
+						}
+					})
 			},
 			//分享
 			share(res){
@@ -998,7 +1049,7 @@
 			padding: 20upx 0 0;
 			display: flex;
 			flex-wrap: wrap;
-			text{
+			.tit{
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -1011,6 +1062,11 @@
 				padding: 0 20upx;
 				font-size: $font-base;
 				color: $font-color-dark;
+				.img {
+					width: 36upx;
+					height: 24upx;
+					margin: 0 4upx;
+				}
 			}
 			.selected{
 				background: #fbebee;

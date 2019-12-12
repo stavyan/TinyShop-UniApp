@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from './store';
 import App from './App';
 // import { post, get, put, del } from '@/utils/request';
-import { get, post, put, del } from '@/utils/request2';
+import  http, { get } from '@/utils/http';
 import Json from './Json' //测试用数据
 /**
  *  因工具函数属于公司资产, 所以直接在Vue实例挂载几个常用的函数
@@ -46,9 +46,9 @@ Vue.prototype.$fire = new Vue();
 Vue.prototype.$store = store;
 Vue.prototype.$api = {msg, json, prePage};
 Vue.prototype.$get = get;
-Vue.prototype.$post = post;
-Vue.prototype.$put = put;
-Vue.prototype.$del = del;
+Vue.prototype.$post = http.post;
+Vue.prototype.$put = http.put;
+Vue.prototype.$del = http.del;
 
 App.mpType = 'app'
 

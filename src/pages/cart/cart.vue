@@ -134,7 +134,7 @@
 				} else {
 					for(let i=0;i<this.cartList.length;i++){
 						if(this.cartList[i].selected) {
-							sku_ids.push(parseInt(this.cartList[i].id, 10));
+							sku_ids.push(parseInt(this.cartList[i].sku_id, 10));
 						}
 					}
 				}
@@ -466,13 +466,10 @@
 					} else {
 						discount += item2.totalPrice * (100 - item2.price) / 100
 					}
-					console.error('discount', discount)
 				});
 				dest.forEach(item => {
 					amount += item.price;
 				});
-				console.error('discount', discount)
-				console.warn('amount', amount)
 				return amount - this.ceil(discount);
 			}
 		}
@@ -744,7 +741,7 @@
 			border: solid 1upx $base-color;
 			color: $base-color;
 			padding: 0 16upx;
-			height: 46upx;
+			height: 50upx;
 			border-radius: 24upx;
 			display: flex;
 			justify-content: center;

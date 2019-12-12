@@ -7,22 +7,22 @@
  */
 
 // 密码注册
-const registerByPass = "/addons/rf-tiny-shop/v1/site/register";
+const registerByPass = "/rf-tiny-shop/v1/site/register";
 
 // 密码登录
-const loginByPass = "/addons/rf-tiny-shop/v1/site/login";
+const loginByPass = "/rf-tiny-shop/v1/site/login";
 
 // 手机号登录
-const loginBySmsCode = "/addons/rf-tiny-shop/v1/site/mobile-login";
+const loginBySmsCode = "/rf-tiny-shop/v1/site/mobile-login";
 
 // 获取手机验证码
-const smsCode = "/addons/rf-tiny-shop/v1/site/sms-code";
+const smsCode = "/rf-tiny-shop/v1/site/sms-code";
 
 // 退出登录
-const logout = "/addons/rf-tiny-shop/v1/site/logout";
+const logout = "/rf-tiny-shop/v1/site/logout";
 
 // 退出登录
-const refreshToken = "/addons/rf-tiny-shop/v1/site/refresh";
+const refreshToken = "/rf-tiny-shop/v1/site/refresh";
 
 export {
     registerByPass,
