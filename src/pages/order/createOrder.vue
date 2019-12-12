@@ -59,13 +59,23 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" @click="showCompanylePicker" v-show="parseInt(currentShippingType.value, 10) === 1">
+			<view class="yt-list-cell b-b" @click="showCompanyPicker" v-show="parseInt(currentShippingType.value, 10) === 1">
 				<view class="cell-icon">
 					司
 				</view>
 				<text class="cell-tit clamp">快递公司</text>
 				<text class="cell-tip active">
 					{{ currentCompany.label || '选择快递公司' }}
+				</text>
+				<text class="cell-more wanjia wanjia-gengduo-d"></text>
+			</view>
+			<view class="yt-list-cell b-b" @click="showPickupPointPicker" v-show="parseInt(currentShippingType.value, 10) === 2">
+				<view class="cell-icon">
+					提
+				</view>
+				<text class="cell-tit clamp">门店自提点</text>
+				<text class="cell-tip active in1line">
+					{{ currentPickupPoint.label || '门店自提点' }}
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
@@ -191,6 +201,13 @@
 			:deepLength="1"
 			@onConfirm="onCompanyConfirm"
 			:pickerValueArray="orderDetail.company" />
+		<mpvue-picker
+			themeColor="#fa436a"
+			ref="pickupPointPicker"
+			mode="selector"
+			:deepLength="1"
+			@onConfirm="onPickupPointConfirm"
+			:pickerValueArray="orderDetail.pickup_point_config && orderDetail.pickup_point_config.list" />
 	</view>
 </template>
 
@@ -217,6 +234,7 @@
 				],
 				currentShippingType: {},
 				currentCompany: {},
+				currentPickupPoint: {},
 				cartIds: null,
 				invoiceItem: {},
 				addressData: {},
@@ -243,7 +261,7 @@
 			},
 			realAmount(){
 				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
-				return this.floor(parseFloat(this.invoiceAmount) + realAmount) || 0;
+				return (this.floor(parseFloat(this.invoiceAmount) + realAmount) || 0).toFixed(2);
 			},
 		  invoiceAmount () {
 				  const realAmount = this.amountGoods - this.discountAmount - (this.isUsePoint ? this.maxUsePointFee : 0);
@@ -303,15 +321,24 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/11/29 17:28:22
 			 */
-			showCompanylePicker() {
+			showCompanyPicker() {
 				this.$refs.companyTypePicker.show()
 			},
+			showPickupPointPicker() {
+				this.$refs.pickupPointPicker.show()
+			},
 			onConfirm(e) {
+				e.value = e.value[0]
 				this.currentShippingType = e;
 			},
 			async onCompanyConfirm(e) {
 				e.value = e.value[0]
         this.currentCompany = e;
+				this.getOrderFreightFee();
+      },
+			async onPickupPointConfirm(e) {
+				e.value = e.value[0]
+        this.currentPickupPoint = e;
 				this.getOrderFreightFee();
       },
 			/**
@@ -321,6 +348,9 @@
 			 *@date 2019/12/02 10:43:11
 			 */
 			async getOrderFreightFee() {
+				if (this.currentPickupPoint) {
+					this.shippingMoney = 0
+				}
 				uni.showLoading({title: '加载中...'});
 				const params = {};
 				if (this.addressData) {
@@ -367,6 +397,11 @@
 							item.value = item.id;
 						});
 						this.currentCompany = this.orderDetail.company[0];
+						this.orderDetail.pickup_point_config.list.forEach(item => {
+							item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
+							item.value = item.id;
+						});
+						this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0];
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
@@ -408,6 +443,9 @@
 				}
 				if (this.currentCompany.value) {
 					params.company_id = this.currentCompany.value;
+				}
+				if (this.currentPickupPoint.value) {
+					params.pickup_id = this.currentPickupPoint.value;
 				}
 				if (this.currentShippingType.value) {
 					params.shipping_type = this.currentShippingType.value;
@@ -647,6 +685,7 @@
 		}
 
 		.cell-tip {
+			max-width: 70%;
 			font-size: 26upx;
 			color: $font-color-dark;
 

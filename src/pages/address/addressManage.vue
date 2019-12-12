@@ -27,7 +27,7 @@
 				<!--{{addressData.addressName}}-->
 			<!--</text>-->
 			<!--<text class="yticon icon-shouhuodizhi"></text>-->
-			<input class="input" type="text" @change="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.address_details" @blur="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
 		</view>
 		<!--<view class="row b-b">-->
 			<!--<text class="tit">门牌号</text>-->
@@ -140,8 +140,6 @@
 								}).then(r => {
 									if (r.code === 200) {
 										this.multiArray[2] = r.data;
-										console.log(this.multiArray[2] )
-										console.log(this.addressData.area_id)
 										if (this.addressData.area_id) {
 											r.data.forEach((item, index) => {
 												if (parseInt(item.id, 10) == parseInt(this.addressData.area_id, 10)) {
@@ -159,7 +157,6 @@
 										this.addressData.city_id = city_id
 										this.addressData.area_id = area_id
 										this.addressData.address_name = `${province_name}, ${city_name}, ${area_name}`
-										console.log(this.addressData)
 									} else {
 										uni.showToast({title: r.message, icon: "none"});
 									}
@@ -263,7 +260,6 @@
 									case this.multiIndex[1]:
 										switch (this.multiIndex[2]) {
 											case this.multiIndex[2]:
-												console.log("2", this.multiArray[2][e.detail.value])
 												province_id = this.multiArray[0][this.multiIndex[0]].id;
 												province_name = this.multiArray[0][this.multiIndex[0]].title;
 												city_id = this.multiArray[1][this.multiIndex[1]].id;
@@ -284,8 +280,6 @@
 				this.addressData.province_id = province_id;
 				this.addressData.city_id = city_id;
 				this.addressData.area_id = area_id;
-				console.log(this.addressData.address_name)
-				console.log(this.addressData.province_id, this.addressData.city_id, this.addressData.area_id)
 				this.$forceUpdate()
 			},
 			handleRealNameChange (e) {
@@ -358,7 +352,6 @@
 				})
 			},
 			async handleAddressCreate (data) {
-				console.log(data)
 				uni.showLoading({title:'创建中...'});
 				await this.$post(`${addressCreate}`, {
 					realname: data.realname,

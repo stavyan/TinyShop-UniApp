@@ -92,7 +92,7 @@
 					simplify: 1
 				}).then(r => {
 					if (r.code === 200) {
-						this.money = r.data.order_money
+						this.money = r.data.pay_money
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

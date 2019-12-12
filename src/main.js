@@ -48,7 +48,7 @@ Vue.prototype.$api = {msg, json, prePage};
 Vue.prototype.$get = get;
 Vue.prototype.$post = http.post;
 Vue.prototype.$put = http.put;
-Vue.prototype.$del = http.del;
+Vue.prototype.$del = http.delete;
 
 App.mpType = 'app'
 

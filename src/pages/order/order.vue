@@ -58,8 +58,8 @@
 							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
 							<view class="right">
 								<text class="title clamp">{{goodsItem.product_name}}</text>
-								<text class="attr-box">{{goodsItem.sku_name}}  x {{goodsItem.num}}</text>
-								<text class="price">{{goodsItem.cost_price}}</text>
+								<text class="attr-box">{{goodsItem.sku_name || '基础版'}}</text>
+								<text class="price">{{goodsItem.price}}  x {{goodsItem.num}}</text>
 							</view>
 						</view>
 

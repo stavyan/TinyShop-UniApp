@@ -448,10 +448,12 @@
 						item.num += parseInt(item2.number, 10)
 						item.price += parseInt(item2.number, 10) * item2.price;
 					})
+					console.log(item)
 					const ladderPreferential = item.data[0].ladderPreferential;
 					for (let i = 0; i < ladderPreferential.length; i++) {
 						if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
 							ladderPreferential[i].num = item.num
+							ladderPreferential[i].itemPrice = item.data[0].price
 							ladderPreferential[i].totalPrice = item.price
 							discountArr.push(ladderPreferential[i])
 							break;
@@ -464,13 +466,15 @@
 					if (parseInt(item2.type, 10) === 1) {
 						discount += item2.price * item2.num
 					} else {
-						discount += item2.totalPrice * (100 - item2.price) / 100
+						discount += (item2.totalPrice - this.floor(item2.itemPrice * item2.price / 100) * item2.num)
 					}
 				});
 				dest.forEach(item => {
 					amount += item.price;
 				});
-				return amount - this.ceil(discount);
+				console.error('discount', discount)
+				console.warn('amount', amount)
+				return amount - discount;
 			}
 		}
 	}

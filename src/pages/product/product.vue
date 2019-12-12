@@ -268,14 +268,9 @@
 						<view class="circle r"></view>
 					</view>
 					<view class="tips">
-							<text v-show="item.range_type">
-								{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
-							</text>
-							<text v-show="type">
-								<text style="margin-right: 15upx;" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 0">可使用商品</text>
-								<text class="btn" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 2" @click="show(item)">查看商品</text>
-								<text class="btn" @click="navTo('/pages/category/category', 'tab')">去使用</text>
-							</text>
+						<text v-show="item.range_type">
+							{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
+						</text>
 					</view>
 				</view>
 			</view>
@@ -400,11 +395,6 @@
 			 *@param arguments
 			 */
 			async getCoupon(item) {
-				if (this.type) return;
-				if (parseInt(item.is_get, 10) === 0) {
-						uni.showToast({title: '该优惠券不可领取', icon: "none"});
-						return;
-				}
 				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
 					id: item.id
@@ -413,6 +403,7 @@
 						this.maskState = 0
 						uni.showToast({title: '领取成功', icon: "none"});
 					} else {
+						this.maskState = 0
 						uni.showToast({title: r.message, icon: "none"});
 					}
 				}).catch(err => {

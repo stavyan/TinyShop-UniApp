@@ -185,6 +185,11 @@
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {
 						this.cateList = r.data
+						console.log(this.cateList)
+						this.cateList.unshift({
+							title: '全部商品',
+							id: ''
+						})
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
