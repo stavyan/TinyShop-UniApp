@@ -26,7 +26,7 @@
 </template>
 
 <script>
-	import {invoiceList} from "../../api/userInfo";
+	import {invoiceList, invoiceDel} from "../../api/userInfo";
 	export default {
 		data() {
 			return {
@@ -50,7 +50,7 @@
 				    content: '确定要删除该收货地址吗',
 				    success: (e)=>{
 				    	if(e.confirm){
-				    		this.$del(`${addressDelete}?id=${id}`).then(r => {
+				    		this.$del(`${invoiceDel}?id=${id}`).then(r => {
 									if (r.code === 200) {
 										this.getInvoiceList();
 									} else {

@@ -166,6 +166,9 @@
 			initData() {
 				this.token = uni.getStorageSync('accessToken') || undefined
 				if (this.token) {
+					this.selectedList.length = 0;
+					this.isAllselected = false;
+					this.sumPrice = 0;
 					this.getCartItemList();
 				}
 			},

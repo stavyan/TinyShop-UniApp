@@ -100,30 +100,20 @@
 			confirm(){
 				let data = this.invoiceData;
 				if(!data.title){
-					this.$api.msg('请填写发票抬头');
+					uni.showToast({ title: '请填写发票抬头', icon: "none" });
 					return;
 				}
 				if(data.type === 1){
 					if (!data.duty_paragraph) {
-						this.$api.msg('请填写发票税号');
+						uni.showToast({ title: '请填写发票税号', icon: "none" });
 						return;
 					}
 				}
-				// if(!data.address){
-				// 	this.$api.msg('请在地图选择所在位置');
-				// 	return;
-				// }
 				if (this.manageType === 'edit') {
 					this.handleInvoiceUpdate(data)
 				} else {
 					this.handleInvoiceCreate(data)
 				}
-				//this.$api.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
-				// this.$api.prePage().refreshList(data, this.manageType);
-				// this.$api.msg(`地址${this.manageType=='edit' ? '修改': '添加'}成功`);
-				// setTimeout(()=>{
-				// 	uni.navigateBack()
-				// }, 800)
 			},
 			async handleInvoiceUpdate (data) {
 				uni.showLoading({title:'发票修改中...'});

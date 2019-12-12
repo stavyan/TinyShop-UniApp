@@ -7,7 +7,7 @@
 
 		<view class="pay-type-list">
 
-			<view class="type-item b-b" @click="changePayType(1)">
+			<view class="type-item b-b" @click="changePayType(1)" v-show="parseInt(payTypeList.order_wechat_pay, 10) === 1">
 				<text class="icon yticon icon-weixinzhifu"></text>
 				<view class="con">
 					<text class="tit">微信支付</text>
@@ -17,7 +17,7 @@
 					<radio value="" color="#fa436a" :checked='payType == 1' />
 				</label>
 			</view>
-			<view class="type-item b-b" @click="changePayType(2)">
+			<view class="type-item b-b" @click="changePayType(2)"  v-show="parseInt(payTypeList.order_ali_pay, 10) === 1">
 				<text class="icon yticon icon-alipay"></text>
 				<view class="con">
 					<text class="tit">支付宝支付</text>
@@ -26,7 +26,7 @@
 					<radio value="" color="#fa436a" :checked='payType == 2' />
 				</label>
 			</view>
-			<view class="type-item" @click="changePayType(5)">
+			<view class="type-item" @click="changePayType(5)" v-show="parseInt(payTypeList.order_balance_pay, 10) === 1">
 				<text class="icon yticon icon-erjiye-yucunkuan"></text>
 				<view class="con">
 					<text class="tit">预存款支付</text>
@@ -45,11 +45,13 @@
 <script>
 	import {orderPay} from "../../api/product";
 	import {memberInfo, orderDetail} from "../../api/userInfo";
+	import {configList} from "../../api/basic";
 
 	export default {
 		data() {
 			return {
 				payType: 1,
+				payTypeList: {},
 				money: 0,
 				userInfo: {},
 				orderDetail: {},
@@ -72,6 +74,7 @@
 			 */
 			initData(options) {
 				this.orderInfo.order_id = parseInt(options.id, 10);
+				this.getPayTypeList();
 				this.getOrderDetail(options.id);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 			},
@@ -93,6 +96,25 @@
 				}).then(r => {
 					if (r.code === 200) {
 						this.money = r.data.pay_money
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				});
+			},
+			/**
+			 *@des 获取支付类型列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/12 17:40:00
+			 */
+			async getPayTypeList() {
+				await this.$get(`${configList}`, {
+					field: 'order_balance_pay,order_wechat_pay,order_ali_pay'
+				}).then(r => {
+					if (r.code === 200) {
+						this.payTypeList = r.data
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

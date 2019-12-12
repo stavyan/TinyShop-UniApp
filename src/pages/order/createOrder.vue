@@ -330,6 +330,12 @@
 			onConfirm(e) {
 				e.value = e.value[0]
 				this.currentShippingType = e;
+				if(this.currentShippingType.value !== 2) return;
+				if (this.realAmount > this.orderDetail.pickup_point_config.pickup_point_freight) {
+					this.shippingMoney = 0
+				} else {
+					this.shippingMoney = this.orderDetail.pickup_point_config.pickup_point_fee;
+				}
 			},
 			async onCompanyConfirm(e) {
 				e.value = e.value[0]
@@ -339,7 +345,6 @@
 			async onPickupPointConfirm(e) {
 				e.value = e.value[0]
         this.currentPickupPoint = e;
-				this.getOrderFreightFee();
       },
 			/**
 			 *@des 计算运费
@@ -397,11 +402,18 @@
 							item.value = item.id;
 						});
 						this.currentCompany = this.orderDetail.company[0];
-						this.orderDetail.pickup_point_config.list.forEach(item => {
-							item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
-							item.value = item.id;
-						});
-						this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0];
+						if (parseInt(this.orderDetail.pickup_point_config.buyer_self_lifting, 10) === 1) {
+							this.orderDetail.pickup_point_config.list.forEach(item => {
+								item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
+								item.value = item.id;
+							});
+							this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0];
+							if (parseInt(this.orderDetail.pickup_point_config.pickup_point_is_open, 10) !== 1) {
+								this.shippingMoney = 0;
+							}
+						} else {
+							this.orderDetail.pickup_point_config.list = [];
+						}
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

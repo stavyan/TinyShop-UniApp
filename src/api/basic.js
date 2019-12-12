@@ -22,11 +22,15 @@ const uploadFile = "/v1/file/images";
 // 广告
 const advList = "/addons/rf-article/adv/index";
 
+// 配置
+const configList = "/rf-tiny-shop/v1/common/config/index";
+
 export {
     provinceList,
     collectCreate,
     collectDel,
     transmitCreate,
     uploadFile,
-    advList
+    advList,
+    configList
 };
