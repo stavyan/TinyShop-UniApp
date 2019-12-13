@@ -43,7 +43,6 @@ http.interceptors.request.use(async config => {
         }).then(async r => {
             const data = r.data;
             if (data.code === 200) {
-                console.log(200)
                 // return config;
                 uni.setStorageSync('accessToken', data.data.access_token);
                 uni.setStorageSync('user', data.data);
@@ -56,7 +55,6 @@ http.interceptors.request.use(async config => {
                 };
                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {
-                console.log('!200')
                 uni.clearStorageSync();
                 uni.showToast({
                     title: "会话已过期， 请重新登录！",
@@ -69,7 +67,6 @@ http.interceptors.request.use(async config => {
                 }, 1.5 * 1000);
             }
         }).catch(() => {
-            console.log('error')
             uni.clearStorage();
             uni.showToast({
                 title: "会话已过期， 请重新登录！",
@@ -81,7 +78,6 @@ http.interceptors.request.use(async config => {
                 });
             }, 1.5 * 1000);
         })
-        console.log(config1)
         return config1;
     }
 }, (error) => {
