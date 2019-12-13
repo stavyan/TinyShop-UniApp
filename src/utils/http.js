@@ -32,7 +32,6 @@ http.interceptors.request.use(async config => {
     const loginTime = uni.getStorageSync('loginTime');
     const currentTime = new Date().getTime() / 1000;
     const config1 = config;
-    console.log(config)
     if (!token || currentTime + 15 - loginTime < user.expiration_time) {
         return config
     } else {
@@ -41,7 +40,9 @@ http.interceptors.request.use(async config => {
             refresh_token: user.refresh_token,
             group: 'tinyShopMiniProgram'
         }).then(async r => {
+            console.log('ok')
             if (r.code === 200) {
+                console.log(200)
                 // return config;
                 uni.setStorageSync('accessToken', r.data.access_token);
                 uni.setStorageSync('user', r.data);
@@ -54,6 +55,7 @@ http.interceptors.request.use(async config => {
                 };
                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {
+                console.log('!200')
                 uni.clearStorageSync();
                 uni.showToast({
                     title: "会话已过期， 请重新登录！",
@@ -66,6 +68,7 @@ http.interceptors.request.use(async config => {
                 }, 1.5 * 1000);
             }
         }).catch(() => {
+            console.log('error')
             uni.clearStorageSync();
             uni.showToast({
                 title: "会话已过期， 请重新登录！",
