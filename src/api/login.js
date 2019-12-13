@@ -22,7 +22,7 @@ const smsCode = "/rf-tiny-shop/v1/site/sms-code";
 const logout = "/rf-tiny-shop/v1/site/logout";
 
 // 退出登录
-const refreshToken = "/rf-tiny-shop/v1/site/refresh";
+const refreshToken = "https://www.yllook.com/api/rf-tiny-shop/v1/site/refresh";
 
 export {
     registerByPass,
