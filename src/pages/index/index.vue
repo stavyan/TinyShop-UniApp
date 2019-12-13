@@ -275,10 +275,7 @@
 			 *@date 2019/12/02 16:14:02
 			 */
 			initData () {
-				this.getAdvList();
 				this.getProductCateList();
-				this.getProductList();
-				this.getNewGoodsList();
 			},
 			navToList(id){
 				uni.navigateTo({
@@ -316,6 +313,9 @@
 					index_block_status: 1
 				}).then(r => {
 					if (r.code === 200) {
+						this.getAdvList();
+						this.getProductList();
+						this.getNewGoodsList();
 						this.productCateList = r.data;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});

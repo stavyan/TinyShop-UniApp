@@ -17,7 +17,7 @@ const http = axios.create({
 });
 
 // 拦截器 在请求之前拦截
-http.interceptors.request.use(config => {
+http.interceptors.request.use(async config => {
     const token = uni.getStorageSync('accessToken');
     const userInfo = uni.getStorageSync('userInfo');
     let commonHeader = {};
@@ -27,47 +27,32 @@ http.interceptors.request.use(config => {
             "merchant-id": userInfo.merchant_id
         };
     }
-    config.headers = { ...config.headers, ...commonHeader };
-    if (!token) {
-        return config
-    }
+    config.headers = {...config.headers, ...commonHeader};
     const user = uni.getStorageSync('user');
     const loginTime = uni.getStorageSync('loginTime');
     const currentTime = new Date().getTime() / 1000;
-    if (currentTime + 500 - loginTime < user.expiration_time) {
+    const config1 = config;
+    console.log(config)
+    if (!token || currentTime + 15 - loginTime < user.expiration_time) {
         return config
     } else {
-        post(refreshToken, {
+        // return config;
+        await post(refreshToken, {
             refresh_token: user.refresh_token,
             group: 'tinyShopMiniProgram'
-        }).then(r=>{
+        }).then(async r => {
             if (r.code === 200) {
-                uni.setStorage({
-                    key: 'accessToken',
-                    data: r.data.access_token
-                });
-                uni.setStorage({
-                    key: 'user',
-                    data: r.data
-                });
-                uni.setStorage({//缓存用户登陆状态
-                    key: 'userInfo',
-                    data: r.data.member
-                })
-                uni.setStorage({
-                    key: 'loginTime',
-                    data: new Date().getTime() / 1000
-                });
-                uni.setStorage({
-                    key: 'refreshToken',
-                    data: r.data.refresh_token
-                });
-                commonHeader = {
+                // return config;
+                uni.setStorageSync('accessToken', r.data.access_token);
+                uni.setStorageSync('user', r.data);
+                uni.setStorageSync('userInfo', r.data.member)
+                uni.setStorageSync('loginTime', new Date().getTime() / 1000);
+                uni.setStorageSync('refreshToken', r.data.refresh_token);
+                commonHeader = await {
                     "x-api-key": r.data.access_token,
                     "merchant-id": r.data.member.merchant_id
                 };
-                config.headers = { 'Content-Type': 'application/json', ...commonHeader };
-                return config;
+                config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {
                 uni.clearStorageSync();
                 uni.showToast({
@@ -80,7 +65,7 @@ http.interceptors.request.use(config => {
                     });
                 }, 1.5 * 1000);
             }
-        }).catch(() =>{
+        }).catch(() => {
             uni.clearStorageSync();
             uni.showToast({
                 title: "会话已过期， 请重新登录！",
@@ -93,6 +78,7 @@ http.interceptors.request.use(config => {
             }, 1.5 * 1000);
         })
     }
+    return config1;
     // code...
     // 获取本地存储的Cookie
     // const cookie = uni.getStorageSync('cookie')

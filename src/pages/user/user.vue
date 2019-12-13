@@ -203,13 +203,13 @@
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				this.shareList = await this.$api.json('shareList');
 				if (this.token) {
-					await this.getFootPrintList();
 					await this.getMemberInfo();
 				}
 			},
       async getMemberInfo() {
          this.$get(memberInfo).then(r => {
             if (r.code === 200) {
+								this.getFootPrintList();
                 uni.removeStorage({
                     key: 'userInfo'
                 })
