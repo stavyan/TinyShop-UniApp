@@ -4,6 +4,8 @@
  *@blog https://stavtop.club
  *@date 2019/11/18 13:57:54
  */
+// 首页列表
+const indexList = "/tiny-shop/v1/index/index";
 // 产品分类列表
 const productCate = "/tiny-shop/v1/product/cate/index";
 // 首页推荐分类
@@ -42,6 +44,7 @@ const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 const brandList = "/tiny-shop/v1/product/brand/index";
 
 export {
+    indexList,
     productCate,
     productCateList,
     productList,

@@ -22,7 +22,7 @@
 			<view class="swiper-dots">
 				<text class="num">{{swiperCurrent+1}}</text>
 				<text class="sign">/</text>
-				<text class="num">{{carouselList.index_top.length}}</text>
+				<text class="num">{{carouselList.index_top && carouselList.index_top.length}}</text>
 			</view>
 		</view>
 		<!-- 分类 -->
@@ -212,7 +212,7 @@
 		<!--</view>-->
 		<!-- 新品 -->
 		<view class="ad-1">
-			<image :src="carouselList.index_new[0].cover" mode="scaleToFill"></image>
+			<image :src="carouselList.index_hot && carouselList.index_new[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_new: 1})">
 			<image src="/static/h1.png"></image>
@@ -239,7 +239,7 @@
 
 		<!-- 推荐 -->
 		<view class="ad-1">
-			<image :src="carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
+			<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
 			<image src="/static/h1.png"></image>
@@ -266,7 +266,7 @@
 
 		<!-- 热门 -->
 		<view class="ad-1">
-			<image :src="carouselList.index_hot[0].cover" mode="scaleToFill"></image>
+			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
 			<image src="/static/h1.png"></image>
@@ -295,10 +295,9 @@
 
 <script>
 	import {advList} from "../../api/basic";
-	import {brandList, productCateList, productList} from "../../api/product";
+	import {brandList, indexList, productCateList, productList} from "../../api/product";
 	import uniGrid from "@/components/uni-grid/uni-grid.vue";
 	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
-
 	export default {
 		components: {
 			uniGrid,
@@ -309,7 +308,7 @@
 				titleNViewBackground: '',
 				swiperCurrent: 0,
 				swiperLength: 0,
-				carouselList: [],
+				carouselList: {},
 				hotProductList: [],
 				recommendProductList: [],
 				newProductList: [],
@@ -328,7 +327,7 @@
 			 *@date 2019/12/02 16:14:02
 			 */
 			initData () {
-				this.getProductCateList();
+				this.getIndexList();
 			},
 			navToList(id){
 				uni.navigateTo({
@@ -338,26 +337,6 @@
 			toProductList(params){
 				uni.navigateTo({
 					url: `/pages/product/list?params=${JSON.stringify(params)}`
-				})
-			},
-			/**
-			 *@des 获取广告图列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/02 16:14:34
-			 */
-			async getAdvList() {
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${advList}`, {
-					location: 'index_top,index_new,index_recommend,index_hot'
-				}).then(r => {
-					if (r.code === 200) {
-						this.carouselList = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
 				})
 			},
 			/**
@@ -378,63 +357,16 @@
 					console.log(err)
 				})
 			},
-			/**
-			 *@des 获取首页推荐分类
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/02 16:39:57
-			 */
-			async getProductCateList() {
+			async getIndexList() {
 				uni.showLoading({title: '加载中...'});
-				await this.$get(`${productCateList}`, {
-					index_block_status: 1
-				}).then(r => {
+				await this.$get(`${indexList}`, {}).then(r => {
 					if (r.code === 200) {
-						this.getAdvList();
 						this.getBrandList();
-						this.getProductList('hot');
-						this.getProductList('recommend');
-						this.getProductList('new');
-						this.productCateList = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			},
-			/**
-			 *@des 获取推荐列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/02 16:31:12
-			 *@param arguments
-			 */
-			async getProductList(type) {
-				const params = {}
-				if (type === 'hot') {
-					params.is_hot = 1
-				} else if (type === 'recommend') {
-					params.is_recommend = 1
-				} else if (type === 'new') {
-					params.is_new = 1
-				} else {
-					params.is_hot = 1
-				}
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${productList}`, {
-					...params
-				}).then(r => {
-					if (r.code === 200) {
-						if (type === 'hot') {
-							this.hotProductList = r.data;
-						} else if (type === 'recommend') {
-							this.recommendProductList = r.data;
-						} else if (type === 'new') {
-							this.newProductList = r.data;
-						} else {
-							this.hotProductList = r.data;
-						}
+						this.productCateList = r.data.cate;
+						this.carouselList = r.data.adv;
+						this.hotProductList = r.data.product_hot;
+						this.recommendProductList = r.data.product_recommend;
+						this.newProductList = r.data.product_new;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
