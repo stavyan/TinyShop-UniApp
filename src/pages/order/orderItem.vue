@@ -156,6 +156,8 @@ export default {
 				this.handleCloseOrderRefundApply(e.data.id)
 			} else if (e.content.text === '评论') {
 				this.goEvaluation(e.data)
+			} else if (e.content.text === '追加评论') {
+				this.goEvaluation(e.data, 'add')
 			}
 		},
 		/**
@@ -210,9 +212,9 @@ export default {
 		 *@date 2019/12/03 17:07:39
 		 *@param item 商品item
 		 */
-		goEvaluation(item) {
+		goEvaluation(item, type) {
 			uni.navigateTo({
-				url: `/pages/evaluation/evaluation?data=${JSON.stringify(item)}`
+				url: `/pages/evaluation/evaluation?data=${JSON.stringify(item)}&type=${type}`
 			})
 		},
 		/**

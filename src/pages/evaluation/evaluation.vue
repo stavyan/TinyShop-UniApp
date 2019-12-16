@@ -10,7 +10,7 @@
 				<text class="product-price">{{ productInfo.product_money }} * {{ productInfo.num }}</text>
 			</view>
 		</view>
-		<view class="product-rate">
+		<view class="product-rate" v-show="evaluationType !== 'add'">
 			整体评价
 			<view class="product-rate-wrapper"><uni-rate
 				size="24"
@@ -34,7 +34,7 @@
 						还可输入 <text class="s"> {{ wordLimit }} </text> 字
 				</text>
 			</view>
-			<view class="anonymous">
+			<view class="anonymous" v-show="evaluationType !== 'add'">
 				<switch color="#fa436a" @change="handleAnonymousChange" style="transform:scale(0.7)"/>
 				<text>{{ anonymousText }}</text>
 			</view>
@@ -57,7 +57,7 @@
 			<view class="add" @click="uploadImage">+</view>
 		</view>
 
-		<button class="confirm-btn" @click="handleEvaluate">评价</button>
+		<button class="confirm-btn" @click="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发布评价'}}</button>
 	</view>
 </template>
 
@@ -70,7 +70,7 @@
 	 * @copyright 2019
 	 */
 	import uniRate from "@/components/uni-rate/uni-rate.vue"
-	import {evaluateCreate, uploadImage} from "../../api/userInfo";
+	import {evaluateCreate, evaluateUpdate, uploadImage} from "../../api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default{
 		components: { uniRate, uniIcons },
@@ -81,6 +81,7 @@
 				imageList: [],
 				content: '',
 				anonymousText: '不匿名',
+				evaluationType: null,
 				evaluate: {
 					'scores' : 5,
 					'content' : '',
@@ -97,7 +98,15 @@
 		},
 		onLoad(options){
 			this.productInfo = JSON.parse(options.data);
+			this.evaluationType = options.type;
 			this.token = uni.getStorageSync('accessToken') || undefined;
+			let title = '发布评价';
+			if(options.type === 'add'){
+				title = '追加评论'
+			}
+			uni.setNavigationBarTitle({
+				title
+			});
 		},
 		methods: {
 			/**
@@ -202,15 +211,54 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/11/27 16:50:56
-			 */ async handleEvaluate() {
+			 */
+			async handleEvaluate() {
 				this.evaluate.order_product_id = this.productInfo.id;
 				this.evaluate.covers = this.imageList;
 				const params = {};
-				const data = [];
-				data.push(this.evaluate)
-				params.evaluate = JSON.stringify(data);
 				uni.showLoading({title: '评论中...'});
+				if (this.evaluationType !== 'add') {
+					const data = [];
+					data.push(this.evaluate)
+					params.evaluate = JSON.stringify(data);
+					this.handleEvaluateCreate(params);
+				} else {
+					params.again_content = this.evaluate.content;
+					params.again_covers = this.imageList;
+					this.handleEvaluateUpdate(params);
+				}
+			},
+			/**
+			 *@des 发布评价
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/16 17:16:54
+			 *@param params 发布评论参数
+			 */
+			async handleEvaluateCreate(params) {
 				await this.$post(`${evaluateCreate}`, {
+					...params
+				}).then(r => {
+					if (r.code === 200) {
+						uni.navigateBack({
+							delta: 2
+						});
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 *@des 追加评论
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/16 17:17:10
+			 *@param params 发布评论参数
+			 */
+			async handleEvaluateUpdate(params) {
+				await this.$put(`${evaluateUpdate}?id=${this.productInfo.id}`, {
 					...params
 				}).then(r => {
 					if (r.code === 200) {

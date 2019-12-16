@@ -111,7 +111,7 @@
         "loading": "AsyncLoading", //页面js加载时使用的组件（需注册为全局组件）
         "error": "AsyncError", //页面js加载失败时使用的组件（需注册为全局组件）
         "delay": 200, //展示 loading 加载组件的延时时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）
-        "timeout": 3000 //页面js加载超时时间（超时后展示 error 对应的组件）
+        "timeout": 10000 //页面js加载超时时间（超时后展示 error 对应的组件）
     },
     "devServer": {
       "port": 9527,

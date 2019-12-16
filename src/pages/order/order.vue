@@ -165,11 +165,11 @@
         return status;
       }
 		},
-		// onShow(){
-		// 	this.page = 1;
-		// 	this.orderList = [];
-		// 	this.getOrderList();
-		// },
+		onShow(){
+			this.page = 1;
+			this.orderList = [];
+			this.getOrderList();
+		},
 		onLoad(options){
 			/**
 			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
