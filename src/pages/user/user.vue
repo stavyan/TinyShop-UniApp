@@ -90,7 +90,7 @@
 						<text class="yticon icon-lishijilu"></text>
 						<text>我的足迹</text>
 					</view>
-					<scroll-view scroll-x class="h-list">
+					<scroll-view scroll-x class="h-list" v-if="footList.length > 0">
 						<view class="h-item" v-for="item in footList" :key="item.id">
 							<image class="h-item-img" @click.stop="navTo(`/pages/product/product?id=${item.product.id}`)"
 										 :src="item.product.picture"
@@ -99,6 +99,11 @@
 							<text class="h-item-text">{{ item.product.name }}</text>
 						</view>
 					</scroll-view>
+					<view class="no-foot-print" v-else>
+						<uni-icons class="no-foot-print-icon" color="#fa436a" size="28"
+											 type="locked" />
+						登陆后查看
+					</view>
 					<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="navTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 					<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')"></list-cell>
 					<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏"></list-cell>
@@ -118,11 +123,13 @@
 	import listCell from '@/components/mix-list-cell';
   import {footPrintList, memberInfo} from "../../api/userInfo";
 	import share from '@/components/share';
+	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	let startY = 0, moveY = 0, pageAtTop = true;
     export default {
 		components: {
 			listCell,
-			share
+			share,
+			uniIcons
 		},
 		data(){
 			return {
@@ -577,6 +584,13 @@
 				}
 			}
 			image{
+			}
+		}
+		.no-foot-print {
+			text-align: center;
+			padding: 30upx 0;
+			.no-foot-print-icon {
+				margin-right: 10upx;
 			}
 		}
 	}

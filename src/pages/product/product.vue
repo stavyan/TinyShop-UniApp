@@ -235,6 +235,7 @@
 					<uni-number-box
 						class="step"
 						:min="1"
+						:max="parseInt(currentStock || productDetail.stock, 10)"
 						:value="cartCount"
 						@eventChange="numberChange"
 					></uni-number-box>

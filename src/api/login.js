@@ -7,22 +7,22 @@
  */
 
 // 密码注册
-const registerByPass = "/rf-tiny-shop/v1/site/register";
+const registerByPass = "/tiny-shop/v1/site/register";
 
 // 密码登录
-const loginByPass = "/rf-tiny-shop/v1/site/login";
+const loginByPass = "/tiny-shop/v1/site/login";
 
 // 手机号登录
-const loginBySmsCode = "/rf-tiny-shop/v1/site/mobile-login";
+const loginBySmsCode = "/tiny-shop/v1/site/mobile-login";
 
 // 获取手机验证码
-const smsCode = "/rf-tiny-shop/v1/site/sms-code";
+const smsCode = "/tiny-shop/v1/site/sms-code";
 
 // 退出登录
-const logout = "/rf-tiny-shop/v1/site/logout";
+const logout = "/tiny-shop/v1/site/logout";
 
 // 退出登录
-const refreshToken = "https://www.yllook.com/api/rf-tiny-shop/v1/site/refresh";
+const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
 
 export {
     registerByPass,

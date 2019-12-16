@@ -11,24 +11,29 @@
 			</view>
 		</view>
 		<view class="product-textarea">
-       <textarea class="textarea" maxlength="140"
-								 @input="handleContentChange"
-								 :value="refund_reason"
-								 placeholder-style="color:#ccc; font-size: 24upx"
-								 placeholder="宝贝不满足你的期待吗？请填写一下你的退货理由吧"/>
-			<view class="tips">
-				<text v-show="refund_reason.length > 0 && refund_reason.length < 40">
-					您已输入<text class="f"> {{ refund_reason.length }} </text>字
-				</text>
-				<text v-show="refund_reason.length >= 40">
-						还可输入 <text class="s"> {{ wordLimit }} </text> 字
-				</text>
-			</view>
+			<form @submit="handleOrderRefundApply">
+				<radio-group name="refund_type" class="refund-type">
+					<label class="gender-item" v-for="(item, index) in refundTypeArr" :key="index">
+						<radio class="gender-item-radio" :value="item.value" color="#fa436a" :checked="'1' === item.value" />
+						<text class="gender-item-text">{{ item.name }}</text>
+					</label>
+				</radio-group>
+				 <textarea name="refund_reason" class="textarea" maxlength="140"
+					 @input="handleContentChange"
+					 :value="refund_reason"
+					 placeholder-style="color:#ccc; font-size: 24upx"
+					 placeholder="宝贝不满足你的期待吗？请填写一下你的退货/退款理由吧"/>
+				<view class="tips">
+					<text v-show="refund_reason.length > 0 && refund_reason.length < 40">
+						您已输入<text class="f"> {{ refund_reason.length }} </text>字
+					</text>
+					<text v-show="refund_reason.length >= 40">
+							还可输入 <text class="s"> {{ wordLimit }} </text> 字
+					</text>
+				</view>
+				<button class="confirm-btn" formType="submit">{{ parseInt(refundType, 10) === 1 ? '退款': '退货退款' }}</button>
+			</form>
 		</view>
-
-		<button class="confirm-btn" @click="handleOrderRefundApply(productInfo.id, refundType)">
-			{{ parseInt(refundType, 10) === 1 ? '退款': '退货' }}
-		</button>
 	</view>
 </template>
 
@@ -42,7 +47,8 @@
 	 */
 	import uniRate from "@/components/uni-rate/uni-rate.vue"
 	import {orderRefundApply} from "../../api/userInfo";
-	import uniIcons from '@/components/uni-icons/uni-icons.vue'
+	import uniIcons from '@/components/uni-icons/uni-icons.vue';
+	const graceChecker = require("../../common/graceChecker.js");
 	export default{
 		components: { uniRate, uniIcons },
 		data(){
@@ -50,6 +56,15 @@
 				productInfo: {},
 				refundType: 1,
 				refund_reason: '',
+				refundTypeArr: [
+					{
+						value: '1',
+						name: '退款'
+					},
+					{
+						value: '2',
+						name: '退货退款'
+					}],
 			}
 		},
 		computed: {
@@ -79,12 +94,21 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/12/03 15:43:18
 			 */
-			async handleOrderRefundApply(id, refund_type) {
+			async handleOrderRefundApply(e) {
+				const formData = e.detail.value;
+				let rule = [
+					{name:"refund_type", checkType : "notnull", checkRule:"",  errorMsg:"请选择退款类型"},
+					{name:"refund_reason", checkType : "notnull", checkRule:"",  errorMsg:"请输入退款/退货理由"}
+				];
+				const checkRes = graceChecker.check(formData, rule);
+				if(!checkRes){
+					uni.showToast({ title: graceChecker.error, icon: "none" });
+					return;
+				}
 				uni.showLoading({title: '加载中...'});
 				await this.$post(`${orderRefundApply}`, {
-					id,
-					refund_type,
-					refund_reason: this.refund_reason
+					id: this.productInfo.id,
+					...formData
 				}).then(r => {
 					if (r.code === 200) {
 						uni.showToast({title: '退款成功', icon: "none"});
@@ -133,6 +157,9 @@
 			height: 300upx;
 			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 			position: relative;
+			.refund-type {
+				margin: 20upx 0;
+			}
 			.textarea {
 				width: 100%;
 			}

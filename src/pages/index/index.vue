@@ -13,8 +13,8 @@
 			<!-- 背景色区域 -->
 			<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>
 			<!--<swiper class="carousel" circular @change="swiperChange">-->
-			<swiper class="carousel" circular>
-				<swiper-item v-for="(item, index) in carouselList" :key="index" class="carousel-item" @click="navToDetailPage({title: '轮播广告'})">
+			<swiper class="carousel" circular @change="swiperChange">
+				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="navToDetailPage({title: '轮播广告'})">
 					<image :src="item.cover" />
 				</swiper-item>
 			</swiper>
@@ -22,21 +22,38 @@
 			<view class="swiper-dots">
 				<text class="num">{{swiperCurrent+1}}</text>
 				<text class="sign">/</text>
-				<text class="num">{{carouselList.length}}</text>
+				<text class="num">{{carouselList.index_top.length}}</text>
 			</view>
 		</view>
 		<!-- 分类 -->
-		<view class="cate-section">
-			<view class="cate-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">
-				<image :src="item.cover"></image>
-				<text>{{ item.title }}</text>
-			</view>
-		</view>
+		<uni-grid :column="4" class="grid" :showBorder="false">
+				<view class="grid-title">分类专区</view>
+				<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">
+					<image class="grid-item-image" :src="item.cover"></image>
+					<text class="grid-item-text">{{ item.title }}</text>
+				</uni-grid-item>
+		</uni-grid>
 
-		<view class="ad-1">
-			<image src="/static/ad2.jpg" mode="scaleToFill"></image>
-		</view>
-
+		<uni-grid :column="4" class="grid" :showBorder="false">
+				<view class="grid-title">品牌专区</view>
+				<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index" @click="navToList(item.id)">
+					<image class="grid-item-image" :src="item.cover"></image>
+					<text class="grid-item-text">{{ item.title }}</text>
+				</uni-grid-item>
+		</uni-grid>
+		<!--<view class="cate-section">-->
+			<!--<view class="cate-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">-->
+				<!--<image :src="item.cover"></image>-->
+				<!--<text>{{ item.title }}</text>-->
+			<!--</view>-->
+		<!--</view>-->
+		<!--&lt;!&ndash; 品牌 &ndash;&gt;-->
+		<!--<view class="cate-section" style="margin: 10upx 0">-->
+			<!--<view class="cate-item" v-for="(item, index) in brandList" :key="index" @click="navToList(item.id)">-->
+				<!--<image :src="item.cover"></image>-->
+				<!--<text>{{ item.title }}</text>-->
+			<!--</view>-->
+		<!--</view>-->
 		<!--&lt;!&ndash; 秒杀楼层 &ndash;&gt;-->
 		<!--<view class="seckill-section m-t">-->
 			<!--<view class="s-header">-->
@@ -193,18 +210,21 @@
 				<!--</view>-->
 			<!--</scroll-view>-->
 		<!--</view>-->
-		<!-- 热门新品 -->
-		<view class="f-header m-t">
+		<!-- 新品 -->
+		<view class="ad-1">
+			<image :src="carouselList.index_new[0].cover" mode="scaleToFill"></image>
+		</view>
+		<view class="f-header m-t" @click="toProductList({is_new: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
-				<text class="tit">热门新品</text>
-				<text class="tit2">New Product</text>
+				<text class="tit">新品上市</text>
+				<text class="tit2">New Products Listed</text>
 			</view>
 			<text class="yticon icon-you"></text>
 		</view>
 		<view class="guess-section">
 			<view
-				v-for="(item, index) in newGoodsList" :key="index"
+				v-for="(item, index) in newProductList" :key="index"
 				class="guess-item"
 				@click="navToDetailPage(item.id)"
 			>
@@ -217,12 +237,11 @@
 			</view>
 		</view>
 
+		<!-- 推荐 -->
 		<view class="ad-1">
-			<image src="/static/ad2.jpg" mode="scaleToFill"></image>
+			<image :src="carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
 		</view>
-
-		<!-- 猜你喜欢 -->
-		<view class="f-header m-t">
+		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
 				<text class="tit">猜你喜欢</text>
@@ -232,7 +251,34 @@
 		</view>
 		<view class="guess-section">
 			<view
-				v-for="(item, index) in goodsList" :key="index"
+				v-for="(item, index) in recommendProductList" :key="index"
+				class="guess-item"
+				@click="navToDetailPage(item.id)"
+			>
+				<view class="image-wrapper">
+					<image :src="item.picture" mode="aspectFill"></image>
+					 <text>{{ item.sketch }}</text>
+				</view>
+				<text class="title clamp">{{item.name}}</text>
+				<text class="price">￥{{item.price}}</text>
+			</view>
+		</view>
+
+		<!-- 热门 -->
+		<view class="ad-1">
+			<image :src="carouselList.index_hot[0].cover" mode="scaleToFill"></image>
+		</view>
+		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
+			<image src="/static/h1.png"></image>
+			<view class="tit-box">
+				<text class="tit">热门商品</text>
+				<text class="tit2">Hot Product</text>
+			</view>
+			<text class="yticon icon-you"></text>
+		</view>
+		<view class="guess-section">
+			<view
+				v-for="(item, index) in hotProductList" :key="index"
 				class="guess-item"
 				@click="navToDetailPage(item.id)"
 			>
@@ -249,22 +295,29 @@
 
 <script>
 	import {advList} from "../../api/basic";
-	import {productCateList, productList} from "../../api/product";
+	import {brandList, productCateList, productList} from "../../api/product";
+	import uniGrid from "@/components/uni-grid/uni-grid.vue";
+	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
 
 	export default {
+		components: {
+			uniGrid,
+			uniGridItem
+		},
 		data() {
 			return {
 				titleNViewBackground: '',
 				swiperCurrent: 0,
 				swiperLength: 0,
 				carouselList: [],
-				goodsList: [],
-				newGoodsList: [],
-				productCateList: []
+				hotProductList: [],
+				recommendProductList: [],
+				newProductList: [],
+				productCateList: [],
+				brandList: []
 			};
 		},
 		onLoad() {
-			// this.loadData();
 			this.initData();
 		},
 		methods: {
@@ -282,6 +335,11 @@
 					url: `/pages/product/list?cate_id=${id}`
 				})
 			},
+			toProductList(params){
+				uni.navigateTo({
+					url: `/pages/product/list?params=${JSON.stringify(params)}`
+				})
+			},
 			/**
 			 *@des 获取广告图列表
 			 *@author stav stavyan@qq.com
@@ -291,9 +349,28 @@
 			async getAdvList() {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${advList}`, {
+					location: 'index_top,index_new,index_recommend,index_hot'
 				}).then(r => {
 					if (r.code === 200) {
 						this.carouselList = r.data;
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 *@des 获取平台列表
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/16 15:20:21
+			 */
+			async getBrandList() {
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${brandList}`, {}).then(r => {
+					if (r.code === 200) {
+						this.brandList = r.data;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
@@ -314,8 +391,10 @@
 				}).then(r => {
 					if (r.code === 200) {
 						this.getAdvList();
-						this.getProductList();
-						this.getNewGoodsList();
+						this.getBrandList();
+						this.getProductList('hot');
+						this.getProductList('recommend');
+						this.getProductList('new');
 						this.productCateList = r.data;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
@@ -331,52 +410,37 @@
 			 *@date 2019/12/02 16:31:12
 			 *@param arguments
 			 */
-			async getProductList() {
+			async getProductList(type) {
+				const params = {}
+				if (type === 'hot') {
+					params.is_hot = 1
+				} else if (type === 'recommend') {
+					params.is_recommend = 1
+				} else if (type === 'new') {
+					params.is_new = 1
+				} else {
+					params.is_hot = 1
+				}
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${productList}`, {
-					is_recommend: 1
+					...params
 				}).then(r => {
 					if (r.code === 200) {
-						this.goodsList = r.data;
+						if (type === 'hot') {
+							this.hotProductList = r.data;
+						} else if (type === 'recommend') {
+							this.recommendProductList = r.data;
+						} else if (type === 'new') {
+							this.newProductList = r.data;
+						} else {
+							this.hotProductList = r.data;
+						}
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
 				}).catch(err => {
 					console.log(err)
 				})
-			},
-			/**
-			 *@des 获取新品列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/02 16:54:03
-			 */
-			async getNewGoodsList() {
-				uni.showLoading({title: '加载中...'});
-				await this.$get(`${productList}`, {
-					is_new: 1
-				}).then(r => {
-					if (r.code === 200) {
-						this.newGoodsList = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			},
-			/**
-			 * 请求静态数据只是为了代码不那么乱
-			 * 分次请求未作整合
-			 */
-			async loadData() {
-				let carouselList = await this.$api.json('carouselList');
-				this.titleNViewBackground = carouselList[0].background;
-				this.swiperLength = carouselList.length;
-				this.carouselList = carouselList;
-
-				let goodsList = await this.$api.json('goodsList');
-				this.goodsList = goodsList || [];
 			},
 			//轮播图切换修改背景色
 			swiperChange(e) {
@@ -542,102 +606,45 @@
 		}
 	}
 	/* 分类 */
-	.cate-section {
-		display: flex;
-		justify-content: space-around;
-		align-items: center;
-		flex-wrap:wrap;
-		padding: 30upx 22upx;
+	.grid {
+		padding: 20upx 12upx 10upx;
+		margin-bottom: 10upx;
 		background: #fff;
-		.cate-item {
-			display: flex;
-			width: 25%;
-			flex-direction: column;
-			align-items: center;
-			font-size: $font-sm + 2upx;
+		.grid-title {
+			width: 100%;
+			font-size: $font-lg + 2upx;
 			color: $font-color-dark;
+			margin: 0 10upx 10upx;
+			/*border-left: 3px solid #ccc;*/
+			/*height: 36upx;*/
+			/*line-height: 36upx;*/
+			/*padding-left: 10upx;*/
+			/*margin: 10upx 0 15upx 10upx;*/
 		}
-		/* 原图标颜色太深,不想改图了,所以加了透明度 */
-		image {
-			width: 88upx;
-			height: 88upx;
-			margin-bottom: 14upx;
-			border-radius: 50%;
-			opacity: .7;
-			box-shadow: 4upx 4upx 20upx rgba(250, 67, 106, 0.3);
+		.grid-item {
+			text-align: center;
+			.grid-item-image {
+				margin: 4upx auto;
+				width: 90upx;
+				height: 90upx;
+				border-radius: 50%;
+				opacity: .7;
+				box-shadow: 4upx 4upx 20upx rgba(250, 67, 106, 0.3);
+			}
 		}
 	}
 	.ad-1{
 		width: 100%;
-		height: 210upx;
+		height: 200upx;
 		padding: 10upx 0;
 		background: #fff;
+		margin: 10upx 0;
 		image{
+			border-radius: 100upx;
 			width:100%;
 			height: 100%;
 		}
 	}
-	/* 秒杀专区 */
-	.seckill-section{
-		padding: 4upx 30upx 24upx;
-		background: #fff;
-		.s-header{
-			display:flex;
-			align-items:center;
-			height: 92upx;
-			line-height: 1;
-			.s-img{
-				width: 140upx;
-				height: 30upx;
-			}
-			.tip{
-				font-size: $font-base;
-				color: $font-color-light;
-				margin: 0 20upx 0 40upx;
-			}
-			.timer{
-				display:inline-block;
-				width: 40upx;
-				height: 36upx;
-				text-align:center;
-				line-height: 36upx;
-				margin-right: 14upx;
-				font-size: $font-sm+2upx;
-				color: #fff;
-				border-radius: 2px;
-				background: rgba(0,0,0,.8);
-			}
-			.icon-you{
-				font-size: $font-lg;
-				color: $font-color-light;
-				flex: 1;
-				text-align: right;
-			}
-		}
-		.floor-list{
-			white-space: nowrap;
-		}
-		.scoll-wrapper{
-			display:flex;
-			align-items: flex-start;
-		}
-		.floor-item{
-			width: 150upx;
-			margin-right: 20upx;
-			font-size: $font-sm+2upx;
-			color: $font-color-dark;
-			line-height: 1.8;
-			image{
-				width: 150upx;
-				height: 150upx;
-				border-radius: 6upx;
-			}
-			.price{
-				color: $uni-color-primary;
-			}
-		}
-	}
-
 	.f-header{
 		display:flex;
 		align-items:center;
@@ -667,72 +674,6 @@
 		.icon-you{
 			font-size: $font-lg +2upx;
 			color: $font-color-light;
-		}
-	}
-	/* 团购楼层 */
-	.group-section{
-		background: #fff;
-		.g-swiper{
-			height: 650upx;
-			padding-bottom: 30upx;
-		}
-		.g-swiper-item{
-			width: 100%;
-			padding: 0 30upx;
-			display:flex;
-		}
-		image{
-			width: 100%;
-			height: 460upx;
-			border-radius: 4px;
-		}
-		.g-item{
-			display:flex;
-			flex-direction: column;
-			overflow:hidden;
-		}
-		.left{
-			flex: 1.2;
-			margin-right: 24upx;
-			.t-box{
-				padding-top: 20upx;
-			}
-		}
-		.right{
-			flex: 0.8;
-			flex-direction: column-reverse;
-			.t-box{
-				padding-bottom: 20upx;
-			}
-		}
-		.t-box{
-			height: 160upx;
-			font-size: $font-base+2upx;
-			color: $font-color-dark;
-			line-height: 1.6;
-		}
-		.price{
-			color:$uni-color-primary;
-		}
-		.m-price{
-			font-size: $font-sm+2upx;
-			text-decoration: line-through;
-			color: $font-color-light;
-			margin-left: 8upx;
-		}
-		.pro-box{
-			display:flex;
-			align-items:center;
-			margin-top: 10upx;
-			font-size: $font-sm;
-			color: $font-base;
-			padding-right: 10upx;
-		}
-		.progress-box{
-			flex: 1;
-			border-radius: 10px;
-			overflow: hidden;
-			margin-right: 8upx;
 		}
 	}
 	/* 分类推荐楼层 */
@@ -843,6 +784,4 @@
 			line-height: 1;
 		}
 	}
-
-
 </style>

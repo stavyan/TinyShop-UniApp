@@ -7,23 +7,23 @@
  */
 
 // 获取省市区列表
-const provinceList = "/rf-tiny-shop/v1/common/provinces/index";
+const provinceList = "/tiny-shop/v1/common/provinces/index";
 // 收藏商品
-const collectCreate = "/rf-tiny-shop/v1/common/collect/create";
+const collectCreate = "/tiny-shop/v1/common/collect/create";
 // 删除收藏商品
-const collectDel = "/rf-tiny-shop/v1/common/collect/delete";
+const collectDel = "/tiny-shop/v1/common/collect/delete";
 
 // 分享/转发
-const transmitCreate = "/rf-tiny-shop/v1/common/transmit/create";
+const transmitCreate = "/tiny-shop/v1/common/transmit/create";
 
 // 上传文件/图片
 const uploadFile = "/v1/file/images";
 
 // 广告
-const advList = "/addons/rf-article/adv/index";
+const advList = "/tiny-shop/v1/common/adv/index";
 
 // 配置
-const configList = "/rf-tiny-shop/v1/common/config/index";
+const configList = "/tiny-shop/v1/common/config/index";
 
 export {
     provinceList,

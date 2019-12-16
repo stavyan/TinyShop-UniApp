@@ -70,7 +70,7 @@
 	 * @copyright 2019
 	 */
 	import uniRate from "@/components/uni-rate/uni-rate.vue"
-	import {evaluateCreate} from "../../api/userInfo";
+	import {evaluateCreate, uploadImage} from "../../api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default{
 		components: { uniRate, uniIcons },
@@ -82,7 +82,7 @@
 				content: '',
 				anonymousText: '不匿名',
 				evaluate: {
-					'scores' : 3,
+					'scores' : 5,
 					'content' : '',
 					'is_anonymous' : '0',
 					'covers' : '',
@@ -174,7 +174,7 @@
 				const _this = this;
 				data.forEach(item => {
 					uni.uploadFile({
-					url : 'https://www.yllook.com/api/v1/file/images',
+					url : uploadImage,
 					filePath: item,
 					name: 'file',
 					header: {

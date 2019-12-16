@@ -32,7 +32,7 @@ http.interceptors.request.use(async config => {
     const loginTime = uni.getStorageSync('loginTime');
     const currentTime = new Date().getTime() / 1000;
     const config1 = config;
-    if (!token || currentTime + 15 - loginTime < user.expiration_time) {
+    if (!token || currentTime + 500- loginTime < user.expiration_time) {
         return config
     } else {
         // return config1;
@@ -81,15 +81,12 @@ http.interceptors.request.use(async config => {
         return config1;
     }
 }, (error) => {
-    console.log(error)
-    console.log('1245as')
     // 对请求错误做些什么
     return Promise.reject(error);
 });
 
 // 拦截器 在请求之后拦截
 http.interceptors.response.use(response => {
-    console.log(response)
     uni.hideLoading();
     switch (response.data.code) {
         case 200:
@@ -137,52 +134,6 @@ http.interceptors.response.use(response => {
     uni.hideLoading();
     return Promise.reject(error.message)
 });
-
-// handleRefreshToken (refresh_token) {
-//      await axios.post(refreshToken, {
-//             refresh_token: user.refresh_token,
-//             group: 'tinyShopMiniProgram'
-//         }).then(async r => {
-//             if (r.code === 200) {
-//                 console.log(200)
-//                 // return config;
-//                 uni.setStorageSync('accessToken', r.data.access_token);
-//                 uni.setStorageSync('user', r.data);
-//                 uni.setStorageSync('userInfo', r.data.member)
-//                 uni.setStorageSync('loginTime', new Date().getTime() / 1000);
-//                 uni.setStorageSync('refreshToken', r.data.refresh_token);
-//                 commonHeader = await {
-//                     "x-api-key": r.data.access_token,
-//                     "merchant-id": r.data.member.merchant_id
-//                 };
-//                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
-//             } else {
-//                 console.log('!200')
-//                 uni.clearStorageSync();
-//                 uni.showToast({
-//                     title: "会话已过期， 请重新登录！",
-//                     icon: 'none'
-//                 });
-//                 setTimeout(() => {
-//                     uni.reLaunch({
-//                         url: '/pages/public/login'
-//                     });
-//                 }, 1.5 * 1000);
-//             }
-//         }).catch(() => {
-//             console.log('error')
-//             uni.clearStorage();
-//             uni.showToast({
-//                 title: "会话已过期， 请重新登录！",
-//                 icon: 'none'
-//             });
-//             setTimeout(() => {
-//                 uni.reLaunch({
-//                     url: '/pages/public/login'
-//                 });
-//             }, 1.5 * 1000);
-//         })
-// }
 
 export default http;
 

@@ -42,7 +42,10 @@
 					<text class="tit">性别</text>
 					 <view class="uni-list">
 						<radio-group name="gender" class="gender">
-							<label class="gender-item" v-for="(item, index) in genders" :key="index"><radio class="gender-item-radio" :value="item.value" :checked="item.value === profileInfo.gender" /><text class="gender-item-text">{{ item.name }}</text></label>
+							<label class="gender-item" v-for="(item, index) in genders" :key="index">
+								<radio class="gender-item-radio" :value="item.value" :checked="item.value === profileInfo.gender" />
+								<text class="gender-item-text">{{ item.name }}</text>
+							</label>
 						</radio-group>
 					</view>
 				</view>
@@ -163,7 +166,6 @@
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 					return;
 				}
-
 				this.handleUpdateInfo(formData);
 			},
 			async handleUpdateInfo (formData) {

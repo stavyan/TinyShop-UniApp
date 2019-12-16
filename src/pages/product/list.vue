@@ -96,6 +96,7 @@
 				cateList: [],
 				goodsList: [],
 				keyword: null,
+				cateParams: null,
 				page: 1,
 				filterParams: {}
 			};
@@ -137,6 +138,7 @@
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
 				this.cateId = options.cate_id;
+				this.cateParams = JSON.parse(options.params);
 				this.keyword = options.keyword;
 				this.getProductCate()
 				this.getProductList();
@@ -149,11 +151,13 @@
 			 *@param type [refresh -> 刷新]
 			 */
 			async getProductList (type) {
-				const params = {}
+				let params = {}
 				if (this.keyword) {
 					params.keyword = this.keyword
 				} else if (this.cateId) {
 					params.cate_id = this.cateId
+				} else if (this.cateParams) {
+					params = { ...this.cateParams}
 				}
 				params.page = this.page;
 				uni.showLoading({title:'加载中...'});
