@@ -1,7 +1,8 @@
 <template>
 	<view class="container">
-		<view class="carousel">
-			<swiper indicator-dots circular=true duration="400">
+		<view v-if="isShowProduct">
+			<view class="carousel">
+				<swiper indicator-dots circular=true duration="400">
 				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
 					<view class="image-wrapper">
 						<image
@@ -12,270 +13,272 @@
 					</view>
 				</swiper-item>
 			</swiper>
-		</view>
-		<view class="introduce-section">
-			<text class="title">{{ productDetail.name }}</text>
-			<view class="price-box">
-				<text class="price-tip">¥</text>
-				<text class="price">{{ productDetail.minSkuPrice }}</text>
-				<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
-				<!--<text class="coupon-tip">7折</text>-->
 			</view>
-			<view class="bot-row">
-				<text>销量: {{ productDetail.sales }}</text>
-				<text>收藏量: {{ productDetail.collect_num }}</text>
-				<text>浏览量: {{ productDetail.view }}</text>
+			<view class="introduce-section">
+				<text class="title">{{ productDetail.name }}</text>
+				<view class="price-box">
+					<text class="price-tip">¥</text>
+					<text class="price">{{ productDetail.minSkuPrice }}</text>
+					<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
+					<!--<text class="coupon-tip">7折</text>-->
+				</view>
+				<view class="bot-row">
+					<text>销量: {{ productDetail.sales }}</text>
+					<text>收藏量: {{ productDetail.collect_num }}</text>
+					<text>浏览量: {{ productDetail.view }}</text>
+				</view>
+				<view class="bot-row">
+					<text>评分: {{ productDetail.match_point || 0 }}</text>
+					<text>评论量: {{ productDetail.comment_num }}</text>
+					<text>分享量: {{ productDetail.transmit_num }}</text>
+				</view>
 			</view>
-			<view class="bot-row">
-				<text>评分: {{ productDetail.match_point || 0 }}</text>
-				<text>评论量: {{ productDetail.comment_num }}</text>
-				<text>分享量: {{ productDetail.transmit_num }}</text>
+			<!--  分享 -->
+			<view class="share-section">
+				<view class="share-icon">
+					<text class="yticon icon-xingxing"></text>
+					 返
+				</view>
+				<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
+				<text class="yticon icon-bangzhu1"></text>
+				<button class="share-btn" open-type="share">
+					立即分享
+					<text class="yticon icon-you"></text>
+				</button>
 			</view>
-		</view>
-		<!--  分享 -->
-		<view class="share-section">
-			<view class="share-icon">
-				<text class="yticon icon-xingxing"></text>
-				 返
-			</view>
-			<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
-			<text class="yticon icon-bangzhu1"></text>
-			<button class="share-btn" open-type="share">
-				立即分享
-				<text class="yticon icon-you"></text>
-			</button>
-		</view>
 
-		<!--购买类型-->
-		<view class="c-list">
-			<view class="c-row b-b" @click="toggleSpec">
-				<text class="tit">购买类型</text>
-				<view class="con">
-					<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-						{{sItem.title}}
-					</text>
-          <text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
-          <text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
-            <!--{{ productDetail.name }} * 1-->
-            基本款 * {{ cartCount }}
-          </text>
+			<!--购买类型-->
+			<view class="c-list">
+				<view class="c-row b-b" @click="toggleSpec">
+					<text class="tit">购买类型</text>
+					<view class="con">
+						<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
+							{{sItem.title}}
+						</text>
+						<text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
+						<text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
+							<!--{{ productDetail.name }} * 1-->
+							基本款 * {{ cartCount }}
+						</text>
+					</view>
+					<text class="yticon icon-you"></text>
 				</view>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">优惠券</text>
-				<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">限购说明</text>
-				<view class="con-list">
-					<text v-show="productDetail.point_exchange_type">{{ productDetail.max_buy | maxBuyFilter }}</text>
+				<view class="c-row b-b">
+					<text class="tit">优惠券</text>
+					<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
+					<text class="yticon icon-you"></text>
 				</view>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">积分活动</text>
-				<view class="con-list">
-					<text v-show="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
-					<text>积分赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
-					<text>最少可获得: {{ productDetail | givePointFilter }} </text>
-					<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
-					<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
+				<view class="c-row b-b">
+					<text class="tit">限购说明</text>
+					<view class="con-list">
+						<text v-show="productDetail.point_exchange_type">{{ productDetail.max_buy | maxBuyFilter }}</text>
+					</view>
 				</view>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">服务</text>
-				<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
-					<text v-for="item in productDetail.tags">{{ item }} </text>
+				<view class="c-row b-b">
+					<text class="tit">积分活动</text>
+					<view class="con-list">
+						<text v-show="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
+						<text>积分赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
+						<text>最少可获得: {{ productDetail | givePointFilter }} </text>
+						<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
+						<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
+					</view>
 				</view>
-				<view class="bz-list con" v-else>
-					暂无服务
+				<view class="c-row b-b">
+					<text class="tit">服务</text>
+					<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
+						<text v-for="item in productDetail.tags">{{ item }} </text>
+					</view>
+					<view class="bz-list con" v-else>
+						暂无服务
+					</view>
 				</view>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">阶梯优惠</text>
-				<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
-					<text v-for="item in productDetail.ladderPreferential">
-						满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
-																		<text v-if="parseInt(item.type, 10) === 2">总价{{ parseInt(item.price, 10) }}折</text>
-					</text>
-				</view>
-				<view class="bz-list con" v-else>
-					暂无服务
-				</view>
-			</view>
-		</view>
-
-		<!-- 评价 -->
-		<view class="eva-section" @click="toEvaluateList">
-			<view class="e-header">
-				<text class="tit">评价</text>
-				<text>({{ productDetail.comment_num }})</text>
-				<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
-				<text class="tip" v-else>暂无评价信息</text>
-				<text class="yticon icon-you"></text>
-			</view>
-			<!--again_addtime: "0"-->
-			<!--again_content: ""-->
-			<!--again_covers: []-->
-			<!--again_explain: ""-->
-			<!--content: "我的觉得ok！"-->
-			<!--covers: ["blob:http://192.168.20.45:9527/b4abfa1c-7387-436c-883d-5d0fabb650ff",…]-->
-			<!--created_at: "1574912184"-->
-			<!--explain_first: ""-->
-			<!--explain_type: "2"-->
-			<!--is_anonymous: "0"-->
-			<!--member_head_portrait: null-->
-			<!--member_id: "2"-->
-			<!--member_nickname: "stavyan"-->
-			<!--product_id: "43"-->
-			<!--scores: "3"-->
-			<view class="eva-box" v-show="productDetail.evaluate && productDetail.evaluate.length > 0">
-				<image class="portrait"
-               :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
-				<view class="right">
-					<text class="name">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname }}</text>
-					<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
-					<view class="bot">
-						<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name }}</text>
-						<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
+				<view class="c-row b-b">
+					<text class="tit">阶梯优惠</text>
+					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
+						<text v-for="item in productDetail.ladderPreferential">
+							满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
+																			<text v-if="parseInt(item.type, 10) === 2">总价{{ parseInt(item.price, 10) }}折</text>
+						</text>
+					</view>
+					<view class="bz-list con" v-else>
+						暂无服务
 					</view>
 				</view>
 			</view>
-		</view>
 
-		<!--<view class="detail-desc">-->
-			<!--<view class="d-header">-->
-				<!--<text>图文详情</text>-->
-			<!--</view>-->
-			<!--<rich-text :nodes="desc"></rich-text>-->
-		<!--</view>-->
-
-		<!-- 底部操作菜单 -->
-		<view class="page-bottom">
-			<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
-				<text class="yticon icon-xiatubiao--copy"></text>
-				<text>首页</text>
-			</navigator>
-			<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
-				<text class="yticon icon-gouwuche"></text>
-				<text>购物车</text>
-			</navigator>
-			<view class="p-b-btn" :class="{active: favorite}" @click="toFavorite">
-				<text class="yticon icon-shoucang"></text>
-				<text>收藏</text>
-			</view>
-
-			<view class="action-btn-group">
-				<button type="primary" class=" action-btn no-border buy-now-btn" @click="addCart('buy')">立即购买</button>
-				<button type="primary"
-								:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
-								class=" action-btn no-border add-cart-btn"
-								@click="addCart('cart')">加入购物车</button>
-			</view>
-		</view>
-
-		<!-- 规格-模态层弹窗 -->
-		<view
-			class="popup spec"
-			:class="specClass"
-			@touchmove.stop.prevent="stopPrevent"
-			@click="toggleSpec"
-		>
-			<!-- 遮罩层 -->
-			<view class="mask" @click="hideSpec"></view>
-			<view class="layer attr-content" @click.stop="stopPrevent">
-				<view class="a-t">
-					<image :src="showTypeImage || productDetail.picture"></image>
+			<!-- 评价 -->
+			<view class="eva-section" @click="toEvaluateList">
+				<view class="e-header">
+					<text class="tit">评价</text>
+					<text>({{ productDetail.comment_num }})</text>
+					<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
+					<text class="tip" v-else>暂无评价信息</text>
+					<text class="yticon icon-you"></text>
+				</view>
+				<!--again_addtime: "0"-->
+				<!--again_content: ""-->
+				<!--again_covers: []-->
+				<!--again_explain: ""-->
+				<!--content: "我的觉得ok！"-->
+				<!--covers: ["blob:http://192.168.20.45:9527/b4abfa1c-7387-436c-883d-5d0fabb650ff",…]-->
+				<!--created_at: "1574912184"-->
+				<!--explain_first: ""-->
+				<!--explain_type: "2"-->
+				<!--is_anonymous: "0"-->
+				<!--member_head_portrait: null-->
+				<!--member_id: "2"-->
+				<!--member_nickname: "stavyan"-->
+				<!--product_id: "43"-->
+				<!--scores: "3"-->
+				<view class="eva-box" v-show="productDetail.evaluate && productDetail.evaluate.length > 0">
+					<image class="portrait"
+								 :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
 					<view class="right">
-						<text class="title">{{ productDetail.name }}</text>
-						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
-						<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
-						<view class="selected" v-if="specSelected.length > 0">
-							已选：
-							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-								{{sItem.title}}
-							</text>
-              <text v-show="specSelected.length > 0">
-                 * {{ cartCount }}
-              </text>
+						<text class="name">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname }}</text>
+						<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
+						<view class="bot">
+							<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name }}</text>
+							<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
 						</view>
 					</view>
 				</view>
-				<view v-for="(item,index) in specList" :key="index" class="attr-list">
-					<text>{{item.title}}</text>
-					<view class="item-list">
-						<view class="tit"
-							v-for="(childItem, childIndex) in specChildList"
-							v-if="childItem.base_spec_id === item.base_spec_id"
-							:key="childIndex"
-							:class="{selected: childItem.selected}"
-							:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
-							@click="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
-						>
-							<text v-show="parseInt(item.show_type) === 1">
-								{{childItem.title }}
-							</text>
-							<text v-show="parseInt(item.show_type) === 2">
-								{{childItem.title }}
-							</text>
-							<view v-show="parseInt(item.show_type) === 3">
-								<image
-									class="img"
-									:src="childItem.data || productDetail.picture"
-									mode="aspectFill"
-								></image>
-								{{childItem.title }}
+			</view>
+
+			<!--<view class="detail-desc">-->
+				<!--<view class="d-header">-->
+					<!--<text>图文详情</text>-->
+				<!--</view>-->
+				<!--<rich-text :nodes="desc"></rich-text>-->
+			<!--</view>-->
+
+			<!-- 底部操作菜单 -->
+			<view class="page-bottom">
+				<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
+					<text class="yticon icon-xiatubiao--copy"></text>
+					<text>首页</text>
+				</navigator>
+				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
+					<text class="yticon icon-gouwuche"></text>
+					<text>购物车</text>
+				</navigator>
+				<view class="p-b-btn" :class="{active: favorite}" @click="toFavorite">
+					<text class="yticon icon-shoucang"></text>
+					<text>收藏</text>
+				</view>
+
+				<view class="action-btn-group">
+					<button type="primary" class=" action-btn no-border buy-now-btn" @click="addCart('buy')">立即购买</button>
+					<button type="primary"
+									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
+									class=" action-btn no-border add-cart-btn"
+									@click="addCart('cart')">加入购物车</button>
+				</view>
+			</view>
+
+			<!-- 规格-模态层弹窗 -->
+			<view
+				class="popup spec"
+				:class="specClass"
+				@touchmove.stop.prevent="stopPrevent"
+				@click="toggleSpec"
+			>
+				<!-- 遮罩层 -->
+				<view class="mask" @click="hideSpec"></view>
+				<view class="layer attr-content" @click.stop="stopPrevent">
+					<view class="a-t">
+						<image :src="showTypeImage || productDetail.picture"></image>
+						<view class="right">
+							<text class="title">{{ productDetail.name }}</text>
+							<text class="price">¥{{ productDetail.minSkuPrice }}</text>
+							<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
+							<view class="selected" v-if="specSelected.length > 0">
+								已选：
+								<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
+									{{sItem.title}}
+								</text>
+								<text v-show="specSelected.length > 0">
+									 * {{ cartCount }}
+								</text>
 							</view>
 						</view>
 					</view>
-				</view>
-				<view class="select-count">
-					<text>购买数量</text>
-					<uni-number-box
-						class="step"
-						:min="1"
-						:max="parseInt(currentStock || productDetail.stock, 10)"
-						:value="cartCount"
-						@eventChange="numberChange"
-					></uni-number-box>
-				</view>
-				<button class="btn" @click="toggleSpec">完成</button>
-			</view>
-		</view>
-		<!-- 分享 -->
-		<share
-			ref="share"
-			:contentHeight="580"
-			:shareList="shareList"
-		></share>
-		<!-- 优惠券面板 -->
-		<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
-			<view class="mask-content" @click.stop.prevent="stopPrevent">
-				<!-- 优惠券页面，仿mt -->
-				<view class="coupon-item" v-for="(item,index) in productDetail.canReceiveCoupon" :key="index" @click="getCoupon(item)">
-					<view class="con">
-						<view class="left">
-							<text class="title">{{item.title}}</text>
-							<text class="time" v-if="parseInt(item.term_of_validity_type, 10) === 0">{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
-							<text class="time" v-else>自领取之日 {{ item.fixed_term }}天内有效</text>
+					<view v-for="(item,index) in specList" :key="index" class="attr-list">
+						<text>{{item.title}}</text>
+						<view class="item-list">
+							<view class="tit"
+								v-for="(childItem, childIndex) in specChildList"
+								v-if="childItem.base_spec_id === item.base_spec_id"
+								:key="childIndex"
+								:class="{selected: childItem.selected}"
+								:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
+								@click="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
+							>
+								<text v-show="parseInt(item.show_type) === 1">
+									{{childItem.title }}
+								</text>
+								<text v-show="parseInt(item.show_type) === 2">
+									{{childItem.title }}
+								</text>
+								<view v-show="parseInt(item.show_type) === 3">
+									<image
+										class="img"
+										:src="childItem.data || productDetail.picture"
+										mode="aspectFill"
+									></image>
+									{{childItem.title }}
+								</view>
+							</view>
 						</view>
-						<view class="right">
-							<text class="price" v-if="item.money">{{item.money }}</text>
-							<text class="price-discount" v-else>{{ `${item.discount}折` }}</text>
-							<text>满{{ item.at_least }}可用</text>
-						</view>
-						<view class="circle l"></view>
-						<view class="circle r"></view>
 					</view>
-					<view class="tips">
-						<text v-show="item.range_type">
-							{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
-						</text>
+					<view class="select-count">
+						<text>购买数量</text>
+						<uni-number-box
+							class="step"
+							:min="1"
+							:max="parseInt(currentStock || productDetail.stock, 10)"
+							:value="cartCount"
+							@eventChange="numberChange"
+						></uni-number-box>
 					</view>
+					<button class="btn" @click="toggleSpec">完成</button>
 				</view>
 			</view>
+			<!-- 分享 -->
+			<share
+				ref="share"
+				:contentHeight="580"
+				:shareList="shareList"
+			></share>
+			<!-- 优惠券面板 -->
+			<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
+				<view class="mask-content" @click.stop.prevent="stopPrevent">
+					<!-- 优惠券页面，仿mt -->
+					<view class="coupon-item" v-for="(item,index) in productDetail.canReceiveCoupon" :key="index" @click="getCoupon(item)">
+						<view class="con">
+							<view class="left">
+								<text class="title">{{item.title}}</text>
+								<text class="time" v-if="parseInt(item.term_of_validity_type, 10) === 0">{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
+								<text class="time" v-else>自领取之日 {{ item.fixed_term }}天内有效</text>
+							</view>
+							<view class="right">
+								<text class="price" v-if="item.money">{{item.money }}</text>
+								<text class="price-discount" v-else>{{ `${item.discount}折` }}</text>
+								<text>满{{ item.at_least }}可用</text>
+							</view>
+							<view class="circle l"></view>
+							<view class="circle r"></view>
+						</view>
+						<view class="tips">
+							<text v-show="item.range_type">
+								{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
+							</text>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
+		<empty :info="'该商品不存在'" v-else></empty>
 	</view>
 </template>
 
@@ -287,10 +290,12 @@
   import moment from 'moment';
 	import errorImg from './../../static/errorImage.jpg';
 	import {couponReceive} from "../../api/userInfo";
+	import empty from "@/components/empty";
 	export default{
 		components: {
 			share,
-			uniNumberBox
+			uniNumberBox,
+			empty
 		},
 		filters: {
 			time(val) {
@@ -350,7 +355,8 @@
 				specList: [],
 				specChildList: [],
 				cartCount: 1,
-				product_id: null
+				product_id: null,
+				isShowProduct: true
 			};
 		},
 		async onLoad(options){
@@ -456,6 +462,7 @@
 					id,
 				}).then(r=>{
 					if (r.code === 200) {
+						this.isShowProduct = true;
 						this.productDetail = r.data;
 						this.favorite = this.productDetail.myCollect ? true : false;
 						this.specList = this.productDetail.base_attribute_format
@@ -471,8 +478,8 @@
             r.data.base_attribute_format.forEach(item=>{
 							item.value[0].selected = true
               this.specSelected.push(item.value[0]);
-            })
-						let skuStr = []
+            });
+						let skuStr = [];
 						this.specSelected.forEach(item => {
 							skuStr.push(item.base_spec_value_id)
 						})
@@ -486,6 +493,7 @@
 						uni.showToast({ title: r.message, icon: "none" });
 					}
 				}).catch(err => {
+					this.isShowProduct = false;
 					console.log(err)
 				})
 			},

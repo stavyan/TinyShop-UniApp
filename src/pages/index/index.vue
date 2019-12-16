@@ -14,7 +14,7 @@
 			<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>
 			<!--<swiper class="carousel" circular @change="swiperChange">-->
 			<swiper class="carousel" circular @change="swiperChange">
-				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="navToDetailPage({title: '轮播广告'})">
+				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="navToDetailPage(item.jump_link)">
 					<image :src="item.cover" />
 				</swiper-item>
 			</swiper>
@@ -28,15 +28,15 @@
 		<!-- 分类 -->
 		<uni-grid :column="4" class="grid" :showBorder="false">
 				<view class="grid-title">分类专区</view>
-				<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">
-					<image class="grid-item-image" :src="item.cover"></image>
-					<text class="grid-item-text">{{ item.title }}</text>
+				<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index">
+					<image class="grid-item-image" :src="item.cover" @click.stop="navToList(item.id)"></image>
+					<text class="grid-item-text" @click.stop="navToList(item.id)">{{ item.title }}</text>
 				</uni-grid-item>
 		</uni-grid>
 
 		<uni-grid :column="4" class="grid" :showBorder="false">
 				<view class="grid-title">品牌专区</view>
-				<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index" @click="navToList(item.id)">
+				<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index">
 					<image class="grid-item-image" :src="item.cover"></image>
 					<text class="grid-item-text">{{ item.title }}</text>
 				</uni-grid-item>
@@ -294,8 +294,7 @@
 </template>
 
 <script>
-	import {advList} from "../../api/basic";
-	import {brandList, indexList, productCateList, productList} from "../../api/product";
+	import {brandList, indexList} from "../../api/product";
 	import uniGrid from "@/components/uni-grid/uni-grid.vue";
 	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
 	export default {
@@ -381,6 +380,7 @@
 			},
 			//详情页
 			navToDetailPage(id) {
+				if (!id) return;
 				uni.navigateTo({
 					url: `/pages/product/product?id=${id}`
 				})

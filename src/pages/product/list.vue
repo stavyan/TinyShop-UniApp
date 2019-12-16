@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="navbar" :style="{position:headerPosition,top:headerTop}">
+		<view class="navbar" :style="{position:headerPosition,top: '88upx'}">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @click="tabClick(0)">
 				综合排序
 			</view>
@@ -105,6 +105,11 @@
 			// this.loadData();
 			this.initData(options);
 		},
+		onShow (){
+			if (navigator) {
+				this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
+			}
+		},
 		onPageScroll(e){
 			//兼容iOS端下拉时顶部漂移
 			if(e.scrollTop>=0){
@@ -138,7 +143,9 @@
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
 				this.cateId = options.cate_id;
-				this.cateParams = JSON.parse(options.params);
+				if (this.cateParams) {
+					this.cateParams = JSON.parse(options.params);
+				}
 				this.keyword = options.keyword;
 				this.getProductCate()
 				this.getProductList();

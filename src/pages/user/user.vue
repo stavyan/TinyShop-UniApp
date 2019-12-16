@@ -90,7 +90,7 @@
 						<text class="yticon icon-lishijilu"></text>
 						<text>我的足迹</text>
 					</view>
-					<scroll-view scroll-x class="h-list" v-if="footList.length > 0">
+					<scroll-view scroll-x class="h-list" v-if="token">
 						<view class="h-item" v-for="item in footList" :key="item.id">
 							<image class="h-item-img" @click.stop="navTo(`/pages/product/product?id=${item.product.id}`)"
 										 :src="item.product.picture"
@@ -205,7 +205,8 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/11/21 09:34:58
-			 */ async initData() {
+			 */
+			async initData() {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				this.shareList = await this.$api.json('shareList');
