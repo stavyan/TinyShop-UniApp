@@ -14,7 +14,7 @@
 			<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>
 			<!--<swiper class="carousel" circular @change="swiperChange">-->
 			<swiper class="carousel" circular @change="swiperChange">
-				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="navToDetailPage(item.jump_link)">
+				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">
 					<image :src="item.cover" />
 				</swiper-item>
 			</swiper>
@@ -244,8 +244,8 @@
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
-				<text class="tit">猜你喜欢</text>
-				<text class="tit2">Guess You Like It</text>
+				<text class="tit">推荐商品</text>
+				<text class="tit2">Recommend Product</text>
 			</view>
 			<text class="yticon icon-you"></text>
 		</view>
@@ -290,6 +290,30 @@
 				<text class="price">￥{{item.price}}</text>
 			</view>
 		</view>
+
+		<!-- 猜你喜欢 -->
+		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
+			<image src="/static/h1.png"></image>
+			<view class="tit-box">
+				<text class="tit">猜你喜欢</text>
+				<text class="tit2">Guess You Like It</text>
+			</view>
+			<text class="yticon icon-you"></text>
+		</view>
+		<view class="guess-section">
+			<view
+				v-for="(item, index) in recommendProductList" :key="index"
+				class="guess-item"
+				@click="navToDetailPage(item.id)"
+			>
+				<view class="image-wrapper">
+					<image :src="item.picture" mode="aspectFill"></image>
+					 <text>{{ item.sketch }}</text>
+				</view>
+				<text class="title clamp">{{item.name}}</text>
+				<text class="price">￥{{item.price}}</text>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -310,6 +334,7 @@
 				carouselList: {},
 				hotProductList: [],
 				recommendProductList: [],
+				guessYouLikeProductList: [],
 				newProductList: [],
 				productCateList: [],
 				brandList: []
@@ -332,6 +357,33 @@
 				uni.navigateTo({
 					url: `/pages/product/list?cate_id=${id}`
 				})
+			},
+			indexTopToDetailPage(type, id){
+				let url;
+				switch (type) {
+					case 'product_view':
+						url = `/pages/product/product?id=${id}`;
+						break;
+					case 'article_view':
+						uni.showToast({title: 'article_view', icon: "none"});
+						break;
+					case 'coupon_view':
+						uni.showToast({title: 'coupon_view', icon: "none"});
+						break;
+					case 'helper_view':
+						uni.showToast({title: 'helper_view', icon: "none"});
+						break;
+					case 'product_list_for_cate':
+						url = `/pages/product/list?cate_id=${id}`;
+						break;
+					default:
+						break;
+				}
+				if (url) {
+					uni.navigateTo({
+						url,
+					})
+				}
 			},
 			toProductList(params){
 				uni.navigateTo({
@@ -365,6 +417,7 @@
 						this.carouselList = r.data.adv;
 						this.hotProductList = r.data.product_hot;
 						this.recommendProductList = r.data.product_recommend;
+						this.guessYouLikeProductList = r.data.guess_you_like;
 						this.newProductList = r.data.product_new;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
