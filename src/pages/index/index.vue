@@ -302,7 +302,7 @@
 		</view>
 		<view class="guess-section">
 			<view
-				v-for="(item, index) in recommendProductList" :key="index"
+				v-for="(item, index) in guessYouLikeProductList" :key="index"
 				class="guess-item"
 				@click="navToDetailPage(item.id)"
 			>
