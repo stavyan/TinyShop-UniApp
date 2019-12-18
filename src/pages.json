@@ -11,13 +11,14 @@
 				"app-plus": {
 					"titleNView": {
 						"type": "transparent",
-						"searchInput": {
-							"backgroundColor": "rgba(231, 231, 231,.7)",
-							"borderRadius": "16px",
-							"placeholder": "请点击进行商品搜索",
-							"disabled": true,
-							"placeholderColor": "#606266"
-						},
+//						"searchInput": {
+//							"backgroundColor": "rgba(231, 231, 231,.7)",
+//							"borderRadius": "16px",
+//							"placeholder": "请点击进行商品搜索",
+//							"ref": "search",
+//							"disabled": true,
+//							"placeholderColor": "#606266"
+//						},
 						"buttons": [{
 								"fontSrc": "/static/yticon.ttf",
 								"text": "\ue60d",

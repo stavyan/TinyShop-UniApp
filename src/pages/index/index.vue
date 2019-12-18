@@ -2,10 +2,11 @@
 	<view class="container">
 		<!-- 小程序头部兼容 -->
 		<!-- #ifdef MP -->
-		<view class="mp-search-box">
-			<input class="ser-input" type="text" value="输入关键字搜索" disabled />
-		</view>
 		<!-- #endif -->
+		<view class="mp-search-box" @click="toSearch">
+			<uni-icons :color="'#666'" class="icon-search" type="search" size="19" />
+			<input ref="search" disabled class="ser-input" type="text" :value="hotSearchDefault" />
+		</view>
 		<!-- 头部轮播 -->
 		<view class="carousel-section">
 			<!-- 标题栏和状态栏占位符 -->
@@ -321,9 +322,11 @@
 	import {brandList, indexList} from "../../api/product";
 	import uniGrid from "@/components/uni-grid/uni-grid.vue";
 	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
+	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default {
 		components: {
 			uniGrid,
+			uniIcons,
 			uniGridItem
 		},
 		data() {
@@ -333,6 +336,7 @@
 				swiperLength: 0,
 				carouselList: {},
 				search: {},
+				hotSearchDefault: '输入关键字搜索',
 				hotProductList: [],
 				recommendProductList: [],
 				guessYouLikeProductList: [],
@@ -343,6 +347,7 @@
 		},
 		onLoad() {
 			this.initData();
+			console.log(this.$refs.search)
 		},
 		methods: {
 			/**
@@ -417,6 +422,7 @@
 						this.productCateList = r.data.cate;
 						this.carouselList = r.data.adv;
 						this.search = r.data.search;
+						this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`
 						this.hotProductList = r.data.product_hot;
 						this.recommendProductList = r.data.product_recommend;
 						this.guessYouLikeProductList = r.data.guess_you_like;
@@ -440,6 +446,11 @@
 					url: `/pages/product/product?id=${id}`
 				})
 			},
+			toSearch () {
+				uni.navigateTo({
+					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+				})
+			}
 		},
 		// #ifndef MP
 		// 标题栏input搜索框点击

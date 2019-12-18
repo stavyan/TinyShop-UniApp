@@ -453,4 +453,28 @@
 	.placeholder {
 		color: #999999;
 	}
+
+	.mp-search-box{
+		position:absolute;
+		left: 0;
+		top: 15upx;
+		z-index: 9999;
+		width: 100%;
+		padding: 0 80upx;
+    .icon-search {
+      margin-left: 20upx;
+      position: absolute;
+      top: 8upx;
+    }
+		.ser-input{
+			flex:1;
+			height: 56upx;
+			line-height: 56upx;
+			font-size: 28upx;
+      padding-left: 72upx;
+			color:$font-color-base;
+			border-radius: 20px;
+			background: rgba(255,255,255,.6);
+		}
+}
 </style>
