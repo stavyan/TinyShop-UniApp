@@ -176,7 +176,7 @@
 			 * 替换onLoad下代码即可
 			 */
 			this.tabCurrentIndex = +options.state + 1;
-			this.initData()
+			// this.initData()
 		},
 		//下拉刷新
 		onPullDownRefresh(){

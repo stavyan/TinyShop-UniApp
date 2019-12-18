@@ -58,7 +58,7 @@ const creditsLogList = "/tiny-shop/v1/member/credits-log/index";
 // 创建订单评价
 const evaluateCreate = "/tiny-shop/v1/member/evaluate/create";
 // 追加评论
-const evaluateUpdate = "/tiny-shop/v1/member/evaluate/update";
+const evaluateAgain = "/tiny-shop/v1/member/evaluate/again";
 
 // 发票列表
 const invoiceList = "/tiny-shop/v1/member/invoice/index";
@@ -100,7 +100,7 @@ export {
     collectList,
     creditsLogList,
     evaluateCreate,
-    evaluateUpdate,
+    evaluateAgain,
     invoiceList,
     invoiceCreate,
     invoiceUpdate,

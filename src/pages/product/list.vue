@@ -77,7 +77,7 @@
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
-	import {productCate, productList} from "../../api/product";
+	import {guessYouLikeList, productCate, productList} from "../../api/product";
 	export default {
 		components: {
 			uniLoadMore,
@@ -123,7 +123,7 @@
 			this.filterParams = {}
 			this.page = 1;
 			this.goodsList = [];
-			this.getProductList('refresh');
+			this.getProductList();
 		},
 		//加载更多
 		onReachBottom(){
@@ -143,8 +143,13 @@
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
 				this.cateId = options.cate_id;
+				this.cateParams = JSON.parse(options.params);
 				if (this.cateParams) {
-					this.cateParams = JSON.parse(options.params);
+					console.log(this.cateParams)
+					if (this.cateParams.guessYouLike === 1) {
+						this.getGuessYouLikeList();
+						return;
+					}
 				}
 				this.keyword = options.keyword;
 				this.getProductCate()
@@ -185,6 +190,23 @@
 					console.log(err)
 				})
 			},
+			async getGuessYouLikeList (type) {
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${guessYouLikeList}`, {
+				}).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
+					if (r.code === 200) {
+						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+						this.goodsList = [ ...this.goodsList, ...r.data ];
+					} else {
+						uni.showToast({ title: r.message, icon: "none" });
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 			/**
 			 *@des 获取商品分类
 			 *@author stav stavyan@qq.com
@@ -196,7 +218,6 @@
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {
 						this.cateList = r.data
-						console.log(this.cateList)
 						this.cateList.unshift({
 							title: '全部商品',
 							id: ''

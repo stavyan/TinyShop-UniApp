@@ -20,7 +20,7 @@
 					<view class="right">
 						<view class="name-date">
 							<view class="username">
-								{{row.member_nickname || '无名氏'}}
+								{{row.member_nickname || '匿名用户'}}
 							</view>
 							<view class="date">
 								{{ row.updated_at | time }}
@@ -39,15 +39,16 @@
 								</view>
 							</view>
 						</view>
-						<view class="append" v-if="row.append">
+						<view class="append" v-if="parseInt(row.has_again, 10) === 1">
+							111
 							<view class="date">
-								{{row.append.date}}天后追加
+								{{ row | againDay }}
 							</view>
 							<view class="rat">
-								{{row.append.content}}
+								{{row.again_content}}
 							</view>
 							<view class="img-video">
-								<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
+								<view class="box" v-for="item in row.again_covers" @tap="showBigImg(item,row.covers)" :key="item">
 									<image mode="aspectFill" :src="item"></image>
 								</view>
 							</view>
@@ -70,7 +71,7 @@
 					{name:'好评',number:23,type: { explain_type: 1 }},
 					{name:'中评',number:1,type: { explain_type: 2 }},
 					{name:'差评',number:1,type: { explain_type: 3 }},
-					{name:'无图',number:12,type: { has_content: 1 }},
+					{name:'文字',number:12,type: { has_content: 1 }},
 					{name:'有图',number:12,type: { has_cover: 1 }},
 					{name:'视频',number:2,type: { has_video: 1 }},
 					{name:'追加',number:2,type: { has_again: 1 }}
@@ -83,6 +84,10 @@
 		filters: {
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
+			},
+			againDay(val) {
+				const day = moment(val.updated_at * 1000).format('DD') - moment(val.again_addtime * 1000).format('DD');
+				return day ? `${day}天后追加` : '当天追加'
 			}
 		},
 		onLoad(options) {
@@ -167,7 +172,7 @@
 	padding: 0 3%;
 
 	.label{
-		width: 100%;
+		width: 100vw;
 		flex-wrap:wrap;
 		view{
 			padding: 0 20upx;

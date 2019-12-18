@@ -50,7 +50,7 @@
 	export default {
 		data() {
 			return {
-				payType: 1,
+				payType: 5,
 				payTypeList: {},
 				money: 0,
 				userInfo: {},

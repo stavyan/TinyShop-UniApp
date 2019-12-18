@@ -211,7 +211,7 @@
 			<!--</scroll-view>-->
 		<!--</view>-->
 		<!-- 新品 -->
-		<view class="ad-1">
+		<view class="ad-1" @click="toProductList({is_new: 1})">
 			<image :src="carouselList.index_hot && carouselList.index_new[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_new: 1})">
@@ -238,7 +238,7 @@
 		</view>
 
 		<!-- 推荐 -->
-		<view class="ad-1">
+		<view class="ad-1" @click="toProductList({is_recommend: 1})">
 			<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
@@ -265,7 +265,7 @@
 		</view>
 
 		<!-- 热门 -->
-		<view class="ad-1">
+		<view class="ad-1" @click="toProductList({is_hot: 1})">
 			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
@@ -292,7 +292,7 @@
 		</view>
 
 		<!-- 猜你喜欢 -->
-		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
+		<view class="f-header m-t" @click="toProductList({'guessYouLike': 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
 				<text class="tit">猜你喜欢</text>

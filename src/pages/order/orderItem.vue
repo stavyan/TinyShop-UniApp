@@ -4,7 +4,7 @@
 			<uni-swipe-action
 					@click="bindClick"
 					:data="item"
-					:options="options"
+					:options="itemOptions(item.is_evaluate)"
 					class="uni-list-cell"
 					hover-class="uni-list-cell-hover"
 					v-for="(item, index) in orderItemList"
@@ -64,7 +64,8 @@ export default {
 			page: 1,
 			loadingType: 'more',
 			token: null,
-			options: []
+			options: [],
+			orderStatus: null
 		};
 	},
 	filters: {
@@ -98,7 +99,7 @@ export default {
 						 status = refundItem.value
 					}
 				})
-			} else if (parseInt(item.order_status, 10) === 4) {
+			} else if (parseInt(item.order_status, 10) === 3) {
 				const evaluateStatusList = [
 					{key: 0, value: '未评价'},
 					{key: 1, value: '已评价'},
@@ -129,6 +130,35 @@ export default {
 				})
 			}
 			return status;
+		}
+	},
+	computed: {
+		itemOptions() {
+			return function (isEvaluate) {
+				const options = [];
+				const status = this.orderStatus;
+				if (parseInt(status, 10) === 1) {
+					options.push({ text: '退款'})
+					options.push({ text: '取消退款', style: { backgroundColor: 'rgb(254,156,1)' }})
+				} else if (parseInt(status, 10) === 2) {
+					options.push({ text: '退货'})
+					options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }})
+				} else if (parseInt(status, 10) === 3) {
+					switch (isEvaluate) {
+						case '0':
+							options.push({text: '评论', style: {backgroundColor: 'rgb(254,156,1)'}});
+							break;
+						case '1':
+							options.push({text: '追加评论', style: {backgroundColor: 'rgb(255,58,49)'}});
+							break;
+						case 2:
+							break;
+						default:
+							break;
+					}
+				}
+				return options;
+			}
 		}
 	},
 	onLoad (options) {
@@ -187,7 +217,8 @@ export default {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
 				this.orderItemList = JSON.parse(options.list);
-				this.initOptions(options.orderStatus)
+				this.orderStatus = options.orderStatus
+				// this.initOptions(options.orderStatus)
 			}
 		},
 		initOptions (status) {
@@ -197,9 +228,16 @@ export default {
 			} else if (parseInt(status, 10) === 2) {
 				this.options.push({ text: '退货'})
 				this.options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }})
-			} else {
-				this.options.push({text: '评论', style: { backgroundColor: 'rgb(254,156,1)' }});
-				this.options.push({text: '追加评论', style: { backgroundColor: 'rgb(255,58,49)' }});
+			} else if (parseInt(status, 10) === 3) {
+				let option1 = [], option2 = [];
+				this.orderItemList.forEach(item => {
+					if (parseInt(item.is_evaluate) === 0) {
+						option1.push({text: '评论', style: { backgroundColor: 'rgb(254,156,1)' }});
+					} else if (parseInt(item.is_evaluate) === 1) {
+						option2.push({text: '追加评论', style: { backgroundColor: 'rgb(255,58,49)' }});
+					}
+				})
+				this.options = option1 || option2 || [];
 			}
 		},
 		onImageError (index) {

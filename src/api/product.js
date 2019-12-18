@@ -12,11 +12,13 @@ const productCate = "/tiny-shop/v1/product/cate/index";
 const productCateList = "/tiny-shop/v1/product/cate/list";
 // 产品列表
 const productList = "/tiny-shop/v1/product/product/index";
-// 产品列表
+// 产品详情
 const productDetail = "/tiny-shop/v1/product/product/view";
-// 产品列表
+// 猜你喜欢
+const guessYouLikeList = "/tiny-shop/v1/product/product/guess-you-like";
+// 添加购物车
 const cartItemCreate = "/tiny-shop/v1/member/cart-item/create";
-// 产品列表
+// 购物车列表
 const cartItemList = "/tiny-shop/v1/member/cart-item/index";
 // 删除购物车商品
 const cartItemDel = "/tiny-shop/v1/member/cart-item/delete-ids";
@@ -48,6 +50,7 @@ export {
     productCate,
     productCateList,
     productList,
+    guessYouLikeList,
     productDetail,
     cartItemCreate,
     cartItemList,

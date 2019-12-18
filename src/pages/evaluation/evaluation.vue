@@ -6,7 +6,7 @@
 						 :src="productInfo.product_picture"></image>
 			<view class="product-content">
 				<text class="product-name in2line">{{ productInfo.product_name }}</text>
-				<text class="product-sku-name">{{ productInfo.skuName || '基础款' }}</text>
+				<text class="product-sku-name">{{ productInfo.sku_name || '基础款' }}</text>
 				<text class="product-price">{{ productInfo.product_money }} * {{ productInfo.num }}</text>
 			</view>
 		</view>
@@ -70,7 +70,7 @@
 	 * @copyright 2019
 	 */
 	import uniRate from "@/components/uni-rate/uni-rate.vue"
-	import {evaluateCreate, evaluateUpdate, uploadImage} from "../../api/userInfo";
+	import {evaluateCreate, evaluateAgain, uploadImage} from "../../api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default{
 		components: { uniRate, uniIcons },
@@ -224,8 +224,8 @@
 					this.handleEvaluateCreate(params);
 				} else {
 					params.again_content = this.evaluate.content;
-					params.again_covers = this.imageList;
-					this.handleEvaluateUpdate(params);
+					params.again_covers = JSON.stringify(this.imageList);
+					this.handleEvaluateAgain(params);
 				}
 			},
 			/**
@@ -257,8 +257,8 @@
 			 *@date 2019/12/16 17:17:10
 			 *@param params 发布评论参数
 			 */
-			async handleEvaluateUpdate(params) {
-				await this.$put(`${evaluateUpdate}?id=${this.productInfo.id}`, {
+			async handleEvaluateAgain(params) {
+				await this.$post(`${evaluateAgain}?order_product_id=${this.productInfo.id}`, {
 					...params
 				}).then(r => {
 					if (r.code === 200) {

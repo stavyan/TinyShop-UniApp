@@ -3,7 +3,7 @@
 		<view class="user-section">
 			<image class="bg" src="/static/user-bg.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
-			<view class="portrait-box">
+			<view class="portrait-box" @click="uploadImage">
 				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
 <!--				<text class="pt-upload-btn yticon icon-paizhao">{{ profileInfo.nickname || "暂无昵称" }}</text>-->
 			</view>
@@ -40,10 +40,10 @@
 				</view>
 				<view class="input-item">
 					<text class="tit">性别</text>
-					 <view class="uni-list">
+					 <view>
 						<radio-group name="gender" class="gender">
 							<label class="gender-item" v-for="(item, index) in genders" :key="index">
-								<radio class="gender-item-radio" :value="item.value" :checked="item.value === profileInfo.gender" />
+								<radio class="gender-item-radio" color="#fa436a" :value="item.value" :checked="item.value === profileInfo.gender" />
 								<text class="gender-item-text">{{ item.name }}</text>
 							</label>
 						</radio-group>
@@ -52,7 +52,7 @@
 				<view class="input-item">
 					<text class="tit">生日</text>
 					<picker mode="date" :value="date" @change="bindDateChange">
-						<view class="uni-input">{{ date }}</view>
+						<view class="uni-input" style="background: none;">{{ date }}</view>
 					</picker>
 				</view>
 				<view class="input-item">
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-	import {memberInfo, memberUpdate} from "../../api/userInfo";
+	import {memberInfo, memberUpdate, uploadImage} from "../../api/userInfo";
 	const graceChecker = require("../../common/graceChecker.js");
 	export default {
 		data() {
@@ -89,6 +89,7 @@
 			})
 			return {
 				profileInfo: {},
+				avatar: null,
 				genders: [
 					{
 						value: '0',
@@ -112,24 +113,84 @@
 			this.initData()
 		},
 		methods: {
-        bindDateChange(e) {
-					this.date = e.target.value
-        },
+			/**
+			 *@des 修改头像
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2019/12/18 11:44:44
+			 *@param graceChecker
+			 */
+			uploadImage () {
+				// 从相册选择6张图
+				const _this = this;
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'],
+					success: function(res) {
+						_this.handleUploadFile(res.tempFilePaths)
+						// // 预览图片
+						// uni.previewImage({
+						// 		urls: res.tempFilePaths,
+						// 		longPressActions: {
+						// 				itemList: ['发送给朋友', '保存图片', '收藏'],
+						// 				success: function(data) {
+						// 						console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+						// 				},
+						// 				fail: function(err) {
+						// 						console.log(err.errMsg);
+						// 				}
+						// 		}
+						// });
+					}
+				});
+			},
+			handleUploadFile (data) {
+				const _this = this;
+				data.forEach(item => {
+					uni.uploadFile({
+					url : uploadImage,
+					filePath: item,
+					name: 'file',
+					header: {
+						"x-api-key": _this.token,
+						"merchant-id": 1
+					},
+					formData: {
+						'access-token': _this.token,
+						"merchant-id": 1
+					},
+					success (r) {
+						uni.hideLoading();
+						const data = JSON.parse(r.data);
+						if (data.code === 200) {
+							_this.profileInfo.head_portrait = data.data.url;
+							_this.handleUpdateInfo(_this.profileInfo)
+						} else {
+							uni.showToast({ title: data.message, icon: "none" });
+						}
+					}
+				 });
+				})
+			},
+			bindDateChange(e) {
+				this.date = e.target.value
+			},
 			getDate(type) {
-            const date = new Date();
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
+						const date = new Date();
+						let year = date.getFullYear();
+						let month = date.getMonth() + 1;
+						let day = date.getDate();
 
-            if (type === 'start') {
-                year = year - 60;
-            } else if (type === 'end') {
-                year = year + 2;
-            }
-            month = month > 9 ? month : '0' + month;;
-            day = day > 9 ? day : '0' + day;
-            return `${year}-${month}-${day}`;
-        },
+						if (type === 'start') {
+								year = year - 60;
+						} else if (type === 'end') {
+								year = year + 2;
+						}
+						month = month > 9 ? month : '0' + month;;
+						day = day > 9 ? day : '0' + day;
+						return `${year}-${month}-${day}`;
+				},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -166,16 +227,20 @@
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 					return;
 				}
-				this.handleUpdateInfo(formData);
+				this.handleUpdateInfo(formData, 'avatar');
 			},
-			async handleUpdateInfo (formData) {
+			async handleUpdateInfo (formData, type) {
 				uni.showLoading({title:'资料修改中...'});
 				await this.$put(`${memberUpdate}?id=${this.profileInfo.id}`, {
 					...formData,
 					birthday: this.date
 				}).then(r=>{
 					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 资料修改成功！', icon: "none" });
+						if (type === 'avatar') {
+							uni.showToast({ title: '恭喜您, 头像修改成功！', icon: "none" });
+						} else {
+							uni.showToast({ title: '恭喜您, 资料修改成功！', icon: "none" });
+						}
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
