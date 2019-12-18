@@ -143,9 +143,8 @@
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
 				this.cateId = options.cate_id;
-				this.cateParams = JSON.parse(options.params);
-				if (this.cateParams) {
-					console.log(this.cateParams)
+				if (options.params) {
+					this.cateParams = JSON.parse(options.params);
 					if (this.cateParams.guessYouLike === 1) {
 						this.getGuessYouLikeList();
 						return;

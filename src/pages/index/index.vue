@@ -332,6 +332,7 @@
 				swiperCurrent: 0,
 				swiperLength: 0,
 				carouselList: {},
+				search: {},
 				hotProductList: [],
 				recommendProductList: [],
 				guessYouLikeProductList: [],
@@ -415,6 +416,7 @@
 						this.getBrandList();
 						this.productCateList = r.data.cate;
 						this.carouselList = r.data.adv;
+						this.search = r.data.search;
 						this.hotProductList = r.data.product_hot;
 						this.recommendProductList = r.data.product_recommend;
 						this.guessYouLikeProductList = r.data.guess_you_like;
@@ -442,9 +444,9 @@
 		// #ifndef MP
 		// 标题栏input搜索框点击
 		async onNavigationBarSearchInputClicked () {
-				uni.navigateTo({
-					url: `/pages/search/search`
-				})
+			uni.navigateTo({
+				url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+			})
 		},
 		//点击导航栏 buttons 时触发
 		onNavigationBarButtonTap(e) {

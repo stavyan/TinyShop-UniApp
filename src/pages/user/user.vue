@@ -98,6 +98,9 @@
 							</image>
 							<text class="h-item-text">{{ item.product.name }}</text>
 						</view>
+						<view class="no-foot-print" v-show="footList.length === 0">
+							您今天暂未浏览过商品~
+						</view>
 					</scroll-view>
 					<view class="no-foot-print" v-else>
 						<uni-icons class="no-foot-print-icon" color="#fa436a" size="28"

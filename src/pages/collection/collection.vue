@@ -1,23 +1,31 @@
 <template>
 	<view class="collection">
-		<view class="uni-list">
-			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in collectionList" :key="index" @click="goProduct(item.product && item.product.id)">
-				<view class="uni-media-list">
-					<image class="uni-media-list-logo"
-								 mode="aspectFill"
-								 @error="onImageError(index)"
-								 :src="item.product && item.product.picture"></image>
-					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top">{{ item.product && item.product.name }}</view>
-						<view class="uni-media-list-text-bottom">
-							<text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
-							<text>{{ item.created_at | time }}</text>
+		<view v-if="collectionList.length > 0">
+			<uni-swipe-action
+						@click="bindClick"
+						:data="item"
+						:options="options"
+						class="uni-list-cell"
+						hover-class="uni-list-cell-hover"
+						v-for="(item, index) in collectionList"
+						:key="index">
+						<view class="uni-media-list" @click="goProduct(item.product.id)">
+						<image class="uni-media-list-logo"
+									 mode="aspectFill"
+									 @error="onImageError(index)"
+									 :src="item.product && item.product.picture"></image>
+						<view class="uni-media-list-body">
+							<view class="uni-media-list-text-top">{{ item.product && item.product.name }}</view>
+							<view class="uni-media-list-text-bottom">
+								<text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
+								<text>{{ item.created_at | time }}</text>
+							</view>
 						</view>
 					</view>
-				</view>
-			</view>
+			</uni-swipe-action>
+			<uni-load-more :status="loadingType" />
 		</view>
-		<uni-load-more :status="loadingType" />
+		<empty :info="'快去收藏一些商品吧~'" v-else></empty>
 	</view>
 </template>
 
@@ -31,10 +39,15 @@
  */
 import {collectList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
-import errorImg from './../../static/errorImage.jpg'
+import errorImg from './../../static/errorImage.jpg';
+import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
+import {collectDel} from "../../api/basic";
+import empty from "@/components/empty";
 export default {
 	components: {
-		uniLoadMore
+		uniLoadMore,
+		uniSwipeAction,
+		empty
 	},
 	data() {
 		return {
@@ -42,7 +55,10 @@ export default {
 			errorImg: errorImg,
 			page: 1,
 			loadingType: 'more',
-			token: null
+			token: null,
+			options: [
+				{ text: '取消收藏', style: { backgroundColor: '#fa436a'}}
+			]
 		};
 	},
 	filters: {
@@ -73,6 +89,25 @@ export default {
 		this.getCollectionList();
 	},
 	methods:{
+		async bindClick(e) {
+			if (e.content.text === '取消收藏') {
+				uni.showLoading({title: '取消收藏中...'});
+				await this.$del(`${collectDel}?id=${e.data.id}`, {
+					page: this.page
+				}).then(r => {
+					if (r.code === 200) {
+						uni.showToast({title: '取消收藏成功'});
+						this.page = 1;
+						this.collectionList.length = 0;
+						this.getCollectionList();
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			}
+		},
 		initData () {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {

@@ -14,7 +14,7 @@
 						"searchInput": {
 							"backgroundColor": "rgba(231, 231, 231,.7)",
 							"borderRadius": "16px",
-							"placeholder": "请输入地址 如：大钟寺",
+							"placeholder": "请点击进行商品搜索",
 							"disabled": true,
 							"placeholderColor": "#606266"
 						},
@@ -62,12 +62,7 @@
 		},{
 			"path": "pages/search/search",
 			"style": {
-				"navigationBarTitleText": "商品搜索",
-				"navigationStyle": "custom",
-				"app-plus": {
-					"titleNView": false,
-					"animationType": "slide-in-bottom"
-				}
+				"navigationBarTitleText": "商品搜索"
 			}
 		}, {
 			"path": "pages/cart/cart",

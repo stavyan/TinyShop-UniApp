@@ -166,10 +166,6 @@ export default {
 	},
 	methods:{
 		bindClick(e) {
-			uni.showToast({
-				title: `点击了${e.content.text}按钮`,
-				icon: 'none'
-			})
 			if (e.content.text === '退款') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
 					uni.showToast({title: '您已经提交了退款申请', icon: 'none'})
