@@ -68,9 +68,9 @@
 			return {
 				labelList:[
 					{name:'全部',number:25,type: {}},
-					{name:'好评',number:23,type: { explain_type: 1 }},
+					{name:'好评',number:23,type: { explain_type: 3 }},
 					{name:'中评',number:1,type: { explain_type: 2 }},
-					{name:'差评',number:1,type: { explain_type: 3 }},
+					{name:'差评',number:1,type: { explain_type: 1 }},
 					{name:'文字',number:12,type: { has_content: 1 }},
 					{name:'有图',number:12,type: { has_cover: 1 }},
 					{name:'视频',number:2,type: { has_video: 1 }},
