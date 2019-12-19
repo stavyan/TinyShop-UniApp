@@ -1,7 +1,7 @@
 <template>
 	<view class="content b-t">
 		<view class="total">
-			您现在拥有<text class="total-num">{{ parseInt(integralList[0] && integralList[0].new_num, 10) }}</text> {{ type ? '元' : '积分' }}
+			您现在拥有<text class="total-num">{{ integralList[0].new_num }}</text> {{ type ? '元' : '积分' }}
 		</view>
 		<view class="list b-b" v-for="(item, index) in integralList" :key="index" @click="checkAddress(item)">
 			<view class="wrapper">
@@ -12,7 +12,7 @@
 					{{item.created_at | time}}
 				</view>
 			</view>
-			<text class="change-num" :class="parseInt(item.num, 10) >= 0 ? 'change-num-add' : 'change-num-reduce'">{{  parseInt(item.num, 10) | numFilter }}</text>
+			<text class="change-num" :class="parseFloat(item.num) >= 0 ? 'change-num-add' : 'change-num-reduce'">{{item.num | numFilter }}</text>
 		</view>
 		<uni-load-more :status="loadingType"></uni-load-more>
 		<empty :info="'暂无积分记录'" v-if="integralList.length === 0"></empty>

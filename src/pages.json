@@ -50,6 +50,18 @@
 					}
 				}
 			}
+		},
+		{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于RF商城"
+			}
+		},
+		{
+			"path": "pages/about/detail",
+			"style": {
+				"navigationBarTitleText": "关于RF商城"
+			}
 		}, {
 			"path": "pages/set/set",
 			"style": {

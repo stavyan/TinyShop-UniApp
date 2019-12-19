@@ -25,13 +25,13 @@
 			<text class="cell-tit">清除缓存</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('关于RageFrame')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @click="navTo('/pages/about/about')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">关于RF商城</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell">
 			<text class="cell-tit">当前版本</text>
-			<text class="cell-tip">当前版本 beta 0.1</text>
+			<text class="cell-tip">当前版本 beta 1.0</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell log-out-btn" @click="toLogout">
@@ -57,6 +57,24 @@
 		methods:{
 			...mapMutations(['logout']),
 			navTo(url){
+				if (url === '清除缓存') {
+					uni.showModal({
+				    content: '确定要清除缓存,退出登陆吗',
+				    success: (e)=>{
+				    	if(e.confirm){
+				    		this.$post(`${logout}`).then(r => {
+									if (r.code === 200) {
+										uni.clearStorageSync();
+										uni.showToast({ title: '清除缓存成功', icon: "none" });
+										return;
+									} else {
+										uni.showToast({ title: r.message, icon: "none" });
+									}
+								})
+				    	}
+				    }
+					});
+				}
 				uni.navigateTo({
 					url,
 				})

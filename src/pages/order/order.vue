@@ -290,13 +290,14 @@
        */
 			async handleOrderDelete(id) {
 				uni.showLoading({title: '加载中...'});
-				await this.$del(`${orderDelete}`, {
-					id,
-				}).then(r => {
+				await this.$del(`${orderDelete}?id=${id}`, {}).then(r => {
 					if (r.code === 200) {
-            this.page = 1;
-            this.orderList = [];
-						this.getOrderList();
+						uni.showToast({title: '订单删除成功', icon: "none"});
+						setTimeout(() => {
+							this.page = 1;
+							this.orderList = [];
+							this.getOrderList();
+						}, 500)
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}

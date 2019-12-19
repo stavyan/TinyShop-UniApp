@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="user-section">
-			<image class="bg" src="/static/user-bg.jpg"></image>
+			<image class="bg" src="/static/user-bg1.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
 			<view class="portrait-box" @click="uploadImage">
 				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
