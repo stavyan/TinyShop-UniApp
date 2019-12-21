@@ -427,7 +427,6 @@
 				font-size: $font-lg + 6upx;
 				color: $font-color-dark;
 				margin-left: 20upx;
-				margin-top: 20upx;
 			}
 		}
 		.recharge {

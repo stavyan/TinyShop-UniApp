@@ -220,7 +220,7 @@
 			},
 			handleLoginByPass (params) {
 				this.$post(loginByPass, {
-					group: "tinyShopMiniProgram",
+					group: "tinyShopH5",
 					...params
 				}).then(r=>{
 					if (r.code === 200) {
@@ -238,7 +238,7 @@
 			},
 			handleLoginBySmsCode (params) {
 				this.$post(loginBySmsCode, {
-					group: "tinyShopMiniProgram",
+					group: "tinyShopH5",
 					...params
 				}).then(r=>{
 					if (r.code === 200) {

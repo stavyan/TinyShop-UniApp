@@ -1,6 +1,6 @@
 <template>
-	<view class="content">
-		<view class="navbar" :style="{position:headerPosition,top: '88upx'}">
+	<view class="content" :style="{paddingTop: contentTop}">
+		<view v-show="isShowNavBar" class="navbar" :style="{position:headerPosition,top: '88upx'}">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @click="tabClick(0)">
 				综合排序
 			</view>
@@ -88,6 +88,7 @@
 				cateMaskState: 0, //分类面板展开状态
 				headerPosition:"fixed",
 				headerTop:"0px",
+				contentTop: "96upx",
 				loadingType: 'more', //加载更多状态
 				filterIndex: 0,
 				cateId: 0, //已选三级分类id
@@ -98,7 +99,8 @@
 				keyword: null,
 				cateParams: null,
 				page: 1,
-				filterParams: {}
+				filterParams: {},
+				isShowNavBar: true
 			};
 		},
 		onLoad(options){
@@ -146,6 +148,8 @@
 				if (options.params) {
 					this.cateParams = JSON.parse(options.params);
 					if (this.cateParams.guessYouLike === 1) {
+						this.isShowNavBar = false;
+						this.contentTop = '20upx';
 						this.getGuessYouLikeList();
 						return;
 					}
@@ -318,6 +322,11 @@
 			},
 			//分类点击
 			changeCate(id){
+				if(!id) {
+					this.cateParams = null;
+					this.cateId = null;
+					this.keywords = null;
+				}
 				this.cateId = id;
 				this.keyword = undefined;
 				this.toggleCateMask();
@@ -346,7 +355,7 @@
 		background: $page-color-base;
 	}
 	.content{
-		padding-top: 96upx;
+		/*padding-top: 96upx;*/
 	}
 
 	.navbar{

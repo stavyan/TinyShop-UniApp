@@ -38,8 +38,8 @@
 		<uni-grid :column="4" class="grid" :showBorder="false">
 				<view class="grid-title">品牌专区</view>
 				<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index">
-					<image class="grid-item-image" :src="item.cover"></image>
-					<text class="grid-item-text">{{ item.title }}</text>
+					<image class="grid-item-image" :src="item.cover" @click.stop="toProductList({brand_id: item.id})"></image>
+					<text class="grid-item-text" @click.stop="toProductList({brand_id: item.id})">{{ item.title }}</text>
 				</uni-grid-item>
 		</uni-grid>
 		<!--<view class="cate-section">-->
@@ -212,8 +212,8 @@
 			<!--</scroll-view>-->
 		<!--</view>-->
 		<!-- 新品 -->
-		<view class="ad-1" @click="toProductList({is_new: 1})">
-			<image :src="carouselList.index_hot && carouselList.index_new[0].cover" mode="scaleToFill"></image>
+		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">
+			<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_new: 1})">
 			<image src="/static/h1.png"></image>
@@ -239,7 +239,7 @@
 		</view>
 
 		<!-- 推荐 -->
-		<view class="ad-1" @click="toProductList({is_recommend: 1})">
+		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
 			<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
@@ -266,7 +266,7 @@
 		</view>
 
 		<!-- 热门 -->
-		<view class="ad-1" @click="toProductList({is_hot: 1})">
+		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
 			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
@@ -374,7 +374,7 @@
 						uni.showToast({title: 'article_view', icon: "none"});
 						break;
 					case 'coupon_view':
-						uni.showToast({title: 'coupon_view', icon: "none"});
+						url = `/pages/coupon/detail?id=${id}`;
 						break;
 					case 'helper_view':
 						uni.showToast({title: 'helper_view', icon: "none"});

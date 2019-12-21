@@ -266,6 +266,11 @@
                 }
 			}
 		},{
+			"path": "pages/coupon/detail",
+			"style": {
+				"navigationBarTitleText": "优惠券详情"
+			}
+		},{
 			"path": "pages/user/recharge",
 			"style": {
 				"navigationBarTitleText": "充值中心"

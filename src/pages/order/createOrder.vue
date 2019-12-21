@@ -281,7 +281,9 @@
 			}
 		},
 		onShow() {
-			// this.getOrderFreightFee();
+			if (this.addressData.realname) {
+				this.getOrderFreightFee();
+			}
 		},
 		onLoad(options){
 			this.initData(options);

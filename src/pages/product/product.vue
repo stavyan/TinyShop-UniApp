@@ -145,12 +145,12 @@
 				</view>
 			</view>
 
-			<!--<view class="detail-desc">-->
-				<!--<view class="d-header">-->
-					<!--<text>图文详情</text>-->
-				<!--</view>-->
-				<!--<rich-text :nodes="desc"></rich-text>-->
-			<!--</view>-->
+			<view class="detail-desc">
+				<view class="d-header">
+					<text>商品详情</text>
+				</view>
+				<rich-text class="intro" :nodes="productDetail.intro"></rich-text>
+			</view>
 
 			<!-- 底部操作菜单 -->
 			<view class="page-bottom">
@@ -1002,6 +1002,7 @@
 	.detail-desc{
 		background: #fff;
 		margin-top: 16upx;
+		padding: 0 10upx;
 		.d-header{
 			display: flex;
 			justify-content: center;
@@ -1010,7 +1011,6 @@
 			font-size: $font-base + 2upx;
 			color: $font-color-dark;
 			position: relative;
-
 			text{
 				padding: 0 20upx;
 				background: #fff;

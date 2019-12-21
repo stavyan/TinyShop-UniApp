@@ -34,10 +34,9 @@
 		},
 		onLoad(option){
 			this.source = option.source;
-			this.initData()
 		},
 		onShow() {
-			this.getAddressList();
+			this.initData()
 		},
 		methods: {
 			goTouchStart(id){
