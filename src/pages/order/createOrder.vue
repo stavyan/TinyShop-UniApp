@@ -61,7 +61,7 @@
 			</view>
 			<view class="yt-list-cell b-b" @click="showCompanyPicker" v-show="parseInt(currentShippingType.value, 10) === 1">
 				<view class="cell-icon">
-					司
+					递
 				</view>
 				<text class="cell-tit clamp">快递公司</text>
 				<text class="cell-tip active">
@@ -88,9 +88,9 @@
 			<!--</view>-->
 			<view class="yt-list-cell b-b" v-if="pointExchangeType[0] == 2 || pointExchangeType[0] == 4">
 				<view class="cell-icon hb">
-					减
+					分
 				</view>
-				<text class="cell-tit clamp">需要使用 {{ maxUsePoint }} 积分</text>
+				<text class="cell-tit clamp">需要使用 {{ orderDetail.preview && orderDetail.preview.point }} 积分</text>
 				<text class="cell-tip disabled"></text>
 				<text class="cell-tip disabled" v-if="!orderDetail && pointConfig.is_open">暂无可用</text>
 				<view class="cell-tip red" v-else>

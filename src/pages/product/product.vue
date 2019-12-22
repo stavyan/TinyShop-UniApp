@@ -99,7 +99,7 @@
 					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
 						<text v-for="item in productDetail.ladderPreferential">
 							满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
-																			<text v-if="parseInt(item.type, 10) === 2">总价{{ parseInt(item.price, 10) }}折</text>
+																			<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
 						</text>
 					</view>
 					<view class="bz-list con" v-else>
@@ -767,7 +767,11 @@
 				const data = {};
 				data.sku_id = sku_id;
 				data.num = this.cartCount;
-				list.type = 'buy_now';
+				if (this.productDetail.point_exchange_type == 2 || this.productDetail.point_exchange_type == 4) {
+					list.type = 'point_exchange';
+				} else {
+					list.type = 'buy_now';
+				}
 				list.data = JSON.stringify(data);
 				uni.navigateTo({
 					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`

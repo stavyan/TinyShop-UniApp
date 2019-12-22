@@ -245,7 +245,7 @@
 		</view>
 
 		<!-- 推荐 -->
-		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
+		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">
 			<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
