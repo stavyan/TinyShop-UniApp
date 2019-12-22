@@ -43,9 +43,9 @@
 							<view class="use" @click="getCoupon(row.id)">
 								领取
 							</view>
-							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @click="show(row)">
-								去查看
-							</view>
+<!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @click="show(row)">-->
+<!--								去查看-->
+<!--							</view>-->
 						</view>
 					</view>
 				</view>
