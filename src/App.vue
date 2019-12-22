@@ -394,12 +394,12 @@
 		}
 	}
 
-	.clamp {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		display: block;
-	}
+	/*.title clamp {*/
+	/*	overflow: hidden;*/
+	/*	text-overflow: ellipsis;*/
+	/*	white-space: nowrap;*/
+	/*	display: block;*/
+	/*}*/
 
 	.common-hover {
 		background: #f5f5f5;
@@ -471,7 +471,7 @@
 			height: 56upx;
 			line-height: 56upx;
 			font-size: 28upx;
-      padding-left: 72upx;
+             padding-left: 72upx;
 			color:$font-color-base;
 			border-radius: 20px;
 			background: rgba(255,255,255,.6);

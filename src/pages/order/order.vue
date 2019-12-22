@@ -46,7 +46,7 @@
 								class="goods-item"
 							>
 								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
-								<text class="goods-title">{{goodsItem.product_name}}</text>
+								<text class="goods-title in2line">{{goodsItem.product_name}}</text>
 							</view>
 						</scroll-view>
 						<view
@@ -57,7 +57,7 @@
 						>
 							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
 							<view class="right">
-								<text class="title clamp">{{goodsItem.product_name}}</text>
+								<text class="title in2line">{{goodsItem.product_name}}</text>
 								<text class="attr-box">{{goodsItem.sku_name || '基础版'}}</text>
 								<text class="price">{{goodsItem.price}}  x {{goodsItem.num}}</text>
 							</view>
@@ -551,38 +551,30 @@
 		}
 		/* 多条商品 */
 		.goods-box{
-			height: 180upx;
-			padding-top: 20upx;
-			white-space: nowrap;
+			padding-top: 10upx;
 			.goods-item{
-				width: 120upx;
-				height: 120upx;
+				width: 160upx;
 				display: inline-block;
-				margin-right: 24upx;
+				margin-right: 16upx;
 			}
 			.goods-img{
 				display: block;
 				width: 100%;
-				height: 100%;
+				height: 140upx;
 			}
 			.goods-title {
-				display: -webkit-box !important;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				word-break: break-all;
-				-webkit-box-orient: vertical !important;
-				-webkit-line-clamp: 1;
-				font-size: $font-sm - 10upx;
+				font-size: $font-sm - 2upx;
+				line-height: 32upx;
 			}
 		}
 		/* 单条商品 */
 		.goods-box-single{
 			display: flex;
-			padding: 20upx 0;
+			padding: 10upx 0;
 			.goods-img{
 				display: block;
-				width: 120upx;
-				height: 120upx;
+				width: 180upx;
+				height: 140upx;
 			}
 			.right{
 				flex: 1;
@@ -591,22 +583,20 @@
 				padding: 0 30upx 0 24upx;
 				overflow: hidden;
 				.title{
-					font-size: $font-base + 2upx;
+					font-size: $font-sm;
+					line-height: 32upx;
 					color: $font-color-dark;
-					line-height: 1;
 				}
 				.attr-box{
-					font-size: $font-sm + 2upx;
+					font-size: $font-sm;
 					color: $font-color-light;
-					padding: 10upx 12upx;
 				}
 				.price{
-					font-size: $font-base + 2upx;
+					font-size: $font-sm + 2upx;
 					color: $font-color-dark;
 					&:before{
 						content: '￥';
 						font-size: $font-sm;
-						margin: 0 2upx 0 8upx;
 					}
 				}
 			}

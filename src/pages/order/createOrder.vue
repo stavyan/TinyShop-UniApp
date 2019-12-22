@@ -27,7 +27,7 @@
 			<view class="g-item" v-for="item in orderDetail.products">
 				<image :src="item.product_picture" mode="aspectFill"></image>
 				<view class="right">
-					<text class="title clamp">{{ item.product_name }}</text>
+					<text class="title clamp in2line">{{ item.product_name }}</text>
 					<text class="spec">{{ item.sku_name || '基础款' }}</text>
 					<view class="price-box">
 						<text class="price">￥ {{item.price}}</text>
@@ -86,14 +86,26 @@
 				<!--<text class="cell-tit clamp">商家促销</text>-->
 				<!--<text class="cell-tip disabled">暂无可用优惠</text>-->
 			<!--</view>-->
-			<view class="yt-list-cell b-b">
+			<view class="yt-list-cell b-b" v-if="pointExchangeType[0] == 2 || pointExchangeType[0] == 4">
+				<view class="cell-icon hb">
+					减
+				</view>
+				<text class="cell-tit clamp">需要使用 {{ maxUsePoint }} 积分</text>
+				<text class="cell-tip disabled"></text>
+				<text class="cell-tip disabled" v-if="!orderDetail && pointConfig.is_open">暂无可用</text>
+				<view class="cell-tip red" v-else>
+						<label class="radio">
+							<radio siza="mini" color="#fa436a" :disabled="true" :checked="true" />
+						</label>
+				</view>
+			</view>
+			<view class="yt-list-cell b-b" v-else v-show="parseInt(pointConfig.is_open) === 1">
 				<view class="cell-icon hb">
 					减
 				</view>
 				<text class="cell-tit clamp">可用{{ maxUsePoint }}积分抵用{{ maxUsePointFee }}元</text>
 				<text class="cell-tip disabled"></text>
-				<text class="cell-tip disabled" v-if="!orderDetail && pointConfig.is_open">暂无可用</text>
-				<view class="cell-tip red" v-else>
+				<view class="cell-tip red">
 						<label class="radio">
 							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :disabled="isUsePointDisabled" :checked="isUsePoint" />
 						</label>
@@ -227,6 +239,7 @@
 				desc: '', //备注
 				payType: 1, //1微信 2支付宝
 				orderDetail: {},
+				pointExchangeType: [],
 				loadingType: 'more', //加载更多状态
 				pickerShippingType: [
 					{ label: '物流配送', value: 1 },
@@ -281,7 +294,7 @@
 			}
 		},
 		onShow() {
-			if (this.addressData.realname) {
+			if (this.addressData && this.addressData.realname) {
 				this.getOrderFreightFee();
 			}
 		},
@@ -296,17 +309,13 @@
 				return Math.floor(val * 100) / 100;
 			},
 			handleIsUsePoint () {
-				const pointExchangeType = [];
-				this.orderDetail.products.forEach(item => {
-					pointExchangeType.push(item.point_exchange_type)
-				});
-				if (pointExchangeType.join(',').indexOf('1') !== -1) {
-					uni.showToast({title: '本单不支持积分抵扣', icon: "none"});
-					return;
-				} else {
+				// if (pointExchangeType.join(',').indexOf('1') !== -1) {
+				// 	uni.showToast({title: '本单不支持积分抵扣', icon: "none"});
+				// 	return;
+				// } else {
 					this.isUsePointDisabled = false;
 					this.isUsePoint = !this.isUsePoint;
-				}
+				// }
 			},
 			/**
 			 *@des 单列物流
@@ -404,6 +413,10 @@
 							item.value = item.id;
 						});
 						this.currentCompany = this.orderDetail.company[0];
+						this.pointExchangeType = [];
+						this.orderDetail.products.forEach(item => {
+							this.pointExchangeType.push(item.point_exchange_type)
+						});
 						if (parseInt(this.orderDetail.pickup_point_config.buyer_self_lifting, 10) === 1) {
 							this.orderDetail.pickup_point_config.list.forEach(item => {
 								item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
@@ -447,7 +460,10 @@
 				uni.showLoading({title: '加载中...'});
 				const params = {};
 				if (this.addressData && this.addressData.id) {
-				params.address_id = this.addressData.id;
+					params.address_id = this.addressData.id;
+				} else {
+					uni.showToast({title: '请选择收货地址', icon: "none"});
+					return;
 				}
 				if (this.couponItem && this.couponItem.id) {
 					params.coupon_id = this.couponItem.id;
@@ -599,34 +615,33 @@
 			image {
 				flex-shrink: 0;
 				display: block;
-				width: 180upx;
-				height: 150upx;
+				width: 220upx;
+				height: 170upx;
 				border-radius: 4upx;
 			}
 
 			.right {
 				flex: 1;
-				padding-left: 24upx;
+				padding-left: 16upx;
 				overflow: hidden;
 			}
 
 			.title {
-				font-size: 30upx;
+				font-size: $font-base;
 				color: $font-color-dark;
+				line-height: 40upx;
 			}
 
 			.spec {
-				font-size: 26upx;
+				font-size: 22upx;
 				color: $font-color-light;
 			}
 
 			.price-box {
 				display: flex;
 				align-items: center;
-				font-size: 32upx;
+				font-size: 28upx;
 				color: $font-color-dark;
-				padding-top: 10upx;
-
 				.price {
 					margin-bottom: 4upx;
 				}

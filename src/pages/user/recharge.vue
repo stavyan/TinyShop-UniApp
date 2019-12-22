@@ -63,7 +63,7 @@
 		<view class="pay">
 			<view class="btn" @tap="doDeposit">立即充值</view>
 			<view class="tis">
-				点击立即充值，即代表您同意<view class="terms">
+				点击立即充值，即代表您同意<view class="terms" @click="toTipDetail">
 					《条款协议》
 				</view>
 			</view>
@@ -87,6 +87,9 @@
 			this.initData();
 		},
 		methods:{
+			toTipDetail() {
+				uni.showToast({title: '我就是条款协议', icon: 'none'});
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -95,7 +98,6 @@
 			 */
 			initData () {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
-				console.log(this.userInfo)
 			},
 			select(amount){
 				this.inputAmount = amount;
@@ -113,12 +115,14 @@
 					uni.showToast({title: '最多只能输入两位小数哦~', icon: 'none'});
 					return;
 				}
+				const data = {};
+				data.money = this.inputAmount;
 				//模板模拟支付，实际应用请调起微信/支付宝
 				uni.showLoading({title: '支付中...'});
 				await this.$post(`${orderPay}`, {
-					data: JSON.stringify(this.orderInfo),
+					data: JSON.stringify(data),
 					orderGroup: 'recharge',
-					tradeType: 'default',
+					tradeType: 'app',
 					payType: this.payType
 				}).then(async r => {
 					if (r.code === 200) {

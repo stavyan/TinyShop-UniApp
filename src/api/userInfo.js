@@ -27,6 +27,8 @@ const addressDelete = "/tiny-shop/v1/member/address/delete";
 const couponList = "/tiny-shop/v1/marketing/coupon-type/index";
 // 获取我的优惠券列表
 const myCouponList = "/tiny-shop/v1/member/coupon/index";
+// 优惠券详情
+const couponDetail = "/tiny-shop/v1/marketing/coupon-type/view";
 // 领取优惠券
 const couponReceive = "/tiny-shop/v1/marketing/coupon-type/create";
 const couponClear = "/tiny-shop/v1/member/coupon/clear";
@@ -88,6 +90,7 @@ export {
     couponList,
     myCouponList,
     couponClear,
+    couponDetail,
     orderList,
     orderRefundApply,
     closeOrderRefundApply,

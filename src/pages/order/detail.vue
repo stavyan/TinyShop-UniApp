@@ -24,7 +24,7 @@
 			<view class="g-item" v-for="item in orderDetail.product">
 				<image :src="item.product_picture" mode="aspectFill"></image>
 				<view class="right">
-					<text class="title clamp">{{ item.product_name }}</text>
+					<text class="title clamp in2line">{{ item.product_name }}</text>
 					<text class="spec">{{ item.sku_name || '基础款' }}</text>
 					<view class="price-box">
 						<text>
@@ -488,24 +488,25 @@
 			image {
 				flex-shrink: 0;
 				display: block;
-				width: 180upx;
-				height: 150upx;
+				width: 220upx;
+				height: 170upx;
 				border-radius: 4upx;
 			}
 
 			.right {
 				flex: 1;
-				padding-left: 24upx;
+				padding-left: 16upx;
 				overflow: hidden;
 			}
 
 			.title {
-				font-size: 30upx;
+				font-size: $font-base;
 				color: $font-color-dark;
+				line-height: 40upx;
 			}
 
 			.spec {
-				font-size: 26upx;
+				font-size: 22upx;
 				color: $font-color-light;
 			}
 
@@ -513,9 +514,8 @@
 				display: flex;
 				align-items: center;
 				justify-content:space-between;
-				font-size: 32upx;
+				font-size: 28upx;
 				color: $font-color-dark;
-				padding-top: 10upx;
 				.price {
 					margin-bottom: 4upx;
 				}

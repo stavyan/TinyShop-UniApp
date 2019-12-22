@@ -35,7 +35,7 @@
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
 				</view>
-				<text class="title clamp">{{item.name}}</text>
+				<text class="title clamp in2line">{{item.name}}</text>
 				<view class="price-box">
 					<text class="price">{{item.price}}
 						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
@@ -523,9 +523,9 @@
 			}
 		}
 		.title{
-			font-size: $font-lg;
+			font-size: $font-base;
 			color: $font-color-dark;
-			line-height: 80upx;
+			line-height: 40upx;
 		}
 		.price-box{
 			display: flex;

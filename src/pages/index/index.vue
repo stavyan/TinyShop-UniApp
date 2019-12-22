@@ -231,10 +231,16 @@
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
-					 <text>{{ item.sketch }}</text>
+					 <text class="sketch">{{ item.sketch }}</text>
 				</view>
-				<text class="title clamp">{{item.name}}</text>
-				<text class="price">￥{{item.price}}</text>
+				{{item.sketch}}
+				<text class="title clamp in2line">{{item.name}}</text>
+				<view class="last-line">
+					<text class="price">{{item.price}}
+						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+					</text>
+					<text class="sales"><text class="red">{{ item.sales }}</text>付款</text>
+				</view>
 			</view>
 		</view>
 
@@ -260,8 +266,13 @@
 					<image :src="item.picture" mode="aspectFill"></image>
 					 <text>{{ item.sketch }}</text>
 				</view>
-				<text class="title clamp">{{item.name}}</text>
-				<text class="price">￥{{item.price}}</text>
+				<text class="title clamp in2line">{{item.name}}</text>
+				<view class="last-line">
+					<text class="price">{{item.price}}
+						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+					</text>
+					<text class="sales"><text class="red">{{ item.sales }}</text>付款</text>
+				</view>
 			</view>
 		</view>
 
@@ -287,8 +298,13 @@
 					<image :src="item.picture" mode="aspectFill"></image>
 					 <text>{{ item.sketch }}</text>
 				</view>
-				<text class="title clamp">{{item.name}}</text>
-				<text class="price">￥{{item.price}}</text>
+				<text class="title clamp in2line">{{item.name}}</text>
+				<view class="last-line">
+					<text class="price">{{item.price}}
+						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+					</text>
+					<text class="sales"><text class="red">{{ item.sales }}</text>付款</text>
+				</view>
 			</view>
 		</view>
 
@@ -311,8 +327,13 @@
 					<image :src="item.picture" mode="aspectFill"></image>
 					 <text>{{ item.sketch }}</text>
 				</view>
-				<text class="title clamp">{{item.name}}</text>
-				<text class="price">￥{{item.price}}</text>
+				<text class="title in2line">{{item.name}}</text>
+				<view class="last-line">
+					<text class="price">{{item.price}}
+						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+					</text>
+					<text class="sales"><text class="red">{{ item.sales }}</text>付款</text>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -765,21 +786,52 @@
 			height: 330upx;
 			border-radius: 3px;
 			overflow: hidden;
+			position: relative;
 			image{
 				width: 100%;
 				height: 100%;
 				opacity: 1;
 			}
+			.sketch {
+				background-color: rgba(0, 0, 0, 0.4);
+				position: absolute;
+				z-index: 99;
+				top: 4upx;
+				padding: 0 8upx;
+				right: 0;
+				color: #fff;
+				font-size: $font-sm;
+			}
 		}
 		.title{
-			font-size: $font-lg;
+			font-size: $font-base;
 			color: $font-color-dark;
-			line-height: 80upx;
+			line-height: 40upx;
+		}
+		.last-line {
+			display: flex;
+			justify-content: space-between;
+ 			align-items: center; 		/* 垂直居中 */
+			.red {
+				color: $base-color;
+				font-size: $font-sm + 2upx;
+				margin-right: 4upx;
+			}
 		}
 		.price{
 			font-size: $font-lg;
 			color: $uni-color-primary;
 			line-height: 1;
+			&:before{
+				content: '￥';
+				font-size: 26upx;
+			}
+			.m-price{
+				margin-left: 8upx;
+				color: $font-color-light;
+				font-size: $font-base - 4upx;
+				text-decoration: line-through;
+			}
 		}
 	}
 </style>

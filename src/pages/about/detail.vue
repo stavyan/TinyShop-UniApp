@@ -4,8 +4,8 @@
 			<image :src="detail.web_logo" />
 			<view v-show="detail.title"><text>商城名称: </text><text>{{ detail.title }}</text></view>
 			<view v-show="detail.web_url"><text>官方网址: </text><text>{{ detail.web_url }}</text></view>
-			<view v-show="detail.key_words"><text>商城关键字: </text><text>{{ detail.key_words }}</text></view>
-			<view v-show="detail.web_desc"><text>商城描述: </text><text>{{ detail.web_desc	 }}</text></view>
+<!--			<view v-show="detail.key_words"><text>商城关键字: </text><text>{{ detail.key_words }}</text></view>-->
+<!--			<view v-show="detail.web_desc"><text>商城描述: </text><text>{{ detail.web_desc	 }}</text></view>-->
 			<view v-show="detail.web_phone"><text>商城联系方式: </text><text>{{ detail.web_phone }}</text></view>
 			<view v-show="detail.web_email"><text>商城邮箱: </text><text>{{ detail.web_email }}</text></view>
 			<view v-show="detail.web_qq"><text>商城QQ号: </text><text>{{ detail.web_qq }}</text></view>

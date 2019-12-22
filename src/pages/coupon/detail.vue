@@ -11,7 +11,7 @@
 					<view class="carrier">
 						<view class="left">
 							<view class="in1line title">
-								<text class="cell-icon">{{ parseInt(row.couponType.range_type, 10) === 2 ? '限' : '全' }}</text>
+								<text class="cell-icon">{{ parseInt(row.range_type, 10) === 2 ? '限' : '全' }}</text>
 								{{row.title}}
 							</view>
 							<view class="term" v-if="state !== 2">
@@ -23,9 +23,9 @@
 							<view class="icon shixiao" v-show="state === 3" />
 							<view class="used" v-show="state === 2">已使用</view>
 							<view class="usage">
-								{{parseInt(row.couponType.max_fetch, 10) === 0 ? '不限' : `每人限领${row.couponType.max_fetch}` }}
-								已领{{ row.couponType.get_count }}
-								<text v-show="row.couponType.percentage">剩余{{ row.couponType.percentage }}%</text>
+								{{parseInt(row.max_fetch, 10) === 0 ? '不限' : `每人限领${row.max_fetch}` }}
+								已领{{ row.get_count }}
+								<text v-show="row.percentage">剩余{{ row.percentage }}%</text>
 							</view>
 						</view>
 						<view class="right" :class="{ invalid: state !== 1 }">
@@ -37,20 +37,19 @@
 							<view class="criteria">
 								满{{row.at_least}}使用
 							</view>
-							<view class="use view" @click="show(row)" v-show="parseInt(row.couponType.range_type, 10) === 2">
+							<view class="use view" @click="show(row)" v-show="parseInt(row.range_type, 10) === 2">
 								商品
 							</view>
-							<view class="use" v-if="state == 1" @click="navTo('/pages/category/category', 'tab')">
-								去使用
+							<view class="use" @click="getCoupon(row.id)">
+								领取
 							</view>
-							<view class="use" v-else @click="show(row)">
+							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @click="show(row)">
 								去查看
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<uni-load-more :status="loadingType"></uni-load-more>
 			<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 		</view>
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
@@ -72,7 +71,7 @@
  * @date 2019-12-09 10:13
  * @copyright 2019
  */
-import {couponClear, myCouponList} from "../../api/userInfo";
+	import {couponClear, couponDetail, couponReceive, myCouponList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
@@ -127,20 +126,6 @@ export default {
 		closeDrawer() {
 			this.showRight = false
 		},
-		switchType(type, state){
-			if(this.typeClass==type){
-				return ;
-			}
-			uni.pageScrollTo({
-				scrollTop:0,
-				duration:0
-			})
-			this.typeClass = type;
-			this.state = state;
-			this.page = 1;
-			this.couponList = [];
-			this.getMyCouponList();
-		},
 		//删除商品
 		async emptyInvalidCoupon() {
 			uni.showLoading({title: '正在清空购物车...'});
@@ -165,6 +150,30 @@ export default {
 			if (this.token) {
 				this.getMyCouponDetail(options.id);
 			}
+		},
+		/**
+		 *@des 获取优惠券
+		 *@author stav stavyan@qq.com
+		 *@blog https://stavtop.club
+		 *@date 2019/11/25 13:41:19
+		 */
+		async getCoupon(id) {
+			uni.showLoading({title: '领取中...'});
+			await this.$post(`${couponReceive}`, {
+				id
+			}).then(r => {
+				if (r.code === 200) {
+					uni.showToast({title: '领取成功', icon: "none"});
+					setTimeout(() => {
+						this.couponList = [];
+						this.getMyCouponDetail(id);
+					}, 1.5 * 1000)
+				} else {
+					uni.showToast({title: r.message, icon: "none"});
+				}
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		/**
 		 *@des 统一跳转接口
@@ -195,18 +204,14 @@ export default {
 		 *@blog https://stavtop.club
 		 *@date 2019/11/20 18:16:58
 		 */
-		async getMyCouponDetail (type) {
+		async getMyCouponDetail (id) {
 			uni.showLoading({title:'加载中...'});
-			await this.$get(`${myCouponList}`, {
-				page: this.page,
-				state: this.state
+			await this.$get(`${couponDetail}`, {
+				id,
 			}).then(r=>{
-				if (type === 'refresh') {
-					uni.stopPullDownRefresh();
-				}
 				if (r.code === 200) {
-					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-					this.couponList = [ ...this.couponList, ...r.data ]
+					this.couponList.push(r.data);
+					console.log(this.couponList)
 				} else {
 					uni.showToast({ title: r.message, icon: "none" });
 				}
