@@ -460,7 +460,7 @@
 		top: 15upx;
 		z-index: 9999;
 		width: 100%;
-		padding: 0 80upx;
+		padding: 0 30upx;
     .icon-search {
       margin-left: 20upx;
       position: absolute;

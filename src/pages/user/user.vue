@@ -2,7 +2,7 @@
 	<view class="container">
 			<view class="user-section">
 				<image class="bg" src="/static/user-bg2.jpg"></image>
-				<view class="user-info-box" @click="navTo('login')">
+				<view class="user-info-box" @click="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
 					<view class="portrait-box">
 						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || '/static/missing-face.png'"></image>
 						<text class="username">
@@ -98,7 +98,7 @@
 							</image>
 							<text class="h-item-text">{{ item.product.name }}</text>
 						</view>
-						<view class="no-foot-print" v-show="footList.length === 0">
+						<view class="no-foot-print" v-if="footList.length === 0">
 							您今天暂未浏览过商品~
 						</view>
 					</scroll-view>

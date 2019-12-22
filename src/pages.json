@@ -6,11 +6,11 @@
 				// #ifdef MP
 				"navigationBarTitleText": "RageFrame商城",
 				"enablePullDownRefresh": true,
-				//"navigationStyle": "custom",
+//				"navigationStyle": "custom",
 				// #endif
 				"app-plus": {
 					"titleNView": {
-						"type": "transparent",
+						"type": "transparent"
 //						"searchInput": {
 //							"backgroundColor": "rgba(231, 231, 231,.7)",
 //							"borderRadius": "16px",
@@ -19,23 +19,23 @@
 //							"disabled": true,
 //							"placeholderColor": "#606266"
 //						},
-						"buttons": [{
-								"fontSrc": "/static/yticon.ttf",
-								"text": "\ue60d",
-								"fontSize": "26",
-								"color": "#303133",
-								"float": "left",
-								"background": "rgba(0,0,0,0)"
-							},
-							{
-								"fontSrc": "/static/yticon.ttf",
-								"text": "\ue744",
-								"fontSize": "27",
-								"color": "#303133",
-								"background": "rgba(0,0,0,0)",
-								"redDot": true
-							}
-						]
+//						"buttons": [{
+//								"fontSrc": "/static/yticon.ttf",
+//								"text": "\ue60d",
+//								"fontSize": "26",
+//								"color": "#303133",
+//								"float": "left",
+//								"background": "rgba(0,0,0,0)"
+//							},
+//							{
+//								"fontSrc": "/static/yticon.ttf",
+//								"text": "\ue744",
+//								"fontSize": "27",
+//								"color": "#303133",
+//								"background": "rgba(0,0,0,0)",
+//								"redDot": true
+//							}
+//						]
 					}
 				}
 			}
@@ -151,22 +151,23 @@
 					"bounce": "none",
 					"titleNView": {
 						"type": "transparent",
-						"buttons": [{
+						"buttons": [
+							{
 								"fontSrc": "/static/yticon.ttf",
 								"text": "\ue60f",
 								"fontSize": "24",
 								"color": "#303133",
 								"width": "46px",
 								"background": "rgba(0,0,0,0)"
-							},
-							{
-								"fontSrc": "/static/yticon.ttf",
-								"text": "\ue744",
-								"fontSize": "28",
-								"color": "#303133",
-								"background": "rgba(0,0,0,0)",
-								"redDot": true
 							}
+//							{
+//								"fontSrc": "/static/yticon.ttf",
+//								"text": "\ue744",
+//								"fontSize": "28",
+//								"color": "#303133",
+//								"background": "rgba(0,0,0,0)",
+//								"redDot": true
+//							}
 						]
 					}
 				}

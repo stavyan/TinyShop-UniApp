@@ -233,7 +233,6 @@
 					<image :src="item.picture" mode="aspectFill"></image>
 					 <text class="sketch">{{ item.sketch }}</text>
 				</view>
-				{{item.sketch}}
 				<text class="title clamp in2line">{{item.name}}</text>
 				<view class="last-line">
 					<text class="price">{{item.price}}
@@ -264,7 +263,7 @@
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
-					 <text>{{ item.sketch }}</text>
+					 <text class="sketch">{{ item.sketch }}</text>
 				</view>
 				<text class="title clamp in2line">{{item.name}}</text>
 				<view class="last-line">
@@ -296,7 +295,7 @@
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
-					 <text>{{ item.sketch }}</text>
+					 <text class="sketch">{{ item.sketch }}</text>
 				</view>
 				<text class="title clamp in2line">{{item.name}}</text>
 				<view class="last-line">
@@ -325,7 +324,7 @@
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
-					 <text>{{ item.sketch }}</text>
+					<text class="sketch">{{ item.sketch }}</text>
 				</view>
 				<text class="title in2line">{{item.name}}</text>
 				<view class="last-line">
@@ -505,24 +504,6 @@
 
 <style lang="scss">
 	/* #ifdef MP */
-	.mp-search-box{
-		position:absolute;
-		left: 0;
-		top: 30upx;
-		z-index: 9999;
-		width: 100%;
-		padding: 0 80upx;
-		.ser-input{
-			flex:1;
-			height: 56upx;
-			line-height: 56upx;
-			text-align: center;
-			font-size: 28upx;
-			color:$font-color-base;
-			border-radius: 20px;
-			background: rgba(255,255,255,.6);
-		}
-	}
 	page{
 		.cate-section{
 			position:relative;
@@ -531,7 +512,7 @@
 			margin-top:-20upx;
 		}
 		.carousel-section{
-			padding: 0;
+			padding-top: 90upx;
 			background: #dd524d;
 			.titleNview-placing {
 				padding-top: 0;
@@ -560,8 +541,6 @@
 	/* 头部 轮播图 */
 	.carousel-section {
 		position: relative;
-		padding-top: 10px;
-
 		.titleNview-placing {
 			height: var(--status-bar-height);
 			padding-top: 44px;
@@ -580,16 +559,15 @@
 	.carousel {
 		width: 100%;
 		height: 350upx;
-
 		.carousel-item {
 			width: 100%;
 			height: 100%;
-			padding: 0 28upx;
 			overflow: hidden;
 		}
 
 		image {
-			width: 100%;
+			width: 92%;
+			margin: 0 4%;
 			height: 100%;
 			border-radius: 10upx;
 		}
@@ -796,7 +774,7 @@
 				background-color: rgba(0, 0, 0, 0.4);
 				position: absolute;
 				z-index: 99;
-				top: 4upx;
+				bottom: 4upx;
 				padding: 0 8upx;
 				right: 0;
 				color: #fff;

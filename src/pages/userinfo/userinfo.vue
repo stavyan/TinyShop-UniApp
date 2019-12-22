@@ -236,11 +236,7 @@
 					birthday: this.date
 				}).then(r=>{
 					if (r.code === 200) {
-						if (type === 'avatar') {
-							uni.showToast({ title: '恭喜您, 头像修改成功！', icon: "none" });
-						} else {
-							uni.showToast({ title: '恭喜您, 资料修改成功！', icon: "none" });
-						}
+						uni.showToast({ title: '恭喜您, 资料修改成功！', icon: "none" });
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}

@@ -16,6 +16,7 @@
 			</view>
 			<view class="introduce-section">
 				<text class="title">{{ productDetail.name }}</text>
+				<text class="sketch">{{ productDetail.sketch }}</text>
 				<view class="price-box">
 					<text class="price-tip">¥</text>
 					<text class="price">{{ productDetail.minSkuPrice }}</text>
@@ -831,6 +832,11 @@
 			color: $font-color-dark;
 			height: 50upx;
 			line-height: 50upx;
+		}
+		.sketch {
+			display: block;
+			color: $font-color-light;
+			font-size: $font-base;
 		}
 		.price-box{
 			display:flex;

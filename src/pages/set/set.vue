@@ -29,9 +29,13 @@
 			<text class="cell-tit">关于RF商城</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell">
+		<view class="list-cell b-b">
 			<text class="cell-tit">当前版本</text>
 			<text class="cell-tip">当前版本 beta 1.0</text>
+			<text class="cell-more yticon icon-you"></text>
+		</view>
+		<view class="list-cell m-t" @click="navTo('')">
+			<text class="cell-tit">意见反馈</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell log-out-btn" @click="toLogout">
@@ -59,7 +63,7 @@
 			navTo(url){
 				if (url === '清除缓存') {
 					uni.showModal({
-				    content: '确定要清除缓存,退出登陆吗',
+				    content: '确定要清除缓存吗',
 				    success: (e)=>{
 				    	if(e.confirm){
 				    		this.$post(`${logout}`).then(r => {
@@ -74,10 +78,13 @@
 				    	}
 				    }
 					});
+				} else if (!url) {
+					uni.showToast({ title: '我还没写', icon: "none" });
+				} else {
+					uni.navigateTo({
+						url,
+					})
 				}
-				uni.navigateTo({
-					url,
-				})
 			},
 			//退出登录
 			toLogout(){

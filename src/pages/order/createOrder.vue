@@ -92,8 +92,7 @@
 				</view>
 				<text class="cell-tit clamp">需要使用 {{ orderDetail.preview && orderDetail.preview.point }} 积分</text>
 				<text class="cell-tip disabled"></text>
-				<text class="cell-tip disabled" v-if="!orderDetail && pointConfig.is_open">暂无可用</text>
-				<view class="cell-tip red" v-else>
+				<view class="cell-tip red">
 						<label class="radio">
 							<radio siza="mini" color="#fa436a" :disabled="true" :checked="true" />
 						</label>
@@ -165,7 +164,13 @@
 				<text class="price-tip">￥</text>
 				<text class="price">{{ realAmount }}</text>
 			</view>
-			<text class="submit" @click="submit">提交订单</text>
+<!--			orderDetail.preview.point-->
+			<text class="submit" @click="submit" v-if="orderDetail.preview && (userInfo.account.user_integral > orderDetail.preview.point)">
+				提交订单
+			</text>
+			<text class="submit disabled" v-else>
+				积分不足
+			</text>
 		</view>
 
 		<!-- 优惠券面板 -->
@@ -257,7 +262,8 @@
 				shippingMoney: 0,
 				isUsePoint: false,
 				isUsePointDisabled: true,
-				data: {}
+				data: {},
+				userInfo: {}
 			}
 		},
 		computed: {
@@ -355,7 +361,7 @@
       },
 			async onPickupPointConfirm(e) {
 				e.value = e.value[0]
-        this.currentPickupPoint = e;
+       			this.currentPickupPoint = e;
       },
 			/**
 			 *@des 计算运费
@@ -395,7 +401,8 @@
 			 *@date 2019/11/19 13:44:25
 			 */
 			async initData(options) {
-				this.data = await JSON.parse(options.data)
+				this.data = await JSON.parse(options.data);
+    			this.userInfo = uni.getStorageSync('userInfo');
 				await this.getOrderDetail(this.data);
 				// this.getOrderFreightFee();
 			},
@@ -822,6 +829,9 @@
 			color: #fff;
 			font-size: 32upx;
 			background-color: $base-color;
+		}
+		.disabled {
+			background-color: $border-color-dark;
 		}
 	}
 
