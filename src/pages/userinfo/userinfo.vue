@@ -103,8 +103,8 @@
 						value: '2',
 						name: '女'
 					}],
-					date: currentDate,
-					token: null
+				date: currentDate,
+				token: null
 			};
 		},
     computed: {

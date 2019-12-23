@@ -34,7 +34,7 @@
 			<text class="cell-tip">当前版本 beta 1.0</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell m-t" @click="navTo('')">
+		<view class="list-cell m-t" @click="navTo('/pages/feedback/list')">
 			<text class="cell-tit">意见反馈</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>

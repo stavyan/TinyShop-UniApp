@@ -77,6 +77,29 @@
 			"style": {
 				"navigationBarTitleText": "商品搜索"
 			}
+		},{
+			"path": "pages/feedback/detail",
+			"style": {
+				"navigationBarTitleText": "意见反馈详情"
+			}
+		},{
+			"path": "pages/feedback/list",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "意见反馈",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+		},{
+			"path": "pages/feedback/feedback",
+			"style": {
+				"navigationBarTitleText": "意见反馈"
+			}
 		}, {
 			"path": "pages/cart/cart",
 			"style": {
@@ -291,8 +314,16 @@
 			}
 		}, {
 			"path": "pages/address/address",
+			"enablePullDownRefresh": true,
 			"style": {
-				"navigationBarTitleText": "收货地址"
+				"navigationBarTitleText": "收货地址",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
 			}
 		}, {
 			"path": "pages/address/addressManage",

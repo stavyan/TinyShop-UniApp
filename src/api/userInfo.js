@@ -75,6 +75,13 @@ const invoiceDefault = "/tiny-shop/v1/member/invoice/default";
 // 删除发票
 const invoiceDel = "/tiny-shop/v1/member/invoice/delete";
 
+// 意见反馈列表
+const opinionList = "/tiny-shop/v1/member/opinion/index";
+// 意见反馈创建
+const opinionCreate = "/tiny-shop/v1/member/opinion/create";
+// 意见反馈详情
+const opinionDetail = "/tiny-shop/v1/member/opinion/view";
+
 // 上传图片
 const uploadImage = "https://www.yllook.com/api/v1/file/images";
 
@@ -110,5 +117,8 @@ export {
     invoiceDetail,
     invoiceDefault,
     invoiceDel,
-    uploadImage
+    uploadImage,
+    opinionList,
+    opinionCreate,
+    opinionDetail
 };

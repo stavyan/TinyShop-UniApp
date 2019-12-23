@@ -50,6 +50,12 @@
 
 			<!--购买类型-->
 			<view class="c-list">
+				<view class="c-row b-b" v-if="productDetail.address_name">
+					<text class="tit">发货地址</text>
+					<view class="con-list">
+						{{ productDetail.address_name }}
+					</view>
+				</view>
 				<view class="c-row b-b" @click="toggleSpec">
 					<text class="tit">购买类型</text>
 					<view class="con">
@@ -103,8 +109,16 @@
 																			<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
 						</text>
 					</view>
-					<view class="bz-list con" v-else>
+					<view class="con-list" v-else>
 						暂无服务
+					</view>
+				</view>
+				<view class="c-row b-b" v-if="productDetail.attributeValue">
+					<text class="tit">属性信息</text>
+					<view class="con-list" >
+						<text v-for="(item, index) in productDetail.attributeValue" :key="index">
+							{{ `${item.title}: ${item.value}` }}
+						</text>
 					</view>
 				</view>
 			</view>

@@ -30,7 +30,7 @@
 							maxlength="6"
 							data-key="mobile"
 						/>
-						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode()">
+						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode">
 							<span v-if="!smsCodeBtnDisabled">获取验证码</span>
 							<span v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</span>
 						</button>
@@ -161,6 +161,10 @@
 			 *@param mobile 手机号
 			 */
 			checkPhoneIsValid (mobile) {
+				if (!mobile.length < 0) {
+					uni.showToast({ title: "请输入11位的手机号", icon: "none" });
+					return false;
+				}
 				const reg = /^1[0-9]{10,10}$/;
 				if (!reg.test(mobile)) {
 					uni.showToast({ title: "请输入正确的手机号", icon: "none" });
@@ -225,13 +229,14 @@
 <style lang='scss' scoped>
 .container{
   padding-top: 60px;
-  /*position:relative;*/
+  position:relative;
   width: 100vw;
   /*height: 100vh;*/
   overflow: hidden;
   background: #fff;
   .wrapper{
     position:relative;
+  	width: 100vw;
     z-index: 90;
     background: #fff;
     padding-bottom: 40upx;
@@ -283,10 +288,6 @@
       }
       .sms-code-resend {
         color: #999;
-      }
-      .sms-code-btn:after {
-        border: none;
-        background-color: transparent;
       }
     }
     .confirm-btn{
