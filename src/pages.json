@@ -130,6 +130,16 @@
 					"animationType": "slide-in-bottom"
 				}
 			}
+		},{
+			"path": "pages/public/password",
+			"style": {
+				"navigationBarTitleText": "忘记密码",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleNView": false,
+					"animationType": "slide-in-bottom"
+				}
+			}
 		}, {
 			"path": "pages/public/register",
 			"style": {
@@ -314,8 +324,8 @@
 			}
 		}, {
 			"path": "pages/address/address",
-			"enablePullDownRefresh": true,
 			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "收货地址",
 				"app-plus": {
                     "pullToRefresh": {
@@ -329,6 +339,19 @@
 			"path": "pages/address/addressManage",
 			"style": {
 				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/invoice/list",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "我的优惠券",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
 			}
 		}, {
 			"path": "pages/invoice/invoice",

@@ -14,7 +14,7 @@
             <view class="uni-uploader">
                 <view class="uni-uploader-head">
                     <view class="uni-uploader-title">点击预览图片</view>
-                    <view class="uni-uploader-info">{{imageList.length}}/8</view>
+                    <view class="uni-uploader-info">{{imageList.length}}/9</view>
                 </view>
                 <view class="uni-uploader-body">
                     <view class="uni-uploader__files">

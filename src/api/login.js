@@ -12,6 +12,9 @@ const registerByPass = "/tiny-shop/v1/site/register";
 // 密码登录
 const loginByPass = "/tiny-shop/v1/site/login";
 
+// 密码重置
+const updatePassword = "/tiny-shop/v1/site/up-pwd";
+
 // 手机号登录
 const loginBySmsCode = "/tiny-shop/v1/site/mobile-login";
 
@@ -27,6 +30,7 @@ const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
 export {
     registerByPass,
     loginByPass,
+    updatePassword,
     smsCode,
     loginBySmsCode,
     logout,

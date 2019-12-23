@@ -89,7 +89,7 @@
 						<text>最少可获得: {{ productDetail | givePointFilter }} </text>
 						<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
 						<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
-						<text class="buy-now" @click="addCart('buy')" v-show="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4">积分兑换 >>  </text>
+						<text class="buy-now" @click="addCart('buy')" v-show="productDetail.point_exchange_type == 2">积分兑换 >>  </text>
 					</view>
 				</view>
 				<view class="c-row b-b">

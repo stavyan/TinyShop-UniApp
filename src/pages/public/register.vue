@@ -66,9 +66,9 @@
 					<button class="confirm-btn" formType="submit" :disabled="logining">注册</button>
 				</form>
 			</view>
-			<view class="forget-section">
-				忘记密码?
-			</view>
+<!--			<view class="forget-section">-->
+<!--				忘记密码?-->
+<!--			</view>-->
 		</view>
 		<view class="register-section">
 			已经注册过了?
@@ -351,7 +351,7 @@
     }
   }
   .register-section{
-    margin: 30upx 0 50upx 0;
+    margin: 50upx 0 50upx 0;
     width: 100%;
     font-size: $font-sm+2upx;
     color: $font-color-base;

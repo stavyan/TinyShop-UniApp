@@ -74,6 +74,8 @@ const invoiceDetail = "/tiny-shop/v1/member/invoice/view";
 const invoiceDefault = "/tiny-shop/v1/member/invoice/default";
 // 删除发票
 const invoiceDel = "/tiny-shop/v1/member/invoice/delete";
+// 开票列表
+const orderInvoiceList = "/tiny-shop/v1/member/order-invoice/index";
 
 // 意见反馈列表
 const opinionList = "/tiny-shop/v1/member/opinion/index";
@@ -117,6 +119,7 @@ export {
     invoiceDetail,
     invoiceDefault,
     invoiceDel,
+    orderInvoiceList,
     uploadImage,
     opinionList,
     opinionCreate,

@@ -4,12 +4,20 @@
 			<text class="cell-tit">个人资料</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">
-			<text class="cell-tit">收货地址</text>
+		<view class="list-cell b-b m-t" @click="navTo('/pages/public/password?type=1')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">修改密码</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
+<!--		<view class="list-cell b-b" @click="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">-->
+<!--			<text class="cell-tit">收货地址</text>-->
+<!--			<text class="cell-more yticon icon-you"></text>-->
+<!--		</view>-->
 		<view class="list-cell b-b" @click="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">发票管理</text>
+			<text class="cell-more yticon icon-you"></text>
+		</view>
+		<view class="list-cell b-b" @click="navTo('/pages/invoice/list')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">开票记录</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<!--<view class="list-cell" @click="navTo('实名认证')" hover-class="cell-hover" :hover-stay-time="50">-->

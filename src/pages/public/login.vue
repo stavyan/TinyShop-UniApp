@@ -53,7 +53,7 @@
 			<view @click="showLoginBySmsCode" class="forget-section">
 				{{ loginByPass ?  "验证码登录" : "密码登录" }}
 			</view>
-			<view class="forget-section">
+			<view class="forget-section" @click="toForgetPass" >
 				忘记密码?
 			</view>
 		</view>
@@ -162,6 +162,11 @@
 			toRegister(){
 				uni.navigateTo({
 					url: '/pages/public/register'
+				})
+			},
+			toForgetPass(){
+				uni.navigateTo({
+					url: '/pages/public/password'
 				})
 			},
 			toHome(){
