@@ -189,6 +189,18 @@
 					return;
 				}
 				uni.showLoading({title:'登录中...'});
+				/*  #ifdef  APP-PLUS  */
+				params.group = 'tinyShopAndroid'
+				/*  #endif  */
+				/*  #ifdef H5  */
+				params.group = 'tinyShopH5'
+				/*  #endif  */
+				/*  #ifdef  MP-WEIXIN  */
+				params.group = 'tinyShopWechat'
+				/*  #endif  */
+				/*  #ifdef  MP-QQ  */
+				params.group = 'tinyShopQq'
+				/*  #endif  */
 				if (this.loginByPass) {
 					this.handleLoginByPass(params)
 				} else {

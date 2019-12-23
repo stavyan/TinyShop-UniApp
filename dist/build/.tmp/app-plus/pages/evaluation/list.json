@@ -1,0 +1,10 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "评论列表",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {}
+}

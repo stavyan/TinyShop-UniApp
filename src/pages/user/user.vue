@@ -98,9 +98,6 @@
 							</image>
 							<text class="h-item-text">{{ item.product.name }}</text>
 						</view>
-						<view class="no-foot-print" v-if="footList.length === 0">
-							您今天暂未浏览过商品~
-						</view>
 					</scroll-view>
 					<view class="no-foot-print" v-else>
 						<uni-icons class="no-foot-print-icon" color="#fa436a" size="28"
@@ -221,9 +218,6 @@
          this.$get(memberInfo).then(r => {
             if (r.code === 200) {
 								this.getFootPrintList();
-                uni.removeStorage({
-                    key: 'userInfo'
-                })
                 uni.setStorage({
                     key: 'userInfo',
                     data: r.data

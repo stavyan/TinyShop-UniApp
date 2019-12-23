@@ -1,0 +1,13 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "领券中心",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "empty": "/components/empty"
+  }
+}

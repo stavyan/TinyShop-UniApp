@@ -17,7 +17,7 @@
             backgroundColor: item.style && item.style.backgroundColor ? item.style.backgroundColor : '#C7C6CD',
             color: item.style && item.style.color ? item.style.color : '#FFFFFF',
             fontSize: item.style && item.style.fontSize ? item.style.fontSize : '16px'
-          }" class="uni-swipe_button button-hock" @click.stop="onClick(index, item, data)">{{ item.text }}</view>
+          }" class="uni-swipe_button button-hock" @click.stop="onClick(index, item, info)">{{ item.text }}</view>
 			</view>
 			<!-- #ifdef APP-PLUS|| MP-WEIXIN||H5 -->
 		</view>
@@ -45,7 +45,7 @@
 					return []
 				}
 			},
-			data: {
+			info: {
 				type: Object,
 				default () {
 					return {}

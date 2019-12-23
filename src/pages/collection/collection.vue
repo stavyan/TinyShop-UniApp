@@ -3,7 +3,7 @@
 		<view v-if="collectionList.length > 0">
 			<uni-swipe-action
 						@click="bindClick"
-						:data="item"
+						:info="item"
 						:options="options"
 						class="uni-list-cell"
 						hover-class="uni-list-cell-hover"

@@ -9,12 +9,12 @@
 			@change="handleDateChange"
 			 />
 			<uni-swipe-action
-							@click="bindClick"
-							:data="item"
+							@click="bindClick(item)"
+							v-for="(item, index) in footPrintList"
+							:info="item"
 							:options="options"
 							class="uni-list-cell"
 							hover-class="uni-list-cell-hover"
-							v-for="(item, index) in footPrintList"
 							:key="index">
 				<view class="uni-media-list" @click="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
@@ -109,23 +109,21 @@ export default {
 			this.getFootPrintList();
 		},
 		async bindClick(e) {
-			if (e.content.text === '删除') {
-				uni.showLoading({title: '删除足迹中...'});
-				await this.$del(`${footPrintDel}?id=${e.data.id}`, {
-					page: this.page
-				}).then(r => {
-					if (r.code === 200) {
-						uni.showToast({title: '删除足迹成功'});
-						this.page = 1;
-						this.footPrintList.length = 0;
-						this.getFootPrintList();
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			}
+			uni.showLoading({title: '删除足迹中...'});
+			await this.$del(`${footPrintDel}?id=${e.id}`, {
+				page: this.page
+			}).then(r => {
+				if (r.code === 200) {
+					uni.showToast({title: '删除足迹成功'});
+					this.page = 1;
+					this.footPrintList.length = 0;
+					this.getFootPrintList();
+				} else {
+					uni.showToast({title: r.message, icon: "none"});
+				}
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		/**
 		 *@des 初始化数据

@@ -92,7 +92,7 @@
                     },
 					"subNVues":[{
 						"id": "cartTitleNvue", // 唯一标识
-						"path": "pages/tabBar/cart/subNvue/cartTitleNvue", // 页面路径
+						"path": "pages/cart/subNvue/cartTitleNvue", // 页面路径
 						"type":"navigationBar"
 					}]
 				}

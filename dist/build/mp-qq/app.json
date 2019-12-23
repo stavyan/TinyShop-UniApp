@@ -1,0 +1,79 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/product/product",
+    "pages/about/about",
+    "pages/about/detail",
+    "pages/set/set",
+    "pages/userinfo/userinfo",
+    "pages/search/search",
+    "pages/cart/cart",
+    "pages/public/login",
+    "pages/public/register",
+    "pages/evaluation/evaluation",
+    "pages/refund/refund",
+    "pages/evaluation/list",
+    "pages/user/user",
+    "pages/detail/detail",
+    "pages/order/order",
+    "pages/money/money",
+    "pages/order/createOrder",
+    "pages/order/detail",
+    "pages/collection/collection",
+    "pages/order/orderItem",
+    "pages/integral/integral",
+    "pages/footprint/footprint",
+    "pages/user/coupon",
+    "pages/coupon/detail",
+    "pages/user/recharge",
+    "pages/user/coupon-center",
+    "pages/address/address",
+    "pages/address/addressManage",
+    "pages/invoice/invoice",
+    "pages/invoice/invoiceManage",
+    "pages/money/pay",
+    "pages/money/paySuccess",
+    "pages/notice/notice",
+    "pages/category/category",
+    "pages/product/list"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "RageFrame商城",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#f8f8f8"
+  },
+  "tabBar": {
+    "color": "#C0C4CC",
+    "selectedColor": "#fa436a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-current.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "iconPath": "static/tab-cate.png",
+        "selectedIconPath": "static/tab-cate-current.png",
+        "text": "分类"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "iconPath": "static/tab-cart.png",
+        "selectedIconPath": "static/tab-cart-current.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "iconPath": "static/tab-my.png",
+        "selectedIconPath": "static/tab-my-current.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

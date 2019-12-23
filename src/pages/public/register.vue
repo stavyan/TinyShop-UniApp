@@ -126,7 +126,6 @@
 			 *@param mobile
 			 */
 			getSmsCode () {
-        console.log(111)
 				if (!this.checkPhoneIsValid(this.mobile)) return;
 				uni.showLoading({title:'获取中...'});
 				this.$post(smsCode, {
@@ -134,7 +133,7 @@
 					usage: 'register'
 				}).then(r=>{
 					if (r.code === 200) {
-						uni.showToast({ title: '验证码发送成功', icon: "none" });
+						uni.showToast({ title: `验证码发送成功, 验证码是${r.data}`, icon: "none" });
 						this.smsCodeBtnDisabled = true;
 						let time = 59;
 						let timer = setInterval(() => {
@@ -189,8 +188,21 @@
 					return;
 				}
 				uni.showLoading({title:'注册中...'});
+				let params = {}
+				/*  #ifdef  APP-PLUS  */
+				params.group = 'tinyShopApp'
+				/*  #endif  */
+				/*  #ifdef H5  */
+				params.group = 'tinyShopH5'
+				/*  #endif  */
+				/*  #ifdef  MP-WEIXIN  */
+				params.group = 'tinyShopWechat'
+				/*  #endif  */
+				/*  #ifdef  MP-QQ  */
+				params.group = 'tinyShopQq'
+				/*  #endif  */
 				this.$post(registerByPass, {
-					group: "tinyShopMiniProgram",
+					...params,
 					...formData
 				}).then(r=>{
 					if (r.code === 200) {

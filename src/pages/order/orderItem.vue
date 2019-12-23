@@ -3,7 +3,7 @@
 		<view class="uni-list">
 			<uni-swipe-action
 					@click="bindClick"
-					:data="item"
+					:info="item"
 					:options="itemOptions(item.is_evaluate)"
 					class="uni-list-cell"
 					hover-class="uni-list-cell-hover"

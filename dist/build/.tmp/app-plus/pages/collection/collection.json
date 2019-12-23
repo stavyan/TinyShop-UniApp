@@ -1,0 +1,14 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "我的收藏",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "uni-swipe-action": "/components/uni-swipe-action/uni-swipe-action",
+    "empty": "/components/empty"
+  }
+}

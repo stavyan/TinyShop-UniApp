@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "",
+  "titleNView": {
+    "type": "transparent"
+  },
+  "usingComponents": {
+    "share": "/components/share"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "titleNView": {
+    "type": "transparent"
+  },
+  "usingComponents": {
+    "uni-grid": "/components/uni-grid/uni-grid",
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "uni-grid-item": "/components/uni-grid-item/uni-grid-item"
+  }
+}
