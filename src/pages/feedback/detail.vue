@@ -1,19 +1,4 @@
 <template>
-<!--    <view class="page">-->
-<!--        <view>-->
-<!--            内容: {{feedbackDetail.content}}-->
-<!--        </view>-->
-<!--        <view>-->
-<!--        回复: {{feedbackDetail.content || '管理员未回复'}}-->
-<!--        </view>-->
-<!--        <view>-->
-<!--        联系方式: {{feedbackDetail.contact_way || '暂未留下联系方式'}}-->
-<!--        </view>-->
-<!--        <view v-for="item in JSON.parse(feedbackDetail.covers || {})" :key="item">-->
-<!--            <image :src="item"></image>-->
-<!--        </view>-->
-<!--    </view>-->
-
     <view class="page">
         <view class='feedback-title'>
             <text>问题和意见</text>
@@ -35,7 +20,6 @@
             </view>
         </view>
 
-
         <view class='feedback-title'>
             <text>反馈类型</text>
         </view>
@@ -52,7 +36,7 @@
             <text>QQ/邮箱/手机号</text>
         </view>
         <view class="feedback-body">
-            <input class="feedback-input" disabled v-model="feedbackDetail.contact_way || '暂未留下联系方式'" />
+            <input class="feedback-input" disabled :value="feedbackDetail.contact_way || '暂未留下联系方式'" />
         </view>
 
         <view class='feedback-title'>
@@ -66,7 +50,6 @@
 
 <script>
     import {opinionDetail} from "../../api/userInfo";
-
     export default {
         data() {
             return {
@@ -83,7 +66,7 @@
 					{
 						value: '3',
 						name: '业务咨询'
-					}],
+					}]
             }
         },
         onLoad(options) {
