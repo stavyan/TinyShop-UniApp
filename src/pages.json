@@ -344,7 +344,7 @@
 			"path": "pages/invoice/list",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "我的优惠券",
+				"navigationBarTitleText": "开票历史",
 				"app-plus": {
                     "pullToRefresh": {
                         "support": true,

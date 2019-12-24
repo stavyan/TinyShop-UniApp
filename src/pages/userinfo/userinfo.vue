@@ -3,9 +3,14 @@
 		<view class="user-section">
 			<image class="bg" src="/static/user-bg2.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
-			<view class="portrait-box" @click="uploadImage">
-				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
-<!--				<text class="pt-upload-btn yticon icon-paizhao">{{ profileInfo.nickname || "暂无昵称" }}</text>-->
+			<!--<view class="portrait-box" @click="uploadImage">-->
+			<view class="portrait-box">
+			<avatar
+        selWidth="200px" selHeight="400upx" @upload="handleUploadFile" :avatarSrc="profileInfo.head_portrait"
+        avatarStyle="width: 200upx; height: 200upx; border-radius: 100%; border: 6upx solid #fff;">
+    	</avatar>
+				<!--<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>-->
+				<!--<text class="pt-upload-btn yticon icon-paizhao">{{ // profileInfo.nickname || "暂无昵称" }}</text>-->
 			</view>
 		</view>
 		<view class="input-content">
@@ -80,9 +85,13 @@
 </template>
 
 <script>
-	import {memberInfo, memberUpdate, uploadImage} from "../../api/userInfo";
+	import {memberInfo, memberUpdate, uploadBase64Image, uploadImage} from "../../api/userInfo";
 	const graceChecker = require("../../common/graceChecker.js");
+	import avatar from "@/components/rf-avatar/rf-avatar.vue";
 	export default {
+		components: {
+				avatar
+		},
 		data() {
 			const currentDate = this.getDate({
 					format: true
@@ -113,6 +122,10 @@
 			this.initData()
 		},
 		methods: {
+			myUpload(rsp) {
+					this.profileInfo.head_portrait = rsp.path; //更新头像方式一
+					//rsp.avatar.imgSrc = rsp.path; //更新头像方式二
+			},
 			/**
 			 *@des 修改头像
 			 *@author stav stavyan@qq.com
@@ -146,11 +159,11 @@
 				});
 			},
 			handleUploadFile (data) {
+				console.log(data)
 				const _this = this;
-				data.forEach(item => {
-					uni.uploadFile({
+				uni.uploadFile({
 					url : uploadImage,
-					filePath: item,
+					filePath: data.path,
 					name: 'file',
 					header: {
 						"x-api-key": _this.token,
@@ -171,7 +184,6 @@
 						}
 					}
 				 });
-				})
 			},
 			bindDateChange(e) {
 				this.date = e.target.value
@@ -249,6 +261,11 @@
 </script>
 
 <style lang="scss">
+	page{
+		background: #fff;
+		height: 100%;
+		overflow: hidden;
+	}
 	.user-section{
 		display:flex;
 		align-items:center;
@@ -266,11 +283,6 @@
 			opacity: .7;
 		}
 		.portrait-box{
-			width: 200upx;
-			height: 200upx;
-			border:6upx solid #fff;
-			border-radius: 50%;
-			position:relative;
 			z-index: 2;
 		}
 		.portrait{

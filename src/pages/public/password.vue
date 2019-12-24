@@ -5,9 +5,9 @@
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
-			<view class="left-top-sign">GET BACK</view>
+			<view class="left-top-sign">{{  type == 1 ? 'UPDATE' : 'GET BACK' }}</view>
 			<view class="welcome">
-				{{  type === 1 ? '重置密码' : '找回密码' }}！
+				{{  type == 1 ? '修改密码' : '找回密码' }}！
 			</view>
 
 			<view class="input-content">
@@ -57,14 +57,18 @@
 							@blur="blurRePasswordChange"
 						/>
 					</view>
-					<button class="confirm-btn" formType="submit">重置密码</button>
+					<button class="confirm-btn" formType="submit">{{ type == 1 ? '修改密码' : '找回密码' }}</button>
 				</form>
 			</view>
 		</view>
-		<view class="register-section">
-			又想起密码了?
-			<text @click="toLogin">马上登录</text>
-				或者
+		<view class="register-section" v-if="type != 1">
+				又想起密码了?
+				<text @click="toLogin">马上登录</text>
+					或者
+			<text @click="toHome">返回主页</text>
+		</view>
+		<view class="register-section" v-else>
+			不想修改了密码？
 			<text @click="toHome">返回主页</text>
 		</view>
 	</view>
@@ -204,7 +208,7 @@
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 					return;
 				}
-				uni.showLoading({title:'密码重置中...'});
+				uni.showLoading({title:'请稍等...'});
 				let params = {}
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'

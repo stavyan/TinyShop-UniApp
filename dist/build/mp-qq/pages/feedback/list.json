@@ -1,0 +1,7 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "意见反馈",
+  "usingComponents": {
+    "empty": "/components/empty"
+  }
+}

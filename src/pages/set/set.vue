@@ -4,7 +4,7 @@
 			<text class="cell-tit">个人资料</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b m-t" @click="navTo('/pages/public/password?type=1')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @click="navTo('/pages/public/password?type=1')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">修改密码</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
@@ -12,12 +12,12 @@
 <!--			<text class="cell-tit">收货地址</text>-->
 <!--			<text class="cell-more yticon icon-you"></text>-->
 <!--		</view>-->
-		<view class="list-cell b-b" @click="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b m-t" @click="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">发票管理</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell b-b" @click="navTo('/pages/invoice/list')" hover-class="cell-hover" :hover-stay-time="50">
-			<text class="cell-tit">开票记录</text>
+			<text class="cell-tit">开票历史</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<!--<view class="list-cell" @click="navTo('实名认证')" hover-class="cell-hover" :hover-stay-time="50">-->
@@ -31,6 +31,7 @@
 		</view>
 		<view class="list-cell m-t b-b" @click="navTo('清除缓存')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">清除缓存</text>
+			<text class="cell-tip">{{ currentStorageSize }} kb</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell b-b" @click="navTo('/pages/about/about')" hover-class="cell-hover" :hover-stay-time="50">
@@ -60,13 +61,24 @@
 	export default {
 		data() {
 			return {
-
+				currentStorageSize: 0
 			};
+		},
+		onLoad () {
+			this.initData();
 		},
 		computed: {
 			...mapState(['userInfo'])
 		},
 		methods:{
+			initData () {
+				const _this = this;
+				uni.getStorageInfo({
+					success (res) {
+						_this.currentStorageSize = res.currentSize;
+					}
+				})
+			},
 			...mapMutations(['logout']),
 			navTo(url){
 				if (url === '清除缓存') {
@@ -74,15 +86,7 @@
 				    content: '确定要清除缓存吗',
 				    success: (e)=>{
 				    	if(e.confirm){
-				    		this.$post(`${logout}`).then(r => {
-									if (r.code === 200) {
-										uni.clearStorageSync();
-										uni.showToast({ title: '清除缓存成功', icon: "none" });
-										return;
-									} else {
-										uni.showToast({ title: r.message, icon: "none" });
-									}
-								})
+				    		this.currentStorageSize = 0;
 				    	}
 				    }
 					});

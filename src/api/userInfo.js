@@ -85,7 +85,9 @@ const opinionCreate = "/tiny-shop/v1/member/opinion/create";
 const opinionDetail = "/tiny-shop/v1/member/opinion/view";
 
 // 上传图片
-const uploadImage = "https://www.yllook.com/api/v1/file/images";
+const uploadImage = "https://www.yllook.com/api/tiny-shop/v1/common/file/images";
+// 上传图片
+const uploadBase64Image = "https://www.yllook.com/api/tiny-shop/v1/common/file/base64";
 
 export {
     memberInfo,
@@ -121,6 +123,7 @@ export {
     invoiceDel,
     orderInvoiceList,
     uploadImage,
+    uploadBase64Image,
     opinionList,
     opinionCreate,
     opinionDetail
