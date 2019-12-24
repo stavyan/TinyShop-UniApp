@@ -16,7 +16,7 @@
 			<!--<swiper class="carousel" circular @change="swiperChange">-->
 			<swiper class="carousel" circular @change="swiperChange">
 				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">
-					<image :src="item.cover" />
+					<image :src="item.cover" mode = “aspectFill” />
 				</swiper-item>
 			</swiper>
 			<!-- 自定义swiper指示器 -->
@@ -367,7 +367,10 @@
 		},
 		onLoad() {
 			this.initData();
-			console.log(this.$refs.search)
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.getIndexList('refresh');
 		},
 		methods: {
 			/**
@@ -434,9 +437,12 @@
 					console.log(err)
 				})
 			},
-			async getIndexList() {
+			async getIndexList(type) {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${indexList}`, {}).then(r => {
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 					if (r.code === 200) {
 						this.getBrandList();
 						this.productCateList = r.data.cate;
@@ -604,15 +610,13 @@
 	}
 	/* 分类 */
 	.grid {
-		padding: 20upx 12upx 10upx;
-		margin-bottom: 10upx;
-		background: #fff;
+		background-color: #fff;
+		margin: 10upx 0;
 		.grid-title {
 			width: 100%;
 			font-size: $font-lg + 2upx;
 			color: $font-color-dark;
 			margin: 0 10upx 10upx;
-			/*border-left: 3px solid #ccc;*/
 			/*height: 36upx;*/
 			/*line-height: 36upx;*/
 			/*padding-left: 10upx;*/

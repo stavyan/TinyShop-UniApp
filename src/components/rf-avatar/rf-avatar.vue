@@ -22,7 +22,7 @@
 		</view>
 	</view>
 </template>
-	
+
 <script>
 	const tabHeight = 50;
 	export default {
@@ -90,7 +90,7 @@
 				this.btnWidth = '19%';
 				this.btnDsp = 'flex';
 			}
-			
+
 			if(this.noBar) {
 				this.moreHeight = 0;
 				this.fWindowResize();
@@ -128,7 +128,7 @@
 				this.cvsStyleHeight = this.windowHeight - tabHeight - 2 + 'px';
 				// #endif
 				this.pxRatio = this.windowWidth/750;
-				
+
 				let style = this.avatarStyle;
 				if(style && style !== true && (style=style.trim()) ) {
 					style = style.split(';');
@@ -150,10 +150,10 @@
 					}
 					this.imgStyle = obj;
 				}
-				
+
 				this.expWidth && (this.exportWidth = this.expWidth.indexOf('upx') >= 0 ? parseInt(this.expWidth)*this.pxRatio : parseInt(this.expWidth));
 				this.expHeight && (this.exportHeight = this.expHeight.indexOf('upx') >= 0 ? parseInt(this.expHeight)*this.pxRatio : parseInt(this.expHeight));
-				
+
 				if(this.styleDisplay === 'flex') {
 					this.fDrawInit(true);
 				}
@@ -163,7 +163,7 @@
 				if(this.fSelecting) return;
 				this.fSelecting = true;
 				setTimeout(()=>{ this.fSelecting = false; }, 500);
-				
+
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['original', 'compressed'],
@@ -195,7 +195,7 @@
 									}
 									this.selStyle = style;
 								}
-								
+
 								if(	this.noBar ) {
 									this.fDrawInit(true);
 								} else {
@@ -223,7 +223,7 @@
 				if(this.fUploading)	return;
 				this.fUploading = true;
 				setTimeout(()=>{ this.fUploading = false; }, 1000)
-				
+
 				let style = this.selStyle,
 					x = parseInt(style.left),
 					y = parseInt(style.top),
@@ -231,14 +231,14 @@
 					height = parseInt(style.height),
 					expWidth = this.exportWidth || width,
 					expHeight = this.exportHeight || height;
-					
+
 				// #ifdef H5
 				x *= this.pixelRatio;
 				y *= this.pixelRatio;
 				expWidth = width;
 				expHeight = height;
 				// #endif
-					
+
 				uni.showLoading({ mask: true });
 				this.styleDisplay = 'none';
 				this.styleTop = '-10000px';
@@ -262,7 +262,7 @@
 								let ctxCanvas = this.ctxCanvas;
 								expWidth = this.exportWidth,
 								expHeight = this.exportHeight;
-									
+
 								ctxCanvas.drawImage(r, 0, 0, expWidth, expHeight);
 								ctxCanvas.draw(false,()=>{
 									uni.canvasToTempFilePath({
@@ -314,7 +314,7 @@
 				if(this.fPrvUploading)	return;
 				this.fPrvUploading = true;
 				setTimeout(()=>{ this.fPrvUploading = false; }, 1000)
-				
+
 				let style = this.selStyle,
 					destWidth = parseInt(style.width),
 					destHeight = parseInt(style.height),
@@ -324,16 +324,16 @@
 					prvHeight = this.prvHeight,
 					expWidth = this.exportWidth || prvWidth,
 					expHeight = this.exportHeight || prvHeight;
-					
+
 				// #ifdef H5
 				prvX *= this.pixelRatio;
 				prvY *= this.pixelRatio;
 				expWidth = prvWidth;
 				expHeight = prvHeight;
 				// #endif
-					
+
 				uni.showLoading({ mask: true });
-				
+
 				this.styleDisplay = 'none';
 				this.styleTop = '-10000px';
 				this.hasSel = false;
@@ -356,7 +356,7 @@
 								let ctxCanvas = this.ctxCanvas;
 								expWidth = this.exportWidth,
 								expHeight = this.exportHeight;
-									
+
 								ctxCanvas.drawImage(r, 0, 0, expWidth, expHeight);
 								ctxCanvas.draw(false, ()=>{
 									uni.canvasToTempFilePath({
@@ -415,7 +415,7 @@
 					pixelRatio = this.pixelRatio,
 					selWidth = parseInt(this.selStyle.width),
 					selHeight = parseInt(this.selStyle.height);
-				
+
 				this.fixWidth = 0;
 				this.fixHeight = 0;
 				this.lckWidth = 0;
@@ -473,14 +473,14 @@
 						this.lckWidth = 0;
 					}
 				}
-				
+
 				this.scaleSize = 1;
 				this.rotateDeg = 0;
 				this.posWidth = (allWidth-useWidth)/2;
 				this.posHeight = (allHeight-useHeight-tabHeight)/2;
 				this.useWidth = useWidth;
 				this.useHeight = useHeight;
-				
+
 				let style = this.selStyle,
 					left = parseInt(style.left),
 					top = parseInt(style.top),
@@ -490,7 +490,7 @@
 					canvasOper = this.canvasOper,
 					ctxCanvas = this.ctxCanvas,
 					ctxCanvasOper = this.ctxCanvasOper;
-					
+
 				ctxCanvasOper.setLineWidth(3);
 				ctxCanvasOper.setStrokeStyle('grey');
 				ctxCanvasOper.setGlobalAlpha(0.4);
@@ -506,7 +506,7 @@
 				ctxCanvasOper.moveTo(left+20, top+height);ctxCanvasOper.lineTo(left, top+height);ctxCanvasOper.lineTo(left, top+height-20);
 				ctxCanvasOper.moveTo(left+width-20, top+height);ctxCanvasOper.lineTo(left+width, top+height);ctxCanvasOper.lineTo(left+width, top+height-20);
 				ctxCanvasOper.stroke();
-				
+
 				ctxCanvasOper.draw(false, ()=>{
 					if( ini ) {
 						this.styleDisplay = 'flex';
@@ -520,7 +520,7 @@
 						this.fDrawImage();
 					}
 				});
-				
+
 				this.$emit("avtinit");
 			},
 			fDrawImage() {
@@ -553,20 +553,20 @@
 				if(this.fPreviewing) return;
 				this.fPreviewing = true;
 				setTimeout(()=>{ this.fPreviewing = false; }, 1000);
-				
+
 				let style = this.selStyle,
 					x = parseInt(style.left),
 					y = parseInt(style.top),
 					width = parseInt(style.width),
 					height = parseInt(style.height);
-					
+
 				// #ifdef H5
 				x *= this.pixelRatio;
 				y *= this.pixelRatio;
 				// #endif
-				
+
 				uni.showLoading({ mask: true });
-				
+
 				uni.canvasToTempFilePath({
 					x: x,
 					y: y,
@@ -577,7 +577,7 @@
 					quality: this.qlty,
 					success: (r)=>{
 						this.prvImgTmp = r = r.tempFilePath;
-						
+
 						let ctxCanvasPrv = this.ctxCanvasPrv,
 							prvX = this.windowWidth,
 							prvY = parseInt(this.cvsStyleHeight),
@@ -603,7 +603,7 @@
 						this.prvHeight = prvHeight;
 						ctxCanvasPrv.drawImage(r, prvX, prvY, prvWidth, prvHeight);
 						ctxCanvasPrv.draw(false);
-						
+
 						// #ifdef H5
 						this.btop(r).then((r)=> {
 							this.showOper = false;
@@ -622,7 +622,7 @@
 							title: "error2",
 							duration: 2000,
 						})
-					}, 
+					},
 					complete: () => {
 						uni.hideLoading();
 					}
@@ -642,7 +642,7 @@
 						stretch = params.stretch,
 						inner = params.inner,
 						lock = params.lock;
-						
+
 					expWidth && (this.exportWidth = expWidth.indexOf('upx') >= 0 ? parseInt(expWidth)*this.pxRatio : parseInt(expWidth));
 					expHeight && (this.exportHeight = expHeight.indexOf('upx') >= 0 ? parseInt(expHeight)*this.pxRatio : parseInt(expHeight));
 					this.letRotate = canRotate === 'false' ? 0 : 1;
@@ -660,7 +660,7 @@
 						this.btnWidth = '19%';
 						this.btnDsp = 'flex';
 					}
-					
+
 					if( selWidth && selHeight) {
 						selWidth  = selWidth.indexOf('upx')  >= 0 ? parseInt(selWidth)  * this.pxRatio: parseInt(selWidth);
 						selHeight = selHeight.indexOf('upx') >= 0 ? parseInt(selHeight) * this.pxRatio: parseInt(selHeight);
@@ -683,7 +683,7 @@
 					setTimeout(()=>{ this.fRotateing = false; }, 500);
 				}
 				// #endif
-				
+
 				// if(this.letRotate) {
 					this.rotateDeg += 90 - this.rotateDeg%90;
 					this.fDrawImage();
@@ -693,10 +693,10 @@
 				let touches = e.touches,
 				touch0 = touches[0],
 				touch1 = touches[1];
-				
+
 				this.touch0 = touch0;
 				this.touch1 = touch1;
-				
+
 				if( touch1 ) {
 					let x = touch1.x - touch0.x,
 						y = touch1.y - touch0.y;
@@ -707,14 +707,14 @@
 				let touches = e.touches,
 					touch0 = touches[0],
 					touch1 = touches[1];
-				
+
 				if( touch1 ) {
 					let x = touch1.x - touch0.x,
 						y = touch1.y - touch0.y,
 						fgDistance = Math.sqrt(x * x + y * y),
 						scaleSize = 0.005 * (fgDistance - this.fgDistance),
 						beScaleSize = this.scaleSize + scaleSize;
-						
+
 					do	{
 						if( !this.letScale ) break;
 						if( beScaleSize < this.mnScale) break;
@@ -734,11 +734,11 @@
 								this.scaleWidth = (this.useWidth-imgWidth)/2;
 								this.scaleHeight = (this.useHeight-imgHeight)/2;
 						}
-						
+
 						this.scaleSize = beScaleSize;
 					} while(0);
 					this.fgDistance = fgDistance;
-			
+
 					if(touch1.x !== touch0.x && this.letRotate) {
 						x = (this.touch1.y - this.touch0.y)/(this.touch1.x - this.touch0.x);
 						y = (touch1.y - touch0.y)/(touch1.x - touch0.x);
@@ -746,7 +746,7 @@
 						this.touch0 = touch0;
 						this.touch1 = touch1;
 					}
-					
+
 					this.fDrawImage();
 				} else if( this.touch0 ) {
 					let x = touch0.x - this.touch0.x,
@@ -768,7 +768,7 @@
 								if(left >= l && left+width <= r) {
 									this.posWidth  = beX;
 								} else if(left < l){
-									this.posWidth = left - this.scaleWidth; 
+									this.posWidth = left - this.scaleWidth;
 								} else if(left+width > r) {
 									this.posWidth = left-(imgWidth-width) - this.scaleWidth;
 								}
@@ -786,7 +786,7 @@
 						if( Math.abs(x) < 100 && !this.lckWidth) this.posWidth  = beX;
 						if( Math.abs(y) < 100 && !this.lckHeight) this.posHeight = beY;
 					}
-					
+
 					this.touch0 = touch0;
 					this.fDrawImage();
 				}
@@ -833,9 +833,9 @@
 				let tm_now = Date.now();
 				if(tm_now - this.prvTm < 100) return;
 				this.prvTm = tm_now;
-				
+
 				uni.showLoading({ mask: true });
-				
+
 				if( !this.prvImgData ) {
 					if( !(this.prvImgData = await this.fGetImgData().catch((res)=>{
 						uni.showToast({
@@ -845,12 +845,12 @@
 					}))) return;
 					this.target = new Uint8ClampedArray(this.prvImgData.length);
 				}
-				
+
 				let data = this.prvImgData,
 					target = this.target,
 					i = e.detail.value,
 					r,g,b,a,h,s,l,d,p,q,t,min,max,hK,tR,tG,tB;
-					
+
 				if( i === 0 ) {
 					target = data;
 				} else {
@@ -884,13 +884,13 @@
 							s = d/(2-2*l) ;
 						}
 						data[n] && (a = data[n]);
-						
+
 						if ( i < 0.5 ){
 							s = s*i/0.5 ;
 						}else if ( i > 0.5 ){
 							s = 2*s + 2*i - (s*i/0.5) - 1 ;
 						}
-						
+
 						if ( s === 0 ){
 							r = g = b = Math.round( l*255 ) ;
 						}else{
@@ -898,7 +898,7 @@
 								q = l * ( 1 + s ) ;
 							}else if( l>=0.5 ){
 								q = l + s - ( l * s ) ;
-							}      
+							}
 							p = 2*l-q ;
 							hK = h/360 ;
 							tR = hK + 1/3 ;
@@ -927,7 +927,7 @@
 							g = tG = Math.round( createRGB( correctRGB( tG ) )*255 ) ;
 							b = tB = Math.round( createRGB( correctRGB( tB ) )*255 ) ;
 						}
-						a && ( target[n] = a ) ;  
+						a && ( target[n] = a ) ;
 						target[n-3] = r;
 						target[n-2] = g;
 						target[n-1] = b;
@@ -937,11 +937,11 @@
 					prvY = this.prvY,
 					prvWidth = this.prvWidth,
 					prvHeight = this.prvHeight;
-					
+
 				this.ctxCanvasPrv.setFillStyle('black');
 				this.ctxCanvasPrv.fillRect(prvX, prvY, prvWidth, prvHeight);
 				this.ctxCanvasPrv.draw(true);
-				
+
 				// #ifdef APP-PLUS||H5
 				prvX *= this.pixelRatio;
 				prvY *= this.pixelRatio;

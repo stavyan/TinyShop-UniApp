@@ -3,12 +3,15 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				// #ifdef MP
-				"navigationBarTitleText": "RageFrame商城",
 				"enablePullDownRefresh": true,
-//				"navigationStyle": "custom",
-				// #endif
+				"navigationBarTitleText": "RageFrame商城",
+				// "navigationStyle": "custom",
 				"app-plus": {
+					"pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    },
 					"titleNView": {
 						"type": "transparent"
 //						"searchInput": {

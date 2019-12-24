@@ -3,20 +3,26 @@
 		<view class="user-section">
 			<image class="bg" src="/static/user-bg2.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
-			<!--<view class="portrait-box" @click="uploadImage">-->
-			<view class="portrait-box">
-			<avatar
-        selWidth="200px" selHeight="400upx" @upload="handleUploadFile" :avatarSrc="profileInfo.head_portrait"
-        avatarStyle="width: 200upx; height: 200upx; border-radius: 100%; border: 6upx solid #fff;">
-    	</avatar>
-				<!--<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>-->
+      <!--#ifdef H5-->
+			<view class="portrait-box" @click="uploadImage">
+				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
 				<!--<text class="pt-upload-btn yticon icon-paizhao">{{ // profileInfo.nickname || "暂无昵称" }}</text>-->
 			</view>
+      <!-- #endif -->
+			<!--#ifndef H5-->
+			<view class="portrait-box">
+        <avatar
+					canRotate="false"
+          selWidth="200px" selHeight="400upx" @upload="handleUploadFile" :avatarSrc="profileInfo.head_portrait"
+          avatarStyle="width: 200upx; height: 200upx; border-radius: 100%; border: 6upx solid #fff;">
+        </avatar>
+			</view>
+      <!-- #endif -->
 		</view>
 		<view class="input-content">
 			<form @submit="toUpdateInfo">
 				<view class="input-item">
-					<text class="tit">手机号码</text>
+					<text class="tit">手机号</text>
 					<input
 						type="number"
 						name="mobile"
@@ -26,7 +32,7 @@
 					/>
 				</view>
 				<view class="input-item">
-					<text class="tit">用户昵称</text>
+					<text class="tit">昵　称</text>
 					<input
 						type="text"
 						:value="profileInfo.nickname"
@@ -35,7 +41,7 @@
 					/>
 				</view>
 				<view class="input-item">
-					<text class="tit">真实姓名</text>
+					<text class="tit">姓　名</text>
 					<input
 						type="text"
 						:value="profileInfo.realname"
@@ -44,7 +50,7 @@
 					/>
 				</view>
 				<view class="input-item">
-					<text class="tit">性别</text>
+					<text class="tit">性　别</text>
 					 <view>
 						<radio-group name="gender" class="gender">
 							<label class="gender-item" v-for="(item, index) in genders" :key="index">
@@ -55,13 +61,13 @@
 					</view>
 				</view>
 				<view class="input-item">
-					<text class="tit">生日</text>
+					<text class="tit">生　日</text>
 					<picker mode="date" :value="date" @change="bindDateChange">
-						<view class="uni-input" style="background: none;">{{ date }}</view>
+						<view class="date" style="background: none;">{{ date }}</view>
 					</picker>
 				</view>
 				<view class="input-item">
-					<text class="tit">QQ</text>
+					<text class="tit">Q　Q</text>
 					<input
 						type="number"
 						:value="profileInfo.qq"
@@ -70,7 +76,7 @@
 					/>
 				</view>
 				<view class="input-item">
-					<text class="tit">邮箱</text>
+					<text class="tit">邮　箱</text>
 					<input
 						type="number"
 						:value="profileInfo.email"
@@ -85,7 +91,7 @@
 </template>
 
 <script>
-	import {memberInfo, memberUpdate, uploadBase64Image, uploadImage} from "../../api/userInfo";
+	import {memberInfo, memberUpdate, uploadImage} from "../../api/userInfo";
 	const graceChecker = require("../../common/graceChecker.js");
 	import avatar from "@/components/rf-avatar/rf-avatar.vue";
 	export default {
@@ -261,17 +267,16 @@
 </script>
 
 <style lang="scss">
-	page{
+	.userinfo{
 		background: #fff;
-		height: 100%;
-		overflow: hidden;
 	}
 	.user-section{
 		display:flex;
 		align-items:center;
 		justify-content: center;
-		height: 460upx;
+		height: 300upx;
 		padding: 40upx 30upx 0;
+		overflow: hidden;
 		position:relative;
 		.bg{
 			position:absolute;
@@ -283,13 +288,15 @@
 			opacity: .7;
 		}
 		.portrait-box{
+			clear: both;
 			z-index: 2;
 		}
 		.portrait{
 			position: relative;
-			width: 100%;
-			height: 100%;
+			width: 200upx;
+			height: 200upx;
 			border-radius: 50%;
+      border: 6upx solid #fff;
 		}
 		.yticon{
 			position:absolute;
@@ -313,42 +320,41 @@
 	.input-content{
 		padding: 40upx 60upx;
 		.input-item{
-		display:flex;
-		flex-direction: column;
-		align-items:flex-start;
-		justify-content: center;
-		padding: 0 30upx;
-		background:$page-color-light;
-		height: 120upx;
-		border-radius: 4px;
-		margin-bottom: 50upx;
-			.uni-input {
-				font-size: $font-lg;
-				color: $font-color-dark;
-			}
+			display:flex;
+			padding: 0 30upx;
+			background: $page-color-light;
+			height: 80upx;
+			line-height: 80upx;
+			border-radius: 4px;
+			margin-bottom: 30upx;
 			&:last-child{
 				margin-bottom: 0;
 			}
 			.tit{
-				height: 50upx;
-				line-height: 56upx;
+				width: 90upx;
 				font-size: $font-sm+2upx;
 				color: $font-color-base;
 			}
-			input{
-				height: 60upx;
+			input {
+				height: 80upx;
+				line-height: 80upx;
 				font-size: $font-base + 2upx;
 				color: $font-color-dark;
-				width: 100%;
+			}
+			.date {
+				height: 80upx;
+				line-height: 80upx;
+				font-size: $font-base + 2upx;
+				color: $font-color-dark;
 			}
 			.gender {
 				margin: 10upx 0;
 				color: $font-color-dark;
 				font-size: $font-base;
 				.gender-item {
-					margin-right: 20upx;
+					margin-right: 10upx;
 					.gender-item-text {
-						padding: 0 10upx;
+						padding: 0 5upx;
 					}
 					radio .wx-radio-input.wx-radio-input-checked {
 						background: $uni-color-primary;
@@ -362,7 +368,7 @@
 			height: 76upx;
 			line-height: 76upx;
 			border-radius: 50px;
-			margin-top: 70upx;
+			margin-top: 50upx;
 			background: $uni-color-primary;
 			color: #fff;
 			font-size: $font-lg;

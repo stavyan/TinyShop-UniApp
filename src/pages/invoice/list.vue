@@ -1,31 +1,36 @@
 <template>
 	<view class="content b-t">
-		<view v-if="invoiceList.length > 0" class="list b-b" v-for="(item, index) in invoiceList" :key="index" @click="navTo(item.order_id)">
-			<view class="wrapper">
-				<view class="address-box">
-					<view class="order-fl">
-						订单编号: <text class="order-sn">{{item.order_sn}}</text>
+		<view  v-if="invoiceList.length > 0">
+			<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @click="navTo(item.order_id)">
+				<view class="wrapper">
+					<view class="address-box">
+						<view class="order-fl">
+							订单编号: <text class="order-sn">{{item.order_sn}}</text>
+						</view>
+						<view class="order-wrapper">
+							<text class="address">{{item.title}}</text>
+							<text class="address">开票金额: {{item.tax_money}}</text>
+						</view>
 					</view>
-					<text class="address">{{item.title}}</text>
-				</view>
-				<view class="u-box">
-					<view>
-						<text class="name">{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}</text>
-						<text class="mobile">{{ item.duty_paragraph || '个人发票无税号' }}</text>
+					<view class="u-box">
+						<view>
+							<text class="name">{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}</text>
+							<text class="mobile">{{ item.duty_paragraph || '个人发票无税号' }}</text>
+						</view>
+						<text class="time">{{item.created_at | time}}</text>
 					</view>
-					<text class="time">{{item.created_at | time}}</text>
-				</view>
 
+				</view>
 			</view>
+			<uni-load-more :status="loadingType" />
 		</view>
 		<empty :info="'您还未购买任何商品~'" v-else></empty>
-		<uni-load-more :status="loadingType" />
 	</view>
 </template>
 
 <script>
 	import {orderInvoiceList} from "../../api/userInfo";
-	import moment from 'moment';import {collectList} from "../../api/userInfo";
+	import moment from 'moment';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 	import empty from "@/components/empty";
 	export default {
@@ -132,6 +137,10 @@
 				margin-left: 14upx;
 				color: $base-color;
 			}
+		}
+		.order-wrapper {
+			display: flex;
+			justify-content: space-between;
 		}
 		.tag{
 			font-size: 24upx;

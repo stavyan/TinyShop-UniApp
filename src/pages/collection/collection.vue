@@ -43,6 +43,7 @@ import errorImg from './../../static/errorImage.jpg';
 import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import {collectDel} from "../../api/basic";
 import empty from "@/components/empty";
+import moment from 'moment'
 export default {
 	components: {
 		uniLoadMore,
