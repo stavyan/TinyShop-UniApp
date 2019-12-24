@@ -37,9 +37,22 @@ http.interceptors.request.use(async config => {
     } else {
         // return config1;
         //刷新token
+        let group = 'tinyShopWechat'
+        /*  #ifdef  APP-PLUS  */
+        group = 'tinyShopAndroid'
+        /*  #endif  */
+        /*  #ifdef H5  */
+        group = 'tinyShopH5'
+        /*  #endif  */
+        /*  #ifdef  MP-WEIXIN  */
+        group = 'tinyShopWechat'
+        /*  #endif  */
+        /*  #ifdef  MP-QQ  */
+        group = 'tinyShopQq'
+        /*  #endif  */
         await axios.post(refreshToken, {
             refresh_token: user.refresh_token,
-            group: 'tinyShopMiniProgram'
+            group,
         }).then(async r => {
             const data = r.data;
             if (data.code === 200) {
