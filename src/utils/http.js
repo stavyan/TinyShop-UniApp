@@ -35,24 +35,23 @@ http.interceptors.request.use(async config => {
     if (!token || currentTime + 500- loginTime < user.expiration_time) {
         return config
     } else {
-        // return config1;
         //刷新token
-        let group = 'tinyShopWechat'
-        /*  #ifdef  APP-PLUS  */
-        group = 'tinyShopAndroid'
-        /*  #endif  */
-        /*  #ifdef H5  */
-        group = 'tinyShopH5'
-        /*  #endif  */
-        /*  #ifdef  MP-WEIXIN  */
-        group = 'tinyShopWechat'
-        /*  #endif  */
-        /*  #ifdef  MP-QQ  */
-        group = 'tinyShopQq'
-        /*  #endif  */
+        let params = {}
+        // #ifdef  APP-PLUS
+        params.group = 'tinyShopAndroid'
+        // #endif
+        // #ifdef H5
+        params.group = 'tinyShopH5'
+        // #endif
+        // #ifdef  MP-WEIXIN
+        params.group = 'tinyShopWechat'
+        // #endif
+        // #ifdef  MP-QQ
+        params.group = 'tinyShopQq'
+        // #endif
         await axios.post(refreshToken, {
             refresh_token: user.refresh_token,
-            group,
+            ...params,
         }).then(async r => {
             const data = r.data;
             if (data.code === 200) {
