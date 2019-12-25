@@ -217,10 +217,10 @@
 				params.group = 'tinyShopH5'
 				/*  #endif  */
 				/*  #ifdef  MP-WEIXIN  */
-				params.group = 'tinyShopWechat'
+				params.group = 'tinyShopWechatMq'
 				/*  #endif  */
 				/*  #ifdef  MP-QQ  */
-				params.group = 'tinyShopQq'
+				params.group = 'tinyShopQqMq'
 				/*  #endif  */
 				this.$post(updatePassword, {
 					...params,

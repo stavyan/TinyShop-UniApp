@@ -13,7 +13,7 @@
                         "color": "#fa436a",
                         "style": "default"
                     },
-					"titleNView": false ,//禁用原生导航栏
+					"titleNView": false ,// 禁用原生导航栏
 					"softinputNavBar":"none",
 					"subNVues":[{
 						"id": "homeTitleNvue", // 唯一标识
@@ -23,6 +23,23 @@
 				}
 			}
 		},
+		{
+            "path" : "pages/product/list",
+            "style" : {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "商品列表",
+				"onReachBottomDistance":50,
+				"app-plus": {
+					"titleNView": false,
+					"softinputNavBar":"none",
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+        },
 		{
 			"path": "pages/product/product",
 			"style": {
@@ -371,20 +388,6 @@
 				"app-plus": {
 					"bounce": "none"
 				}
-			}
-        }
-        ,{
-            "path" : "pages/product/list",
-            "style" : {
-				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "商品列表",
-				"app-plus": {
-                    "pullToRefresh": {
-                        "support": true,
-                        "color": "#fa436a",
-                        "style": "default"
-                    }
-                }
 			}
         }
     ],

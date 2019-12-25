@@ -92,7 +92,7 @@
 						<text class="buy-now" @click="addCart('buy')" v-show="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
 					</view>
 				</view>
-				<view class="c-row b-b">
+				<view class="c-row b-b" @tap="showService">
 					<text class="tit">服务</text>
 					<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
 						<text v-for="item in productDetail.tags">{{ item }} </text>
@@ -101,7 +101,7 @@
 						暂无服务
 					</view>
 				</view>
-				<view class="c-row b-b">
+				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
 					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
 						<text v-for="item in productDetail.ladderPreferential">
@@ -113,8 +113,8 @@
 						暂无服务
 					</view>
 				</view>
-				<view class="c-row b-b" v-if="productDetail.attributeValue">
-					<text class="tit">属性信息</text>
+				<view class="c-row b-b" v-if="productDetail.attributeValue" @tap="showAttributeValue">
+					<text class="tit">参数</text>
 					<view class="con-list" >
 						<text v-for="(item, index) in productDetail.attributeValue" :key="index">
 							{{ `${item.title}: ${item.value}` }}
@@ -189,6 +189,54 @@
 									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
 									class=" action-btn no-border add-cart-btn"
 									@click="addCart('cart')">加入购物车</button>
+				</view>
+			</view>
+
+
+			<!-- 服务-模态层弹窗 -->
+			<view class="popup service" :class="serviceClass" @tap="hideService">
+				<!-- 遮罩层 -->
+				<view class="mask"></view>
+				<view class="layer layer-service">
+					<view class="content">
+						<view class="row" v-for="(item,index) in productDetail.tags" :key="index">
+							<view class="title">{{item}}</view>
+							<view class="description">此商品承诺{{item}}</view>
+						</view>
+					</view>
+					<button class="btn" @click="hideService">完成</button>
+				</view>
+			</view>
+
+			<!-- 阶梯优惠-模态层弹窗 -->
+			<view class="popup service" :class="ladderPreferentialClass" @tap="hideService">
+				<!-- 遮罩层 -->
+				<view class="mask"></view>
+				<view class="layer layer-service">
+					<view class="content">
+						<view class="row" v-for="(item,index) in productDetail.ladderPreferential" :key="index">
+							<view class="title">满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
+																			<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
+						</view>
+						</view>
+					</view>
+					<button class="btn" @click="hideService">完成</button>
+				</view>
+			</view>
+
+			<!-- 参数-模态层弹窗 -->
+			<view class="popup service" :class="attributeValueClass" @tap="hideService">
+				<!-- 遮罩层 -->
+				<view class="mask"></view>
+				<view class="layer layer-service">
+					<view class="content">
+						<view class="row" v-for="(item,index) in productDetail.attributeValue" :key="index">
+							<view class="title">
+								{{ `${item.title}: ${item.value}` }}
+							</view>
+						</view>
+					</view>
+					<button class="btn" @click="hideService">完成</button>
 				</view>
 			</view>
 
@@ -365,6 +413,9 @@
 		data() {
 			return {
 				errorImg: errorImg,
+				serviceClass: 'none',//服务弹窗css类，控制开关动画
+				ladderPreferentialClass: 'none',//服务弹窗css类，控制开关动画
+				attributeValueClass: 'none',//服务弹窗css类，控制开关动画
 				cartType: null,
 				maskState: 0, //优惠券面板显示状态
 				couponList: [],
@@ -438,6 +489,30 @@
       })
 		},
 		methods:{
+			//服务弹窗
+			showService() {
+				if(this.productDetail.tags.length === 0) return;
+				this.serviceClass = 'show';
+			},
+			showLadderPreferential() {
+				if(this.productDetail.ladderPreferential.length === 0) return;
+				this.ladderPreferentialClass = 'show';
+			},
+			showAttributeValue() {
+				if(this.productDetail.attributeValue.length === 0) return;
+				this.attributeValueClass = 'show';
+			},
+			//关闭服务弹窗
+			hideService() {
+				this.serviceClass = 'hide';
+				this.ladderPreferentialClass = 'hide';
+				this.attributeValueClass = 'hide';
+				setTimeout(() => {
+					this.serviceClass = 'none';
+					this.ladderPreferentialClass = 'none';
+					this.attributeValueClass = 'none';
+				}, 200);
+			},
 			/**
 			 *@des 获取优惠券
 			 *@author stav stavyan@qq.com
@@ -1178,7 +1253,6 @@
 		right: 0;
 		bottom: 0;
 		z-index: 99;
-
 		&.show {
 			display: block;
 			.mask{
@@ -1214,6 +1288,10 @@
 			width: 100%;
 			border-radius: 10upx 10upx 0 0;
 			background-color: #fff;
+			.content {
+				width: 100%;
+				padding: 20upx 0;
+			}
 			.btn{
 				height: 66upx;
 				line-height: 66upx;
@@ -1221,7 +1299,29 @@
 				background: $uni-color-primary;
 				font-size: $font-base + 2upx;
 				color: #fff;
-				margin: 30upx auto 20upx;
+				margin: 30upx 30upx 20upx;
+			}
+		}
+		.layer-service {
+			min-height: 600upx;
+			.btn {
+				width: calc(100% - 60upx);
+				position: absolute;
+				bottom: 0;
+			}
+		}
+		&.service {
+			min-height: 600upx;
+			.row {
+				margin: 30upx;
+				.title {
+					font-size: 30upx;
+					margin: 10upx 0;
+				}
+				.description {
+					font-size: 28upx;
+					color: #999;
+				}
 			}
 		}
 		@keyframes showPopup {

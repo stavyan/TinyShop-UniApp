@@ -32,9 +32,9 @@
 		<!-- 顶部导航栏 -->
 		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
 			<!-- 定位城市 -->
-			<view class="addr">
-				<view class="icon location"></view>
-				{{ city }}
+			<view class="addr" @click.stop="toCategory">
+				<view class="icon yticon icon-fenlei1" ></view>
+				分类
 			</view>
 			<!-- 搜索框 -->
 			<view class="input-box">
@@ -272,7 +272,7 @@
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">
 			<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill" />
 		</view>
-		<view class="f-header m-t" @click="toProductList({is_new: 1})">
+		<view class="f-header" @click="toProductList({is_new: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
 				<text class="tit">新品上市</text>
@@ -307,7 +307,7 @@
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">
 			<image :src="carouselList.index_recommend && carouselList.index_recommend[0].cover" mode="scaleToFill" />
 		</view>
-		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
+		<view class="f-header" @click="toProductList({is_recommend: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
 				<text class="tit">推荐商品</text>
@@ -342,7 +342,7 @@
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
 			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill" />
 		</view>
-		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
+		<view class="f-header" @click="toProductList({is_hot: 1})">
 			<image src="/static/h1.png"></image>
 			<view class="tit-box">
 				<text class="tit">热门商品</text>
@@ -569,9 +569,13 @@
 				})
 			},
 			toSearch () {
-				console.log(111)
 				uni.navigateTo({
 					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+				})
+			},
+			toCategory () {
+				uni.reLaunch({
+					url: `/pages/category/category`
 				})
 			}
 		},
@@ -677,7 +681,7 @@ page {
 			margin-left: 15upx;
 			display: flex;
 			align-items: center;
-			font-size: 36upx;
+			font-size: 38upx;
 			color: $base-color;
 		}
 	}
@@ -807,11 +811,11 @@ page {
 }
 .banner {
 	width: 92%;
-	margin: 40upx 4%;
+	margin: 20upx 4% 0;
 	image {
 		width: 100%;
-		height: 20vw;
-		border-radius: 10vw;
+		height: 22vw;
+		border-radius: 11vw;
 		box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.3);
 	}
 }

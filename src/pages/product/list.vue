@@ -1,6 +1,25 @@
 <template>
-	<view class="content" :style="{paddingTop: contentTop}">
-		<view v-show="isShowNavBar" class="navbar" :style="{position:headerPosition,top: '88upx'}">
+	<view class="container">
+		<!-- 状态栏 -->
+		<view v-if="showHeader" class="status" :style="{ position: headerPosition1,top:statusTop,opacity: afterHeaderOpacity}"></view>
+		<!-- 顶部导航栏 -->
+		<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">
+			<!-- 定位城市 -->
+			<view class="addr" @click.stop="toCategory">
+				<view class="icon yticon icon-xiatubiao--copy" ></view>
+				主页
+			</view>
+			<!-- 搜索框 -->
+			<view class="input-box">
+				<input
+					@confirm="handleSearchProduct"
+				 	placeholder="请输入关键词"
+				 	placeholder-style="color:#c0c0c0;"
+				/>
+				<view class="icon search" @click.stop="handleSearchProduct"></view>
+			</view>
+		</view>
+		<view v-show="isShowNavBar" class="navbar">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @click="tabClick(0)">
 				综合排序
 			</view>
@@ -77,14 +96,23 @@
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
+	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	import {guessYouLikeList, productCate, productList} from "../../api/product";
+
 	export default {
 		components: {
 			uniLoadMore,
-			empty
+			empty,
+			uniIcons
 		},
 		data() {
 			return {
+				showHeader:true,
+				afterHeaderOpacity: 1,//不透明度
+				headerPosition1:"fixed",
+				headerTop1:"0px",
+				statusTop:null,
+				nVueTitle:null,
 				cateMaskState: 0, //分类面板展开状态
 				headerPosition:"fixed",
 				headerTop:"0px",
@@ -125,7 +153,7 @@
 			this.filterParams = {}
 			this.page = 1;
 			this.goodsList = [];
-			this.getProductList();
+			this.getProductList('refresh');
 		},
 		//加载更多
 		onReachBottom(){
@@ -156,6 +184,13 @@
 				}
 				this.keyword = options.keyword;
 				this.getProductCate()
+				this.getProductList();
+			},
+			handleSearchProduct (e) {
+				this.keyword = e.detail.value;
+				this.page = 1;
+				this.goodsList = [];
+				this.filterParams = {}
 				this.getProductList();
 			},
 			/**
@@ -273,6 +308,11 @@
 					}
 				}
 			},
+			toBack() {
+				uni.navigateBack({
+					delta: 1
+				});
+			},
 			//筛选点击
 			tabClick(index){
 				this.filterParams = {}
@@ -351,17 +391,14 @@
 </script>
 
 <style lang="scss">
-	page, .content{
+	page,{
 		background: $page-color-base;
 	}
-	.content{
-		/*padding-top: 96upx;*/
-	}
-
 	.navbar{
 		position: fixed;
 		left: 0;
-		top: var(--window-top);
+		top: 88upx;
+		/*top: var(--window-top);*/
 		display: flex;
 		width: 100%;
 		height: 80upx;
@@ -432,7 +469,6 @@
 			}
 		}
 	}
-
 	/* 分类 */
 	.cate-mask{
 		position: fixed;
@@ -494,9 +530,14 @@
 			color: $base-color;
 		}
 	}
-
 	/* 商品列表 */
 	.goods-list{
+		/* #ifdef H5 */
+		margin-top: 176upx;
+    /* #endif */
+		/* #ifdef MP */
+		margin-top: 176upx;
+    /* #endif */
 		display:flex;
 		flex-wrap:wrap;
 		padding: 0 30upx;
@@ -551,6 +592,86 @@
 			}
 		}
 	}
-
-
+	.status {
+		width: 100%;
+		height: 0;
+		position: fixed;
+		z-index: 10;
+		background-color: #fff;
+		top: 0;
+		/*  #ifdef  APP-PLUS  */
+		height: var(--status-bar-height); //覆盖样式
+		/*  #endif  */
+	}
+	.header {
+		width: 100%;
+		height: 100upx;
+		display: flex;
+		align-items: center;
+		position: fixed;
+		top: 0;
+		z-index: 10;
+		background-color: #fff;
+		/*  #ifdef  APP-PLUS  */
+		top: var(--status-bar-height);
+		/*  #endif  */
+		.addr {
+		width: 120upx;
+		height: 60upx;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		font-size: 28upx;
+		.icon {
+			height: 60upx;
+			margin-right: 5upx;
+			margin-left: 15upx;
+			display: flex;
+			align-items: center;
+			font-size: 36upx;
+			color: $base-color;
+		}
+	}
+		.input-box {
+			width: 100%;
+			height: 60upx;
+			margin: 0 15upx;
+			background-color: #f5f5f5;
+			border-radius: 30upx;
+			position: relative;
+			display: flex;
+			align-items: center;
+			.icon {
+				display: flex;
+				align-items: center;
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 60upx;
+				height: 60upx;
+				font-size: 34upx;
+				color: #c0c0c0;
+			}
+			input {
+				width: 100%;
+				padding-left: 28upx;
+				height: 28upx;
+				font-size: 28upx;
+			}
+		}
+		.icon-btn {
+			width: 120upx;
+			height: 60upx;
+			flex-shrink: 0;
+			display: flex;
+			.icon {
+				width: 60upx;
+				height: 60upx;
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+				font-size: 42upx;
+			}
+		}
+	}
 </style>

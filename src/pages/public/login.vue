@@ -201,10 +201,10 @@
 				params.group = 'tinyShopH5'
 				/*  #endif  */
 				/*  #ifdef  MP-WEIXIN  */
-				params.group = 'tinyShopWechat'
+				params.group = 'tinyShopWechatMq'
 				/*  #endif  */
 				/*  #ifdef  MP-QQ  */
-				params.group = 'tinyShopQq'
+				params.group = 'tinyShopQqMq'
 				/*  #endif  */
 				if (this.loginByPass) {
 					this.handleLoginByPass(params)
@@ -236,8 +236,19 @@
 				// }
 			},
 			handleLoginByPass (params) {
+				/*  #ifdef  APP-PLUS  */
+				params.group = 'tinyShopApp'
+				/*  #endif  */
+				/*  #ifdef H5  */
+				params.group = 'tinyShopH5'
+				/*  #endif  */
+				/*  #ifdef  MP-WEIXIN  */
+				params.group = 'tinyShopWechatMq'
+				/*  #endif  */
+				/*  #ifdef  MP-QQ  */
+				params.group = 'tinyShopQqMq'
+				/*  #endif  */
 				this.$post(loginByPass, {
-					group: "tinyShopH5",
 					...params
 				}).then(r=>{
 					if (r.code === 200) {
@@ -254,8 +265,19 @@
 				})
 			},
 			handleLoginBySmsCode (params) {
+				/*  #ifdef  APP-PLUS  */
+				params.group = 'tinyShopApp'
+				/*  #endif  */
+				/*  #ifdef H5  */
+				params.group = 'tinyShopH5'
+				/*  #endif  */
+				/*  #ifdef  MP-WEIXIN  */
+				params.group = 'tinyShopWechatMq'
+				/*  #endif  */
+				/*  #ifdef  MP-QQ  */
+				params.group = 'tinyShopQqMq'
+				/*  #endif  */
 				this.$post(loginBySmsCode, {
-					group: "tinyShopH5",
 					...params
 				}).then(r=>{
 					if (r.code === 200) {

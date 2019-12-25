@@ -122,7 +122,7 @@
 				await this.$post(`${orderPay}`, {
 					data: JSON.stringify(data),
 					orderGroup: 'recharge',
-					tradeType: 'app',
+					tradeType: 'default',
 					payType: this.payType
 				}).then(async r => {
 					if (r.code === 200) {

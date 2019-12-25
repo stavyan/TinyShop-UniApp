@@ -37,18 +37,18 @@ http.interceptors.request.use(async config => {
     } else {
         //刷新token
         let params = {}
-        // #ifdef  APP-PLUS
+        /*  #ifdef  APP-PLUS  */
         params.group = 'tinyShopApp'
-        // #endif
-        // #ifdef H5
+        /*  #endif  */
+        /*  #ifdef H5  */
         params.group = 'tinyShopH5'
-        // #endif
-        // #ifdef  MP-WEIXIN
-        params.group = 'tinyShopWechat'
-        // #endif
-        // #ifdef  MP-QQ
-        params.group = 'tinyShopQq'
-        // #endif
+        /*  #endif  */
+        /*  #ifdef  MP-WEIXIN  */
+        params.group = 'tinyShopWechatMq'
+        /*  #endif  */
+        /*  #ifdef  MP-QQ  */
+        params.group = 'tinyShopQqMq'
+        /*  #endif  */
         await axios.post(refreshToken, {
             refresh_token: user.refresh_token,
             ...params,
