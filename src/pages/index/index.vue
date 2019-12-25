@@ -335,6 +335,12 @@
 				</view>
 			</view>
 		</view>
+
+		<!--#ifdef H5-->
+		<view class="copyright" v-show="config.web_site_icp">
+			Copyright（c）{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
+		</view>
+		<!--#endif-->
 	</view>
 </template>
 
@@ -362,7 +368,8 @@
 				guessYouLikeProductList: [],
 				newProductList: [],
 				productCateList: [],
-				brandList: []
+				brandList: [],
+				config: {}
 			};
 		},
 		onLoad() {
@@ -453,6 +460,7 @@
 						this.recommendProductList = r.data.product_recommend;
 						this.guessYouLikeProductList = r.data.guess_you_like;
 						this.newProductList = r.data.product_new;
+						this.config = r.data.config;
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
 					}
@@ -814,6 +822,17 @@
 				font-size: $font-base - 4upx;
 				text-decoration: line-through;
 			}
+		}
+	}
+	.copyright {
+		margin: 10upx 0;
+		width: 100%;
+		text-align: center;
+		color: #666;
+		a {
+			color: #666;
+			text-decoration: none;
+			margin: 4upx;
 		}
 	}
 </style>
