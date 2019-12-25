@@ -338,7 +338,7 @@
 
 		<!--#ifdef H5-->
 		<view class="copyright" v-show="config.web_site_icp">
-			Copyright（c）{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
+			{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
 		</view>
 		<!--#endif-->
 	</view>
