@@ -5,7 +5,7 @@
 		<!-- 顶部导航栏 -->
 		<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">
 			<!-- 定位城市 -->
-			<view class="addr" @click.stop="toCategory">
+			<view class="addr" @click.stop="toHome">
 				<view class="icon yticon icon-xiatubiao--copy" ></view>
 				主页
 			</view>
@@ -14,7 +14,7 @@
 				<input
 					@confirm="handleSearchProduct"
 				 	placeholder="请输入关键词"
-				 	placeholder-style="color:#c0c0c0;"
+				 	placeholder-style="color:#888;"
 				/>
 				<view class="icon search" @click.stop="handleSearchProduct"></view>
 			</view>
@@ -192,6 +192,11 @@
 				this.goodsList = [];
 				this.filterParams = {}
 				this.getProductList();
+			},
+			toHome () {
+				uni.reLaunch({
+					url: `/pages/index/index`
+				})
 			},
 			/**
 			 *@des 获取商品列表
