@@ -830,9 +830,9 @@
 		text-align: center;
 		color: #666;
 		a {
+			display: block;
 			color: #666;
 			text-decoration: none;
-			margin: 4upx;
 		}
 	}
 </style>
