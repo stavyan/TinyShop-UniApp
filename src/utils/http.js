@@ -38,7 +38,7 @@ http.interceptors.request.use(async config => {
         //刷新token
         let params = {}
         // #ifdef  APP-PLUS
-        params.group = 'tinyShopAndroid'
+        params.group = 'tinyShopApp'
         // #endif
         // #ifdef H5
         params.group = 'tinyShopH5'

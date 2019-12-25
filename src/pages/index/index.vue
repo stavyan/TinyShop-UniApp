@@ -3,45 +3,98 @@
 		<!-- 小程序头部兼容 -->
 		<!-- #ifdef MP -->
 		<!-- #endif -->
-		<view class="mp-search-box" @click="toSearch">
-			<uni-icons :color="'#666'" class="icon-search" type="search" size="19" />
-			<input ref="search" disabled class="ser-input" type="text" :value="hotSearchDefault" />
-		</view>
-		<!-- 头部轮播 -->
-		<view class="carousel-section">
-			<!-- 标题栏和状态栏占位符 -->
-			<view class="titleNview-placing"></view>
-			<!-- 背景色区域 -->
-			<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>
+		<!--<view class="mp-search-box" @click="toSearch">-->
+			<!--<uni-icons :color="'#666'" class="icon-search" type="search" size="19" />-->
+			<!--<input ref="search" disabled class="ser-input" type="text" :value="hotSearchDefault" />-->
+		<!--</view>-->
+		<!--&lt;!&ndash; 头部轮播 &ndash;&gt;-->
+		<!--<view class="carousel-section">-->
+			<!--&lt;!&ndash; 标题栏和状态栏占位符 &ndash;&gt;-->
+			<!--<view class="titleNview-placing"></view>-->
+			<!--&lt;!&ndash; 背景色区域 &ndash;&gt;-->
+			<!--<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>-->
+			<!--&lt;!&ndash;<swiper class="carousel" circular @change="swiperChange">&ndash;&gt;-->
 			<!--<swiper class="carousel" circular @change="swiperChange">-->
-			<swiper class="carousel" circular @change="swiperChange">
-				<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">
-					<image :src="item.cover" mode = “aspectFill” />
-				</swiper-item>
-			</swiper>
-			<!-- 自定义swiper指示器 -->
-			<view class="swiper-dots">
-				<text class="num">{{swiperCurrent+1}}</text>
-				<text class="sign">/</text>
-				<text class="num">{{carouselList.index_top && carouselList.index_top.length}}</text>
+				<!--<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">-->
+					<!--<image :src="item.cover" mode = “aspectFill” />-->
+				<!--</swiper-item>-->
+			<!--</swiper>-->
+			<!--&lt;!&ndash; 自定义swiper指示器 &ndash;&gt;-->
+			<!--<view class="swiper-dots">-->
+				<!--<text class="num">{{swiperCurrent+1}}</text>-->
+				<!--<text class="sign">/</text>-->
+				<!--<text class="num">{{carouselList.index_top && carouselList.index_top.length}}</text>-->
+			<!--</view>-->
+		<!--</view>-->
+
+		<!-- 状态栏 -->
+		<view v-if="showHeader" class="status" :style="{ position: headerPosition,top:statusTop,opacity: afterHeaderOpacity}"></view>
+		<!-- 顶部导航栏 -->
+		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
+			<!-- 定位城市 -->
+			<view class="addr">
+				<view class="icon location"></view>
+				{{ city }}
+			</view>
+			<!-- 搜索框 -->
+			<view class="input-box">
+				<input
+				 @click="toSearch"
+				 disabled
+				 :value="hotSearchDefault"
+					placeholder-style="color:#c0c0c0;"
+				/>
+				<view class="icon search"></view>
 			</view>
 		</view>
-		<!-- 分类 -->
-		<uni-grid :column="4" class="grid" :showBorder="false">
-				<view class="grid-title">分类专区</view>
-				<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index">
-					<image class="grid-item-image" :src="item.cover" @click.stop="navToList(item.id)"></image>
-					<text class="grid-item-text" @click.stop="navToList(item.id)">{{ item.title }}</text>
-				</uni-grid-item>
-		</uni-grid>
-
-		<uni-grid :column="4" class="grid" :showBorder="false">
-				<view class="grid-title">品牌专区</view>
-				<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index">
-					<image class="grid-item-image" :src="item.cover" @click.stop="toProductList({brand_id: item.id})"></image>
-					<text class="grid-item-text" @click.stop="toProductList({brand_id: item.id})">{{ item.title }}</text>
-				</uni-grid-item>
-		</uni-grid>
+		<!-- 占位 -->
+		<view v-if="showHeader" class="place"></view>
+		<!-- 轮播图 -->
+		<view class="swiper">
+			<view class="swiper-box">
+				<swiper circular="true" autoplay="true" @change="swiperChange">
+					<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">
+						<image :src="item.cover" mode = "aspectFill" />
+					</swiper-item>
+				</swiper>
+				<view class="indicator">
+					<view
+						class="dots"
+						v-for="(item, index) in carouselList.index_top"
+						:class="[swiperCurrent >= index ? 'on' : '']"
+						:key="item.id"
+					></view>
+				</view>
+			</view>
+		</view>
+		<!-- 分类列表 -->
+		<view class="category-list">
+			<view
+				class="category"
+				v-for="(item, index) in productCateList"
+				:key="index"
+				@click.stop="navToList(item.id)"
+			>
+				<view class="img"><image :src="item.cover"></image></view>
+				<view class="text">{{ item.title }}</view>
+			</view>
+		</view>
+		<!--&lt;!&ndash; 分类 &ndash;&gt;-->
+		<!--<uni-grid :column="4" class="grid" :showBorder="false">-->
+				<!--<view class="grid-title">分类专区</view>-->
+				<!--<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index">-->
+					<!--<image class="grid-item-image" :src="item.cover" @click.stop="navToList(item.id)"></image>-->
+					<!--<text class="grid-item-text" @click.stop="navToList(item.id)">{{ item.title }}</text>-->
+				<!--</uni-grid-item>-->
+		<!--</uni-grid>-->
+		<!--品牌专区-->
+		<!--<uni-grid :column="4" class="grid" :showBorder="false">-->
+				<!--<view class="grid-title">品牌专区</view>-->
+				<!--<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index">-->
+					<!--<image class="grid-item-image" :src="item.cover" @click.stop="toProductList({brand_id: item.id})"></image>-->
+					<!--<text class="grid-item-text" @click.stop="toProductList({brand_id: item.id})">{{ item.title }}</text>-->
+				<!--</uni-grid-item>-->
+		<!--</uni-grid>-->
 		<!--<view class="cate-section">-->
 			<!--<view class="cate-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">-->
 				<!--<image :src="item.cover"></image>-->
@@ -212,8 +265,12 @@
 			<!--</scroll-view>-->
 		<!--</view>-->
 		<!-- 新品 -->
-		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">
-			<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill"></image>
+		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">-->
+			<!--<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill"></image>-->
+		<!--</view>-->
+		<!--&lt;!&ndash; 广告图 &ndash;&gt;-->
+		<view class="banner" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">
+			<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill" />
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_new: 1})">
 			<image src="/static/h1.png"></image>
@@ -244,8 +301,11 @@
 		</view>
 
 		<!-- 推荐 -->
-		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">
-			<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>
+		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">-->
+			<!--<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>-->
+		<!--</view>-->
+		<view class="banner" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">
+			<image :src="carouselList.index_recommend && carouselList.index_recommend[0].cover" mode="scaleToFill" />
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_recommend: 1})">
 			<image src="/static/h1.png"></image>
@@ -276,8 +336,11 @@
 		</view>
 
 		<!-- 热门 -->
-		<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
-			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>
+		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">-->
+			<!--<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>-->
+		<!--</view>-->
+		<view class="banner" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
+			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill" />
 		</view>
 		<view class="f-header m-t" @click="toProductList({is_hot: 1})">
 			<image src="/static/h1.png"></image>
@@ -357,6 +420,31 @@
 		},
 		data() {
 			return {
+				showHeader:true,
+				afterHeaderOpacity: 1,//不透明度
+				headerPosition: 'fixed',
+				headerTop:null,
+				statusTop:null,
+				nVueTitle:null,
+				city: '北京',
+				currentSwiper: 0,
+				// 轮播图片
+				swiperList: [
+					{ id: 1, src: 'url1', img: '/static/img/1.jpg' },
+					{ id: 2, src: 'url2', img: '/static/img/2.jpg' },
+					{ id: 3, src: 'url3', img: '/static/img/3.jpg' }
+				],
+				// 分类菜单
+				categoryList: [
+					{ id: 1, name: '办公', img: '/static/img/category/1.png' },
+					{ id: 2, name: '家电', img: '/static/img/category/2.png' },
+					{ id: 3, name: '服饰', img: '/static/img/category/3.png' },
+					{ id: 4, name: '日用', img: '/static/img/category/4.png' },
+					{ id: 5, name: '蔬果', img: '/static/img/category/5.png' },
+					{ id: 6, name: '运动', img: '/static/img/category/6.png' },
+					{ id: 7, name: '书籍', img: '/static/img/category/7.png' },
+					{ id: 8, name: '文具', img: '/static/img/category/8.png' }
+				],
 				titleNViewBackground: '',
 				swiperCurrent: 0,
 				swiperLength: 0,
@@ -481,6 +569,7 @@
 				})
 			},
 			toSearch () {
+				console.log(111)
 				uni.navigateTo({
 					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
 				})
@@ -545,10 +634,187 @@
 	}
 	/* #endif */
 
+page {
+		position: relative;
+		background-color: #fff;
+}
 
-	page {
-		background: #f5f5f5;
+.status {
+	width: 100%;
+	height: 0;
+	position: fixed;
+	z-index: 10;
+	background-color: #fff;
+	top: 0;
+	/*  #ifdef  APP-PLUS  */
+	height: var(--status-bar-height); //覆盖样式
+	/*  #endif  */
+}
+.header {
+	width: 96%;
+	height: 100upx;
+	display: flex;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	z-index: 10;
+	background-color: #fff;
+
+	/*  #ifdef  APP-PLUS  */
+	top: var(--status-bar-height);
+	/*  #endif  */
+
+	.addr {
+		width: 120upx;
+		height: 60upx;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		font-size: 28upx;
+		.icon {
+			height: 60upx;
+			margin-right: 5upx;
+			margin-left: 15upx;
+			display: flex;
+			align-items: center;
+			font-size: 36upx;
+			color: $base-color;
+		}
 	}
+	.input-box {
+		width: 100%;
+		height: 60upx;
+		background-color: #f5f5f5;
+		border-radius: 30upx;
+		position: relative;
+		display: flex;
+		align-items: center;
+		.icon {
+			display: flex;
+			align-items: center;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 60upx;
+			height: 60upx;
+			font-size: 34upx;
+			color: #c0c0c0;
+		}
+		input {
+			width: 100%;
+			padding-left: 28upx;
+			height: 28upx;
+			font-size: 28upx;
+		}
+	}
+	.icon-btn {
+		width: 120upx;
+		height: 60upx;
+		flex-shrink: 0;
+		display: flex;
+		.icon {
+			width: 60upx;
+			height: 60upx;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			font-size: 42upx;
+		}
+	}
+}
+.place {
+	background-color: #ffffff;
+	height: 100upx;
+	/*  #ifdef  APP-PLUS  */
+	margin-top: var(--status-bar-height);
+	/*  #endif  */
+}
+.swiper {
+	width: 100%;
+	margin-top: 10upx;
+	display: flex;
+	justify-content: center;
+	.swiper-box {
+		width: 92%;
+		height: 40vw;
+		overflow: hidden;
+		border-radius: 15upx;
+		box-shadow: 0upx 8upx 25upx rgba(0, 0, 0, 0.2);
+		//兼容ios，微信小程序
+		position: relative;
+		z-index: 1;
+		swiper {
+			width: 100%;
+			height: 40vw;
+			swiper-item {
+				image {
+					width: 100%;
+					height: 40vw;
+				}
+			}
+		}
+		.indicator {
+			position: absolute;
+			bottom: 20upx;
+			left: 20upx;
+			background-color: rgba(255, 255, 255, 0.4);
+			width: 150upx;
+			height: 5upx;
+			border-radius: 3upx;
+			overflow: hidden;
+			display: flex;
+			.dots {
+				width: 0upx;
+				background-color: rgba(255, 255, 255, 1);
+				transition: all 0.3s ease-out;
+				&.on {
+					width: (100%/2);
+				}
+			}
+		}
+	}
+}
+.category-list {
+	width: 100%;
+	padding: 0 0 30upx 0;
+	border-bottom: solid 2upx #f6f6f6;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	.category {
+		width: 20%;
+		margin-top: 50upx;
+		display: flex;
+		flex-wrap: wrap;
+		.img {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			image {
+				width: 9vw;
+				height: 9vw;
+			}
+		}
+		.text {
+			margin-top: 16upx;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			font-size: 24upx;
+			color: #3c3c3c;
+		}
+	}
+}
+.banner {
+	width: 92%;
+	margin: 40upx 4%;
+	image {
+		width: 100%;
+		height: 20vw;
+		border-radius: 10vw;
+		box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.3);
+	}
+}
 	.m-t{
 		margin-top: 16upx;
 	}

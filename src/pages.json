@@ -5,41 +5,21 @@
 			"style": {
 				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "RageFrame商城",
+				"onReachBottomDistance":50,
 				// "navigationStyle": "custom",
 				"app-plus": {
-					"pullToRefresh": {
+                    "pullToRefresh": {
                         "support": true,
                         "color": "#fa436a",
                         "style": "default"
                     },
-					"titleNView": {
-						"type": "transparent"
-//						"searchInput": {
-//							"backgroundColor": "rgba(231, 231, 231,.7)",
-//							"borderRadius": "16px",
-//							"placeholder": "请点击进行商品搜索",
-//							"ref": "search",
-//							"disabled": true,
-//							"placeholderColor": "#606266"
-//						},
-//						"buttons": [{
-//								"fontSrc": "/static/yticon.ttf",
-//								"text": "\ue60d",
-//								"fontSize": "26",
-//								"color": "#303133",
-//								"float": "left",
-//								"background": "rgba(0,0,0,0)"
-//							},
-//							{
-//								"fontSrc": "/static/yticon.ttf",
-//								"text": "\ue744",
-//								"fontSize": "27",
-//								"color": "#303133",
-//								"background": "rgba(0,0,0,0)",
-//								"redDot": true
-//							}
-//						]
-					}
+					"titleNView": false ,//禁用原生导航栏
+					"softinputNavBar":"none",
+					"subNVues":[{
+						"id": "homeTitleNvue", // 唯一标识
+						"path": "pages/tabBar/home/subNvue/homeTitleNvue", // 页面路径
+						"type":"navigationBar"
+					}]
 				}
 			}
 		},
