@@ -70,6 +70,7 @@
 		</view>
 		<!-- 分类列表 -->
 		<view class="category-list">
+			code{{ code }}
 			<view
 				class="category"
 				v-for="(item, index) in productCateList"
@@ -421,6 +422,7 @@
 		},
 		data() {
 			return {
+				code: null,
 				showHeader:true,
 				afterHeaderOpacity: 1,//不透明度
 				headerPosition: 'fixed',
@@ -462,7 +464,8 @@
 			};
 		},
 		onLoad(options) {
-			this.initData(options);
+			this.code = options.code;
+			this.initData();
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -475,8 +478,7 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/12/02 16:14:02
 			 */
-			initData (options) {
-				this.code = options.code;
+			initData () {
 				if (this.isWechat() && !this.code) {
 					const url = window.location.href;
 					window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
