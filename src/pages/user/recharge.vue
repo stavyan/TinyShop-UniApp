@@ -362,17 +362,16 @@
 					scope=snsapi_userinfo&
 					state=STATE#wechat_redirect`;
 				}
+				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$post(`${wechatConfig}`, {
-					code: this.code
+					url: window.location.host,
+					jsApiList,
+					debug: true,
 				}).then(r => {
 					if (r.code === 200) {
 						jweixin.config({
-							...r.data,
-							debug: true,
-							jsApiList: [
-								"openLocation"
-							]
+							...r.data
 						})
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
