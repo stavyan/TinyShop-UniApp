@@ -321,28 +321,28 @@
                     }
                 })
             },
-				getOrderInfo(e) {
-						let appid = "";
-						// #ifdef APP-PLUS
-						appid = plus.runtime.appid;
-						// #endif
-						let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=' + this.price;
-						return new Promise((res) => {
-								uni.request({
-										url: url,
-										success: (result) => {
-												res(result);
-										},
-										fail: (e) => {
-												res(e);
-										}
-								})
-						})
-				},
-				priceChange(e) {
-						console.log(e.detail.value)
-						this.price = e.detail.value;
-				},
+			getOrderInfo(e) {
+					let appid = "";
+					// #ifdef APP-PLUS
+					appid = plus.runtime.appid;
+					// #endif
+					let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=' + this.price;
+					return new Promise((res) => {
+							uni.request({
+									url: url,
+									success: (result) => {
+											res(result);
+									},
+									fail: (e) => {
+											res(e);
+									}
+							})
+					})
+			},
+			priceChange(e) {
+					console.log(e.detail.value)
+					this.price = e.detail.value;
+			},
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
@@ -365,7 +365,7 @@
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$post(`${wechatConfig}`, {
-					url: window.location.host,
+					url: window.location.href,
 					jsApiList,
 					debug: true,
 				}).then(r => {
