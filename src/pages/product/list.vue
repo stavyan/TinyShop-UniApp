@@ -13,10 +13,12 @@
 			<view class="input-box">
 				<input
 					@confirm="handleSearchProduct"
-					:value="hotSearchDefault"
-				 	placeholder-style="color:#999;"
+					@blur="handleSearchProductBlur"
+					:value="keyword || hotSearchDefault"
+				  style="color:#888;"
+				 	placeholder-style="color:#ccc;"
 				/>
-				<view class="icon search" @click.stop="handleSearchProduct"></view>
+				<view class="icon search" @click.prevent="handleSearchProductList"></view>
 			</view>
 		</view>
 		<view v-show="isShowNavBar" class="navbar">
@@ -173,7 +175,6 @@
 				if (navigator) {
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
-				this.hotSearchDefault = uni.getStorageSync('hotSearchDefault');
 				this.cateId = options.cate_id;
 				if (options.params) {
 					this.cateParams = JSON.parse(options.params);
@@ -185,11 +186,20 @@
 					}
 				}
 				this.keyword = options.keyword;
+				if (!this.keyword) {
+					this.hotSearchDefault = uni.getStorageSync('hotSearchDefault')
+				}
 				this.getProductCate()
 				this.getProductList();
 			},
 			handleSearchProduct (e) {
 				this.keyword = e.detail.value;
+				this.handleSearchProductList();
+			},
+			handleSearchProductBlur (e) {
+				this.keyword = e.detail.value;
+			},
+			handleSearchProductList () {
 				this.page = 1;
 				this.goodsList = [];
 				this.filterParams = {}

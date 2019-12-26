@@ -41,8 +41,9 @@
 				<input
 				 @click="toSearch"
 				 disabled
+				 style="color:#888;"
 				 :value="hotSearchDefault"
-					placeholder-style="color:#c0c0c0;"
+					placeholder-style="color:#ccc;"
 				/>
 				<view class="icon search"></view>
 			</view>
@@ -75,7 +76,7 @@
 				:key="index"
 				@click.stop="navToList(item.id)"
 			>
-				<view class="img"><image :src="item.cover"></image></view>
+				<view class="img"><image :src="item.cover" mode="aspectFit"></image></view>
 				<view class="text">{{ item.title }}</view>
 			</view>
 		</view>

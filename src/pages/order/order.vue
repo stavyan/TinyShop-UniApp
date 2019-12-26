@@ -165,18 +165,18 @@
         return status;
       }
 		},
-		onShow(){
-			this.page = 1;
-			this.orderList = [];
-			this.getOrderList();
-		},
+		// onShow(){
+		// 	this.page = 1;
+		// 	this.orderList = [];
+		// 	this.getOrderList();
+		// },
 		onLoad(options){
 			/**
 			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
 			 * 替换onLoad下代码即可
 			 */
 			this.tabCurrentIndex = +options.state + 1;
-			// this.initData()
+			this.initData()
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -551,19 +551,22 @@
 		/* 多条商品 */
 		.goods-box{
 			padding-top: 10upx;
+			height: 220upx;
 			.goods-item{
+				overflow: hidden;
+				height: 100%;
 				width: 160upx;
-				display: inline-block;
 				margin-right: 16upx;
-			}
-			.goods-img{
-				display: block;
-				width: 100%;
-				height: 140upx;
-			}
-			.goods-title {
-				font-size: $font-sm - 2upx;
-				line-height: 32upx;
+				display: inline-block;
+				.goods-img{
+					display: block;
+					width: 100%;
+					height: 140upx;
+				}
+				.goods-title {
+					font-size: $font-sm - 2upx;
+					line-height: 32upx;
+				}
 			}
 		}
 		/* 单条商品 */
@@ -642,6 +645,7 @@
 			color: $font-color-dark;
 			background: #fff;
 			border-radius: 100px;
+			border: 1px solid rgba(0, 0, 0, 0.05);
 			&:after{
 				border-radius: 100px;
 			}

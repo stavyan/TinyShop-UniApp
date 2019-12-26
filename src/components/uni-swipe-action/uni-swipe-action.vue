@@ -46,10 +46,7 @@
 				}
 			},
 			info: {
-				type: Object,
-				default () {
-					return {}
-				}
+				type: Object
 			},
 			/**
 			 * 禁用

@@ -2,13 +2,13 @@
 	<view class="collection">
 		<view class="uni-list">
 			<uni-swipe-action
-					@click="bindClick"
-					:info="item"
-					:options="itemOptions(item.is_evaluate)"
-					class="uni-list-cell"
-					hover-class="uni-list-cell-hover"
 					v-for="(item, index) in orderItemList"
-					:key="index">
+					:key="index"
+					:options="itemOptions(item.is_evaluate)"
+					:info="item"
+					@click="bindClick"
+					class="uni-list-cell"
+					hover-class="uni-list-cell-hover">
 					<view
 						class="uni-media-list">
 						<!--@click.stop="goEvaluation(item)"-->
@@ -51,6 +51,7 @@ import errorImg from './../../static/errorImage.jpg';
 import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
 import {closeOrderRefundApply} from "../../api/userInfo";
+import moment from 'moment';
 export default {
 	components: {
 		uniSwipeAction,

@@ -25,6 +25,9 @@ const advList = "/tiny-shop/v1/common/adv/index";
 // 配置
 const configList = "/tiny-shop/v1/common/config/index";
 
+// 充值
+const payCreate = "/tiny-shop/v1/common/pay/create";
+
 export {
     provinceList,
     collectCreate,
@@ -32,5 +35,6 @@ export {
     transmitCreate,
     uploadFile,
     advList,
+    payCreate,
     configList
 };

@@ -40,10 +40,11 @@ export default {
         }
       })
     },
-    onClick (index, item) {
+    onClick (index, item, data) {
       this.$emit('click', {
         content: item,
-        index
+        index,
+        data
       })
     },
     touchstart (e) {

@@ -105,12 +105,11 @@
 				</view>
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
-					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1">
-						<text>
-							满{{ productDetail.ladderPreferential && productDetail.ladderPreferential[0].quantity }}件
-								<text v-if="parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].type, 10) === 1">
-								每件减{{ productDetail.ladderPreferential && productDetail.ladderPreferential[0].price }}元 ...</text>
-								<text v-if="parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].type, 10) === 2">每件{{ parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].price, 10) }}折 ...</text>
+					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
+						<text v-for="(item, index) in productDetail.ladderPreferential">
+							满{{ item.quantity }}件
+								<text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
+								<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
 						</text>
 					</view>
 					<view class="con-list" v-else>
