@@ -113,32 +113,34 @@
 		},
 		methods:{
 			 async weixinPay() {
-				 console.log("发起支付");
+				 // console.log("发起支付");
 				 // uni.login({
 					//  success: async (e) => {
 					// 	 uni.showToast({title: e, icon: "none"});
 					//  }
 				 // });
-				 var jweixin = require('jweixin-module');
-				 jweixin.ready(async function () {
-					 jweixin.login({
-						success (res) {
-							console.log(res.code)
-							if (res.code) {
-							} else {
-								console.log('登录失败！' + res.errMsg)
-							}
-						}
-					})
-				 })
-				 return;
-				 uni.login({
-					 success: async (e) => {
-						 uni.showToast({title: e, icon: "none"});
-					 }
-				 });
+				 // var jweixin = require('jweixin-module');
+				 // jweixin.ready(async function () {
+				 // 	console.log(11)
+					//  jweixin.login({
+					// 	success (res) {
+					// 		console.log(res.code)
+					// 		if (res.code) {
+					// 		} else {
+					// 			console.log('登录失败！' + res.errMsg)
+					// 		}
+					// 	}
+					// })
+				 // })
+				 // return;
+				 // uni.login({
+					//  success: async (e) => {
+					// 	 uni.showToast({title: e, icon: "none"});
+					//  }
+				 // });
 				 const params = {};
 				 params.money = this.price;
+				 params.code = this.code;
 				 await this.$post(`${payCreate}`, {
 					 orderGroup: 'recharge',
 					 payType: 1,
