@@ -335,8 +335,10 @@
 			 */
 			initData (options) {
 				uni.showToast({title: '111', icon: "none"});
+				uni.showToast({title: JSON.stringify(this.isWechat()), icon: "none"});
 				this.code = options.code;
 				if (this.isWechat() && !this.code) {
+					uni.showToast({title: '222', icon: "none"});
 					const url = window.location.href;
 					window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
 					appid=wx869d264c83ad71cc&
