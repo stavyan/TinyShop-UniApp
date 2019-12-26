@@ -92,7 +92,7 @@
 
 <script>
 	import {orderPay} from "../../api/product";
-	import {payCreate} from "../../api/basic";
+	import {payCreate, wechatConfig} from "../../api/basic";
 	import jweixin from 'jweixin-module';
 
 	export default {
@@ -156,20 +156,8 @@
 					　　　　　　nonceStr: r.data.config.nonce_str, // 必填，生成签名的随机串
 					　　　　　　signature: r.data.config.sign,// 必填，签名，见附录1
 							 jsApiList: [
-				　　　　　　　　	"chooseWXPay"
+				　　　　　　　　	"openLocation"
 					　　　　　　]
-						 })
-						 jweixin.ready(() => {
-						 	jweixin.chooseWXPay({
-							  timestamp: 0, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-							  nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
-							  package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-							  signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-							  paySign: r.data.config.sign, // 支付签名
-							  success: function (res) {
-								// 支付成功后的回调函数
-							  }
-							});
 						 })
 // 						 appId: datad.appid, // 必填，公众号的唯一标识
 // 　　　　　　timestamp: datad.timestamp, // 必填，生成签名的时间戳
@@ -363,8 +351,7 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/12/11 11:01:12
-			 */
-			initData (options) {
+			 */ async initData(options) {
 				this.code = options.code;
 				if (this.isWechat() && !this.code) {
 					const url = window.location.href;
@@ -376,37 +363,54 @@
 					state=STATE#wechat_redirect`;
 				}
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+				await this.$post(`${wechatConfig}`, {
+					code: this.code
+				}).then(r => {
+					if (r.code === 200) {
+						jweixin.config({
+							...r.data,
+							debug: true,
+							jsApiList: [
+								"openLocation"
+							]
+						})
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 				// #ifdef APP-PLUS
 				uni.getProvider({
-						service: "payment",
-						success: (e) => {
-								console.log("payment success:" + JSON.stringify(e));
-								let providerList = [];
-								e.provider.map((value) => {
-										switch (value) {
-												case 'alipay':
-														providerList.push({
-																name: '支付宝',
-																id: value,
-																loading: false
-														});
-														break;
-												case 'wxpay':
-														providerList.push({
-																name: '微信',
-																id: value,
-																loading: false
-														});
-														break;
-												default:
-														break;
-										}
-								})
-								this.providerList = providerList;
-						},
-						fail: (e) => {
-								console.log("获取支付通道失败：", e);
-						}
+					service: "payment",
+					success: (e) => {
+						console.log("payment success:" + JSON.stringify(e));
+						let providerList = [];
+						e.provider.map((value) => {
+							switch (value) {
+								case 'alipay':
+									providerList.push({
+										name: '支付宝',
+										id: value,
+										loading: false
+									});
+									break;
+								case 'wxpay':
+									providerList.push({
+										name: '微信',
+										id: value,
+										loading: false
+									});
+									break;
+								default:
+									break;
+							}
+						})
+						this.providerList = providerList;
+					},
+					fail: (e) => {
+						console.log("获取支付通道失败：", e);
+					}
 				});
 				// #endif
 			},
