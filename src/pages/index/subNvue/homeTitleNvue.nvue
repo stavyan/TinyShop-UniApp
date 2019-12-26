@@ -1,0 +1,145 @@
+<template>
+	<div class="content" :style="{height:statusBarHeight+44+'wx'}">
+		<div class="status-bar" :style="{height:statusBarHeight+'wx'}"></div>
+		<div class="nav">
+			<text class="icon location">{{ iconLocation }}</text>
+			<text class="location-city-text">{{ city }}</text>
+			<div class="input-box">
+				<input class="input-box-input" placeholder="默认关键字" @focus="inputfocus" />
+				<text class="icon search">{{ iconSearch }}</text>
+			</div>
+			<text class="icon yuyin">{{ iconYuyin }}</text>
+			<text @click="toMsg" class="icon tongzhi">{{ iconTongzhi }}</text>
+		</div>
+	</div>
+</template>
+<script>
+export default {
+	data() {
+		return {
+			city: '北京',
+			subNVue: uni.getCurrentSubNVue(),
+			iconSearch: '\ue628',
+			iconLocation: '\ue611',
+			iconYuyin: '\ue64e',
+			iconTongzhi: '\ue729',
+			statusBarHeight:20
+		};
+	},
+	beforeCreate() {
+		const domModule = weex.requireModule('dom');
+		domModule.addRule('fontFace', {
+			fontFamily: 'iconfont',
+			src: "url('https://at.alicdn.com/t/font_1087442_fe5vigfwr5m.ttf')"
+		});
+	},
+	mounted() {
+		this.init();
+	},
+	methods: {
+		toMsg() {
+			uni.navigateTo({
+				url: '../../msg/msg'
+			});
+		},
+		init() {
+			uni.getSystemInfo({
+				success: (res)=>{
+					this.statusBarHeight = res.statusBarHeight;
+				}
+			});
+			this.nVueTitle = uni.getCurrentSubNVue();
+			this.nVueTitle.onMessage(res => {
+				let type = res.data.type;
+				switch (type) {
+					case 'location':
+						this.setCity(res.data.city);
+						break;
+					default:
+						break;
+				}
+			});
+		},
+		setCity(city) {
+			this.city = city;
+		},
+		inputfocus() {
+			this.subNVue.postMessage({
+				type: 'focus'
+			});
+		}
+	}
+};
+</script>
+<style>
+.icon {
+	font-family: iconfont;
+	font-size: 42px;
+}
+.content {
+	background-color: #ffffff;
+	flex-direction: column;
+}
+.status-bar {
+	flex: 1;
+}
+
+.nav {
+	width: 750px;
+	padding: 0 20px;
+	position: relative;
+	height: 88px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.location,
+.yuyin,
+.tongzhi {
+	width: 60px;
+	height: 88px;
+	text-align: center;
+	line-height: 88px;
+}
+.location {
+	color: #ffc50a;
+}
+.location-city-text {
+	width: 60px;
+	height: 88px;
+	line-height: 88px;
+	font-size: 26px;
+	color: #000;
+}
+
+.yuyin {
+	color: #000;
+}
+.tongzhi {
+	color: #000;
+}
+.input-box {
+	width: 465px;
+	margin-left: 5px;
+	height: 60upx;
+	border-radius: 60px;
+	background-color: #f5f5f5;
+	position: relative;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.input-box-input {
+	width: 330px;
+	height: 60px;
+	font-size: 28px;
+	margin-left: 30px;
+	placeholder-color: #c0c0c0;
+}
+.search {
+	width: 60px;
+	font-size: 34px;
+	padding-right: 30px;
+	color: #c0c0c0;
+}
+</style>

@@ -13,8 +13,8 @@
 			<view class="input-box">
 				<input
 					@confirm="handleSearchProduct"
-				 	placeholder="请输入关键词"
-				 	placeholder-style="color:#888;"
+					:value="hotSearchDefault"
+				 	placeholder-style="color:#999;"
 				/>
 				<view class="icon search" @click.stop="handleSearchProduct"></view>
 			</view>
@@ -128,7 +128,8 @@
 				cateParams: null,
 				page: 1,
 				filterParams: {},
-				isShowNavBar: true
+				isShowNavBar: true,
+				hotSearchDefault: '请输入关键词'
 			};
 		},
 		onLoad(options){
@@ -172,6 +173,7 @@
 				if (navigator) {
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
+				this.hotSearchDefault = uni.getStorageSync('hotSearchDefault');
 				this.cateId = options.cate_id;
 				if (options.params) {
 					this.cateParams = JSON.parse(options.params);

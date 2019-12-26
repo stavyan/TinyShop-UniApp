@@ -26,8 +26,8 @@
 					>
 						<view class="i-top b-b">
 							<text class="time">{{item.created_at | time}}</text>
-							<text class="state" v-show="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
-							<view class="example-body" v-show="parseInt(item.order_status, 10) ===0">
+							<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
+							<view class="example-body" v-else>
 								<uni-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
 							</view>
               <!--:style="{color: item.stateTipColor}"-->
@@ -198,7 +198,6 @@
 			 *@param id 订单id
 			 */
 			timeUp(item) {
-				if (parseInt(item.order_status, 10) !== 0) return;
 				this.handleOrderClose(item.id);
 			},
       /**

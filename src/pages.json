@@ -17,7 +17,7 @@
 					"softinputNavBar":"none",
 					"subNVues":[{
 						"id": "homeTitleNvue", // 唯一标识
-						"path": "pages/tabBar/home/subNvue/homeTitleNvue", // 页面路径
+						"path": "pages/index/subNvue/homeTitleNvue", // 页面路径
 						"type":"navigationBar"
 					}]
 				}
@@ -36,7 +36,12 @@
                         "support": true,
                         "color": "#fa436a",
                         "style": "default"
-                    }
+                    },
+					"subNVues":[{
+						"id": "homeTitleNvue", // 唯一标识
+						"path": "pages/index/subNvue/homeTitleNvue", // 页面路径
+						"type":"navigationBar"
+					}]
                 }
 			}
         },
@@ -62,7 +67,8 @@
 			"style": {
 				"navigationBarTitleText": "关于RF商城"
 			}
-		}, {
+		},
+		{
 			"path": "pages/set/set",
 			"style": {
 				"navigationBarTitleText": "设置"

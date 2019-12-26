@@ -48,14 +48,15 @@
 				</button>
 			</view>
 
-			<!--购买类型-->
 			<view class="c-list">
+				<!--发货地址-->
 				<view class="c-row b-b" v-if="productDetail.address_name">
 					<text class="tit">发货地址</text>
 					<view class="con-list">
 						{{ productDetail.address_name }}
 					</view>
 				</view>
+				<!--购买类型-->
 				<view class="c-row b-b" @click="toggleSpec">
 					<text class="tit">购买类型</text>
 					<view class="con">
@@ -65,7 +66,7 @@
 						<text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
 						<text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
 							<!--{{ productDetail.name }} * 1-->
-							基本款 * {{ cartCount }}
+							基础款 * {{ cartCount }}
 						</text>
 					</view>
 					<text class="yticon icon-you"></text>
@@ -94,32 +95,40 @@
 				</view>
 				<view class="c-row b-b" @tap="showService">
 					<text class="tit">服务</text>
-					<view class="bz-list con" v-if="productDetail.tags && productDetail.tags.length > 0">
-						<text v-for="item in productDetail.tags">{{ item }} </text>
+					<view class="con-list" v-if="productDetail.tags && productDetail.tags.length >= 1">
+						<text>{{ productDetail.tags[0] }}... </text>
 					</view>
-					<view class="bz-list con" v-else>
+					<view class="con-list" v-else>
 						暂无服务
 					</view>
+					<text class="yticon icon-you"></text>
 				</view>
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
-					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
-						<text v-for="item in productDetail.ladderPreferential">
-							满{{ item.quantity }}件 <text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
-																			<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
+					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1">
+						<text>
+							满{{ productDetail.ladderPreferential && productDetail.ladderPreferential[0].quantity }}件
+								<text v-if="parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].type, 10) === 1">
+								每件减{{ productDetail.ladderPreferential && productDetail.ladderPreferential[0].price }}元 ...</text>
+								<text v-if="parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].type, 10) === 2">每件{{ parseInt(productDetail.ladderPreferential && productDetail.ladderPreferential[0].price, 10) }}折 ...</text>
 						</text>
 					</view>
 					<view class="con-list" v-else>
 						暂无服务
 					</view>
+					<text class="yticon icon-you"></text>
 				</view>
 				<view class="c-row b-b" v-if="productDetail.attributeValue" @tap="showAttributeValue">
 					<text class="tit">参数</text>
-					<view class="con-list" >
-						<text v-for="(item, index) in productDetail.attributeValue" :key="index">
-							{{ `${item.title}: ${item.value}` }}
+					<view class="con-list" v-if="productDetail.attributeValue && productDetail.attributeValue.length >= 1">
+						<text>
+							{{ `${productDetail.attributeValue && productDetail.attributeValue[0].title}: ${productDetail.attributeValue && productDetail.attributeValue[0].value}` }} ...
 						</text>
 					</view>
+					<view class="con-list" v-else>
+						暂无商品基本信息
+					</view>
+					<text class="yticon icon-you"></text>
 				</view>
 			</view>
 

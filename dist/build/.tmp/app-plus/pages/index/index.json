@@ -1,7 +1,21 @@
 {
-  "titleNView": {
-    "type": "transparent"
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "RageFrame商城",
+  "onReachBottomDistance": 50,
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
   },
+  "titleNView": false,
+  "softinputNavBar": "none",
+  "subNVues": [
+    {
+      "id": "homeTitleNvue",
+      "path": "pages/index/subNvue/homeTitleNvue",
+      "type": "navigationBar"
+    }
+  ],
   "usingComponents": {
     "uni-grid": "/components/uni-grid/uni-grid",
     "uni-icons": "/components/uni-icons/uni-icons",

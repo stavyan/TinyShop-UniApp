@@ -1,14 +1,19 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/product/list",
     "pages/product/product",
     "pages/about/about",
     "pages/about/detail",
     "pages/set/set",
     "pages/userinfo/userinfo",
     "pages/search/search",
+    "pages/feedback/detail",
+    "pages/feedback/list",
+    "pages/feedback/feedback",
     "pages/cart/cart",
     "pages/public/login",
+    "pages/public/password",
     "pages/public/register",
     "pages/evaluation/evaluation",
     "pages/refund/refund",
@@ -29,13 +34,13 @@
     "pages/user/coupon-center",
     "pages/address/address",
     "pages/address/addressManage",
+    "pages/invoice/list",
     "pages/invoice/invoice",
     "pages/invoice/invoiceManage",
     "pages/money/pay",
     "pages/money/paySuccess",
     "pages/notice/notice",
-    "pages/category/category",
-    "pages/product/list"
+    "pages/category/category"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -261,7 +261,7 @@
 				product: null,
 				shippingMoney: 0,
 				isUsePoint: false,
-				isUsePointDisabled: true,
+				isUsePointDisabled: false,
 				data: {},
 				userInfo: {}
 			}
@@ -319,7 +319,6 @@
 				// 	uni.showToast({title: '本单不支持积分抵扣', icon: "none"});
 				// 	return;
 				// } else {
-					this.isUsePointDisabled = false;
 					this.isUsePoint = !this.isUsePoint;
 				// }
 			},
@@ -347,11 +346,15 @@
 			onConfirm(e) {
 				e.value = e.value[0]
 				this.currentShippingType = e;
-				if(this.currentShippingType.value !== 2) return;
-				if (this.realAmount > this.orderDetail.pickup_point_config.pickup_point_freight) {
-					this.shippingMoney = 0
+				if (this.currentShippingType.value == 2) {
+					if (parseFloat(this.realAmount) > parseFloat(this.orderDetail.pickup_point_config.pickup_point_freight)) {
+						this.shippingMoney = 0
+					} else {
+						this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
+					}
 				} else {
-					this.shippingMoney = this.orderDetail.pickup_point_config.pickup_point_fee;
+					this.currentCompany = this.orderDetail.company[0];
+					this.getOrderFreightFee();
 				}
 			},
 			async onCompanyConfirm(e) {
@@ -361,7 +364,7 @@
       },
 			async onPickupPointConfirm(e) {
 				e.value = e.value[0]
-       			this.currentPickupPoint = e;
+       	this.currentPickupPoint = e;
       },
 			/**
 			 *@des 计算运费
@@ -371,7 +374,8 @@
 			 */
 			async getOrderFreightFee() {
 				if (this.currentPickupPoint) {
-					this.shippingMoney = 0
+					this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
+					return;
 				}
 				uni.showLoading({title: '加载中...'});
 				const params = {};

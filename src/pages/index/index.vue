@@ -543,7 +543,11 @@
 						this.productCateList = r.data.cate;
 						this.carouselList = r.data.adv;
 						this.search = r.data.search;
-						this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`
+						this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
+						uni.setStorage({
+								key: 'hotSearchDefault',
+								data: r.data.search.hot_search_default
+						})
 						this.hotProductList = r.data.product_hot;
 						this.recommendProductList = r.data.product_recommend;
 						this.guessYouLikeProductList = r.data.guess_you_like;
@@ -1055,7 +1059,6 @@ page {
 			.sketch {
 				background-color: rgba(0, 0, 0, 0.4);
 				position: absolute;
-				z-index: 99;
 				bottom: 4upx;
 				padding: 0 8upx;
 				right: 0;

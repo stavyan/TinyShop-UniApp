@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "修改资料",
-  "usingComponents": {}
+  "usingComponents": {
+    "avatar": "/components/rf-avatar/rf-avatar"
+  }
 }
