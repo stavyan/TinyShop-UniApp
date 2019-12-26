@@ -103,7 +103,7 @@
 				payType: 1,//支付类型
 				userInfo: {},
 				loading: false,
-				price: 1,
+				price: 0.01,
 				providerList: [],
 				code: null
 			};
@@ -150,11 +150,12 @@
 					 if (r.code === 200) {
 						 jweixin.ready(()=>{
 							 jweixin.chooseWXPay({
-								 timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-								 nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
-								 package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-								 signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-								 paySign: r.data.config.sign, // 支付签名
+								 ...r.data.config,
+								 // timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+								 // nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
+								 // package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+								 // signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+								 // paySign: r.data.config.sign, // 支付签名
 								 success: function (res) {
 									 // 支付成功后的回调函数
 								 }
@@ -355,6 +356,7 @@
 					response_type=code&
 					scope=snsapi_userinfo&
 					state=STATE#wechat_redirect`;
+					return;
 				}
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
