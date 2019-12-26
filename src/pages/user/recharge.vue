@@ -335,6 +335,7 @@
 			 *@date 2019/12/11 11:01:12
 			 */
 			initData (options) {
+				uni.showToast({title: options, icon: "none"});
 				this.code = options.code;
 				if (this.isWechat && !this.code) {
 					const url = window.location.href;
