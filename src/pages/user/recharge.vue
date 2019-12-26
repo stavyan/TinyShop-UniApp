@@ -324,7 +324,6 @@
 						console.log(e.detail.value)
 						this.price = e.detail.value;
 				},
-
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
@@ -337,13 +336,13 @@
 			initData (options) {
 				uni.showToast({title: options, icon: "none"});
 				this.code = options.code;
-				if (this.isWechat && !this.code) {
+				if (this.isWechat() && !this.code) {
 					const url = window.location.href;
 					window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
 					appid=wx869d264c83ad71cc&
 					redirect_uri=${url}&
 					response_type=code&
-					scope=snsapi_base&
+					scope=snsapi_userinfo&
 					state=STATE#wechat_redirect`;
 				}
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
@@ -381,10 +380,9 @@
 				});
 				// #endif
 			},
-
 			isWechat(){
 					const ua = window.navigator.userAgent.toLowerCase();
-					if(ua.match(/micromessenger/i) == 'micromessenger'){
+					if(ua.match(/micromessenger/i) === 'micromessenger'){
 							return true;
 					}else{
 							return false;
