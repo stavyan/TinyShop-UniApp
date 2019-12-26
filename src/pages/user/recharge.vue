@@ -151,8 +151,18 @@
 						 console.log(r.data)
 						 jweixin.config({
 								debug: true,
-							 ...r.data.config
+							 ...r.data.config,
+							 jsApiList: [
+				　　　　　　　　	"openLocation"
+					　　　　　　]
 						 })
+// 						 appId: datad.appid, // 必填，公众号的唯一标识
+// 　　　　　　timestamp: datad.timestamp, // 必填，生成签名的时间戳
+// 　　　　　　nonceStr: datad.noncestr, // 必填，生成签名的随机串
+// 　　　　　　signature: datad.signature,// 必填，签名，见附录1
+// 　　　　　　jsApiList: [
+// 　　　　　　　　"openLocation"
+// 　　　　　　] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 					 } else {
 						 uni.showToast({title: r.message, icon: "none"});
 					 }

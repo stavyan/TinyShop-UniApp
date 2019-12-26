@@ -70,7 +70,6 @@
 		</view>
 		<!-- 分类列表 -->
 		<view class="category-list">
-			code{{ code }}
 			<view
 				class="category"
 				v-for="(item, index) in productCateList"
