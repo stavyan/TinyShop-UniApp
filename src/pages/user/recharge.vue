@@ -149,15 +149,17 @@
 				 }).then(r => {
 					 if (r.code === 200) {
 						 console.log(r.data)
-						 jweixin.config({
-							 debug: true,
-					　　　　　　appId: 'wx869d264c83ad71cc', // 必填，公众号的唯一标识
-					　　　　　　timestamp: r.data.config.mch_id, // 必填，生成签名的时间戳
-					　　　　　　nonceStr: r.data.config.nonce_str, // 必填，生成签名的随机串
-					　　　　　　signature: r.data.config.sign,// 必填，签名，见附录1
-							 jsApiList: [
-				　　　　　　　　	"openLocation"
-					　　　　　　]
+						 jweixin.ready( ()=> {
+							 jweixin.config({
+								 debug: true,
+						　　　　　　appId: 'wx869d264c83ad71cc', // 必填，公众号的唯一标识
+						　　　　　　timestamp: r.data.config.mch_id, // 必填，生成签名的时间戳
+						　　　　　　nonceStr: r.data.config.nonce_str, // 必填，生成签名的随机串
+						　　　　　　signature: r.data.config.sign,// 必填，签名，见附录1
+									 jsApiList: [
+						　　　　　　　　	"openLocation"
+							　　　　　　]
+							 })
 						 })
 // 						 appId: datad.appid, // 必填，公众号的唯一标识
 // 　　　　　　timestamp: datad.timestamp, // 必填，生成签名的时间戳
