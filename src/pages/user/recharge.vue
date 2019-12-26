@@ -149,6 +149,10 @@
 				 }).then(r => {
 					 if (r.code === 200) {
 						 console.log(r.data)
+						 jweixin.config({
+								debug: true,
+							 ...r.data.config
+						 })
 					 } else {
 						 uni.showToast({title: r.message, icon: "none"});
 					 }
