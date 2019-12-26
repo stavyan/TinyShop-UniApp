@@ -140,7 +140,7 @@
 				 // });
 				 const params = {};
 				 params.money = this.price;
-				 params.code = this.code;
+				 // params.code = this.code;
 				 await this.$post(`${payCreate}`, {
 					 orderGroup: 'recharge',
 					 payType: 1,
