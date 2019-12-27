@@ -81,12 +81,11 @@
 	export default {
 		data() {
 			return {
-				inputAmount:'',//金额
+				inputAmount: 0.01,//金额
 				amountList:[10,50,100],//预设3个可选快捷金额
 				payType: 1,//支付类型
 				userInfo: {},
 				loading: false,
-				price: 0.01,
 				providerList: [],
 				code: null
 			};
@@ -106,7 +105,7 @@
 				}).then(async res => {
 					 if (res.code === 200) {
 						 const params = {};
-						 params.money = parseInt(this.inputAmount);
+						 params.money = parseFloat(this.inputAmount);
 						 // #ifdef H5
 						 await this.$post(`${payCreate}`, {
 							 order_group: 'recharge',
