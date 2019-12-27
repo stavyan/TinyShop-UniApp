@@ -175,7 +175,7 @@
 				 }).then(r => {
             if (r.code === 200) {
             	if (!r.data.login) {
-            		this.user_info = r.date.user_info.original
+            		this.user_info = r.data.user_info.original;
 								uni.showModal({
 									content: '你尚未绑定账号，是否跳转登录页面？',
 									success: (confirmRes)=> {
