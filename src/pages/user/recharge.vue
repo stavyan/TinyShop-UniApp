@@ -106,12 +106,12 @@
 				}).then(async res => {
 					 if (res.code === 200) {
 						 const params = {};
-						 params.money = this.inputAmount;
+						 params.money = parseInt(this.inputAmount);
 						 // #ifdef H5
 						 await this.$post(`${payCreate}`, {
-							 orderGroup: 'recharge',
-							 payType: 1,
-							 tradeType: 'js',
+							 order_group: 'recharge',
+							 pay_type: 1,
+							 trade_type: 'js',
 							 data: JSON.stringify(params),
 							 openid: res.data.openid
 						 }).then(r => {
@@ -130,14 +130,14 @@
 									 });
 								 })
 							 } else {
-					 				uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
+						 		uni.showToast({title: res.message, icon: "none"});
 							 }
 						 }).catch(err => {
 							 console.log(err)
 						 })
 						 // #endif
 					 } else {
-						 uni.showToast({title: r.message, icon: "none"});
+						 uni.showToast({title: res.message, icon: "none"});
 					 }
 				 }).catch(err => {
 					console.log(err)
