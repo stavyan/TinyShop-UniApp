@@ -258,7 +258,7 @@
 						if (this.userInfo) {
 							const oauthClientParams = {}
 							oauthClientParams.oauth_client = 'wechat'
-							const userInfo = JSON.stringify(this.userInfo);
+							const userInfo = JSON.parse(this.userInfo);
 							this.$post(authLogin, {
 								...userInfo,
 								...oauthClientParams,
