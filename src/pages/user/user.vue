@@ -162,7 +162,8 @@
 						text: 'QQ空间'
 					}
 				],
-				code: null
+				code: null,
+				user_info: {}
 			}
 		},
 		async onLoad(options){
