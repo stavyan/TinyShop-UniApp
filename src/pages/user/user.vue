@@ -169,8 +169,7 @@
 		},
 		async onLoad(options){
 			this.code = options.code;
-			this.userInfo = uni.getStorageSync('userInfo') || undefined;
-			if (this.code && !this.userInfo) {
+			if (this.code) {
          this.$get(wechatH5Login, {
          	code: this.code
 				 }).then(r => {
@@ -191,8 +190,6 @@
 							} else {
 								this.login(r.data.user_info);
 							}
-            } else {
-                uni.showToast({title: r.message, icon: "none"});
             }
         })
 			}
