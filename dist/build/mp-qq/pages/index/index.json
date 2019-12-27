@@ -1,6 +1,7 @@
 {
-  "navigationBarTitleText": "RageFrame商城",
   "enablePullDownRefresh": true,
+  "navigationBarTitleText": "RageFrame商城",
+  "onReachBottomDistance": 50,
   "usingComponents": {
     "uni-grid": "/components/uni-grid/uni-grid",
     "uni-icons": "/components/uni-icons/uni-icons",

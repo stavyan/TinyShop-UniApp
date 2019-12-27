@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/product/list",
     "pages/product/product",
     "pages/about/about",
     "pages/about/detail",
@@ -39,8 +40,7 @@
     "pages/money/pay",
     "pages/money/paySuccess",
     "pages/notice/notice",
-    "pages/category/category",
-    "pages/product/list"
+    "pages/category/category"
   ],
   "window": {
     "navigationBarTextStyle": "black",

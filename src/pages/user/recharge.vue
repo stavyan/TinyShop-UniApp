@@ -74,8 +74,9 @@
 <script>
 	import {orderPay} from "../../api/product";
 	import {payCreate, wechatConfig} from "../../api/basic";
+	// #ifdef H5
 	import jweixin from 'jweixin-module';
-
+	// #endif
 	export default {
 		data() {
 			return {
@@ -101,6 +102,7 @@
 				 }
 				 const params = {};
 				 params.money = this.inputAmount;
+				 // #ifdef H5
 				 await this.$post(`${payCreate}`, {
 					 orderGroup: 'recharge',
 					 payType: 1,
@@ -128,6 +130,7 @@
 				 }).catch(err => {
 					 console.log(err)
 				 })
+				 // #endif
 			 },
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
@@ -149,6 +152,7 @@
 				// 	state=STATE#wechat_redirect`;
 				// 	return;
 				// }
+				// #ifdef H5
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$post(`${wechatConfig}`, {
@@ -165,7 +169,8 @@
 					}
 				}).catch(err => {
 					console.log(err)
-				})
+				});
+				// #endif
 				// #ifdef APP-PLUS
 				uni.getProvider({
 					service: "payment",

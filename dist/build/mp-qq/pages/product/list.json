@@ -1,8 +1,10 @@
 {
   "enablePullDownRefresh": true,
   "navigationBarTitleText": "商品列表",
+  "onReachBottomDistance": 50,
   "usingComponents": {
     "uni-load-more": "/components/uni-load-more/uni-load-more",
-    "empty": "/components/empty"
+    "empty": "/components/empty",
+    "uni-icons": "/components/uni-icons/uni-icons"
   }
 }
