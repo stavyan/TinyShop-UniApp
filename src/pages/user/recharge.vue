@@ -76,6 +76,7 @@
 	import {payCreate, wechatConfig} from "../../api/basic";
 	// #ifdef H5
 	import jweixin from 'jweixin-module';
+	import {isBindingCheck} from "../../api/login";
 	// #endif
 	export default {
 		data() {

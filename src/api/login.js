@@ -39,6 +39,7 @@ const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
 export {
     registerByPass,
     loginByPass,
+    isBindingCheck,
     wechatH5Login,
     authLogin,
     updatePassword,
