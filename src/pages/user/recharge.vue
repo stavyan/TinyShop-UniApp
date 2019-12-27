@@ -94,8 +94,9 @@
 		},
 		methods:{
 			async weixinPay() {
-				 if (!userInfo.openid) {
+				 if (!this.userInfo.openid) {
 					 uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
+					 return;
 				 }
 				 const params = {};
 				 params.money = this.inputAmount;
@@ -104,7 +105,7 @@
 					 payType: 1,
 					 tradeType: 'js',
 					 data: JSON.stringify(params),
-					 openid: userInfo.openid
+					 openid: this.userInfo.openid
 				 }).then(r => {
 					 if (r.code === 200) {
 						 jweixin.ready(()=>{
