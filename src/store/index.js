@@ -13,23 +13,23 @@ const store = new Vuex.Store({
 			uni.clearStorageSync();
 			state.hasLogin = true;
 			state.userInfo = provider.member;
-			uni.setStorageSync({//缓存用户登陆状态
+			uni.setStorage({//缓存用户登陆状态
 			    key: 'user',
 			    data: provider
 			});
-			uni.setStorageSync({//缓存用户登陆状态
+			uni.setStorage({//缓存用户登陆状态
 			    key: 'loginTime',
 			    data: new Date().getTime() / 1000
 			});
-			uni.setStorageSync({//缓存用户登陆状态
+			uni.setStorage({//缓存用户登陆状态
 			    key: 'userInfo',
 			    data: provider.member
 			})
-			uni.setStorageSync({//缓存用户登陆状态
+			uni.setStorage({//缓存用户登陆状态
 			    key: 'accessToken',
 			    data: provider.access_token
 			})
-			uni.setStorageSync({//缓存用户登陆状态
+			uni.setStorage({//缓存用户登陆状态
 			    key: 'refreshToken',
 			    data: provider.refresh_token
 			})

@@ -193,7 +193,9 @@
 					 }
 				 })
 			}
-			await this.initData();
+			setTimeout(() => {
+				this.initData();
+			}, 500)
 		},
 		async onShow(){
 		},
