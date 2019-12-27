@@ -421,6 +421,7 @@
 		},
 		data() {
 			return {
+				code: null,
 				showHeader:true,
 				afterHeaderOpacity: 1,//不透明度
 				headerPosition: 'fixed',
@@ -462,7 +463,8 @@
 			};
 		},
 		onLoad(options) {
-			this.initData(options);
+			this.code = options.code;
+			this.initData();
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -475,27 +477,26 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/12/02 16:14:02
 			 */
-			initData (options) {
-				this.code = options.code;
-				if (this.isWechat() && !this.code) {
-					const url = window.location.href;
-					window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
-					appid=wx869d264c83ad71cc&
-					redirect_uri=${url}&
-					response_type=code&
-					scope=snsapi_userinfo&
-					state=STATE#wechat_redirect`;
-				}
+			initData () {
+				// if (this.isWechat() && !this.code) {
+				// 	const url = window.location.href;
+				// 	window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
+				// 	appid=wx869d264c83ad71cc&
+				// 	redirect_uri=${url}&
+				// 	response_type=code&
+				// 	scope=snsapi_userinfo&
+				// 	state=STATE#wechat_redirect`;
+				// }
 				this.getIndexList();
 			},
-			isWechat(){
-					const ua = window.navigator.userAgent.toLowerCase();
-					if(ua.match(/micromessenger/i) == 'micromessenger'){
-							return true;
-					}else{
-							return false;
-					}
-			},
+			// isWechat(){
+			// 		const ua = window.navigator.userAgent.toLowerCase();
+			// 		if(ua.match(/micromessenger/i) == 'micromessenger'){
+			// 				return true;
+			// 		}else{
+			// 				return false;
+			// 		}
+			// },
 			navToList(id){
 				uni.navigateTo({
 					url: `/pages/product/list?cate_id=${id}`

@@ -27,6 +27,8 @@ const configList = "/tiny-shop/v1/common/config/index";
 
 // 充值
 const payCreate = "/tiny-shop/v1/common/pay/create";
+// 充值
+const wechatConfig = "/tiny-shop/v1/third-party/wechat-js-sdk";
 
 export {
     provinceList,
@@ -36,5 +38,6 @@ export {
     uploadFile,
     advList,
     payCreate,
-    configList
+    configList,
+    wechatConfig
 };

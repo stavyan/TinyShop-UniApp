@@ -73,7 +73,7 @@
 
 <script>
 	import {orderPay} from "../../api/product";
-	import {payCreate} from "../../api/basic";
+	import {payCreate, wechatConfig} from "../../api/basic";
 	import jweixin from 'jweixin-module';
 
 	export default {
@@ -84,7 +84,7 @@
 				payType: 1,//支付类型
 				userInfo: {},
 				loading: false,
-				price: 1,
+				price: 0.01,
 				providerList: [],
 				code: null
 			};
@@ -103,10 +103,18 @@
 					 data: JSON.stringify(params)
 				 }).then(r => {
 					 if (r.code === 200) {
-						 console.log(r.data)
-						 jweixin.config({
-								debug: true,
-							 ...r.data.config
+						 jweixin.ready(()=>{
+							 jweixin.chooseWXPay({
+								 ...r.data.config,
+								 // timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+								 // nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
+								 // package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+								 // signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+								 // paySign: r.data.config.sign, // 支付签名
+								 success: function (res) {
+									 // 支付成功后的回调函数
+								 }
+							 });
 						 })
 					 } else {
 						 uni.showToast({title: r.message, icon: "none"});
@@ -115,6 +123,61 @@
 					 console.log(err)
 				 })
 			 },
+			 async requestPayment(e, index) {
+                this.providerList[index].loading = true;
+                let orderInfo = await this.getOrderInfo(e.id);
+                console.log("得到订单信息", orderInfo);
+                if (orderInfo.statusCode !== 200) {
+                    console.log("获得订单信息失败", orderInfo);
+                    uni.showModal({
+                        content: "获得订单信息失败",
+                        showCancel: false
+                    })
+                    return;
+                }
+                uni.requestPayment({
+                    provider: e.id,
+                    orderInfo: orderInfo.data,
+                    success: (e) => {
+                        console.log("success", e);
+                        uni.showToast({
+                            title: "感谢您的赞助!"
+                        })
+                    },
+                    fail: (e) => {
+                        console.log("fail", e);
+                        uni.showModal({
+                            content: "支付失败,原因为: " + e.errMsg,
+                            showCancel: false
+                        })
+                    },
+                    complete: () => {
+                        this.providerList[index].loading = false;
+                    }
+                })
+            },
+			getOrderInfo(e) {
+					let appid = "";
+					// #ifdef APP-PLUS
+					appid = plus.runtime.appid;
+					// #endif
+					let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=' + this.price;
+					return new Promise((res) => {
+							uni.request({
+									url: url,
+									success: (result) => {
+											res(result);
+									},
+									fail: (e) => {
+											res(e);
+									}
+							})
+					})
+			},
+			priceChange(e) {
+					console.log(e.detail.value)
+					this.price = e.detail.value;
+			},
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
@@ -123,8 +186,7 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/12/11 11:01:12
-			 */
-			initData (options) {
+			 */ async initData(options) {
 				this.code = options.code;
 				if (this.isWechat() && !this.code) {
 					const url = window.location.href;
@@ -134,39 +196,56 @@
 					response_type=code&
 					scope=snsapi_userinfo&
 					state=STATE#wechat_redirect`;
+					return;
 				}
+				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+				await this.$post(`${wechatConfig}`, {
+					url: window.location.href,
+					jsApiList,
+					debug: true,
+				}).then(r => {
+					if (r.code === 200) {
+						jweixin.config({
+							...r.data
+						})
+					} else {
+						uni.showToast({title: r.message, icon: "none"});
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 				// #ifdef APP-PLUS
 				uni.getProvider({
-						service: "payment",
-						success: (e) => {
-								console.log("payment success:" + JSON.stringify(e));
-								let providerList = [];
-								e.provider.map((value) => {
-										switch (value) {
-												case 'alipay':
-														providerList.push({
-																name: '支付宝',
-																id: value,
-																loading: false
-														});
-														break;
-												case 'wxpay':
-														providerList.push({
-																name: '微信',
-																id: value,
-																loading: false
-														});
-														break;
-												default:
-														break;
-										}
-								})
-								this.providerList = providerList;
-						},
-						fail: (e) => {
-								console.log("获取支付通道失败：", e);
-						}
+					service: "payment",
+					success: (e) => {
+						console.log("payment success:" + JSON.stringify(e));
+						let providerList = [];
+						e.provider.map((value) => {
+							switch (value) {
+								case 'alipay':
+									providerList.push({
+										name: '支付宝',
+										id: value,
+										loading: false
+									});
+									break;
+								case 'wxpay':
+									providerList.push({
+										name: '微信',
+										id: value,
+										loading: false
+									});
+									break;
+								default:
+									break;
+							}
+						})
+						this.providerList = providerList;
+					},
+					fail: (e) => {
+						console.log("获取支付通道失败：", e);
+					}
 				});
 				// #endif
 			},
