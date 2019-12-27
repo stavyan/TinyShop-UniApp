@@ -61,31 +61,12 @@
 			</view>
 		</view>
 		<view class="pay">
-			<view class="btn" @tap="doDeposit">立即充值</view>
+			<view class="btn" @click="weixinPay">立即充值</view>
 			<view class="tis">
 				点击立即充值，即代表您同意<view class="terms" @click="toTipDetail">
 					《条款协议》
 				</view>
 			</view>
-		</view>
-
-			<view class="uni-padding-wrap">
-					<view style="background:#FFF; padding:50upx 0;">
-							<view class="uni-hello-text uni-center">支付金额</text></view>
-							<view class="uni-h1 uni-center uni-common-mt">
-									<text class="rmbLogo">￥</text>
-									<input class="price" type="digit" :value="price" maxlength="4" @input="priceChange" />
-							</view>
-					</view>
-			</view>
-		 <view class="uni-btn-v uni-common-mt">
-				<button type="primary" @click="weixinPay" :loading="loading">微信支付</button>
-				<!-- #ifdef APP-PLUS -->
-				<template v-if="providerList.length > 0">
-						<button v-for="(item,index) in providerList" :key="index" @click="requestPayment(item,index)"
-								:loading="item.loading">{{item.name}}支付</button>
-				</template>
-				<!-- #endif -->
 		</view>
 	</view>
 </template>
@@ -112,35 +93,9 @@
 			this.initData(options);
 		},
 		methods:{
-			 async weixinPay() {
-				 // console.log("发起支付");
-				 // uni.login({
-					//  success: async (e) => {
-					// 	 uni.showToast({title: e, icon: "none"});
-					//  }
-				 // });
-				 // var jweixin = require('jweixin-module');
-				 // jweixin.ready(async function () {
-				 // 	console.log(11)
-					//  jweixin.login({
-					// 	success (res) {
-					// 		console.log(res.code)
-					// 		if (res.code) {
-					// 		} else {
-					// 			console.log('登录失败！' + res.errMsg)
-					// 		}
-					// 	}
-					// })
-				 // })
-				 // return;
-				 // uni.login({
-					//  success: async (e) => {
-					// 	 uni.showToast({title: e, icon: "none"});
-					//  }
-				 // });
+			async weixinPay() {
 				 const params = {};
-				 params.money = this.price;
-				 // params.code = this.code;
+				 params.money = this.inputAmount;
 				 await this.$post(`${payCreate}`, {
 					 orderGroup: 'recharge',
 					 payType: 1,
@@ -159,177 +114,7 @@
 				 }).catch(err => {
 					 console.log(err)
 				 })
-				 return;
-				 jweixin.ready(async function () {
-					 uni.showToast({title: '111', icon: "none"});
-					 const params = {};
-					 params.money = this.price;
-					 await this.$post(`${payCreate}`, {
-						 orderGroup: 'recharge',
-						 payType: 1,
-						 tradeType: 'js',
-						 data: JSON.stringify(params)
-					 }).then(r => {
-						 if (r.code === 200) {
-							 console.log(r.data)
-						 } else {
-							 uni.showToast({title: r.message, icon: "none"});
-						 }
-					 }).catch(err => {
-						 console.log(err)
-					 })
-					 // TODO
-					 wx.chooseWXPay({
-						 timestamp: 0, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-						 nonceStr: '', // 支付签名随机串，不长于 32 位
-						 package: '', // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-						 signType: '', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-						 paySign: '', // 支付签名
-						 success: function (res) {
-							 // 支付成功后的回调函数
-						 }
-					 });
-				 });
-				 return;
-				 this.loading = true;
-				 uni.login({
-					 success: async (e) => {
-						 console.log("login success", e);
-						 const params = {};
-						 params.money = this.price;
-						 params.code = e.code;
-						 await this.$post(`${payCreate}`, {
-							 orderGroup: 'recharge',
-							 payType: 1,
-							 tradeType: 'js',
-							 data: JSON.stringify(params)
-						 }).then(r => {
-							 if (r.code === 200) {
-								 console.log(r.data)
-							 } else {
-								 uni.showToast({title: r.message, icon: "none"});
-							 }
-						 }).catch(err => {
-							 console.log(err)
-						 })
-						 // uni.request({
-						 // 	url: `https://unidemo.dcloud.net.cn/payment/wx/mp?code=${e.code}&amount=${this.price}`,
-						 // 	success: (res) => {
-						 // 		console.log("pay request success", res);
-						 // 		if (res.statusCode !== 200) {
-						 // 			uni.showModal({
-						 // 				content: "支付失败，请重试！",
-						 // 				showCancel: false
-						 // 			});
-						 // 			return;
-						 // 		}
-						 // 		if (res.data.ret === 0) {
-						 // 			console.log("得到接口prepay_id", res.data.payment);
-						 // 			let paymentData = res.data.payment;
-						 // 			uni.requestPayment({
-						 // 				timeStamp: paymentData.timeStamp,
-						 // 				nonceStr: paymentData.nonceStr,
-						 // 				package: paymentData.package,
-						 // 				signType: 'MD5',
-						 // 				paySign: paymentData.paySign,
-						 // 				success: (res) => {
-						 // 					uni.showToast({
-						 // 						title: "感谢您的赞助!"
-						 // 					})
-						 // 				},
-						 // 				fail: (res) => {
-						 // 					uni.showModal({
-						 // 						content: "支付失败,原因为: " + res
-						 // 								.errMsg,
-						 // 						showCancel: false
-						 // 					})
-						 // 				},
-						 // 				complete: () => {
-						 // 					this.loading = false;
-						 // 				}
-						 // 			})
-						 // 		} else {
-						 // 			uni.showModal({
-						 // 				content: res.data.desc,
-						 // 				showCancel: false
-						 // 			})
-						 // 		}
-						 // 	},
-						 // 	fail: (e) => {
-						 // 		console.log("fail", e);
-						 // 		this.loading = false;
-						 // 		uni.showModal({
-						 // 			content: "支付失败,原因为: " + e.errMsg,
-						 // 			showCancel: false
-						 // 		})
-						 // 	}
-						 // })
-					 },
-					 fail: (e) => {
-						 console.log("fail", e);
-						 this.loading = false;
-						 uni.showModal({
-							 content: "支付失败,原因为: " + e.errMsg,
-							 showCancel: false
-						 })
-					 }
-				 })
 			 },
-			 async requestPayment(e, index) {
-                this.providerList[index].loading = true;
-                let orderInfo = await this.getOrderInfo(e.id);
-                console.log("得到订单信息", orderInfo);
-                if (orderInfo.statusCode !== 200) {
-                    console.log("获得订单信息失败", orderInfo);
-                    uni.showModal({
-                        content: "获得订单信息失败",
-                        showCancel: false
-                    })
-                    return;
-                }
-                uni.requestPayment({
-                    provider: e.id,
-                    orderInfo: orderInfo.data,
-                    success: (e) => {
-                        console.log("success", e);
-                        uni.showToast({
-                            title: "感谢您的赞助!"
-                        })
-                    },
-                    fail: (e) => {
-                        console.log("fail", e);
-                        uni.showModal({
-                            content: "支付失败,原因为: " + e.errMsg,
-                            showCancel: false
-                        })
-                    },
-                    complete: () => {
-                        this.providerList[index].loading = false;
-                    }
-                })
-            },
-				getOrderInfo(e) {
-						let appid = "";
-						// #ifdef APP-PLUS
-						appid = plus.runtime.appid;
-						// #endif
-						let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=' + this.price;
-						return new Promise((res) => {
-								uni.request({
-										url: url,
-										success: (result) => {
-												res(result);
-										},
-										fail: (e) => {
-												res(e);
-										}
-								})
-						})
-				},
-				priceChange(e) {
-						console.log(e.detail.value)
-						this.price = e.detail.value;
-				},
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
@@ -396,41 +181,6 @@
 			select(amount){
 				this.inputAmount = amount;
 			},
-			async doDeposit() {
-				if (parseFloat(this.inputAmount).toString() == "NaN") {
-					uni.showToast({title: '请输入正确金额', icon: 'none'});
-					return;
-				}
-				if (this.inputAmount <= 0) {
-					uni.showToast({title: '请输入大于0的金额', icon: 'none'});
-					return;
-				}
-				if (parseFloat(this.inputAmount).toFixed(2) != parseFloat(this.inputAmount)) {
-					uni.showToast({title: '最多只能输入两位小数哦~', icon: 'none'});
-					return;
-				}
-				const data = {};
-				data.money = this.inputAmount;
-				//模板模拟支付，实际应用请调起微信/支付宝
-				uni.showLoading({title: '支付中...'});
-				await this.$post(`${orderPay}`, {
-					data: JSON.stringify(data),
-					orderGroup: 'recharge',
-					tradeType: 'default',
-					payType: this.payType
-				}).then(async r => {
-					if (r.code === 200) {
-						uni.showToast({title: '支付成功', icon: "none"});
-						uni.redirectTo({
-							url: '/pages/money/paySuccess'
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			}
 		}
 	}
 </script>

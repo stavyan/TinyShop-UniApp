@@ -160,13 +160,16 @@
 						icon: '/static/temp/share_qqzone.png',
 						text: 'QQ空间'
 					}
-				]
+				],
+				code: null
 			}
 		},
-		// async onLoad(){
-		// 	this.userInfo = uni.getStorageSync('userInfo') || undefined
-		// 	this.token = uni.getStorageSync('accessToken') || undefined
-		// },
+		async onLoad(options){
+			this.code = options.code;
+			if (this.code) {
+				console.log(this.code)
+			}
+		},
 		async onShow(){
 			this.initData();
 		},
@@ -256,7 +259,24 @@
 				}
 				if(!this.token){
 					url = '/pages/public/login';
-          uni.showModal({
+					/*  #ifdef H5  */
+					if (this.isWechat()) {
+          	uni.showModal({
+            content: '是否授权登录?',
+            success: (confirmRes)=> {
+              if (confirmRes.confirm) {
+								const url = window.location.href;
+								window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
+								appid=wx869d264c83ad71cc&
+								redirect_uri=${url}&
+								response_type=code&
+								scope=snsapi_userinfo&
+								state=STATE#wechat_redirect`;
+              }
+            }
+          });
+					} else {
+          	uni.showModal({
             content: '你暂未登陆，是否跳转登录页面？',
             success: (confirmRes)=> {
               if (confirmRes.confirm) {
@@ -266,11 +286,21 @@
               }
             }
           });
+					}
+					/*  #endif  */
 				} else {
           uni.navigateTo({
             url
           })
         }
+			},
+			isWechat(){
+					const ua = window.navigator.userAgent.toLowerCase();
+					if(ua.match(/micromessenger/i) == 'micromessenger'){
+							return true;
+					}else{
+							return false;
+					}
 			},
 			/**
 			 *  会员卡下拉和回弹
