@@ -95,42 +95,52 @@
 		},
 		methods:{
 			async weixinPay() {
-				console.log(this.userInfo)
-				 if (!this.userInfo.openid) {
-					 uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
-					 return;
-				 }
-				 const params = {};
-				 params.money = this.inputAmount;
-				 // #ifdef H5
-				 await this.$post(`${payCreate}`, {
-					 orderGroup: 'recharge',
-					 payType: 1,
-					 tradeType: 'js',
-					 data: JSON.stringify(params),
-					 openid: this.userInfo.openid
-				 }).then(r => {
-					 if (r.code === 200) {
-						 jweixin.ready(()=>{
-							 jweixin.chooseWXPay({
-								 ...r.data.config,
-								 // timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-								 // nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
-								 // package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-								 // signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-								 // paySign: r.data.config.sign, // 支付签名
-								 success: function (res) {
-									 // 支付成功后的回调函数
-								 }
-							 });
+				 await this.$post(`${isBindingCheck}`, {
+					// #ifdef H5
+					oauth_client: 'wechat',
+				 // #endif//
+				 // #ifdef MP-QQ
+					oauth_client: 'qq',
+				 // #endif
+				}).then(async res => {
+					 if (res.code === 200) {
+						 const params = {};
+						 params.money = this.inputAmount;
+						 // #ifdef H5
+						 await this.$post(`${payCreate}`, {
+							 orderGroup: 'recharge',
+							 payType: 1,
+							 tradeType: 'js',
+							 data: JSON.stringify(params),
+							 openid: res.data.openid
+						 }).then(r => {
+							 if (r.code === 200) {
+								 jweixin.ready(() => {
+									 jweixin.chooseWXPay({
+										 ...r.data.config,
+										 // timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+										 // nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
+										 // package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+										 // signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+										 // paySign: r.data.config.sign, // 支付签名
+										 success: function (res) {
+											 // 支付成功后的回调函数
+										 }
+									 });
+								 })
+							 } else {
+					 				uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
+							 }
+						 }).catch(err => {
+							 console.log(err)
 						 })
+						 // #endif
 					 } else {
 						 uni.showToast({title: r.message, icon: "none"});
 					 }
 				 }).catch(err => {
-					 console.log(err)
-				 })
-				 // #endif
+					console.log(err)
+				});
 			 },
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});

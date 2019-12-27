@@ -21,6 +21,9 @@ const updatePassword = "/tiny-shop/v1/site/up-pwd";
 // 第三方绑定
 const authLogin = "/tiny-shop/v1/member/auth/create";
 
+// 查询绑定状态
+const isBindingCheck = "/tiny-shop/v1/member/auth/is-binding";
+
 // 手机号登录
 const loginBySmsCode = "/tiny-shop/v1/site/mobile-login";
 
