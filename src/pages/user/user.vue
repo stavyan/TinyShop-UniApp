@@ -180,7 +180,7 @@
 									content: '你尚未绑定账号，是否跳转登录页面？',
 									success: (confirmRes)=> {
 									if (confirmRes.confirm) {
-										const url = `/pages/public/login?openid=${this.userInfo}`;
+										const url = `/pages/public/login?userInfo=${this.user_info}`;
 										uni.navigateTo({
 											url
 										})
