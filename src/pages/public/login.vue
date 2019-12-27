@@ -70,7 +70,7 @@
 	import {
         mapMutations
     } from 'vuex';
-	import {loginByPass, loginBySmsCode, smsCode} from "../../api/login";
+	import {authLogin, loginByPass, loginBySmsCode, smsCode} from "../../api/login";
 	const graceChecker = require("../../common/graceChecker.js");
 	export default{
 		data(){
@@ -81,10 +81,12 @@
 				logining: false,
 				loginByPass: true,
 				smsCodeBtnDisabled: false,
-				codeSeconds: 60
+				codeSeconds: 60,
+				userInfo: null
 			}
 		},
-		onLoad(){
+		onLoad(options){
+			this.userInfo = options.userInfo;
       uni.clearStorageSync();
 		},
 		methods: {
@@ -253,6 +255,24 @@
 				}).then(r=>{
 					if (r.code === 200) {
 						this.login(r.data);
+						if (this.userInfo) {
+							const oauthClientParams = {}
+							oauthClientParams.oauth_client = 'wechat'
+							this.$post(authLogin, {
+								...this.userInfo,
+								...oauthClientParams,
+								gender: this.userInfo.sex,
+								oauth_client_user_id: this.userInfo.openid,
+								head_portrait: this.userInfo.headimgurl,
+							}).then(r=>{
+								if (r.code === 200) {
+								} else {
+									uni.showToast({ title: r.message, icon: "none" });
+								}
+							}).catch(err => {
+								console.log(err)
+							})
+						}
 						uni.showToast({ title: '恭喜您，登录成功！', icon: "none" });
 						uni.reLaunch({
 							url: '/pages/user/user'

@@ -123,39 +123,6 @@
 					 console.log(err)
 				 })
 			 },
-			 async requestPayment(e, index) {
-                this.providerList[index].loading = true;
-                let orderInfo = await this.getOrderInfo(e.id);
-                console.log("得到订单信息", orderInfo);
-                if (orderInfo.statusCode !== 200) {
-                    console.log("获得订单信息失败", orderInfo);
-                    uni.showModal({
-                        content: "获得订单信息失败",
-                        showCancel: false
-                    })
-                    return;
-                }
-                uni.requestPayment({
-                    provider: e.id,
-                    orderInfo: orderInfo.data,
-                    success: (e) => {
-                        console.log("success", e);
-                        uni.showToast({
-                            title: "感谢您的赞助!"
-                        })
-                    },
-                    fail: (e) => {
-                        console.log("fail", e);
-                        uni.showModal({
-                            content: "支付失败,原因为: " + e.errMsg,
-                            showCancel: false
-                        })
-                    },
-                    complete: () => {
-                        this.providerList[index].loading = false;
-                    }
-                })
-            },
 			getOrderInfo(e) {
 					let appid = "";
 					// #ifdef APP-PLUS
@@ -173,10 +140,6 @@
 									}
 							})
 					})
-			},
-			priceChange(e) {
-					console.log(e.detail.value)
-					this.price = e.detail.value;
 			},
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});

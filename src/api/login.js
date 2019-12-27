@@ -18,6 +18,9 @@ const wechatH5Login = "/tiny-shop/v1/third-party/wechat";
 // 密码重置
 const updatePassword = "/tiny-shop/v1/site/up-pwd";
 
+// 第三方绑定
+const authLogin = "/tiny-shop/v1/member/auth/create";
+
 // 手机号登录
 const loginBySmsCode = "/tiny-shop/v1/site/mobile-login";
 
@@ -34,6 +37,7 @@ export {
     registerByPass,
     loginByPass,
     wechatH5Login,
+    authLogin,
     updatePassword,
     smsCode,
     loginBySmsCode,

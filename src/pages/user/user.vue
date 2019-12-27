@@ -125,6 +125,7 @@
 	import share from '@/components/share';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	import {wechatH5Login} from "../../api/login";
+	import {mapMutations} from "vuex";
 	let startY = 0, moveY = 0, pageAtTop = true;
     export default {
 		components: {
@@ -174,11 +175,12 @@
 				 }).then(r => {
             if (r.code === 200) {
             	if (!r.data.login) {
+            		this.user_info = r.date.user_info.original
 								uni.showModal({
 									content: '你尚未绑定账号，是否跳转登录页面？',
 									success: (confirmRes)=> {
 									if (confirmRes.confirm) {
-										const url = '/pages/public/login';
+										const url = `/pages/public/login?openid=${this.userInfo}`;
 										uni.navigateTo({
 											url
 										})
@@ -186,7 +188,7 @@
 								}
 								});
 							} else {
-            		this.user_info = r.date.user_info.original
+								this.login(r.data);
 							}
             } else {
                 uni.showToast({title: r.message, icon: "none"});
@@ -218,6 +220,7 @@
 		},
 		// #endif
 		methods: {
+			...mapMutations(['login']),
 			/**
 			 *@des 分享
 			 *@author stav stavyan@qq.com
