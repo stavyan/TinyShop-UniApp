@@ -166,7 +166,7 @@
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$post(`${wechatConfig}`, {
-					url: 'http://html5.tinyshop.yllook.com/',
+					url: 'http://html5.tinyshop.yllook.com',
 					jsApiList,
 					debug: true,
 				}).then(r => {
