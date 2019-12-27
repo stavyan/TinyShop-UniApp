@@ -172,30 +172,30 @@
 			if (this.code) {
          this.$get(wechatH5Login, {
          	code: this.code
-				 }).then(r => {
-            if (r.code === 200) {
-            	if (!r.data.login) {
-            		this.user_info = r.data.user_info.original;
-								uni.showModal({
-									content: '你尚未绑定账号，是否跳转登录页面？',
-									success: (confirmRes)=> {
-									if (confirmRes.confirm) {
-										const url = `/pages/public/login?userInfo=${JSON.stringify(this.user_info)}`;
-										uni.navigateTo({
-											url
-										})
-									}
-								}
-								});
-							} else {
-								this.login(r.data.user_info);
-							}
-            }
-        })
+				 }).then(async r => {
+					 if (r.code === 200) {
+						 if (!r.data.login) {
+							 this.user_info = r.data.user_info.original;
+							 uni.showModal({
+								 content: '你尚未绑定账号，是否跳转登录页面？',
+								 success: (confirmRes) => {
+									 if (confirmRes.confirm) {
+										 const url = `/pages/public/login?userInfo=${JSON.stringify(this.user_info)}`;
+										 uni.navigateTo({
+											 url
+										 })
+									 }
+								 }
+							 });
+						 } else {
+							 await this.login(r.data.user_info);
+						 }
+					 }
+				 })
 			}
+			this.initData();
 		},
 		async onShow(){
-			this.initData();
 		},
 		// #ifndef MP
 		onNavigationBarButtonTap(e) {
