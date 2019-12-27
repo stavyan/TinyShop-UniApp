@@ -94,13 +94,17 @@
 		},
 		methods:{
 			async weixinPay() {
+				 if (!userInfo.openid) {
+					 uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
+				 }
 				 const params = {};
 				 params.money = this.inputAmount;
 				 await this.$post(`${payCreate}`, {
 					 orderGroup: 'recharge',
 					 payType: 1,
 					 tradeType: 'js',
-					 data: JSON.stringify(params)
+					 data: JSON.stringify(params),
+					 openid: userInfo.openid
 				 }).then(r => {
 					 if (r.code === 200) {
 						 jweixin.ready(()=>{
@@ -123,24 +127,6 @@
 					 console.log(err)
 				 })
 			 },
-			getOrderInfo(e) {
-					let appid = "";
-					// #ifdef APP-PLUS
-					appid = plus.runtime.appid;
-					// #endif
-					let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=' + this.price;
-					return new Promise((res) => {
-							uni.request({
-									url: url,
-									success: (result) => {
-											res(result);
-									},
-									fail: (e) => {
-											res(e);
-									}
-							})
-					})
-			},
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
