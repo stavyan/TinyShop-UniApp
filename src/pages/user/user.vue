@@ -188,16 +188,14 @@
 								 }
 							 });
 						 } else {
+							 this.userInfo = r.data.user_info.member || undefined;
+							 this.token = r.data.user_info.access_token || undefined;
 							 await this.login(r.data.user_info);
 						 }
 					 }
 				 })
 			}
-			setTimeout(() => {
-				this.initData();
-			}, 500)
-		},
-		async onShow(){
+			this.initData();
 		},
 		// #ifndef MP
 		onNavigationBarButtonTap(e) {
