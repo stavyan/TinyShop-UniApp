@@ -173,7 +173,7 @@
          	code: this.code
 				 }).then(r => {
             if (r.code === 200) {
-            	if (!data.login) {
+            	if (!r.data.login) {
 								uni.showModal({
 									content: '你尚未绑定账号，是否跳转登录页面？',
 									success: (confirmRes)=> {
