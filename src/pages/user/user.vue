@@ -193,7 +193,7 @@
 					 }
 				 })
 			}
-			this.initData();
+			await this.initData();
 		},
 		async onShow(){
 		},
