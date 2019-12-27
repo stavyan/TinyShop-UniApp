@@ -169,7 +169,8 @@
 		},
 		async onLoad(options){
 			this.code = options.code;
-			if (this.code) {
+			this.userInfo = uni.getStorageSync('userInfo') || undefined;
+			if (this.code && !this.userInfo) {
          this.$get(wechatH5Login, {
          	code: this.code
 				 }).then(r => {
