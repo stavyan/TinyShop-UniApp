@@ -94,6 +94,7 @@
 		},
 		methods:{
 			async weixinPay() {
+				console.log(this.userInfo)
 				 if (!this.userInfo.openid) {
 					 uni.showToast({title: '充值功能只对授权用户开发', icon: "none"});
 					 return;

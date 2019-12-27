@@ -290,14 +290,19 @@
             content: '是否授权登录?',
             success: (confirmRes)=> {
               if (confirmRes.confirm) {
-								const url = window.location.href;
+								const href = window.location.href;
 								window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
 								appid=wx869d264c83ad71cc&
-								redirect_uri=${url}&
+								redirect_uri=${href}&
 								response_type=code&
 								scope=snsapi_userinfo&
 								state=STATE#wechat_redirect`;
               }
+							if (confirmRes.cancel) {
+							 uni.navigateTo({
+								 url
+							 })
+						 }
             }
           });
 					} else {
