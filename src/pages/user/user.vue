@@ -188,7 +188,7 @@
 								}
 								});
 							} else {
-								this.login(r.data);
+								this.login(r.data.user_info);
 							}
             } else {
                 uni.showToast({title: r.message, icon: "none"});
