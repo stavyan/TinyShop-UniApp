@@ -258,12 +258,13 @@
 						if (this.userInfo) {
 							const oauthClientParams = {}
 							oauthClientParams.oauth_client = 'wechat'
+							const userInfo = JSON.stringify(this.userInfo);
 							this.$post(authLogin, {
-								...this.userInfo,
+								...userInfo,
 								...oauthClientParams,
-								gender: this.userInfo.sex,
-								oauth_client_user_id: this.userInfo.openid,
-								head_portrait: this.userInfo.headimgurl,
+								gender: userInfo.sex,
+								oauth_client_user_id: userInfo.openid,
+								head_portrait: userInfo.headimgurl,
 							}).then(r=>{
 								if (r.code === 200) {
 								} else {
