@@ -124,6 +124,7 @@
   import {footPrintList, memberInfo} from "../../api/userInfo";
 	import share from '@/components/share';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
+	import {wechatH5Login} from "../../api/login";
 	let startY = 0, moveY = 0, pageAtTop = true;
     export default {
 		components: {
@@ -167,7 +168,14 @@
 		async onLoad(options){
 			this.code = options.code;
 			if (this.code) {
-				console.log(this.code)
+         this.$get(wechatH5Login, {
+         	code: this.code
+				 }).then(r => {
+            if (r.code === 200) {
+            } else {
+                uni.showToast({title: r.message, icon: "none"});
+            }
+        })
 			}
 		},
 		async onShow(){

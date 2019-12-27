@@ -12,6 +12,9 @@ const registerByPass = "/tiny-shop/v1/site/register";
 // 密码登录
 const loginByPass = "/tiny-shop/v1/site/login";
 
+// 微信授权登录
+const wechatH5Login = "/tiny-shop/v1/third-party/wechat";
+
 // 密码重置
 const updatePassword = "/tiny-shop/v1/site/up-pwd";
 
@@ -30,6 +33,7 @@ const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
 export {
     registerByPass,
     loginByPass,
+    wechatH5Login,
     updatePassword,
     smsCode,
     loginBySmsCode,
