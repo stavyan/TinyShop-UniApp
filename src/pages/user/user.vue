@@ -4,9 +4,9 @@
 				<image class="bg" src="/static/user-bg2.jpg"></image>
 				<view class="user-info-box" @click="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
 					<view class="portrait-box">
-						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || '/static/missing-face.png'"></image>
+						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
 						<text class="username">
-							{{ userInfo && (userInfo.nickname || userInfo.realname) ||'请先登录'}}
+							{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
 						</text>
 					</view>
 					<!--<view class="info-box">-->
@@ -172,6 +172,21 @@
          	code: this.code
 				 }).then(r => {
             if (r.code === 200) {
+            	if (!data.login) {
+								uni.showModal({
+									content: '你尚未绑定账号，是否跳转登录页面？',
+									success: (confirmRes)=> {
+									if (confirmRes.confirm) {
+										const url = '/pages/public/login';
+										uni.navigateTo({
+											url
+										})
+									}
+								}
+								});
+							} else {
+            		this.user_info = r.date.user_info.original
+							}
             } else {
                 uni.showToast({title: r.message, icon: "none"});
             }
