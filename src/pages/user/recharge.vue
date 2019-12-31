@@ -77,6 +77,7 @@
 	// #ifdef H5
 	import jweixin from 'jweixin-module';
 	import {isBindingCheck} from "../../api/login";
+	import {rechargeUrl} from "../../api/params";
 	// #endif
 	export default {
 		data() {
@@ -167,7 +168,7 @@
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				console.log(window.location.href)
 				await this.$post(`${wechatConfig}`, {
-					url: 'http://html5.tinyshop.yllook.com/pages/user/recharge',
+					url: rechargeUrl,
 					jsApiList,
 					debug: true,
 				}).then(r => {
