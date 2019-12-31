@@ -170,7 +170,7 @@
 				await this.$post(`${wechatConfig}`, {
 					url: rechargeUrl,
 					jsApiList,
-					debug: true,
+					debug: false,
 				}).then(r => {
 					if (r.code === 200) {
 						jweixin.config({
