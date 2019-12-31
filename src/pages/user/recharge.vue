@@ -165,8 +165,9 @@
 				// #ifdef H5
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+				console.log(window.location.href)
 				await this.$post(`${wechatConfig}`, {
-					url: window.location.href,
+					url: 'http://html5.tinyshop.yllook.com/pages/user/recharge',
 					jsApiList,
 					debug: true,
 				}).then(r => {

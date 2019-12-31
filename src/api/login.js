@@ -15,6 +15,9 @@ const loginByPass = "/tiny-shop/v1/site/login";
 // 微信授权登录
 const wechatH5Login = "/tiny-shop/v1/third-party/wechat";
 
+// 微信小程序授权登录
+const mpWechatLogin = "/tiny-shop/v1/third-party/wechat-mp";
+
 // 密码重置
 const updatePassword = "/tiny-shop/v1/site/up-pwd";
 
@@ -41,6 +44,7 @@ export {
     loginByPass,
     isBindingCheck,
     wechatH5Login,
+    mpWechatLogin,
     authLogin,
     updatePassword,
     smsCode,

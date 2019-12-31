@@ -272,9 +272,6 @@
 						this.getOrderList();
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
-            this.page = 1;
-            this.orderList = [];
-						this.getOrderList();
 					}
 				}).catch(err => {
 					console.log(err)

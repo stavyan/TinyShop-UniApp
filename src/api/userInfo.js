@@ -84,6 +84,11 @@ const opinionCreate = "/tiny-shop/v1/member/opinion/create";
 // 意见反馈详情
 const opinionDetail = "/tiny-shop/v1/member/opinion/view";
 
+// 第三方授权列表
+const thirdPartyAuthList = "/tiny-shop/v1/member/auth/index";
+// 解除第三方授权列表
+const thirdPartyAuthDelete = "/tiny-shop/v1/member/auth/delete";
+
 // 上传图片
 const uploadImage = "https://www.yllook.com/api/tiny-shop/v1/common/file/images";
 // 上传图片
@@ -126,5 +131,7 @@ export {
     uploadBase64Image,
     opinionList,
     opinionCreate,
-    opinionDetail
+    opinionDetail,
+    thirdPartyAuthList,
+    thirdPartyAuthDelete
 };

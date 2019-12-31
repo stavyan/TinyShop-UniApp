@@ -342,6 +342,19 @@
                 }
 			}
 		}, {
+			"path": "pages/third-party/list",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "授权列表",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+		}, {
 			"path": "pages/address/addressManage",
 			"style": {
 				"navigationBarTitleText": ""

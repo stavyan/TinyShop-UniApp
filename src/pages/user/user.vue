@@ -2,12 +2,25 @@
 	<view class="container">
 			<view class="user-section">
 				<image class="bg" src="/static/user-bg2.jpg"></image>
-				<view class="user-info-box" @click="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
+				<view
+            open-type="getUserInfo"
+            class="user-info-box"
+            @click="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
 					<view class="portrait-box">
 						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
+						<!--#ifdef MP-WEIXIN-->
+						<text class="username" v-if="token">
+							{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
+						</text>
+						<button v-if="!token" class='username' type='primary' open-type="getUserInfo" withCredentials="true" lang="zh_CN" @getuserinfo="wxGetUserInfo">
+								授权登录
+						</button>
+						<!--#endif -->
+						<!--#ifndef MP-WEIXIN-->
 						<text class="username">
 							{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
 						</text>
+						<!--#endif -->
 					</view>
 					<!--<view class="info-box">-->
 					<!--</view>-->
@@ -124,7 +137,7 @@
   import {footPrintList, memberInfo} from "../../api/userInfo";
 	import share from '@/components/share';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
-	import {wechatH5Login} from "../../api/login";
+	import {mpWechatLogin, wechatH5Login} from "../../api/login";
 	import {mapMutations} from "vuex";
 	let startY = 0, moveY = 0, pageAtTop = true;
     export default {
@@ -228,6 +241,8 @@
 			share(){
 				this.$refs.share.toggleMask();
 			},
+			wxGetUserInfo() {
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -278,6 +293,7 @@
 			 * navigator标签现在默认没有转场动画，所以用navToview
 			 */
 			navTo(url){
+				const _this = this;
 				if (!url) {
 					uni.showToast({title: '我还没写', icon: "none"});
 					return;
@@ -307,17 +323,72 @@
           });
 					} else {
           	uni.showModal({
+              content: '你暂未登陆，是否跳转登录页面？',
+              success: (confirmRes)=> {
+                if (confirmRes.confirm) {
+                  uni.navigateTo({
+                    url
+                  })
+                }
+              }
+            });
+					}
+					/*  #endif  */
+          /*  #ifdef MP-WEIXIN */
+          uni.showModal({
             content: '你暂未登陆，是否跳转登录页面？',
             success: (confirmRes)=> {
               if (confirmRes.confirm) {
-                uni.navigateTo({
-                  url
-                })
+                uni.login({
+                  provider: 'weixin',
+                  success: function (loginRes) {
+                    uni.getUserInfo({
+                      provider: 'weixin',
+                      success: function (infoRes) {
+                    		console.log(infoRes)
+                        _this.$post(mpWechatLogin, {
+													signature: infoRes.signature,
+													encryptedData: infoRes.encryptedData,
+													rawData: infoRes.rawData,
+													iv: infoRes.iv,
+													code: loginRes.code
+												 }).then(async r => {
+													 if (r.code === 200) {
+														 if (!r.data.login) {
+															 _this.user_info = r.data.user_info;
+															 uni.showModal({
+																 content: '你尚未绑定账号，是否跳转登录页面？',
+																 success: (confirmRes) => {
+																	 if (confirmRes.confirm) {
+																		 const url = `/pages/public/login?userInfo=${JSON.stringify(_this.user_info)}`;
+																		 uni.navigateTo({
+																			 url
+																		 })
+																	 }
+																 }
+															 });
+														 } else {
+															 _this.userInfo = r.data.user_info.member || undefined;
+															 _this.token = r.data.user_info.access_token || undefined;
+															 await _this.login(r.data.user_info);
+															 _this.initData();
+															uni.showToast({title: '已为您授权登录', icon: "none"});
+														 }
+													 } else {
+														uni.showToast({title: r.message, icon: "none"});
+													 }
+												 })
+                      },
+                      fail: function (err) {
+                        console.log(err);
+                      },
+                    });
+                  }
+                });
               }
             }
           });
-					}
-					/*  #endif  */
+          /*  #endif  */
 				} else {
           uni.navigateTo({
             url
@@ -481,6 +552,15 @@
 				font-size: $font-lg + 6upx;
 				color: $font-color-dark;
 				margin-left: 20upx;
+			}
+			button {
+				background-color: transparent;
+				font-size: $font-lg + 6upx;
+				color: $font-color-dark;
+				border: none;
+			}
+			button::after {
+				border: none;
 			}
 		}
 		.recharge {

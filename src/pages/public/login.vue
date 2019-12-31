@@ -257,14 +257,20 @@
 						this.login(r.data);
 						if (this.userInfo) {
 							const oauthClientParams = {}
-							oauthClientParams.oauth_client = 'wechat'
+							/*  #ifdef MP-WEIXIN */
+							oauthClientParams.oauth_client = 'wechatMp';
+							/*  #endif  */
+							/*  #ifndef MP-WEIXIN */
+							oauthClientParams.oauth_client = 'wechat';
+							/*  #endif  */
 							const userInfo = JSON.parse(this.userInfo);
+							console.log(userInfo);
 							this.$post(authLogin, {
 								...userInfo,
 								...oauthClientParams,
-								gender: userInfo.sex,
-								oauth_client_user_id: userInfo.openid,
-								head_portrait: userInfo.headimgurl,
+								gender: userInfo.sex || userInfo.gender,
+								oauth_client_user_id: userInfo.openid || userInfo.openId,
+								head_portrait: userInfo.headimgurl || userInfo.avatarUrl,
 							}).then(r=>{
 								if (r.code === 200) {
 								} else {

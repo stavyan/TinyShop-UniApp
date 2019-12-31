@@ -12,12 +12,6 @@
 		</view>
 		<view class="product-textarea">
 			<form @submit="handleOrderRefundApply">
-				<radio-group name="refund_type" class="refund-type">
-					<label class="gender-item" v-for="(item, index) in refundTypeArr" :key="index">
-						<radio class="gender-item-radio" :value="item.value" color="#fa436a" :checked="'1' === item.value" />
-						<text class="gender-item-text">{{ item.name }}</text>
-					</label>
-				</radio-group>
 				 <textarea name="refund_reason" class="textarea" maxlength="140"
 					 @input="handleContentChange"
 					 :value="refund_reason"
@@ -56,15 +50,6 @@
 				productInfo: {},
 				refundType: 1,
 				refund_reason: '',
-				refundTypeArr: [
-					{
-						value: '1',
-						name: '退款'
-					},
-					{
-						value: '2',
-						name: '退货退款'
-					}],
 			}
 		},
 		computed: {

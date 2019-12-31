@@ -8,6 +8,10 @@
 			<text class="cell-tit">修改密码</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
+		<view class="list-cell b-b" @click="navTo('/pages/third-party/list')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">授权管理</text>
+			<text class="cell-more yticon icon-you"></text>
+		</view>
 <!--		<view class="list-cell b-b" @click="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">-->
 <!--			<text class="cell-tit">收货地址</text>-->
 <!--			<text class="cell-more yticon icon-you"></text>-->
