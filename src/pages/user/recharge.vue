@@ -152,21 +152,20 @@
 			 *@blog https://stavtop.club
 			 *@date 2019/12/11 11:01:12
 			 */ async initData(options) {
-				// this.code = options.code;
-				// if (this.isWechat() && !this.code) {
-				// 	const url = window.location.href;
-				// 	window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
-				// 	appid=wx869d264c83ad71cc&
-				// 	redirect_uri=${url}&
-				// 	response_type=code&
-				// 	scope=snsapi_userinfo&
-				// 	state=STATE#wechat_redirect`;
-				// 	return;
-				// }
+					this.code = options.code;
+					if (this.isWechat() && !this.code) {
+						const url = window.location.href;
+						window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
+						appid=wx869d264c83ad71cc&
+						redirect_uri=${url}&
+						response_type=code&
+						scope=snsapi_userinfo&
+						state=STATE#wechat_redirect`;
+						return;
+					}
 				// #ifdef H5
 				const jsApiList = JSON.stringify(['chooseWXPay']);
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
-				console.log(window.location.href)
 				await this.$post(`${wechatConfig}`, {
 					url: rechargeUrl,
 					jsApiList,
