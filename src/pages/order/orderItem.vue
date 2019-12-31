@@ -144,7 +144,7 @@ export default {
 				} else if (parseInt(status, 10) === 2) {
 					options.push({ text: '退货'})
 					options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }})
-				} else if (parseInt(status, 10) === 3) {
+				} else if (parseInt(status, 10) === 4) {
 					switch (isEvaluate) {
 						case '0':
 							options.push({text: '评论', style: {backgroundColor: 'rgb(254,156,1)'}});
