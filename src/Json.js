@@ -228,7 +228,7 @@ const detailData = {
 			nickname: 'Ranth Allngal',
 			time: '09-20 12:54',
 			zan: '54',
-			content: '评论不要太苛刻，不管什么产品都会有瑕疵，客服也说了可以退货并且商家承担运费，我觉得至少态度就可以给五星。'
+			content: '评价不要太苛刻，不管什么产品都会有瑕疵，客服也说了可以退货并且商家承担运费，我觉得至少态度就可以给五星。'
 		},
 		{
 			src: 'http://img0.imgtn.bdimg.com/it/u=2396068252,4277062836&fm=26&gp=0.jpg',

@@ -59,7 +59,7 @@ const creditsLogList = "/tiny-shop/v1/member/credits-log/index";
 
 // 创建订单评价
 const evaluateCreate = "/tiny-shop/v1/member/evaluate/create";
-// 追加评论
+// 追加评价
 const evaluateAgain = "/tiny-shop/v1/member/evaluate/again";
 
 // 发票列表

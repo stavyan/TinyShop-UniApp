@@ -30,7 +30,7 @@
 				</view>
 				<view class="bot-row">
 					<text>评分: {{ productDetail.match_point || 0 }}</text>
-					<text>评论量: {{ productDetail.comment_num }}</text>
+					<text>评价量: {{ productDetail.comment_num }}</text>
 					<text>分享量: {{ productDetail.transmit_num }}</text>
 				</view>
 			</view>
@@ -545,7 +545,7 @@
 				})
 			},
 			/**
-			 *@des 跳转至评论列表
+			 *@des 跳转至评价列表
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/11/28 15:32:26
@@ -553,7 +553,7 @@
 			 */
 			toEvaluateList () {
 				uni.navigateTo({
-					url: `/pages/evaluation/list?product_id=${this.productDetail.id}`
+					url: `/pages/evaluation/list?comment_num=${this.productDetail.comment_num}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`
 				})
 			},
 			numberChange(data){

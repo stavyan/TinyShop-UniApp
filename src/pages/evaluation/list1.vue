@@ -35,7 +35,7 @@
 				</view>
 			</view>
 		  <empty :info="'该商品暂无评价'" v-if="evaluationList.length === 0"></empty>
-			<!-- 评论区 end -->
+			<!-- 评价区 end -->
 		  <uni-load-more :status="loadingType" />
 		</view>
   </view>

@@ -129,11 +129,29 @@
 					return
 				}
 				uni.showLoading({title: '正在支付...'});
+				const params = {};
+				params.data = JSON.stringify(this.orderInfo);
+				params.order_group = 'order';
+				params.pay_type = this.payType;
+				if (this.payType == 1) {
+					// #ifdef H5
+					if (this.isWechat) {
+						params.trade_type = 'js';
+					} else {
+						params.trade_type = 'wap';
+					}
+					// #endif
+					// #ifdef MP
+					params.trade_type = 'mini_program';
+					// #endif
+				} else if (this.payType == 5) {
+						params.trade_type = 'default';
+				}
 				await this.$post(`${orderPay}`, {
 					data: JSON.stringify(this.orderInfo),
-					orderGroup: 'order',
-					tradeType: 'default',
-					payType: this.payType
+					order_group: 'order',
+					trade_type: 'js',
+					pay_type: this.payType
 				}).then(async r => {
 					if (r.code === 200) {
 						uni.showToast({title: '支付成功', icon: "none"});
@@ -146,6 +164,14 @@
 				}).catch(err => {
 					console.log(err)
 				})
+			},
+			isWechat(){
+					const ua = window.navigator.userAgent.toLowerCase();
+					if(ua.match(/micromessenger/i) == 'micromessenger'){
+							return true;
+					}else{
+							return false;
+					}
 			},
 		}
 	}

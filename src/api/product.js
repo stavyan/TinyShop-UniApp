@@ -39,7 +39,7 @@ const orderPay= "/tiny-shop/v1/common/pay/create";
 // 选择快递运费计算
 const orderFreightFee = "/tiny-shop/v1/order/order/freight-fee";
 
-// 商品评论列表
+// 商品评价列表
 const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 
 // 品牌列表

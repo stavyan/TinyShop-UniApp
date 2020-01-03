@@ -4,10 +4,10 @@
 			<swiper-item v-for="(item,index) in data.imgList" :key="index">
 				<view class="image-wrapper">
 					<image
-						:src="item.src" 
-						:class="item.loaded" 
+						:src="item.src"
+						:class="item.loaded"
 						mode="aspectFill"
-						@load="imageOnLoad('imgList', index)" 
+						@load="imageOnLoad('imgList', index)"
 					></image>
 				</view>
 			</swiper-item>
@@ -39,16 +39,16 @@
 		<view class="guess">
 			<view class="section-tit">猜你喜欢</view>
 			<view class="guess-list">
-				<view 
+				<view
 					v-for="(item, index) in data.guessList" :key="index"
 					class="guess-item"
 				>
 					<view class="image-wrapper">
-						<image 
-							:src="item.src" 
-							:class="item.loaded" 
+						<image
+							:src="item.src"
+							:class="item.loaded"
 							mode="aspectFill"
-							@load="imageOnLoad('guessList', index)" 
+							@load="imageOnLoad('guessList', index)"
 						></image>
 					</view>
 					<text class='title clamp' :class="{Skeleton:!loaded}">{{item.title}}</text>
@@ -56,9 +56,9 @@
 				</view>
 			</view>
 		</view>
-		<!-- 评论 -->
+		<!-- 评价 -->
 		<view class="evalution">
-			<view class="section-tit">评论</view>
+			<view class="section-tit">评价</view>
 			<view class="eva-list" :class="{Skeleton:!loaded}">
 				<view  v-for="(item, index) in data.evaList" :key="index"
 					class="eva-item"
@@ -77,8 +77,8 @@
 			</view>
 		</view>
 		<!-- 分享 -->
-		<share 
-			ref="share" 
+		<share
+			ref="share"
 			:contentHeight="580"
 			:shareList="shareList"
 		></share>
@@ -96,7 +96,7 @@
 				loaded: false,
 				currentEpd: 1,
 				data: {
-					guessList: [{},{},{},{}] 
+					guessList: [{},{},{},{}]
 				},
 				shareList: []
 			};
@@ -123,7 +123,7 @@
 			},
 			//分享
 			share(){
-				this.$refs.share.toggleMask();	
+				this.$refs.share.toggleMask();
 			},
 			//收藏
 			favorite(){
@@ -204,7 +204,7 @@
 					width:220upx;
 				}
 			}
-		} 
+		}
 		.yticon {
 			font-size: 44upx;
 			color: $font-color-base;
@@ -259,17 +259,17 @@
 		min-width: 40%;
 		margin-right: 26upx;
 		padding-bottom: 40upx;
-	
+
 		&:nth-child(2n) {
 			margin-right: 0;
 		}
-	
+
 		image {
 			width: 100%;
 			height: 200upx;
 			border-radius: 10upx;
 		}
-	
+
 		text {
 			font-size: $font-sm;
 			color: $font-color-light;
@@ -320,7 +320,7 @@
 			top: 10upx;
 			right: 10upx;
 			.yticon{
-				margin-left: 8upx; 
+				margin-left: 8upx;
 			}
 		}
 		.content{

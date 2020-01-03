@@ -37,7 +37,7 @@ const smsCode = "/tiny-shop/v1/site/sms-code";
 const logout = "/tiny-shop/v1/site/logout";
 
 // 退出登录
-const refreshToken = "/tiny-shop/v1/site/refresh";
+const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
 
 export {
     registerByPass,

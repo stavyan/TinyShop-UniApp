@@ -25,7 +25,7 @@
 							还可输入 <text class="s"> {{ wordLimit }} </text> 字
 					</text>
 				</view>
-				<button class="confirm-btn" formType="submit">{{ parseInt(refundType, 10) === 1 ? '退款': '退货退款' }}</button>
+				<button class="confirm-btn" formType="submit">{{ parseInt(refundType, 10) === 1 ? '仅退款': '退货退款' }}</button>
 			</form>
 		</view>
 	</view>
@@ -33,7 +33,7 @@
 
 <script>
 	/**
-	 * @des 发布评价
+	 * @des 发表评价
 	 *
 	 * @author stav stavyan@qq.com
 	 * @date 2019-11-27 14:32
@@ -58,11 +58,29 @@
 			}
 		},
 		onLoad(options){
-			this.productInfo = JSON.parse(options.data);
-			this.refundType = options.refundType
-			this.token = uni.getStorageSync('accessToken') || undefined;
+			this.initData(options);
 		},
 		methods: {
+			/**
+			 *@des 数据初始化
+			 *@author stav stavyan@qq.com
+			 *@blog https://stavtop.club
+			 *@date 2020/01/03 16:02:40
+			 */
+			initData(options) {
+				this.token = uni.getStorageSync('accessToken') || undefined;
+				this.productInfo = JSON.parse(options.data);
+				this.refundType = options.refundType;
+				let title = '仅退款';
+				if(parseInt(this.refundType, 10) === 1){
+					title = '仅退款'
+				} else {
+					title = '退货退款'
+				}
+				uni.setNavigationBarTitle({
+					title
+				});
+			},
 			/**
 			 *@des 评价内容监听事件
 			 *@author stav stavyan@qq.com
@@ -81,8 +99,8 @@
 			 */
 			async handleOrderRefundApply(e) {
 				const formData = e.detail.value;
+				formData.refund_type = this.refundType;
 				let rule = [
-					{name:"refund_type", checkType : "notnull", checkRule:"",  errorMsg:"请选择退款类型"},
 					{name:"refund_reason", checkType : "notnull", checkRule:"",  errorMsg:"请输入退款/退货理由"}
 				];
 				const checkRes = graceChecker.check(formData, rule);

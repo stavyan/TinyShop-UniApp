@@ -1,6 +1,5 @@
 import axios from './uni-axios'
 import {refreshToken} from "../api/login";
-import {post} from './request'
 
 // 创建自定义接口服务实例
 const http = axios.create({

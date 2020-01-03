@@ -6,7 +6,7 @@
 					({{label.number}})
 				</view>
 			</view>
-			<view class="list">
+			<view class="list" v-if="evaluationList.length > 0">
 				<view class="row" v-for="(row, index) in evaluationList" :key="index">
 					<view class="left">
 						<view class="face">
@@ -38,7 +38,6 @@
 							</view>
 						</view>
 						<view class="append" v-if="parseInt(row.has_again, 10) === 1">
-							111
 							<view class="date">
 								{{ row | againDay }}
 							</view>
@@ -53,25 +52,37 @@
 						</view>
 					</view>
 				</view>
+				<uni-load-more class="load-more" :status="loadingType" />
 			</view>
+			<div v-else class="no-evaluation">
+				暂无相关评价
+			</div>
 		</view>
 </template>
 
 <script>
 	import {evaluateList} from "../../api/product";
 	import moment from 'moment';
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+	import empty from "@/components/empty";
 	export default {
+		components: {
+			uniLoadMore,
+			empty
+		},
 		data() {
 			return {
+				evaluateStat: {},
+				loadingType: 'more',
 				labelList:[
-					{name:'全部',number:25,type: {}},
-					{name:'好评',number:23,type: { explain_type: 3 }},
-					{name:'中评',number:1,type: { explain_type: 2 }},
-					{name:'差评',number:1,type: { explain_type: 1 }},
-					{name:'文字',number:12,type: { has_content: 1 }},
-					{name:'有图',number:12,type: { has_cover: 1 }},
-					{name:'视频',number:2,type: { has_video: 1 }},
-					{name:'追加',number:2,type: { has_again: 1 }}
+					// {name:'全部',number:25,type: {}},
+					// {name:'好评',number: this.evaluateStat.good_num, type: { explain_type: 3 }},
+					// {name:'中评',number:1,type: { explain_type: 2 }},
+					// {name:'差评',number:1,type: { explain_type: 1 }},
+					// {name:'文字',number:12,type: { has_content: 1 }},
+					// {name:'有图',number:12,type: { has_cover: 1 }},
+					// {name:'视频',number:2,type: { has_video: 1 }},
+					// {name:'追加',number:2,type: { has_again: 1 }}
 				],
 				labelIndex: 0,
 				evaluationList: [],
@@ -113,7 +124,18 @@
 			 *@date 2019/11/28 15:41:29
 			 */
 			initData (options) {
-				this.id = options.product_id;
+				this.evaluateStat = JSON.parse(options.evaluateStat);
+				this.id = this.evaluateStat.product_id;
+				this.labelList = [
+					{name:'全部',number: options.comment_num,type: {}},
+					{name:'好评',number: this.evaluateStat.good_num || 0, type: { explain_type: 3 }},
+					{name:'中评',number: this.evaluateStat.ordinary_num || 0, type: { explain_type: 2 }},
+					{name:'差评',number: this.evaluateStat.negative_num || 0, type: { explain_type: 1 }},
+					// {name:'文字',number: this.evaluateStat.good_num || 0, type: { has_content: 1 }},
+					{name:'有图',number: this.evaluateStat.cover_num || 0, type: { has_cover: 1 }},
+					// {name:'视频',number: this.evaluateStat.good_num || 0, type: { has_video: 1 }},
+					{name:'追加',number: this.evaluateStat.again_num || 0, type: { has_again: 1 }}
+				]
 				this.getEvaluationList();
 			},
 			async getEvaluationList(type, index = 0, params) {
@@ -152,10 +174,9 @@
 </script>
 
 <style lang="scss">
-	page{
+page{
 		background-color: #fff;
 	}
-
 .myVideo{
 	position: fixed;
 	top: 50%;
@@ -166,8 +187,8 @@
 		display: flex;
 	}
 	width: 100%;
-	padding: 0 3%;
 	.label{
+		padding: 0 2%;
 		flex-wrap:wrap;
 		view{
 			padding: 0 20upx;
@@ -186,9 +207,11 @@
 		}
 	}
 	.list{
-		width: 100%;
 		flex-wrap: wrap;
-		padding: 20upx 0;
+		padding: 20upx 4%;
+		.load-more {
+			width: 100%;
+		}
 		.row{
 			width: 100%;
 			margin-top: 30upx;
@@ -303,6 +326,11 @@
 				}
 			}
 		}
+	}
+	.no-evaluation {
+		text-align: center;
+		margin-top: 40upx;
+		color: #555;
 	}
 }
 </style>

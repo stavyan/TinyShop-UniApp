@@ -15,6 +15,7 @@
 			<view class="product-rate-wrapper"><uni-rate
 				size="24"
 				:value="evaluate.scores"
+				 @change="handleScoreChange"
 				:margin="12"
 				class="rate"
 				active-color="#fa436a" />
@@ -57,7 +58,7 @@
 			<view class="add" @click="uploadImage">+</view>
 		</view>
 
-		<button class="confirm-btn" @click="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发布评价'}}</button>
+		<button class="confirm-btn" @click="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发表评价'}}</button>
 	</view>
 </template>
 
@@ -100,9 +101,9 @@
 			this.productInfo = JSON.parse(options.data);
 			this.evaluationType = options.type;
 			this.token = uni.getStorageSync('accessToken') || undefined;
-			let title = '发布评价';
+			let title = '发表评价';
 			if(options.type === 'add'){
-				title = '追加评论'
+				title = '追加评价'
 			}
 			uni.setNavigationBarTitle({
 				title
@@ -118,6 +119,9 @@
 			 */
 			handleContentChange (e) {
 				this.evaluate.content = e.detail.value;
+			},
+			handleScoreChange (e) {
+				this.evaluate.scores = e.value;
 			},
 			/**
 			 *@des 删除定制已删除图片
@@ -216,7 +220,7 @@
 				this.evaluate.order_product_id = this.productInfo.id;
 				this.evaluate.covers = this.imageList;
 				const params = {};
-				uni.showLoading({title: '评论中...'});
+				uni.showLoading({title: '评价中...'});
 				if (this.evaluationType !== 'add') {
 					const data = [];
 					data.push(this.evaluate)
@@ -233,7 +237,7 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/12/16 17:16:54
-			 *@param params 发布评论参数
+			 *@param params 发布评价参数
 			 */
 			async handleEvaluateCreate(params) {
 				await this.$post(`${evaluateCreate}`, {
@@ -251,11 +255,11 @@
 				})
 			},
 			/**
-			 *@des 追加评论
+			 *@des 追加评价
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/12/16 17:17:10
-			 *@param params 发布评论参数
+			 *@param params 发布评价参数
 			 */
 			async handleEvaluateAgain(params) {
 				await this.$post(`${evaluateAgain}?order_product_id=${this.productInfo.id}`, {

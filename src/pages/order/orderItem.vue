@@ -4,7 +4,7 @@
 			<uni-swipe-action
 					v-for="(item, index) in orderItemList"
 					:key="index"
-					:options="itemOptions(item.is_evaluate)"
+					:options="itemOptions(item.is_evaluate, item.refund_status)"
 					:info="item"
 					@click="bindClick"
 					class="uni-list-cell"
@@ -50,7 +50,7 @@ import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from './../../static/errorImage.jpg';
 import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
-import {closeOrderRefundApply} from "../../api/userInfo";
+import {closeOrderRefundApply, orderDetail} from "../../api/userInfo";
 import moment from 'moment';
 export default {
 	components: {
@@ -100,7 +100,7 @@ export default {
 						 status = refundItem.value
 					}
 				})
-			} else if (parseInt(item.order_status, 10) === 3) {
+			} else if (parseInt(item.order_status, 10) === 4) {
 				const evaluateStatusList = [
 					{key: 0, value: '未评价'},
 					{key: 1, value: '已评价'},
@@ -135,22 +135,39 @@ export default {
 	},
 	computed: {
 		itemOptions() {
-			return function (isEvaluate) {
+			return function (isEvaluate, refundStatus) {
 				const options = [];
+				console.log(refundStatus)
 				const status = this.orderStatus;
 				if (parseInt(status, 10) === 1) {
-					options.push({ text: '退款'})
-					options.push({ text: '取消退款', style: { backgroundColor: 'rgb(254,156,1)' }})
+					switch (refundStatus) {
+						case '0':
+							options.push({ text: '仅退款'})
+							break;
+						case '1':
+							options.push({ text: '取消退款', style: { backgroundColor: 'rgb(254,156,1)' }})
+							break;
+						default:
+							break;
+					}
 				} else if (parseInt(status, 10) === 2) {
-					options.push({ text: '退货'})
-					options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }})
+					switch (refundStatus) {
+						case '0':
+							options.push({ text: '退货退款'})
+							break;
+						case '1':
+							options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }});
+							break;
+						default:
+							break;
+					}
 				} else if (parseInt(status, 10) === 4) {
 					switch (isEvaluate) {
 						case '0':
-							options.push({text: '评论', style: {backgroundColor: 'rgb(254,156,1)'}});
+							options.push({text: '评价', style: {backgroundColor: 'rgb(254,156,1)'}});
 							break;
 						case '1':
-							options.push({text: '追加评论', style: {backgroundColor: 'rgb(255,58,49)'}});
+							options.push({text: '追加评价', style: {backgroundColor: 'rgb(255,58,49)'}});
 							break;
 						case 2:
 							break;
@@ -167,13 +184,13 @@ export default {
 	},
 	methods:{
 		bindClick(e) {
-			if (e.content.text === '退款') {
+			if (e.content.text === '仅退款') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
 					uni.showToast({title: '您已经提交了退款申请', icon: 'none'})
 					return;
 				}
 				this.goRefund(e.data, 1)
-			} else if (e.content.text === '退货') {
+			} else if (e.content.text === '退货退款') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
 					uni.showToast({title: '您已经提交了退货申请', icon: 'none'})
 					return;
@@ -181,9 +198,9 @@ export default {
 				this.goRefund(e.data, 2)
 			} else if (e.content.text === '取消退货' || e.content.text === '取消退款') {
 				this.handleCloseOrderRefundApply(e.data.id)
-			} else if (e.content.text === '评论') {
+			} else if (e.content.text === '评价') {
 				this.goEvaluation(e.data)
-			} else if (e.content.text === '追加评论') {
+			} else if (e.content.text === '追加评价') {
 				this.goEvaluation(e.data, 'add')
 			}
 		},
@@ -210,13 +227,25 @@ export default {
 				console.log(err)
 			})
 		},
-		initData (options) {
+		async initData(options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
-			if (this.token) {
-				this.orderItemList = JSON.parse(options.list);
-				this.orderStatus = options.orderStatus
-				// this.initOptions(options.orderStatus)
-			}
+			await this.$get(`${orderDetail}`, {
+				id: options.id
+			}).then(r => {
+				if (r.code === 200) {
+					this.orderItemList = r.data.product;
+					this.orderStatus =  r.data.order_status;
+				} else {
+					uni.showToast({title: r.message, icon: "none"});
+				}
+			}).catch(err => {
+				console.log(err)
+			});
+			// if (this.token) {
+			// 	// this.orderItemList = JSON.parse(options.list);
+			// 	this.orderStatus = options.orderStatus
+			// 	// this.initOptions(options.orderStatus)
+			// }
 		},
 		initOptions (status) {
 			if (parseInt(status, 10) === 1) {
@@ -229,9 +258,9 @@ export default {
 				let option1 = [], option2 = [];
 				this.orderItemList.forEach(item => {
 					if (parseInt(item.is_evaluate) === 0) {
-						option1.push({text: '评论', style: { backgroundColor: 'rgb(254,156,1)' }});
+						option1.push({text: '评价', style: { backgroundColor: 'rgb(254,156,1)' }});
 					} else if (parseInt(item.is_evaluate) === 1) {
-						option2.push({text: '追加评论', style: { backgroundColor: 'rgb(255,58,49)' }});
+						option2.push({text: '追加评价', style: { backgroundColor: 'rgb(255,58,49)' }});
 					}
 				})
 				this.options = option1 || option2 || [];

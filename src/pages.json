@@ -159,7 +159,7 @@
 		}, {
 			"path": "pages/evaluation/evaluation",
 			"style": {
-				"navigationBarTitleText": "发布评价"
+				"navigationBarTitleText": "发表评价"
 			}
 		}, {
 			"path": "pages/refund/refund",
@@ -170,7 +170,7 @@
 			"path": "pages/evaluation/list",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "评论列表",
+				"navigationBarTitleText": "评价列表",
 				"app-plus": {
                     "pullToRefresh": {
                         "support": true,

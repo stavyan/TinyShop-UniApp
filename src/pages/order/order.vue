@@ -165,18 +165,18 @@
         return status;
       }
 		},
-		// onShow(){
-		// 	this.page = 1;
-		// 	this.orderList = [];
-		// 	this.getOrderList();
-		// },
+		onShow(){
+			this.page = 1;
+			this.orderList = [];
+			this.getOrderList();
+		},
 		onLoad(options){
 			/**
 			 * 修复app端点击除全部订单外的按钮进入时不加载数据的问题
 			 * 替换onLoad下代码即可
 			 */
 			this.tabCurrentIndex = +options.state + 1;
-			this.initData()
+			// this.initData()
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -236,7 +236,7 @@
       handleOrderEvaluation(item, type, refund_type) {
         // if(item.product.length > 1) {
           uni.navigateTo({
-            url: `/pages/order/orderItem?list=${JSON.stringify(item.product)}&orderStatus=${item.order_status}`
+            url: `/pages/order/orderItem?id=${item.id}`
           })
         // } else {
         // 	if (type === 'refund') {
