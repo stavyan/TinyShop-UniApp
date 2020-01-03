@@ -145,7 +145,7 @@ export default {
 							options.push({ text: '仅退款'})
 							break;
 						case '1':
-							options.push({ text: '取消退款', style: { backgroundColor: 'rgb(254,156,1)' }})
+							options.push({ text: '取消', style: { backgroundColor: 'rgb(254,156,1)' }})
 							break;
 						default:
 							break;
@@ -153,10 +153,10 @@ export default {
 				} else if (parseInt(status, 10) === 2) {
 					switch (refundStatus) {
 						case '0':
-							options.push({ text: '退货退款'})
+							options.push({ text: '退款/退货'})
 							break;
 						case '1':
-							options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }});
+							options.push({ text: '取消', style: { backgroundColor: 'rgb(254,156,1)' }});
 							break;
 						default:
 							break;
@@ -190,7 +190,7 @@ export default {
 					return;
 				}
 				this.goRefund(e.data, 1)
-			} else if (e.content.text === '退货退款') {
+			} else if (e.content.text === '退款/退货') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
 					uni.showToast({title: '您已经提交了退货申请', icon: 'none'})
 					return;

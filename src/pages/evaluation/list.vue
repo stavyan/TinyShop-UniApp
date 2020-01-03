@@ -50,28 +50,24 @@
 						</view>
 					</view>
 				</view>
-				<uni-load-more class="load-more" :status="loadingType" />
 			</view>
-			<div v-else class="no-evaluation">
+			<view class="no-evaluation" v-else>
 				暂无相关评价
-			</div>
+			</view>
 		</view>
 </template>
 
 <script>
 	import {evaluateList} from "../../api/product";
 	import moment from 'moment';
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 	import empty from "@/components/empty";
 	export default {
 		components: {
-			uniLoadMore,
 			empty
 		},
 		data() {
 			return {
 				evaluateStat: {},
-				loadingType: 'more',
 				labelList:[
 					// {name:'全部',number:25,type: {}},
 					// {name:'好评',number: this.evaluateStat.good_num, type: { explain_type: 3 }},
@@ -113,7 +109,6 @@
 		methods: {
 			onImageError(index, index2) {
 				this.evaluationList[index].covers[index2] = this.errorImg;
-				console.log(this.evaluationList)
 			},
 			/**
 			 *@des 初始化数据
@@ -152,7 +147,6 @@
 					}
 					if (r.code === 200) {
 						this.labelIndex = index;
-						this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
 						this.evaluationList = [...this.evaluationList, ...r.data];
 					} else {
 						uni.showToast({title: r.message, icon: "none"});
@@ -207,9 +201,6 @@ page{
 	.list{
 		flex-wrap: wrap;
 		padding: 20upx 4%;
-		.load-more {
-			width: 100%;
-		}
 		.row{
 			width: 100%;
 			margin-top: 30upx;
@@ -326,8 +317,11 @@ page{
 		}
 	}
 	.no-evaluation {
+		overflow: hidden;
+		display: block;
+		width: 100%;
 		text-align: center;
-		margin-top: 40upx;
+		margin-top: 60upx;
 		color: #555;
 	}
 }

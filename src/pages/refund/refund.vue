@@ -12,6 +12,12 @@
 		</view>
 		<view class="product-textarea">
 			<form @submit="handleOrderRefundApply">
+				<radio-group v-if="parseInt(refundType, 10) === 2" name="refund_type" class="refund-type" @change="handleRefundTypeChange">
+					<label class="gender-item" v-for="(item, index) in refundTypeArr" :key="index">
+						<radio class="gender-item-radio" :value="item.value" color="#fa436a" :checked="refund_type == item.value" />
+						<text class="gender-item-text">{{ item.name }}</text>
+					</label>
+				</radio-group>
 				 <textarea name="refund_reason" class="textarea" maxlength="140"
 					 @input="handleContentChange"
 					 :value="refund_reason"
@@ -25,7 +31,7 @@
 							还可输入 <text class="s"> {{ wordLimit }} </text> 字
 					</text>
 				</view>
-				<button class="confirm-btn" formType="submit">{{ parseInt(refundType, 10) === 1 ? '仅退款': '退货退款' }}</button>
+				<button class="confirm-btn" formType="submit">{{ parseInt(refund_type, 10) === 1 ? '仅退款': '退货退款' }}</button>
 			</form>
 		</view>
 	</view>
@@ -49,7 +55,17 @@
 			return {
 				productInfo: {},
 				refundType: 1,
+				refund_type: 1,
 				refund_reason: '',
+				refundTypeArr: [
+					{
+						value: '1',
+						name: '仅退款'
+					},
+					{
+						value: '2',
+						name: '退货退款'
+					}],
 			}
 		},
 		computed: {
@@ -75,7 +91,7 @@
 				if(parseInt(this.refundType, 10) === 1){
 					title = '仅退款'
 				} else {
-					title = '退货退款'
+					title = '仅退款/退货退款'
 				}
 				uni.setNavigationBarTitle({
 					title
@@ -91,6 +107,9 @@
 			handleContentChange (e) {
 				this.refund_reason = e.detail.value;
 			},
+			handleRefundTypeChange (e) {
+				this.refund_type = e.detail.value;
+			},
 			/**
 			 *@des 退货/退款
 			 *@author stav stavyan@qq.com
@@ -99,7 +118,10 @@
 			 */
 			async handleOrderRefundApply(e) {
 				const formData = e.detail.value;
-				formData.refund_type = this.refundType;
+				// formData.refund_type = this.refundType;
+				if (parseInt(this.refundType, 10) === 1) {
+					formData.refund_type = this.refundType;
+				}
 				let rule = [
 					{name:"refund_reason", checkType : "notnull", checkRule:"",  errorMsg:"请输入退款/退货理由"}
 				];
