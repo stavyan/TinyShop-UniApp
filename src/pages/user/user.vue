@@ -308,7 +308,7 @@
               if (confirmRes.confirm) {
 								const href = window.location.href;
 								window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
-								appid=wx869d264c83ad71cc&
+								appid=wxc052ebc5038f31c0&
 								redirect_uri=${href}&
 								response_type=code&
 								scope=snsapi_userinfo&

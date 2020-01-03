@@ -1,11 +1,9 @@
 <template>
-	<view>
-		<view class="content">
-
+	<view class="content">
 			<view class="label">
 				<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList('', index, label.type)" :key="index">
 					{{label.name}}
-					<!--({{label.number}})-->
+					({{label.number}})
 				</view>
 			</view>
 			<view class="list">
@@ -57,7 +55,6 @@
 				</view>
 			</view>
 		</view>
-	</view>
 </template>
 
 <script>
@@ -168,11 +165,9 @@
 	view{
 		display: flex;
 	}
-	width: 94%;
+	width: 100%;
 	padding: 0 3%;
-
 	.label{
-		width: 100vw;
 		flex-wrap:wrap;
 		view{
 			padding: 0 20upx;

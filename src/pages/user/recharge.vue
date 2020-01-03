@@ -156,7 +156,7 @@
 					if (this.isWechat() && !this.code) {
 						const url = window.location.href;
 						window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
-						appid=wx869d264c83ad71cc&
+						appid=wxc052ebc5038f31c0&
 						redirect_uri=${url}&
 						response_type=code&
 						scope=snsapi_userinfo&
