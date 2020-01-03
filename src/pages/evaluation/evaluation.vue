@@ -294,7 +294,7 @@
 				flex: 1;
 				margin-left: 20upx;
 				.product-name {
-					font-size: $font-lg;
+					font-size: $font-base;
 					color: $font-color-dark;
 					line-height: 32upx;
 					min-height: 60upx;

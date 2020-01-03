@@ -10,9 +10,7 @@
 				<view class="row" v-for="(row, index) in evaluationList" :key="index">
 					<view class="left">
 						<view class="face">
-							<image
-								 :src="row.member_head_portrait || '/static/missing-face.png'"
-								mode="widthFix"></image>
+							<image class="avatar" :src="row.member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
 						</view>
 					</view>
 					<view class="right">
