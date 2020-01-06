@@ -253,7 +253,6 @@ export default {
 	view{
 		display: flex;
 		flex-wrap: wrap;
-
 	}
 	page{position: relative;background-color: #f5f5f5;}
 	.hidden{

@@ -315,6 +315,11 @@
 			"style": {
 				"navigationBarTitleText": "充值中心"
 			}
+		},{
+			"path": "pages/user/account",
+			"style": {
+				"navigationBarTitleText": "我的账户"
+			}
 		}, {
 			"path": "pages/user/coupon-center",
 			"style": {
