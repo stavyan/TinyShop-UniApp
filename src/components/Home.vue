@@ -1,64 +1,82 @@
 <template>
-  <div
-    class="home"
-    :style="{ top: top + 'px' }"
-    style="position:fixed;"
-    id="right-nav"
-    @touchmove="touchmove($event)"
-  >
-    <div class="homeCon bg-color-red" :class="homeActive === true ? 'on' : ''">
-      <router-link
-        :to="'/'"
-        class="iconfont icon-shouye-xianxing"
-      ></router-link>
-      <router-link
-        :to="'/cart'"
-        class="iconfont icon-caigou-xianxing"
-      ></router-link>
-      <router-link :to="'/user'" class="iconfont icon-yonghu1"></router-link>
-    </div>
-    <div class="pictrue" @click="open">
-      <img
-        :src="
-          homeActive === true
-            ? require('../static/gift.png')
-            : require('../static/gift.png')
+  <view class="home">
+    <view class="homeCon" :class="!homeActive ? 'on' : ''">
+      <text class="btn">主页</text>
+      <text class="btn">购物车</text>
+      <text class="btn">个人中心</text>
+    </view>
+    <view class="picture" @click.stop="open">
+      <image
+          :src="
+          homeActive
+            ? require('../static/close.gif')
+            : require('../static/open.gif')
         "
-        class="image"
+          class="image"
       />
-    </div>
-  </div>
+    </view>
+  </view>
 </template>
 <script>
 // import { mapGetters } from "vuex";
 export default {
-  name: "Home",
-  props: {},
-  data: function() {
-    return {
-      top: "",
-      homeActive: 'true'
-    };
-  },
-  // computed: mapGetters(["homeActive"]),
-  methods: {
-    touchmove(event) {
-      event.preventDefault();
-      let top =
-        event.touches[0].pageY -
-        (document.documentElement.scrollTop || document.body.scrollTop) -
-        this.$el.clientHeight;
-
-      if (top > 390) top = 390;
-      else if (top < 55) top = 55;
-      this.top = top;
+    name: "Home",
+    props: {},
+    data: function () {
+        return {
+            homeActive: true
+        };
     },
-    open: function() {
-      this.homeActive
-        ? this.$store.commit("CLOSE_HOME")
-        : this.$store.commit("OPEN_HOME");
+    methods: {
+        open() {
+            this.homeActive = !this.homeActive;
+        }
     }
-  }
 };
 </script>
-<style scoped></style>
+<style scoped lang="scss">
+  .home {
+    position: fixed;
+    top: 50%;
+    color: white;
+    text-align: center;
+    z-index: 33;
+    right: 10upx;
+  }
+
+  .home .homeCon {
+    overflow: hidden;
+    width: 0.86rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease-in-out 0s;
+    opacity: 0;
+    transform: scale(0);
+    height: 0;
+    color: #e93323;
+  }
+
+  .home .on {
+    opacity: 1;
+    transform: scale(1);
+    height: 180upx;
+    padding: 20upx 0;
+    width: 80upx;
+    margin-bottom: 10upx;
+    font-size: $font-sm;
+    color: #000;
+    .btn {
+      display: block;
+    }
+  }
+
+  .home .picture {
+    width: 72upx;
+    height: 72upx;
+    border-radius: 50%;
+    .image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+  }
+</style>

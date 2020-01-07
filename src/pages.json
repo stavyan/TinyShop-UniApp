@@ -320,6 +320,24 @@
 			"style": {
 				"navigationBarTitleText": "我的账户"
 			}
+		},{
+			"path": "pages/user/bill",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "账单明细",
+				"app-plus": {
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
+                }
+			}
+		},{
+			"path": "pages/user/integral",
+			"style": {
+				"navigationBarTitleText": "积分详情"
+			}
 		}, {
 			"path": "pages/user/coupon-center",
 			"style": {

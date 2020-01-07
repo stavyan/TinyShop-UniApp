@@ -24,12 +24,12 @@
 					</view>
 					<!--<view class="info-box">-->
 					<!--</view>-->
-					<view class="recharge" v-if="token">
-						<view class="img" @click.stop="navTo('/pages/user/recharge')">
-							<view class="icon chongzhi"></view>
-							<view class="text">充值</view>
-						</view>
-					</view>
+					<!--<view class="recharge" v-if="token">-->
+						<!--<view class="img" @click.stop="navTo('/pages/user/recharge')">-->
+							<!--<view class="icon chongzhi"></view>-->
+							<!--<view class="text">充值</view>-->
+						<!--</view>-->
+					<!--</view>-->
 				</view>
 				<view class="vip-card-box">
 					<image class="card-bg" src="/static/vip-card-bg.png" mode=""></image>
@@ -57,7 +57,7 @@
 				<image class="arc" src="/static/arc.png"></image>
 
 				<view class="tj-sction">
-					<view class="tj-item" @click="navTo('/pages/integral/integral?type=1')">
+					<view class="tj-item" @click="navTo('/pages/user/account')">
 						<text class="num">
 							{{ userInfo && userInfo.account && userInfo.account.user_money || '0' }}
 						</text>
@@ -67,7 +67,7 @@
 						<text class="num">{{ userInfo && userInfo.coupon_num || '0' }}</text>
 						<text>优惠券</text>
 					</view>
-					<view class="tj-item" @click="navTo('/pages/integral/integral')">
+					<view class="tj-item" @click="navTo('/pages/user/integral')">
 						<text class="num">
 							{{ userInfo && userInfo.account && userInfo.account.user_integral || '0' }}
 						</text>

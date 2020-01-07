@@ -47,7 +47,7 @@
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 			},
 			numFilter(val) {
-				return val >= 0 ? `+${val}` : val;
+				return val >= 0 ? `+${val.toString()}` : val;
 			}
 		},
 		//下拉刷新
