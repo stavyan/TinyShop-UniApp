@@ -1,37 +1,10 @@
 <template>
 	<view class="container">
-		<!-- 小程序头部兼容 -->
-		<!-- #ifdef MP -->
-		<!-- #endif -->
-		<!--<view class="mp-search-box" @click="toSearch">-->
-			<!--<uni-icons :color="'#666'" class="icon-search" type="search" size="19" />-->
-			<!--<input ref="search" disabled class="ser-input" type="text" :value="hotSearchDefault" />-->
-		<!--</view>-->
-		<!--&lt;!&ndash; 头部轮播 &ndash;&gt;-->
-		<!--<view class="carousel-section">-->
-			<!--&lt;!&ndash; 标题栏和状态栏占位符 &ndash;&gt;-->
-			<!--<view class="titleNview-placing"></view>-->
-			<!--&lt;!&ndash; 背景色区域 &ndash;&gt;-->
-			<!--<view class="titleNview-background" :style="{backgroundColor: '#fa436a'}"></view>-->
-			<!--&lt;!&ndash;<swiper class="carousel" circular @change="swiperChange">&ndash;&gt;-->
-			<!--<swiper class="carousel" circular @change="swiperChange">-->
-				<!--<swiper-item v-for="(item, index) in carouselList.index_top" :key="index" class="carousel-item" @click="indexTopToDetailPage(item.jump_type, item.jump_link)">-->
-					<!--<image :src="item.cover" mode = “aspectFill” />-->
-				<!--</swiper-item>-->
-			<!--</swiper>-->
-			<!--&lt;!&ndash; 自定义swiper指示器 &ndash;&gt;-->
-			<!--<view class="swiper-dots">-->
-				<!--<text class="num">{{swiperCurrent+1}}</text>-->
-				<!--<text class="sign">/</text>-->
-				<!--<text class="num">{{carouselList.index_top && carouselList.index_top.length}}</text>-->
-			<!--</view>-->
-		<!--</view>-->
-
 		<!-- 状态栏 -->
 		<view v-if="showHeader" class="status" :style="{ position: headerPosition,top:statusTop,opacity: afterHeaderOpacity}"></view>
-		<!-- 顶部导航栏 -->
+		<!-- 顶部搜索栏 -->
 		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
-			<!-- 定位城市 -->
+			<!-- 跳转分类模块 -->
 			<view class="addr" @click.stop="toCategory">
 				<view class="icon yticon icon-fenlei1" ></view>
 				分类
@@ -62,8 +35,8 @@
 					<view
 						class="dots"
 						v-for="(item, index) in carouselList.index_top"
-						:class="[swiperCurrent >= index ? 'on' : '']"
 						:key="item.id"
+						:class="[swiperCurrent >= index ? 'on' : '']"
 					></view>
 				</view>
 			</view>
@@ -80,196 +53,6 @@
 				<view class="text">{{ item.title }}</view>
 			</view>
 		</view>
-		<!--&lt;!&ndash; 分类 &ndash;&gt;-->
-		<!--<uni-grid :column="4" class="grid" :showBorder="false">-->
-				<!--<view class="grid-title">分类专区</view>-->
-				<!--<uni-grid-item class="grid-item" v-for="(item, index) in productCateList" :key="index">-->
-					<!--<image class="grid-item-image" :src="item.cover" @click.stop="navToList(item.id)"></image>-->
-					<!--<text class="grid-item-text" @click.stop="navToList(item.id)">{{ item.title }}</text>-->
-				<!--</uni-grid-item>-->
-		<!--</uni-grid>-->
-		<!--品牌专区-->
-		<!--<uni-grid :column="4" class="grid" :showBorder="false">-->
-				<!--<view class="grid-title">品牌专区</view>-->
-				<!--<uni-grid-item class="grid-item" v-for="(item, index) in brandList" :key="index">-->
-					<!--<image class="grid-item-image" :src="item.cover" @click.stop="toProductList({brand_id: item.id})"></image>-->
-					<!--<text class="grid-item-text" @click.stop="toProductList({brand_id: item.id})">{{ item.title }}</text>-->
-				<!--</uni-grid-item>-->
-		<!--</uni-grid>-->
-		<!--<view class="cate-section">-->
-			<!--<view class="cate-item" v-for="(item, index) in productCateList" :key="index" @click="navToList(item.id)">-->
-				<!--<image :src="item.cover"></image>-->
-				<!--<text>{{ item.title }}</text>-->
-			<!--</view>-->
-		<!--</view>-->
-		<!--&lt;!&ndash; 品牌 &ndash;&gt;-->
-		<!--<view class="cate-section" style="margin: 10upx 0">-->
-			<!--<view class="cate-item" v-for="(item, index) in brandList" :key="index" @click="navToList(item.id)">-->
-				<!--<image :src="item.cover"></image>-->
-				<!--<text>{{ item.title }}</text>-->
-			<!--</view>-->
-		<!--</view>-->
-		<!--&lt;!&ndash; 秒杀楼层 &ndash;&gt;-->
-		<!--<view class="seckill-section m-t">-->
-			<!--<view class="s-header">-->
-				<!--<image class="s-img" src="/static/temp/secskill-img.jpg" mode="widthFix"></image>-->
-				<!--<text class="tip">8点场</text>-->
-				<!--<text class="hour timer">07</text>-->
-				<!--<text class="minute timer">13</text>-->
-				<!--<text class="second timer">55</text>-->
-				<!--<text class="yticon icon-you"></text>-->
-			<!--</view>-->
-			<!--<scroll-view class="floor-list" scroll-x>-->
-				<!--<view class="scoll-wrapper">-->
-					<!--<view-->
-						<!--v-for="(item, index) in goodsList" :key="index"-->
-						<!--class="floor-item"-->
-						<!--@click="navToDetailPage(item)"-->
-					<!--&gt;-->
-						<!--<image :src="item.image" mode="aspectFill"></image>-->
-						<!--<text class="title clamp">{{item.title}}</text>-->
-						<!--<text class="price">￥{{item.price}}</text>-->
-					<!--</view>-->
-				<!--</view>-->
-			<!--</scroll-view>-->
-		<!--</view>-->
-
-		<!--&lt;!&ndash; 团购楼层 &ndash;&gt;-->
-		<!--<view class="f-header m-t">-->
-			<!--<image src="/static/temp/h1.png"></image>-->
-			<!--<view class="tit-box">-->
-				<!--<text class="tit">精品团购</text>-->
-				<!--<text class="tit2">Boutique Group Buying</text>-->
-			<!--</view>-->
-			<!--<text class="yticon icon-you"></text>-->
-		<!--</view>-->
-		<!--<view class="group-section">-->
-			<!--<swiper class="g-swiper" :duration="500">-->
-				<!--<swiper-item-->
-					<!--class="g-swiper-item"-->
-					<!--v-for="(item, index) in goodsList" :key="index"-->
-					<!--v-if="index%2 === 0"-->
-					<!--@click="navToDetailPage(item)"-->
-				<!--&gt;-->
-					<!--<view class="g-item left">-->
-						<!--<image :src="item.image" mode="aspectFill"></image>-->
-						<!--<view class="t-box">-->
-							<!--<text class="title clamp">{{item.title}}</text>-->
-							<!--<view class="price-box">-->
-								<!--<text class="price">￥{{item.price}}</text>-->
-								<!--<text class="m-price">￥188</text>-->
-							<!--</view>-->
-
-							<!--<view class="pro-box">-->
-							  	<!--<view class="progress-box">-->
-							  		<!--<progress percent="72" activeColor="#fa436a" active stroke-width="6" />-->
-							  	<!--</view>-->
-								<!--<text>6人成团</text>-->
-							<!--</view>-->
-						<!--</view>-->
-
-					<!--</view>-->
-					<!--<view class="g-item right">-->
-						<!--<image :src="goodsList[index+1].image" mode="aspectFill"></image>-->
-						<!--<view class="t-box">-->
-							<!--<text class="title clamp">{{goodsList[index+1].title}}</text>-->
-							<!--<view class="price-box">-->
-								<!--<text class="price">￥{{goodsList[index+1].price}}</text>-->
-								<!--<text class="m-price">￥188</text>-->
-							<!--</view>-->
-							<!--<view class="pro-box">-->
-							  	<!--<view class="progress-box">-->
-							  		<!--<progress percent="72" activeColor="#fa436a" active stroke-width="6" />-->
-							  	<!--</view>-->
-								<!--<text>10人成团</text>-->
-							<!--</view>-->
-						<!--</view>-->
-					<!--</view>-->
-				<!--</swiper-item>-->
-
-			<!--</swiper>-->
-		<!--</view>-->
-
-		<!--&lt;!&ndash; 分类推荐楼层 &ndash;&gt;-->
-		<!--<view class="f-header m-t">-->
-			<!--<image src="/static/temp/h1.png"></image>-->
-			<!--<view class="tit-box">-->
-				<!--<text class="tit">分类精选</text>-->
-				<!--<text class="tit2">Competitive Products For You</text>-->
-			<!--</view>-->
-			<!--<text class="yticon icon-you"></text>-->
-		<!--</view>-->
-		<!--<view class="hot-floor">-->
-			<!--<view class="floor-img-box">-->
-				<!--<image class="floor-img" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553409398864&di=4a12763adccf229133fb85193b7cc08f&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201703%2F19%2F20170319150032_MNwmn.jpeg" mode="scaleToFill"></image>-->
-			<!--</view>-->
-			<!--<scroll-view class="floor-list" scroll-x>-->
-				<!--<view class="scoll-wrapper">-->
-					<!--<view-->
-						<!--v-for="(item, index) in goodsList" :key="index"-->
-						<!--class="floor-item"-->
-						<!--@click="navToDetailPage(item)"-->
-					<!--&gt;-->
-						<!--<image :src="item.image" mode="aspectFill"></image>-->
-						<!--<text class="title clamp">{{item.title}}</text>-->
-						<!--<text class="price">￥{{item.price}}</text>-->
-					<!--</view>-->
-					<!--<view class="more">-->
-						<!--<text>查看全部</text>-->
-						<!--<text>More+</text>-->
-					<!--</view>-->
-				<!--</view>-->
-			<!--</scroll-view>-->
-		<!--</view>-->
-		<!--<view class="hot-floor">-->
-			<!--<view class="floor-img-box">-->
-				<!--<image class="floor-img" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553409984228&di=dee176242038c2d545b7690b303d65ea&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F5ef4da9f17faaf4612f0d5046f4161e556e9bbcfdb5b-rHjf00_fw658" mode="scaleToFill"></image>-->
-			<!--</view>-->
-			<!--<scroll-view class="floor-list" scroll-x>-->
-				<!--<view class="scoll-wrapper">-->
-					<!--<view-->
-						<!--v-for="(item, index) in goodsList" :key="index"-->
-						<!--class="floor-item"-->
-						<!--@click="navToDetailPage(item)"-->
-					<!--&gt;-->
-						<!--<image :src="item.image3" mode="aspectFill"></image>-->
-						<!--<text class="title clamp">{{item.title}}</text>-->
-						<!--<text class="price">￥{{item.price}}</text>-->
-					<!--</view>-->
-					<!--<view class="more">-->
-						<!--<text>查看全部</text>-->
-						<!--<text>More+</text>-->
-					<!--</view>-->
-				<!--</view>-->
-			<!--</scroll-view>-->
-		<!--</view>-->
-		<!--<view class="hot-floor">-->
-			<!--<view class="floor-img-box">-->
-				<!--<image class="floor-img" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553409794730&di=12b840ec4f5748ef06880b85ff63e34e&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01dc03589ed568a8012060c82ac03c.jpg%40900w_1l_2o_100sh.jpg" mode="scaleToFill"></image>-->
-			<!--</view>-->
-			<!--<scroll-view class="floor-list" scroll-x>-->
-				<!--<view class="scoll-wrapper">-->
-					<!--<view-->
-						<!--v-for="(item, index) in goodsList" :key="index"-->
-						<!--class="floor-item"-->
-						<!--@click="navToDetailPage(item)"-->
-					<!--&gt;-->
-						<!--<image :src="item.image2" mode="aspectFill"></image>-->
-						<!--<text class="title clamp">{{item.title}}</text>-->
-						<!--<text class="price">￥{{item.price}}</text>-->
-					<!--</view>-->
-					<!--<view class="more">-->
-						<!--<text>查看全部</text>-->
-						<!--<text>More+</text>-->
-					<!--</view>-->
-				<!--</view>-->
-			<!--</scroll-view>-->
-		<!--</view>-->
-		<!-- 新品 -->
-		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">-->
-			<!--<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill"></image>-->
-		<!--</view>-->
-		<!--&lt;!&ndash; 广告图 &ndash;&gt;-->
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_new[0].jump_type, carouselList.index_new[0].jump_link)">
 			<image :src="carouselList.index_new && carouselList.index_new[0].cover" mode="scaleToFill" />
 		</view>
@@ -300,11 +83,6 @@
 				</view>
 			</view>
 		</view>
-
-		<!-- 推荐 -->
-		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">-->
-			<!--<image :src="carouselList.index_hot && carouselList.index_recommend[0].cover" mode="scaleToFill"></image>-->
-		<!--</view>-->
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_recommend[0].jump_type, carouselList.index_recommend[0].jump_link)">
 			<image :src="carouselList.index_recommend && carouselList.index_recommend[0].cover" mode="scaleToFill" />
 		</view>
@@ -335,11 +113,6 @@
 				</view>
 			</view>
 		</view>
-
-		<!-- 热门 -->
-		<!--<view class="ad-1" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">-->
-			<!--<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill"></image>-->
-		<!--</view>-->
 		<view class="banner" @click="indexTopToDetailPage(carouselList.index_hot[0].jump_type, carouselList.index_hot[0].jump_link)">
 			<image :src="carouselList.index_hot && carouselList.index_hot[0].cover" mode="scaleToFill" />
 		</view>
@@ -400,6 +173,7 @@
 			</view>
 		</view>
 
+		<!--网站备案号-->
 		<!--#ifdef H5-->
 		<view class="copyright" v-show="config.web_site_icp">
 			{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
@@ -459,7 +233,8 @@
 				newProductList: [],
 				productCateList: [],
 				brandList: [],
-				config: {}
+				config: {},
+				on: {}
 			};
 		},
 		onLoad(options) {

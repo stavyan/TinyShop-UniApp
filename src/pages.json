@@ -199,25 +199,7 @@
 								"width": "46px",
 								"background": "rgba(0,0,0,0)"
 							}
-//							{
-//								"fontSrc": "/static/yticon.ttf",
-//								"text": "\ue744",
-//								"fontSize": "28",
-//								"color": "#303133",
-//								"background": "rgba(0,0,0,0)",
-//								"redDot": true
-//							}
 						]
-					}
-				}
-			}
-		}, {
-			"path": "pages/detail/detail",
-			"style": {
-				"navigationBarTitleText": "",
-				"app-plus": {
-					"titleNView": {
-						"type": "transparent"
 					}
 				}
 			}

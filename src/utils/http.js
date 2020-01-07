@@ -3,15 +3,13 @@ import {refreshToken} from "../api/login";
 
 // 创建自定义接口服务实例
 const http = axios.create({
-    baseURL: 'https://www.yllook.com/api',
+    baseURL: 'https://www.yllook.com/api', // baseUrl 公共前缀
     timeout: 60 * 1000,  // 不可超过 manifest.json 中配置 networkTimeout的超时时间
     // #ifdef H5
     withCredentials: true,
     // #endif
     headers: {
-        // 'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Type': 'application/json'
-        //'X-Requested-With': 'XMLHttpRequest',
     },
 });
 

@@ -104,7 +104,6 @@
 			};
 		},
 		onLoad(options){
-			// this.loadData();
 			this.initData(options);
 		},
 		onShow (){
@@ -231,47 +230,6 @@
 				}).catch(err => {
 					console.log(err)
 				})
-			},
-			//加载商品 ，带下拉刷新和上滑加载
-			async loadData(type='add', loading) {
-				//没有更多直接返回
-				if(type === 'add'){
-					if(this.loadingType === 'nomore'){
-						return;
-					}
-					this.loadingType = 'loading';
-				}else{
-					this.loadingType = 'more'
-				}
-
-				let goodsList = await this.$api.json('goodsList');
-				if(type === 'refresh'){
-					this.goodsList = [];
-				}
-				//筛选，测试数据直接前端筛选了
-				if(this.filterIndex === 1){
-					goodsList.sort((a,b)=>b.sales - a.sales)
-				}
-				if(this.filterIndex === 2){
-					goodsList.sort((a,b)=>{
-						if(this.priceOrder == 1){
-							return a.price - b.price;
-						}
-						return b.price - a.price;
-					})
-				}
-
-				this.goodsList = this.goodsList.concat(goodsList);
-
-				//判断是否还有下一页，有是more  没有是nomore(测试数据判断大于20就没有了)
-				this.loadingType  = this.goodsList.length > 20 ? 'nomore' : 'more';
-				if(type === 'refresh'){
-					if(loading == 1){
-						uni.hideLoading()
-					}else{
-						uni.stopPullDownRefresh();
-					}
-				}
 			},
 			//筛选点击
 			tabClick(index){

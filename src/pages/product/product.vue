@@ -477,7 +477,6 @@
 				}
 			})
 			this.product_id = options.id;
-			this.shareList = await this.$api.json('shareList');
 		},
 		onShareAppMessage(res) {
       this.$post(`${transmitCreate}`, {

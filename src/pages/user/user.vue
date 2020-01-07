@@ -55,7 +55,6 @@
 				@touchend="coverTouchend"
 			>
 				<image class="arc" src="/static/arc.png"></image>
-
 				<view class="tj-sction">
 					<view class="tj-item" @click="navTo('/pages/user/account')">
 						<text class="num">
@@ -125,17 +124,11 @@
 					<list-cell icon="icon-shezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 				</view>
 			</view>
-			<share
-				ref="share"
-				:contentHeight="580"
-				:shareList="shareList"
-			></share>
 		</view>
 </template>
 <script>
 	import listCell from '@/components/mix-list-cell';
   import {footPrintList, memberInfo} from "../../api/userInfo";
-	import share from '@/components/share';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	import {mpWechatLogin, wechatH5Login} from "../../api/login";
 	import {mapMutations} from "vuex";
@@ -143,7 +136,6 @@
     export default {
 		components: {
 			listCell,
-			share,
 			uniIcons
 		},
 		data(){
@@ -154,28 +146,6 @@
 				userInfo: {},
 				token: null,
 				footList: [],
-				shareList: [
-					{
-						type: 1,
-						icon: '/static/temp/share_wechat.png',
-						text: '微信好友'
-					},
-					{
-						type: 2,
-						icon: '/static/temp/share_moment.png',
-						text: '朋友圈'
-					},
-					{
-						type: 3,
-						icon: '/static/temp/share_qq.png',
-						text: 'QQ好友'
-					},
-					{
-						type: 4,
-						icon: '/static/temp/share_qqzone.png',
-						text: 'QQ空间'
-					}
-				],
 				code: null,
 				user_info: {}
 			}
@@ -252,7 +222,6 @@
 			async initData() {
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				this.token = uni.getStorageSync('accessToken') || undefined;
-				this.shareList = await this.$api.json('shareList');
 				if (this.token) {
 					await this.getMemberInfo();
 				}
