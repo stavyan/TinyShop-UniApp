@@ -1,8 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "navigationBarTitleText": "积分记录",
-  "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
-    "empty": "/components/empty"
-  }
-}

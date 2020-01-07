@@ -100,8 +100,10 @@
         "usingComponents" : true,
         "appid" : "wx3764a6fbc282be0c",
         "setting" : {
-            "urlCheck" : true
-        }
+            "urlCheck" : true,
+            "minified" : true
+        },
+        "permission" : {}
     },
     "h5" : {
         "router" : {

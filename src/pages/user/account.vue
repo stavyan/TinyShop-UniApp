@@ -54,7 +54,7 @@
             <view class="name">签到领积分</view>
             <text class="desc">赚积分抵现金</text>
           </view>
-          <image src="/static/gift.png" />
+          <image src="/static/gift.png" mode="aspectFill" />
         </view>
         <view
           class="item on"

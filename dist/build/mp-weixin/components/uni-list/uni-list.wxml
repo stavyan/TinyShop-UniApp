@@ -1,0 +1,1 @@
+<view class="uni-list"><slot></slot></view>

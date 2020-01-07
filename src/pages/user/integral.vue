@@ -59,7 +59,7 @@
       </view>
       <view class="list2" :hidden="current !== 1">
         <view class="item">
-          <view class="pictrue"><img src="/static/score.png" /></view>
+          <view class="pictrue"><image src="/static/score.png" mode="aspectFill" /></view>
           <text class="name">购买商品可获得积分奖励</text>
           <view class="earn" @tap="toCategory">赚积分</view>
         </view>
@@ -148,7 +148,7 @@ export default {
   .integral {
     .header {
       /*background-image: url('/static/user-bg2.jpg');*/
-      background-image: url('/static/integralbg.jpg');
+      background-image: url('../../static/integralbg.jpg');
       background-repeat: no-repeat;
       background-size: 100% 100%;
       width: 100%;
@@ -201,6 +201,7 @@ export default {
         .item {
           flex: 1;
           text-align: center;
+          line-height: 80upx;
         }
         .on {
           background-color: #fff;
@@ -285,21 +286,20 @@ export default {
 
   .wrapper .list2 .item .pictrue {
     width: 60upx;
-    height: 60upx;
-    margin: 30upx 0;
-  }
-
-  .wrapper .list2 .item .pictrue img {
-    width: 100%;
-    height: 100%;
+    height: 100upx;
+    margin: 20upx 0;
+    image {
+      width: 80%;
+      height: 80%;
+    }
   }
 
   .wrapper .list2 .item .name {
     flex: 1;
-    font-size: 0.3rem;
+    font-size: $font-sm;
     font-weight: bold;
     color: #c8a86b;
-    margin: 0 30upx;
+    margin: 0 20upx;
   }
 
   .wrapper .list2 .item .earn {

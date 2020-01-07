@@ -267,19 +267,6 @@
 				"navigationBarTitleText": "选择商品评价"
 			}
 		},{
-			"path": "pages/integral/integral",
-			"style": {
-				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "积分记录",
-				"app-plus": {
-                    "pullToRefresh": {
-                        "support": true,
-                        "color": "#fa436a",
-                        "style": "default"
-                    }
-                }
-			}
-		},{
 			"path": "pages/footprint/footprint",
 			"style": {
 				"enablePullDownRefresh": true,
@@ -417,12 +404,6 @@
 				"navigationBarTitleText": "支付成功"
 			}
 		}
-	    ,{
-            "path" : "pages/notice/notice",
-            "style" : {
-				"navigationBarTitleText": "通知"
-			}
-        }
         ,{
             "path" : "pages/category/category",
             "style" : {

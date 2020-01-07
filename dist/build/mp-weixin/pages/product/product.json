@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "详情展示",
+  "usingComponents": {
+    "share": "/components/share",
+    "uni-number-box": "/components/uni-number-box",
+    "empty": "/components/empty"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "选择商品评价",
+  "usingComponents": {
+    "uni-swipe-action": "/components/uni-swipe-action/uni-swipe-action",
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "uni-tag": "/components/uni-tag/uni-tag"
+  }
+}
