@@ -41,7 +41,7 @@
 			    <view class="box" v-for="(o,i) in n.child" :key="i" @tap="navToList(o.id)">
 						<view class="text">{{o.title}}</view>
 						<view class="list" v-if="o.child.length > 0">
-							<view class="box" v-for="(p,i) in o.child" :key="i" @tap="navToList(p.id)">
+							<view class="box" v-for="(p,i) in o.child" :key="i" @tap.stop="navToList(p.id)">
 								<image :src="p.cover"></image>
 								<view class="text">{{p.title}}</view>
 							</view>
