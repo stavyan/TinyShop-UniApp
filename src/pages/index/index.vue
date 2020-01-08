@@ -153,10 +153,17 @@
 				})
 			},
 			// 跳至广告图指定页面
-			indexTopToDetailPage(data){
+			indexTopToDetailPage(data, link){
 				let url;
-		    const type = data.type;
-		    const id = data.id;
+				let type;
+				let id;
+		    if (!link) {
+			    type = data.type;
+			    id = data.id;
+		    } else {
+	        id = link;
+	        type = data;
+		    }
 				switch (type) {
 					case 'product_view':
 						url = `/pages/product/product?id=${id}`;
