@@ -24,6 +24,17 @@
 			}
 		},
 		{
+            "path" : "pages/category/category",
+            "style" : {
+				"navigationBarTitleText": "分类",
+				"onReachBottomDistance":50,
+				"app-plus": {
+					"bounce": "none",
+					"titleNView": false
+				}
+			}
+        },
+		{
             "path" : "pages/product/list",
             "style" : {
 				"enablePullDownRefresh": true,
@@ -386,15 +397,6 @@
 				"navigationBarTitleText": "支付成功"
 			}
 		}
-        ,{
-            "path" : "pages/category/category",
-            "style" : {
-				"navigationBarTitleText": "分类",
-				"app-plus": {
-					"bounce": "none"
-				}
-			}
-        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

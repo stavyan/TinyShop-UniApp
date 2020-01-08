@@ -50,7 +50,7 @@
         </view>
         <button class="feedback-submit" @tap="send">提交</button>
         <view class='feedback-title'>
-            <text>用户反馈的结果可在app打包后于DCloud开发者中心查看</text>
+            <text>反馈结果可在设置 -> 意见反馈 -> 点击列表后查看！</text>
         </view>
     </view>
 </template>

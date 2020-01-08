@@ -19,7 +19,6 @@
     "pages/refund/refund",
     "pages/evaluation/list",
     "pages/user/user",
-    "pages/detail/detail",
     "pages/order/order",
     "pages/money/money",
     "pages/order/createOrder",

@@ -19,7 +19,6 @@
     "pages/refund/refund",
     "pages/evaluation/list",
     "pages/user/user",
-    "pages/detail/detail",
     "pages/order/order",
     "pages/money/money",
     "pages/order/createOrder",
@@ -42,7 +41,6 @@
     "pages/invoice/invoiceManage",
     "pages/money/pay",
     "pages/money/paySuccess",
-    "pages/notice/notice",
     "pages/category/category"
   ],
   "subPackages": [],
@@ -84,5 +82,7 @@
       }
     ]
   },
-  "usingComponents": {}
+  "permission": {},
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
 }

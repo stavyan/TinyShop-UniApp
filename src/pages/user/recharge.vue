@@ -72,13 +72,12 @@
 </template>
 
 <script>
-	import {orderPay} from "../../api/product";
 	import {payCreate, wechatConfig} from "../../api/basic";
 	// #ifdef H5
 	import jweixin from 'jweixin-module';
+	// #endif
 	import {isBindingCheck} from "../../api/login";
 	import {rechargeUrl} from "../../api/params";
-	// #endif
 	export default {
 		data() {
 			return {
@@ -103,11 +102,13 @@
 				 // #ifdef MP-QQ
 					oauth_client: 'qq',
 				 // #endif
+				 // #ifdef MP-WEIXIN
+					oauth_client: 'wechatMp',
+				 // #endif
 				}).then(async res => {
 					 if (res.code === 200) {
 						 const params = {};
 						 params.money = parseFloat(this.inputAmount);
-						 // #ifdef H5
 						 await this.$post(`${payCreate}`, {
 							 order_group: 'recharge',
 							 pay_type: 1,
@@ -116,26 +117,42 @@
 							 openid: res.data.openid
 						 }).then(r => {
 							 if (r.code === 200) {
-								 jweixin.ready(() => {
-									 jweixin.chooseWXPay({
-										 ...r.data.config,
-										 // timestamp: r.data.config.mch_id, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-										 // nonceStr: r.data.config.nonce_str, // 支付签名随机串，不长于 32 位
-										 // package: `prepay_id=${r.data.config.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-										 // signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-										 // paySign: r.data.config.sign, // 支付签名
-										 success: function (res) {
-											 // 支付成功后的回调函数
-										 }
-									 });
-								 })
+				         // #ifdef H5
+							   jweixin.ready(() => {
+								 jweixin.chooseWXPay({
+									 ...r.data.config,
+									 success: function (res) {
+										 // 支付成功后的回调函数
+									 }
+								 });
+							 })
+					       // #endif
+								 // #ifdef MP-WEIXIN
+							   uni.requestPayment({
+		                ...r.data.config,
+		                success: (res) => {
+		                    uni.showToast({
+		                        title: "感谢您的赞助!"
+		                    })
+		                },
+		                fail: (res) => {
+		                    uni.showModal({
+		                        content: "支付失败,原因为: " + res
+		                            .errMsg,
+		                        showCancel: false
+		                    })
+		                },
+		                complete: () => {
+		                    this.loading = false;
+		                }
+		             })
+								 // #endif
 							 } else {
 						 		uni.showToast({title: res.message, icon: "none"});
 							 }
 						 }).catch(err => {
 							 console.log(err)
 						 })
-						 // #endif
 					 } else {
 						 uni.showToast({title: res.message, icon: "none"});
 					 }
@@ -151,8 +168,11 @@
 			 *@author stav stavyan@qq.com
 			 *@blog https://stavtop.club
 			 *@date 2019/12/11 11:01:12
-			 */ async initData(options) {
+			 */
+			async initData(options) {
 					this.code = options.code;
+					this.userInfo = uni.getStorageSync('userInfo') || undefined;
+					// #ifdef H5
 					if (this.isWechat() && !this.code) {
 						const url = window.location.href;
 						window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
@@ -163,9 +183,7 @@
 						state=STATE#wechat_redirect`;
 						return;
 					}
-				// #ifdef H5
 				const jsApiList = JSON.stringify(['chooseWXPay']);
-				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$post(`${wechatConfig}`, {
 					url: rechargeUrl,
 					jsApiList,

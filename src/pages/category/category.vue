@@ -1,77 +1,128 @@
 <template>
-	<view class="content">
-		<scroll-view scroll-y class="left-aside" v-if="flist.length > 0">
-			<!--v-show="item.child.length > 0"-->
-			<view v-for="item in flist" :key="item.id" class="f-item b-b" :class="{active: item.id === currentId}" @click="tabTap(item)">
-				{{item.title}}
+	<view id="category">
+		<!-- 状态栏 -->
+		<view v-if="showHeader" class="status" :style="{ position: headerPosition,top:statusTop,opacity: afterHeaderOpacity}"></view>
+		<!-- 顶部搜索栏 -->
+		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
+			<!-- 跳转分类模块 -->
+			<view class="addr" @tap.stop="toCategory">
+				<view class="icon yticon icon-xiatubiao--copy" ></view>
+				主页
 			</view>
-		</scroll-view>
-		<scroll-view v-if="flist.length > 0" scroll-with-animation scroll-y class="right-aside" @scroll="asideScroll" :scroll-top="tabScrollTop">
-			<view v-for="item in slist" :key="item.id" class="s-list" :id="'main-'+item.id">
-				<text class="s-item">{{item.title}}</text>
-				<view class="t-list">
-					<view @click="navToList(titem.id)" v-if="titem.pid === item.id" class="t-item" v-for="titem in tlist" :key="titem.id">
-						<image :src="titem.cover"></image>
-						<text>{{titem.title}}</text>
+			<!-- 搜索框 -->
+			<view class="input-box">
+				<input
+				 @tap="toSearch"
+				 disabled
+				 :value="hotSearchDefault"
+					placeholder-style="color:#ccc;"
+				/>
+				<view class="icon search"></view>
+			</view>
+		</view>
+		<!-- 占位 -->
+		<view v-if="showHeader" class="place"></view>
+		<view class="category-list">
+			<!-- 左侧分类导航 -->
+			<scroll-view  scroll-y="true" class="left" >
+        <view class="row" v-if="m.child.length > 0" v-for="(m, index) in categoryList" :key="m.id" :class="[index==showCategoryIndex?'on':'']" @tap="showCategory(index)">
+					<view class="text">
+						<view class="block"></view>
+						{{m.title}}
 					</view>
 				</view>
-			</view>
-		</scroll-view>
-		<empty :info="'赶紧通知老板进货'" v-else></empty>
-    </view>
+      </scroll-view>
+			 右侧子导航
+			<scroll-view  scroll-y="true" class="right">
+		    <view class="category" v-if="n.child.length > 0" v-for="(n,index) in categoryList" :key="n.id" v-show="index==showCategoryIndex" >
+					<view class="banner">
+						<image src="https://www.yllook.com/attachment/images/2019/12/09/image_157589717555555751.jpg"></image>
+					</view>
+			    <view class="box" v-for="(o,i) in n.child" :key="i" @tap="navToList(o.id)">
+						<view class="text">{{o.title}}</view>
+						<view class="list" v-if="o.child.length > 0">
+							<view class="box" v-for="(p,i) in o.child" :key="i" @tap="navToList(p.id)">
+								<image :src="p.cover"></image>
+								<view class="text">{{p.title}}</view>
+							</view>
+						</view>
+				    <view v-else class="no-data">
+					    该栏目暂无分类~
+				    </view>
+					</view>
+		    </view>
+			</scroll-view>
+		</view>
+	</view>
 </template>
-
 <script>
 	import {productCate} from "../../api/product";
-	import empty from "@/components/empty";
-	export default {
-		components: {
-			empty
-		},
+  export default {
 		data() {
 			return {
-				sizeCalcState: false,
-				tabScrollTop: 0,
-				flist: [],
-				slist: [],
-				tlist: [],
-				currentId: 1
+				showHeader:true,
+				hotSearchDefault: '输入关键字搜索',
+				fList: [],
+				sList: [],
+				tList: [],
+				showCategoryIndex: 0,
+				headerTop:null,
+				statusTop:null,
+				nVueTitle:null,
+				afterHeaderOpacity: 1,//不透明度
+				headerPosition:"fixed",
+				city:"北京",
+				//分类列表
+				categoryList: []
 			}
 		},
-		onLoad(){
-			this.initData();
+		onPageScroll(e){
+			//兼容iOS端下拉时顶部漂移
+			if(e.scrollTop>=0){
+				this.headerPosition = "fixed";
+			}else{
+				this.headerPosition = "absolute";
+			}
+		},
+		onLoad() {
+	    this.initData();
 		},
 		methods: {
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 13:59:51
-			 */
-			initData () {
-				this.getProductCate();
+			navToList(id){
+				uni.navigateTo({
+					url: `/pages/product/list?cate_id=${id}`
+				})
 			},
+	    initData () {
+				this.getProductCate();
+	    },
 			async getProductCate () {
-				this.flist = [];
-				this.slist = [];
-				this.tlist = [];
+				this.fList = [];
+				this.sList = [];
+				this.tList = [];
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {
+				    this.categoryList = r.data;
+            for (let i = 0; i < r.data.length; i++) {
+	              if (r.data[i].child.length > 0) {
+			            this.showCategoryIndex = i;
+			            break;
+			        }
+            }
 						r.data.forEach(item=>{
 							if(item.child.length > 0){
-								this.flist.push(item);  //pid为父级id, 没有pid或者pid=0是一级分类
+								this.fList.push(item);  //pid为父级id, 没有pid或者pid=0是一级分类
 								item.child instanceof Array && item.child.forEach(item2=>{
 									if(item2.child.length > 0) {
-										this.slist.push(item2); //没有图的是2级分类
+										this.sList.push(item2); //没有图的是2级分类
 										item2.child instanceof Array && item2.child.forEach(item3 => {
-											this.tlist.push(item3); //没有图的是2级分类
+											this.tList.push(item3); //没有图的是2级分类
 										})
 									}
 								})
 							}
 						})
-						this.currentId = this.flist[0].id;
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -79,133 +130,204 @@
 					console.log(err)
 				})
 			},
-			//一级分类点击
-			tabTap(item){
-				if(!this.sizeCalcState){
-					this.calcSize();
-				}
-				this.currentId = item.id;
-				let index = this.slist.findIndex(sitem=>sitem.pid === item.id);
-				this.tabScrollTop = this.slist[index].top;
+			//分类切换显示
+			showCategory(index){
+				this.showCategoryIndex = index;
 			},
-			//右侧栏滚动
-			asideScroll(e){
-				if(!this.sizeCalcState){
-					this.calcSize();
-				}
-				let scrollTop = e.detail.scrollTop;
-				let tabs = this.slist.filter(item=>item.top <= scrollTop).reverse();
-				console.log(tabs)
-				if(tabs.length > 0){
-					this.currentId = tabs[0].pid;
-				}
-			},
-			//计算右侧栏每个tab的高度等信息
-			calcSize(){
-				let h = 0;
-				this.slist.forEach(item=>{
-					let view = uni.createSelectorQuery().select("#main-" + item.id);
-					view.fields({
-						size: true
-					}, data => {
-						item.top = h;
-						h += data.height;
-						item.bottom = h;
-					}).exec();
-				})
-				this.sizeCalcState = true;
-			},
-			navToList(id){
+			toCategory(e){
+				uni.setStorageSync('catName',e.name);
 				uni.navigateTo({
-					url: `/pages/product/list?cate_id=${id}`
-				})
+					url: '../../goods/goods-list/goods-list?cid='+e.id+'&name='+e.name
+				});
+			},
+			//搜索跳转
+			toSearch(){
+				uni.showToast({title: "建议跳转到新页面做搜索功能"});
 			}
 		}
 	}
 </script>
-
-<style lang='scss'>
-	page,
-	.content {
-		height: 100%;
-		background-color: #f8f8f8;
-	}
-
-	.content {
-		display: flex;
-	}
-	.left-aside {
-		flex-shrink: 0;
-		width: 200upx;
-		height: 100%;
+<style scoped lang="scss">
+page {
 		background-color: #fff;
+}
+#category {
+	.status {
+		width: 100%;
+		height: 0;
+		position: fixed;
+		z-index: 10;
+		background-color: #fff;
+		top: 0;
+		/*  #ifdef  APP-PLUS  */
+		height: var(--status-bar-height); //覆盖样式
+		/*  #endif  */
 	}
-	.f-item {
+	.header {
+		width: 96%;
+		height: 100upx;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100upx;
-		font-size: 28upx;
-		color: $font-color-base;
-		position: relative;
-		&.active{
-			color: $base-color;
-			background: #f8f8f8;
-			&:before{
-				content: '';
+		position: fixed;
+		top: 0;
+		z-index: 10;
+		background-color: #fff;
+		/*  #ifdef  APP-PLUS  */
+		top: var(--status-bar-height);
+		/*  #endif  */
+		.addr {
+			width: 120upx;
+			height: 60upx;
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+			font-size: 28upx;
+			.icon {
+				height: 60upx;
+				margin-right: 5upx;
+				margin-left: 15upx;
+				display: flex;
+				align-items: center;
+				font-size: 38upx;
+				color: $base-color;
+			}
+		}
+		.input-box {
+			width: 100%;
+			height: 60upx;
+			background-color: #f5f5f5;
+			border-radius: 30upx;
+			position: relative;
+			display: flex;
+			align-items: center;
+			.icon {
+				display: flex;
+				align-items: center;
 				position: absolute;
-				left: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				height: 36upx;
-				width: 8upx;
-				background-color: $base-color;
-				border-radius: 0 4px 4px 0;
-				opacity: .8;
+				top: 0;
+				right: 0;
+				width: 60upx;
+				height: 60upx;
+				font-size: 34upx;
+				color: #c0c0c0;
+			}
+			input {
+				width: 100%;
+				padding-left: 28upx;
+				height: 28upx;
+				color:#888;
+				font-size: 28upx;
 			}
 		}
 	}
-
-	.right-aside{
-		flex: 1;
-		overflow: hidden;
-		padding-left: 20upx;
+	.place {
+		background-color: #ffffff;
+		height: 100upx;
+		/*  #ifdef  APP-PLUS  */
+		margin-top: var(--status-bar-height);
+		/*  #endif  */
 	}
-	.s-item{
-		display: flex;
-		align-items: center;
-		height: 70upx;
-		padding-top: 8upx;
-		font-size: 28upx;
-		color: $font-color-dark;
-	}
-	.t-list{
-		display: flex;
-		flex-wrap: wrap;
+	.category-list{
 		width: 100%;
-		background: #fff;
-		padding-top: 12upx;
-		&:after{
-			content: '';
-			flex: 99;
-			height: 0;
-		}
-	}
-	.t-item{
-		flex-shrink: 0;
+		background-color: #fff;
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-		width: 176upx;
-		font-size: 26upx;
-		color: #666;
-		padding-bottom: 20upx;
-
-		image{
-			width: 140upx;
-			height: 140upx;
+		.left,.right{
+			position: absolute;
+			top: 100upx;
+			/*  #ifdef  APP-PLUS  */
+			top: calc(100upx + var(--status-bar-height));
+			/*  #endif  */
+			bottom: 0upx;
+		}
+		.left{
+			width: 24%;
+			left: 0upx;
+			background-color: #f2f2f2;
+			.row{
+				width: 100%;
+				height: 90upx;
+				display: flex;
+				align-items: center;
+				.text{
+					width: 100%;
+					position: relative;
+					font-size: 28upx;
+					display: flex;
+					justify-content: center;
+					color: #3c3c3c;
+					.block{
+						position: absolute;
+						width: 0upx;
+						left: 0;
+					}
+				}
+				&.on{
+					height: 100upx;
+					background-color: #fff;
+					.text{
+						font-size: 30upx;
+						font-weight: 600;
+						color: #2d2d2d;
+						.block{
+							width: 10upx;
+							height: 80%;
+							top: 10%;
+							background-color: #f06c7a;
+						}
+					}
+				}
+			}
+		}
+		.right{
+		   width: 76%;
+				left: 24%;
+			.category{
+				width: calc(100%);
+				padding: 20upx 15upx;
+				.banner{
+					width: 96%;
+					margin: 0 auto 20upx;
+					height: 24.262vw;
+					border-radius: 10upx;
+					overflow: hidden;
+					box-shadow: 0upx 5upx 20upx rgba(0,0,0,0.3);
+					image{
+						width: 100%;
+						height: 24.262vw;
+					}
+				}
+				.list{
+					margin-top: 40upx;
+					width: 100%;
+					display: flex;
+					flex-wrap: wrap;
+					.box{
+						width: calc(71.44vw / 3);
+						margin-bottom: 30upx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						flex-wrap: wrap;
+						image{
+							width: 64%;
+							height: calc(71.44vw / 3 * 0.64);
+						}
+						.text{
+							margin-top: 8upx;
+							width: 100%;
+							display: flex;
+							justify-content: center;
+							font-size: 26upx;
+						}
+					}
+				}
+				.no-data {
+					text-align: center;
+					margin: 30upx 0;
+					color: $font-color-light;
+				}
+			}
 		}
 	}
+}
 </style>
