@@ -5,6 +5,7 @@
 			@link="toIndex"
 			@search="toSearch"
 			:icon="'icon-xiatubiao--copy'"
+			:title="'主页'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
 		<view class="category-list">
@@ -20,8 +21,8 @@
 			<!--右侧子导航-->
 			<scroll-view  scroll-y="true" class="right">
 		    <view class="category" v-if="n.child.length > 0" v-for="(n,index) in categoryList" :key="n.id" v-show="index==showCategoryIndex" >
-					<view class="banner">
-						<image src="https://www.yllook.com/attachment/images/2019/12/09/image_157589717555555751.jpg"></image>
+					<view class="banner" @tap="indexTopToDetailPage(cateTop.jump_type, cateTop.jump_link)">
+						<image :src="cateTop.cover" mode="aspectFill" />
 					</view>
 			    <view class="box" v-for="(o,i) in n.child" :key="i" @tap="navToList(o.id)">
 						<view class="text">{{o.title}}</view>
@@ -43,6 +44,7 @@
 <script>
 	import {productCate} from "@/api/product";
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
+  import {advList} from "../../api/basic";
   export default {
 		components: {
 			rfSearchBar
@@ -57,7 +59,8 @@
 				showCategoryIndex: 0,
 				//分类列表
 				categoryList: [],
-				search: ''
+				search: '',
+				cateTop: null
 			}
 		},
 		onLoad() {
@@ -84,6 +87,10 @@
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {
+				    this.cateTop = uni.getStorageSync('cateTop');
+				    if (!this.cateTop) {
+			        this.getAdvList();
+				    }
 				    this.categoryList = r.data;
 				    // 查询第一个拥有二级菜单的子菜单
             for (let i = 0; i < r.data.length; i++) {
@@ -99,6 +106,21 @@
 					console.log(err)
 				})
 			},
+			// 获取广告列表
+			async getAdvList() {
+        await this.$get(`${advList}`, {
+            location: 'cate_top'
+        }).then(r => {
+            if (r.code === 200) {
+                this.cateTop = r.data.cate_top[0];
+                uni.setStorageSync('cateTop', r.data.cate_top[0]);
+            } else {
+                uni.showToast({title: r.message, icon: "none"});
+            }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
 			//分类切换显示
 			showCategory(index){
 				this.showCategoryIndex = index;
@@ -114,7 +136,34 @@
 				uni.reLaunch({
 					url: `/pages/index/index`
 				})
-			}
+			},
+			// 跳至广告图指定页面
+			indexTopToDetailPage(type, url){
+				switch (type) {
+					case 'product_view':
+						url = `/pages/product/product?id=${url}`;
+						break;
+					case 'article_view':
+						uni.showToast({title: 'article_view', icon: "none"});
+						break;
+					case 'coupon_view':
+						url = `/pages/coupon/detail?id=${url}`;
+						break;
+					case 'helper_view':
+						uni.showToast({title: 'helper_view', icon: "none"});
+						break;
+					case 'product_list_for_cate':
+						url = `/pages/product/list?cate_id=${url}`;
+						break;
+					default:
+						break;
+				}
+				if (url) {
+					uni.navigateTo({
+						url,
+					})
+				}
+			},
 		}
 	}
 </script>

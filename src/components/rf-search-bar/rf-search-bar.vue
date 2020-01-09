@@ -7,7 +7,7 @@
 			<!-- 跳转分类模块 -->
 			<view class="addr" @tap.stop="link">
 				<view class="icon yticon" :class="icon" ></view>
-				分类
+				{{ title }}
 			</view>
 			<!-- 搜索框 -->
 			<view class="input-box">
@@ -40,6 +40,10 @@ export default {
 				type: String,
 				default: null
 			},
+			title: {
+				type: String,
+				default: null
+			},
 		},
 		data() {
 	    return {
@@ -63,6 +67,7 @@ export default {
 
 <style scoped lang="scss">
 .rf-search-bar {
+	background-color: #fff;
 	.status {
 		width: 100%;
 		height: 0;
@@ -75,7 +80,7 @@ export default {
 		/*  #endif  */
 	}
 	.header {
-		width: 96%;
+		width: 100%;
 		height: 100upx;
 		display: flex;
 		align-items: center;

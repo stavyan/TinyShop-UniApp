@@ -147,6 +147,11 @@
 					"animationType": "slide-in-bottom"
 				}
 			}
+		}, {
+			"path": "pages/public/logintype",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
 		},{
 			"path": "pages/public/password",
 			"style": {

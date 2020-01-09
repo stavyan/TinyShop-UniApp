@@ -5,7 +5,7 @@
 		      @tap="toBanner(banner.jump_type, banner.jump_link)"
 		      >
 		      <!--@tap="indexTopToDetailPage(banner.jump_type, banner.jump_link)"-->
-			<image :src="banner.cover" mode="scaleToFill" />
+			<image :src="banner.cover" mode="aspectFill" />
 		</view>
 		<!--列表-->
 		<view class="f-header" @tap="toList">
@@ -100,9 +100,9 @@ export default {
 		margin: 20upx 4% 0;
 		image {
 			width: 100%;
-			height: 22vw;
-			border-radius: 11vw;
-			box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.3);
+			height: 25vw;
+			border-radius: 20upx;
+			box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.05);
 		}
 	}
 	.f-header{

@@ -4,6 +4,7 @@
 		<rf-search-bar
 			@link="toCategory"
 			@search="toSearch"
+			:title="'分类'"
 			:icon="'icon-fenlei1'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
@@ -125,6 +126,7 @@
 			},
 			// 数据初始化
 			initData () {
+		    uni.removeStorageSync('cateTop');
 				this.getIndexList();
 			},
 			// 跳转至商品分类列表(分类id)

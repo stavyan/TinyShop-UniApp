@@ -19,11 +19,19 @@
 								{{row.member_nickname || '匿名用户'}}
 							</view>
 							<view class="date">
-								{{ row.updated_at | time }}
+								{{ row.created_at | time }}
 							</view>
 						</view>
 						<view class="spec">
-							规格: {{ row.sku_name || '基础款' }}
+							<text>
+								规格: {{ row.sku_name || '基础款' }}
+							</text>
+							<text>
+								<uni-rate
+									size="16"
+									:value="row.scores"
+									active-color="#fa436a" />
+							</text>
 						</view>
 						<view class="first">
 							<view class="rat">
@@ -61,9 +69,11 @@
 	import {evaluateList} from "../../api/product";
 	import moment from 'moment';
 	import empty from "@/components/empty";
+	import uniRate from "@/components/uni-rate/uni-rate.vue";
 	export default {
 		components: {
-			empty
+			empty,
+			uniRate
 		},
 		data() {
 			return {
@@ -88,7 +98,7 @@
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			},
 			againDay(val) {
-				const day = moment(val.updated_at * 1000).format('DD') - moment(val.again_addtime * 1000).format('DD');
+				const day = moment(val.again_addtime * 1000).format('DD') - moment(val.created_at * 1000).format('DD');
 				return day ? `${day}天后追加` : '当天追加'
 			}
 		},
@@ -238,6 +248,9 @@ page{
 					width: 100%;
 					color: #aaa;
 					font-size: 26upx;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
 				}
 				.first{
 					width: 100%;

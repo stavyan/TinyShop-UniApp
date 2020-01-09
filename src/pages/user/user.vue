@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="user">
 			<view class="user-section">
 				<image class="bg" src="/static/user-bg2.jpg"></image>
 				<view
@@ -8,28 +8,10 @@
             @tap="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
 					<view class="portrait-box">
 						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
-						<!--#ifdef MP-WEIXIN-->
-						<text class="username" v-if="token">
-							{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
-						</text>
-						<button v-if="!token" class='username' type='primary' open-type="getUserInfo" withCredentials="true" lang="zh_CN" @getuserinfo="wxGetUserInfo">
-								授权登录
-						</button>
-						<!--#endif -->
-						<!--#ifndef MP-WEIXIN-->
 						<text class="username">
 							{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
 						</text>
-						<!--#endif -->
 					</view>
-					<!--<view class="info-box">-->
-					<!--</view>-->
-					<!--<view class="recharge" v-if="token">-->
-						<!--<view class="img" @tap.stop="navTo('/pages/user/recharge')">-->
-							<!--<view class="icon chongzhi"></view>-->
-							<!--<view class="text">充值</view>-->
-						<!--</view>-->
-					<!--</view>-->
 				</view>
 				<view class="vip-card-box">
 					<image class="card-bg" src="/static/vip-card-bg.png" mode=""></image>
@@ -211,8 +193,6 @@
 			share(){
 				this.$refs.share.toggleMask();
 			},
-			wxGetUserInfo() {
-			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -269,6 +249,10 @@
 				}
 				if(!this.token){
 					url = '/pages/public/login';
+          uni.navigateTo({
+            url: '/pages/public/logintype'
+          });
+					return;
 					/*  #ifdef H5  */
 					if (this.isWechat()) {
           	uni.showModal({
