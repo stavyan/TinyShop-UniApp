@@ -39,6 +39,7 @@
 			</view>
 			<view class="content">
 				<view class="pay-list">
+				  <!--#ifdef MP-ALIPAY-->
 					<view class="row" @tap="payType='2'">
 						<text class="icon yticon icon-alipay"></text>
 							<view class="center">
@@ -48,6 +49,8 @@
 								<radio :checked="payType=='2'" color="#f06c7a" />
 							</view>
 					</view>
+					<!-- #endif-->
+				  <!--#ifdef MP-WEIXIN | H5-WEIXIN-->
 					<view class="row" @tap="payType='1'">
 							<text class="icon yticon icon-weixinzhifu"></text>
 							<view class="center">
@@ -57,6 +60,7 @@
 								<radio :checked="payType=='1'" color="#f06c7a" />
 							</view>
 					</view>
+					<!-- #endif-->
 				</view>
 			</view>
 		</view>
@@ -112,24 +116,30 @@
 						 await this.$post(`${payCreate}`, {
 							 order_group: 'recharge',
 							 pay_type: 1,
+							 // #ifdef H5
 							 trade_type: 'js',
+							 // #endif//
+							 // #ifdef MP-WEIXIN
+					     trade_type: 'mini_program',
+							 // #endif
 							 data: JSON.stringify(params),
 							 openid: res.data.openid
 						 }).then(r => {
 							 if (r.code === 200) {
 				         // #ifdef H5
 							   jweixin.ready(() => {
-								 jweixin.chooseWXPay({
-									 ...r.data.config,
-									 success: function (res) {
-										 // 支付成功后的回调函数
-									 }
-								 });
-							 })
+									 jweixin.chooseWXPay({
+										 ...r.data.config,
+										 success: function (res) {
+											 // 支付成功后的回调函数
+										 }
+									 });
+								 })
 					       // #endif
 								 // #ifdef MP-WEIXIN
 							   uni.requestPayment({
 		                ...r.data.config,
+									   timeStamp: r.data.config.timestamp,
 		                success: (res) => {
 		                    uni.showToast({
 		                        title: "感谢您的赞助!"
