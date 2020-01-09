@@ -10,7 +10,7 @@
 						<text class="name">授权时间: {{item.updated_at | time}}</text>
 					</view>
 				</view>
-				<text class="unbind" @click.stop="unBind(item.id)">解除绑定</text>
+				<text class="unbind" @tap.stop="unBind(item.id)">解除绑定</text>
 			</view>
 			<uni-load-more :status="loadingType" />
 		</view>

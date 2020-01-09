@@ -51,14 +51,14 @@
 					<uni-icons
 							class="image-close"
 							color="#333"
-							@click="handleImageDelete(index)"
+							@tap="handleImageDelete(index)"
 							type="close"
 							size="20" />
 			</view>
-			<view class="add" @click="uploadImage">+</view>
+			<view class="add" @tap="uploadImage">+</view>
 		</view>
 
-		<button class="confirm-btn" @click="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发表评价'}}</button>
+		<button class="confirm-btn" @tap="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发表评价'}}</button>
 	</view>
 </template>
 

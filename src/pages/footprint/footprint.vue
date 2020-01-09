@@ -9,14 +9,14 @@
 			@change="handleDateChange"
 			 />
 			<uni-swipe-action
-							@click="bindClick(item)"
+							@tap="bindClick(item)"
 							v-for="(item, index) in footPrintList"
 							:info="item"
 							:options="options"
 							class="uni-list-cell"
 							hover-class="uni-list-cell-hover"
 							:key="index">
-				<view class="uni-media-list" @click="goProduct(item.product.id)">
+				<view class="uni-media-list" @tap="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
 									 @error="onImageError(index)"

@@ -1,5 +1,5 @@
 <template>
-	<text :style="{ color: color, 'font-size': size + 'px' }" class="uni-icons" @click="_onClick">{{icons[type]}}</text>
+	<text :style="{ color: color, 'font-size': size + 'px' }" class="uni-icons" @tap="_onClick">{{icons[type]}}</text>
 </template>
 
 <script>

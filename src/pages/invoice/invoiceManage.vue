@@ -25,7 +25,7 @@
 			<text class="tit">设为默认</text>
 			<switch :checked="invoiceData.is_default ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
-		<button class="add-btn" @click="confirm">提交</button>
+		<button class="add-btn" @tap="confirm">提交</button>
 	</view>
 </template>
 

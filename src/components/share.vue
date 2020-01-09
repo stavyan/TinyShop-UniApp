@@ -1,12 +1,12 @@
 <template>
-	<view v-if="show" class="mask" @click="toggleMask" @touchmove.stop.prevent="stopPrevent"
+	<view v-if="show" class="mask" @tap="toggleMask" @touchmove.stop.prevent="stopPrevent"
 		:style="{backgroundColor: backgroundColor}"
 	>
-		<view 
+		<view
 			class="mask-content"
-			@click.stop.prevent="stopPrevent"
+			@tap.stop.prevent="stopPrevent"
 			:style="[{
-				height: config.height, 
+				height: config.height,
 				transform: transform
 			}]"
 		>
@@ -15,17 +15,17 @@
 					分享到
 				</view>
 				<view class="share-list">
-					<view 
+					<view
 						v-for="(item, index) in shareList" :key="index"
-						class="share-item" 
-						@click="shareToFriend(item.text)"
+						class="share-item"
+						@tap="shareToFriend(item.text)"
 					>
 						<image :src="item.icon" mode=""></image>
 						<text>{{item.text}}</text>
 					</view>
 				</view>
 			</scroll-view>
-			<view class="bottom b-t" @click="toggleMask">取消</view>
+			<view class="bottom b-t" @tap="toggleMask">取消</view>
 		</view>
 	</view>
 </template>
@@ -77,7 +77,7 @@
 				setTimeout(()=>{
 					this.timer = 0;
 				}, 500)
-				
+
 				if(this.show){
 					this.transform = this.config.transform;
 					this.backgroundColor = 'rgba(0,0,0,0)';
@@ -87,7 +87,7 @@
 					}, 200)
 					return;
 				}
-				
+
 				this.show = true;
 				//等待mask重绘完成执行
 				if(this.hasTabbar){
@@ -144,7 +144,7 @@
 			color: $font-color-dark;
 		}
 	}
-	
+
 	.mask-content{
 		width: 100%;
 		height: 580upx;

@@ -1,6 +1,6 @@
 <template>
 	<view class="content b-t">
-		<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @click="checkAddress(item)">
+		<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @tap="checkAddress(item)">
 			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
 				<view class="address-box">
 					<!--type: '2',-->
@@ -15,13 +15,13 @@
 					<text class="mobile">{{ item.duty_paragraph || '个人发票无税号' }}</text>
 				</view>
 			</view>
-			<text class="yticon icon-bianji" @click.stop="addInvoice('edit', item)"></text>
+			<text class="yticon icon-bianji" @tap.stop="addInvoice('edit', item)"></text>
 		</view>
 		<text class="tips">
 			提示：长按可删除当前发票。最多只能存在一个默认发票。
 		</text>
 
-		<button class="add-btn" @click="addInvoice('add')">新增发票</button>
+		<button class="add-btn" @tap="addInvoice('add')">新增发票</button>
 	</view>
 </template>
 

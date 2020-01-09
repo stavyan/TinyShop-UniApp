@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!--<view class="left-bottom-sign"></view>-->
-		<view class="back-btn yticon icon-zuojiantou-up" @click="navBack"></view>
+		<view class="back-btn yticon icon-zuojiantou-up" @tap="navBack"></view>
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
@@ -42,7 +42,7 @@
 							maxlength="6"
 							data-key="mobile"
 						/>
-						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode()">
+						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap="getSmsCode()">
 							<span class="btn" v-if="!smsCodeBtnDisabled">获取验证码</span>
 							<span v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</span>
 						</button>
@@ -50,18 +50,18 @@
 					<button class="confirm-btn" formType="submit" :disabled="logining">登录</button>
 				</form>
 			</view>
-			<view @click="showLoginBySmsCode" class="forget-section">
+			<view @tap="showLoginBySmsCode" class="forget-section">
 				{{ loginByPass ?  "验证码登录" : "密码登录" }}
 			</view>
-			<view class="forget-section" @click="toForgetPass" >
+			<view class="forget-section" @tap="toForgetPass" >
 				忘记密码?
 			</view>
 		</view>
 		<view class="register-section">
 			还没有账号?
-			<text @click="toRegister">马上注册</text>
+			<text @tap="toRegister">马上注册</text>
 			或者
-			<text @click="toHome">返回主页</text>
+			<text @tap="toHome">返回主页</text>
 		</view>
 	</view>
 </template>

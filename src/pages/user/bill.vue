@@ -8,7 +8,7 @@
 		</view>
 		<view class="place" ></view>
     <view class="wrapper">
-      <view class="list b-b" v-for="(item, index) in integralList" :key="index" @click="checkAddress(item)">
+      <view class="list b-b" v-for="(item, index) in integralList" :key="index" @tap="checkAddress(item)">
         <view class="wrapper">
           <view class="address-box">
             {{item.remark }}

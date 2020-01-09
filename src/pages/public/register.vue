@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="back-btn yticon icon-zuojiantou-up" @click="navBack"></view>
+		<view class="back-btn yticon icon-zuojiantou-up" @tap="navBack"></view>
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
@@ -30,7 +30,7 @@
 							maxlength="6"
 							data-key="mobile"
 						/>
-						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode">
+						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap="getSmsCode">
 							<span v-if="!smsCodeBtnDisabled">获取验证码</span>
 							<span v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</span>
 						</button>
@@ -72,7 +72,7 @@
 		</view>
 		<view class="register-section">
 			已经注册过了?
-			<text @click="toLogin">马上登录</text>
+			<text @tap="toLogin">马上登录</text>
 		</view>
 	</view>
 </template>

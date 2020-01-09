@@ -7,7 +7,7 @@
 
 		<view class="pay-type-list">
 
-			<view class="type-item b-b" @click="changePayType(1)" v-if="parseInt(payTypeList.order_wechat_pay, 10) === 1">
+			<view class="type-item b-b" @tap="changePayType(1)" v-if="parseInt(payTypeList.order_wechat_pay, 10) === 1">
 				<text class="icon yticon icon-weixinzhifu"></text>
 				<view class="con">
 					<text class="tit">微信支付</text>
@@ -17,7 +17,7 @@
 					<radio value="" color="#fa436a" :checked='payType == 1' />
 				</label>
 			</view>
-			<view class="type-item b-b" @click="changePayType(2)"  v-if="parseInt(payTypeList.order_ali_pay, 10) === 1">
+			<view class="type-item b-b" @tap="changePayType(2)"  v-if="parseInt(payTypeList.order_ali_pay, 10) === 1">
 				<text class="icon yticon icon-alipay"></text>
 				<view class="con">
 					<text class="tit">支付宝支付</text>
@@ -26,7 +26,7 @@
 					<radio value="" color="#fa436a" :checked='payType == 2' />
 				</label>
 			</view>
-			<view class="type-item" @click="changePayType(5)" v-show="parseInt(payTypeList.order_balance_pay, 10) === 1">
+			<view class="type-item" @tap="changePayType(5)" v-show="parseInt(payTypeList.order_balance_pay, 10) === 1">
 				<text class="icon yticon icon-erjiye-yucunkuan"></text>
 				<view class="con">
 					<text class="tit">预存款支付</text>
@@ -38,7 +38,7 @@
 			</view>
 		</view>
 
-		<text class="mix-btn" @click="confirm">确认支付</text>
+		<text class="mix-btn" @tap="confirm">确认支付</text>
 	</view>
 </template>
 

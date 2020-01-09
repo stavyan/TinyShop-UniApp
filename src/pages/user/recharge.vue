@@ -50,7 +50,6 @@
 							</view>
 					</view>
 					<!-- #endif-->
-				  <!--#ifdef MP-WEIXIN | H5-WEIXIN-->
 					<view class="row" @tap="payType='1'">
 							<text class="icon yticon icon-weixinzhifu"></text>
 							<view class="center">
@@ -60,14 +59,13 @@
 								<radio :checked="payType=='1'" color="#f06c7a" />
 							</view>
 					</view>
-					<!-- #endif-->
 				</view>
 			</view>
 		</view>
 		<view class="pay">
-			<view class="btn" @click="weixinPay">立即充值</view>
+			<view class="btn" @tap="weixinPay">立即充值</view>
 			<view class="tis">
-				点击立即充值，即代表您同意<view class="terms" @click="toTipDetail">
+				点击立即充值，即代表您同意<view class="terms" @tap="toTipDetail">
 					《条款协议》
 				</view>
 			</view>

@@ -1,6 +1,6 @@
 <template>
 	<view class="content b-t">
-		<view class="list b-b" v-for="(item, index) in feedbackList" :key="index" @click="navToDetail(item.id)">
+		<view class="list b-b" v-for="(item, index) in feedbackList" :key="index" @tap="navToDetail(item.id)">
 			<view class="wrapper">
 				<view class="address-box">
 					<text class="tag">{{ item.type | feedbackFilter }}</text>
@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<empty :info="'您还没有反馈意见'" v-if="feedbackList.length === 0"></empty>
-		<button class="add-btn" @click="addFeedback()">意见反馈</button>
+		<button class="add-btn" @tap="addFeedback()">意见反馈</button>
 	</view>
 </template>
 

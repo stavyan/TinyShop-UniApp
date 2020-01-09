@@ -1,6 +1,6 @@
 <template>
 	<view class="content b-t">
-		<view class="list b-b" v-for="(item, index) in addressList" :key="index" @click="checkAddress(item)">
+		<view class="list b-b" v-for="(item, index) in addressList" :key="index" @tap="checkAddress(item)">
 			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
 				<view class="address-box">
 					<text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
@@ -11,13 +11,13 @@
 					<text class="mobile">{{item.mobile}}</text>
 				</view>
 			</view>
-			<text class="yticon icon-bianji" @click.stop="addAddress('edit', item)"></text>
+			<text class="yticon icon-bianji" @tap.stop="addAddress('edit', item)"></text>
 		</view>
 		<text style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
 			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
 		</text>
 
-		<button class="add-btn" @click="addAddress('add')">新增地址</button>
+		<button class="add-btn" @tap="addAddress('add')">新增地址</button>
 	</view>
 </template>
 

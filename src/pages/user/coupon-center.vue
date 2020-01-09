@@ -2,7 +2,7 @@
 	<view class="content b-t">
 		<view class="mask-content">
 				<!-- 优惠券页面，仿mt -->
-				<view class="coupon-item" v-for="(item,index) in couponList" :key="index" @click="getCoupon(item)">
+				<view class="coupon-item" v-for="(item,index) in couponList" :key="index" @tap="getCoupon(item)">
 					<view class="con">
 						<view class="left">
 							<text class="title">{{item.title}}</text>
@@ -23,8 +23,8 @@
 							</text>
 							<text v-show="type">
 								<text style="margin-right: 15upx;" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 0">可使用商品</text>
-								<text class="btn" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 2" @click="show(item)">查看商品</text>
-								<text class="btn" @click="navTo('/pages/category/category', 'tab')">去使用</text>
+								<text class="btn" v-show="parseInt(item.range_type || item.couponType.range_type, 10) === 2" @tap="show(item)">查看商品</text>
+								<text class="btn" @tap="navTo('/pages/category/category', 'tab')">去使用</text>
 							</text>
 						 	<text v-if="item.myGet" v-show="!type">
 								 {{parseInt(item.max_fetch, 10) === 0 ? '不限' : `每人限领${item.max_fetch}` }} 已领{{ item.myGet.count || item.couponType.count }} <text v-show="item.percentage">剩余{{ item.percentage }}%</text>

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
-		
-		<view class="mix-list-cell" :class="border" @click="eventClick" hover-class="cell-hover"  :hover-stay-time="50">
+
+		<view class="mix-list-cell" :class="border" @tap="eventClick" hover-class="cell-hover"  :hover-stay-time="50">
 			<text
 				v-if="icon"
 				class="cell-icon yticon"
@@ -19,7 +19,7 @@
 
 	</view>
 </template>
- 
+
 <script>
 	/**
 	 *  简单封装了下， 应用范围比较狭窄，可以在此基础上进行扩展使用
@@ -85,7 +85,7 @@
 		padding: 20upx $page-row-spacing;
 		line-height:60upx;
 		position:relative;
-		
+
 		&.cell-hover{
 			background:#fafafa;
 		}

@@ -2,14 +2,14 @@
 	<view class="collection">
 		<view v-if="collectionList.length > 0">
 			<uni-swipe-action
-						@click="bindClick"
+						@tap="bindClick"
 						:info="item"
 						:options="options"
 						class="uni-list-cell"
 						hover-class="uni-list-cell-hover"
 						v-for="(item, index) in collectionList"
 						:key="index">
-						<view class="uni-media-list" @click="goProduct(item.product.id)">
+						<view class="uni-media-list" @tap="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
 									 @error="onImageError(index)"

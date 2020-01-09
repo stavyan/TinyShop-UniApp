@@ -9,27 +9,19 @@
 		methods: {
 			...mapMutations(['login'])
 		},
-		onLaunch: function() {
-			// let userInfo = uni.getStorageSync('userInfo') || undefined;
-			// if(userInfo.id){
-			// 	//更新登陆状态
-			// 	uni.getStorage({
-			// 		key: 'userInfo',
-			// 		success: (res) => {
-			// 			this.login(res.data);
-			// 		}
-			// 	});
-			// }
+		onLaunch () {
 		},
-		onShow: function() {
-			console.log('App Show')
-			// uni.setTabBarBadge({
-			// 	index: 2,
-			// 	text: '1'
-			// })
+		onShow () {
+	    const cartNum =  uni.getStorageSync('cartNum').toString();
+	    const token =  uni.getStorageSync('cartNum').toString();
+	    if (token) {
+				uni.setTabBarBadge({
+					index: 2,
+					text: cartNum
+				});
+	    }
 		},
-		onHide: function() {
-			console.log('App Hide')
+		onHide () {
 		},
 	}
 </script>

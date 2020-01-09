@@ -4,7 +4,7 @@
 		<view class="banner" v-show="bannerShow"
 		      @tap="toBanner(banner.jump_type, banner.jump_link)"
 		      >
-		      <!--@click="indexTopToDetailPage(banner.jump_type, banner.jump_link)"-->
+		      <!--@tap="indexTopToDetailPage(banner.jump_type, banner.jump_link)"-->
 			<image :src="banner.cover" mode="scaleToFill" />
 		</view>
 		<!--列表-->

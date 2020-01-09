@@ -5,7 +5,7 @@
 				<view
             open-type="getUserInfo"
             class="user-info-box"
-            @click="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
+            @tap="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
 					<view class="portrait-box">
 						<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
 						<!--#ifdef MP-WEIXIN-->
@@ -25,7 +25,7 @@
 					<!--<view class="info-box">-->
 					<!--</view>-->
 					<!--<view class="recharge" v-if="token">-->
-						<!--<view class="img" @click.stop="navTo('/pages/user/recharge')">-->
+						<!--<view class="img" @tap.stop="navTo('/pages/user/recharge')">-->
 							<!--<view class="icon chongzhi"></view>-->
 							<!--<view class="text">充值</view>-->
 						<!--</view>-->
@@ -56,17 +56,17 @@
 			>
 				<image class="arc" src="/static/arc.png"></image>
 				<view class="tj-sction">
-					<view class="tj-item" @click="navTo('/pages/user/account')">
+					<view class="tj-item" @tap="navTo('/pages/user/account')">
 						<text class="num">
 							{{ userInfo && userInfo.account && userInfo.account.user_money || '0' }}
 						</text>
 						<text>余额</text>
 					</view>
-					<view class="tj-item" @click="navTo('/pages/user/coupon?type=1')">
+					<view class="tj-item" @tap="navTo('/pages/user/coupon?type=1')">
 						<text class="num">{{ userInfo && userInfo.coupon_num || '0' }}</text>
 						<text>优惠券</text>
 					</view>
-					<view class="tj-item" @click="navTo('/pages/user/integral')">
+					<view class="tj-item" @tap="navTo('/pages/user/integral')">
 						<text class="num">
 							{{ userInfo && userInfo.account && userInfo.account.user_integral || '0' }}
 						</text>
@@ -75,36 +75,36 @@
 				</view>
 				<!-- 订单 -->
 				<view class="order-section">
-					<view class="order-item" @click="navTo('/pages/order/order?state=0')" hover-class="common-hover"  :hover-stay-time="50">
+					<view class="order-item" @tap="navTo('/pages/order/order?state=0')" hover-class="common-hover"  :hover-stay-time="50">
 						<text class="yticon icon-daifukuan"></text>
 						<text>待付款</text>
 					</view>
-					<view class="order-item" @click="navTo('/pages/order/order?state=1')"  hover-class="common-hover" :hover-stay-time="50">
+					<view class="order-item" @tap="navTo('/pages/order/order?state=1')"  hover-class="common-hover" :hover-stay-time="50">
 						<text class="yticon icon-shouye "></text>
 						<text>待发货</text>
 					</view>
-					<view class="order-item" @click="navTo('/pages/order/order?state=2')" hover-class="common-hover"  :hover-stay-time="50">
+					<view class="order-item" @tap="navTo('/pages/order/order?state=2')" hover-class="common-hover"  :hover-stay-time="50">
 						<text class="yticon icon-yishouhuo"></text>
 						<text>待收货</text>
 					</view>
-					<view class="order-item" @click="navTo('/pages/order/order?state=3')" hover-class="common-hover"  :hover-stay-time="50">
+					<view class="order-item" @tap="navTo('/pages/order/order?state=3')" hover-class="common-hover"  :hover-stay-time="50">
 						<text class="yticon icon-pingjia"></text>
 						<text>评价</text>
 					</view>
-					<view class="order-item" @click="navTo()" hover-class="common-hover"  :hover-stay-time="50">
+					<view class="order-item" @tap="navTo()" hover-class="common-hover"  :hover-stay-time="50">
 						<text class="yticon icon-shouhoutuikuan"></text>
 						<text>退款/售后</text>
 					</view>
 				</view>
 				<!-- 浏览历史 -->
 				<view class="history-section icon">
-					<view class="sec-header" @click="navTo('/pages/footprint/footprint')">
+					<view class="sec-header" @tap="navTo('/pages/footprint/footprint')">
 						<text class="yticon icon-lishijilu"></text>
 						<text>我的足迹</text>
 					</view>
 					<scroll-view scroll-x class="h-list" v-if="token">
 						<view class="h-item" v-for="item in footList" :key="item.id">
-							<image class="h-item-img" @click.stop="navTo(`/pages/product/product?id=${item.product.id}`)"
+							<image class="h-item-img" @tap.stop="navTo(`/pages/product/product?id=${item.product.id}`)"
 										 :src="item.product.picture"
 										 mode="aspectFill">
 							</image>

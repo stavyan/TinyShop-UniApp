@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="list">
-			<view v-show="state === 3" class="empty-invalid" @click="emptyInvalidCoupon">
+			<view v-show="state === 3" class="empty-invalid" @tap="emptyInvalidCoupon">
 				<view class="icon shanchu"></view>清空失效优惠券
 			</view>
 			<!-- 优惠券列表 -->
@@ -37,13 +37,13 @@
 							<view class="criteria">
 								满{{row.at_least}}使用
 							</view>
-							<view class="use view" @click="show(row)" v-show="parseInt(row.range_type, 10) === 2">
+							<view class="use view" @tap="show(row)" v-show="parseInt(row.range_type, 10) === 2">
 								商品
 							</view>
-							<view class="use" @click="getCoupon(row.id)">
+							<view class="use" @tap="getCoupon(row.id)">
 								领取
 							</view>
-<!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @click="show(row)">-->
+<!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @tap="show(row)">-->
 <!--								去查看-->
 <!--							</view>-->
 						</view>
@@ -54,10 +54,10 @@
 		</view>
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
 				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-					<uni-list-item :title="item.name" @click="navTo(`/pages/product/product?id=${item.id}`)"/>
+					<uni-list-item :title="item.name" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
 				</uni-list>
 				<view class="close">
-					<button class="btn" plain="true" size="small" type="primary" @click="hide">关闭</button>
+					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
 				</view>
 		</uni-drawer>
 	</view>

@@ -21,7 +21,7 @@
                         <block v-for="(image,index) in imageList" :key="index">
                             <view class="uni-uploader__file" style="position: relative;">
                                 <image class="uni-uploader__img" :src="image" @tap="previewImage"></image>
-                                <view class="close-view" @click="close(index)">x</view>
+                                <view class="close-view" @tap="close(index)">x</view>
                             </view>
                         </block>
                         <view class="uni-uploader__input-box" v-show="imageList.length < 8">

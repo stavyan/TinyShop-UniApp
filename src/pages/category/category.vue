@@ -1,27 +1,12 @@
 <template>
 	<view id="category">
-		<!-- 状态栏 -->
-		<view v-if="showHeader" class="status" :style="{ position: headerPosition,top:statusTop,opacity: afterHeaderOpacity}"></view>
-		<!-- 顶部搜索栏 -->
-		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
-			<!-- 跳转分类模块 -->
-			<view class="addr" @tap.stop="toCategory">
-				<view class="icon yticon icon-xiatubiao--copy" ></view>
-				主页
-			</view>
-			<!-- 搜索框 -->
-			<view class="input-box">
-				<input
-				 @tap="toSearch"
-				 disabled
-				 :value="hotSearchDefault"
-					placeholder-style="color:#ccc;"
-				/>
-				<view class="icon search"></view>
-			</view>
-		</view>
-		<!-- 占位 -->
-		<view v-if="showHeader" class="place"></view>
+		<!--顶部搜索导航栏-->
+		<rf-search-bar
+			@link="toIndex"
+			@search="toSearch"
+			:icon="'icon-xiatubiao--copy'"
+			:headerShow="headerShow"
+			:placeholder="hotSearchDefault" />
 		<view class="category-list">
 			<!-- 左侧分类导航 -->
 			<scroll-view  scroll-y="true" class="left" >
@@ -32,7 +17,7 @@
 					</view>
 				</view>
       </scroll-view>
-			 右侧子导航
+			<!--右侧子导航-->
 			<scroll-view  scroll-y="true" class="right">
 		    <view class="category" v-if="n.child.length > 0" v-for="(n,index) in categoryList" :key="n.id" v-show="index==showCategoryIndex" >
 					<view class="banner">
@@ -56,46 +41,42 @@
 	</view>
 </template>
 <script>
-	import {productCate} from "../../api/product";
+	import {productCate} from "@/api/product";
+	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
   export default {
+		components: {
+			rfSearchBar
+		},
 		data() {
 			return {
-				showHeader:true,
+				headerShow:true,
 				hotSearchDefault: '输入关键字搜索',
 				fList: [],
 				sList: [],
 				tList: [],
 				showCategoryIndex: 0,
-				headerTop:null,
-				statusTop:null,
-				nVueTitle:null,
-				afterHeaderOpacity: 1,//不透明度
-				headerPosition:"fixed",
-				city:"北京",
 				//分类列表
-				categoryList: []
-			}
-		},
-		onPageScroll(e){
-			//兼容iOS端下拉时顶部漂移
-			if(e.scrollTop>=0){
-				this.headerPosition = "fixed";
-			}else{
-				this.headerPosition = "absolute";
+				categoryList: [],
+				search: ''
 			}
 		},
 		onLoad() {
 	    this.initData();
 		},
 		methods: {
+	    // 跳转至商品列表
 			navToList(id){
 				uni.navigateTo({
 					url: `/pages/product/list?cate_id=${id}`
 				})
 			},
+			// 数据初始化
 	    initData () {
+				this.search = uni.getStorageSync('search')
+				this.hotSearchDefault = `请输入关键字 如: ${this.search.hot_search_default}`;
 				this.getProductCate();
 	    },
+			// 获取商品分类列表
 			async getProductCate () {
 				this.fList = [];
 				this.sList = [];
@@ -104,25 +85,13 @@
 				await this.$get(`${productCate}`).then(r=>{
 					if (r.code === 200) {
 				    this.categoryList = r.data;
+				    // 查询第一个拥有二级菜单的子菜单
             for (let i = 0; i < r.data.length; i++) {
 	              if (r.data[i].child.length > 0) {
 			            this.showCategoryIndex = i;
 			            break;
 			        }
             }
-						r.data.forEach(item=>{
-							if(item.child.length > 0){
-								this.fList.push(item);  //pid为父级id, 没有pid或者pid=0是一级分类
-								item.child instanceof Array && item.child.forEach(item2=>{
-									if(item2.child.length > 0) {
-										this.sList.push(item2); //没有图的是2级分类
-										item2.child instanceof Array && item2.child.forEach(item3 => {
-											this.tList.push(item3); //没有图的是2级分类
-										})
-									}
-								})
-							}
-						})
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -134,200 +103,127 @@
 			showCategory(index){
 				this.showCategoryIndex = index;
 			},
-			toCategory(e){
-				uni.setStorageSync('catName',e.name);
+			// 跳转至搜索详情页
+			toSearch () {
 				uni.navigateTo({
-					url: '../../goods/goods-list/goods-list?cid='+e.id+'&name='+e.name
-				});
+					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+				})
 			},
-			//搜索跳转
-			toSearch(){
-				uni.showToast({title: "建议跳转到新页面做搜索功能"});
+			// 跳转至分类页
+			toIndex () {
+				uni.reLaunch({
+					url: `/pages/index/index`
+				})
 			}
 		}
 	}
 </script>
 <style scoped lang="scss">
-page {
+	page {
 		background-color: #fff;
-}
-#category {
-	.status {
-		width: 100%;
-		height: 0;
-		position: fixed;
-		z-index: 10;
-		background-color: #fff;
-		top: 0;
-		/*  #ifdef  APP-PLUS  */
-		height: var(--status-bar-height); //覆盖样式
-		/*  #endif  */
 	}
-	.header {
-		width: 96%;
-		height: 100upx;
-		display: flex;
-		align-items: center;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		background-color: #fff;
-		/*  #ifdef  APP-PLUS  */
-		top: var(--status-bar-height);
-		/*  #endif  */
-		.addr {
-			width: 120upx;
-			height: 60upx;
-			flex-shrink: 0;
-			display: flex;
-			align-items: center;
-			font-size: 28upx;
-			.icon {
-				height: 60upx;
-				margin-right: 5upx;
-				margin-left: 15upx;
-				display: flex;
-				align-items: center;
-				font-size: 38upx;
-				color: $base-color;
-			}
-		}
-		.input-box {
+	#category {
+		.category-list{
 			width: 100%;
-			height: 60upx;
-			background-color: #f5f5f5;
-			border-radius: 30upx;
-			position: relative;
+			background-color: #fff;
 			display: flex;
-			align-items: center;
-			.icon {
-				display: flex;
-				align-items: center;
+			.left,.right{
 				position: absolute;
-				top: 0;
-				right: 0;
-				width: 60upx;
-				height: 60upx;
-				font-size: 34upx;
-				color: #c0c0c0;
+				top: 100upx;
+				/*  #ifdef  APP-PLUS  */
+				top: calc(100upx + var(--status-bar-height));
+				/*  #endif  */
+				bottom: 0upx;
 			}
-			input {
-				width: 100%;
-				padding-left: 28upx;
-				height: 28upx;
-				color:#888;
-				font-size: 28upx;
-			}
-		}
-	}
-	.place {
-		background-color: #ffffff;
-		height: 100upx;
-		/*  #ifdef  APP-PLUS  */
-		margin-top: var(--status-bar-height);
-		/*  #endif  */
-	}
-	.category-list{
-		width: 100%;
-		background-color: #fff;
-		display: flex;
-		.left,.right{
-			position: absolute;
-			top: 100upx;
-			/*  #ifdef  APP-PLUS  */
-			top: calc(100upx + var(--status-bar-height));
-			/*  #endif  */
-			bottom: 0upx;
-		}
-		.left{
-			width: 24%;
-			left: 0upx;
-			background-color: #f2f2f2;
-			.row{
-				width: 100%;
-				height: 90upx;
-				display: flex;
-				align-items: center;
-				.text{
+			.left{
+				width: 24%;
+				left: 0upx;
+				background-color: #f2f2f2;
+				.row{
 					width: 100%;
-					position: relative;
-					font-size: 28upx;
+					height: 90upx;
 					display: flex;
-					justify-content: center;
-					color: #3c3c3c;
-					.block{
-						position: absolute;
-						width: 0upx;
-						left: 0;
-					}
-				}
-				&.on{
-					height: 100upx;
-					background-color: #fff;
+					align-items: center;
 					.text{
-						font-size: 30upx;
-						font-weight: 600;
-						color: #2d2d2d;
-						.block{
-							width: 10upx;
-							height: 80%;
-							top: 10%;
-							background-color: #f06c7a;
-						}
-					}
-				}
-			}
-		}
-		.right{
-		   width: 76%;
-				left: 24%;
-			.category{
-				width: calc(100%);
-				padding: 20upx 15upx;
-				.banner{
-					width: 96%;
-					margin: 0 auto 20upx;
-					height: 24.262vw;
-					border-radius: 10upx;
-					overflow: hidden;
-					box-shadow: 0upx 5upx 20upx rgba(0,0,0,0.3);
-					image{
 						width: 100%;
-						height: 24.262vw;
-					}
-				}
-				.list{
-					margin-top: 40upx;
-					width: 100%;
-					display: flex;
-					flex-wrap: wrap;
-					.box{
-						width: calc(71.44vw / 3);
-						margin-bottom: 30upx;
+						position: relative;
+						font-size: 28upx;
 						display: flex;
 						justify-content: center;
-						align-items: center;
-						flex-wrap: wrap;
-						image{
-							width: 64%;
-							height: calc(71.44vw / 3 * 0.64);
+						color: #3c3c3c;
+						.block{
+							position: absolute;
+							width: 0upx;
+							left: 0;
 						}
+					}
+					&.on{
+						height: 100upx;
+						background-color: #fff;
 						.text{
-							margin-top: 8upx;
-							width: 100%;
-							display: flex;
-							justify-content: center;
-							font-size: 26upx;
+							font-size: 30upx;
+							font-weight: 600;
+							color: #2d2d2d;
+							.block{
+								width: 10upx;
+								height: 80%;
+								top: 10%;
+								background-color: #f06c7a;
+							}
 						}
 					}
 				}
-				.no-data {
-					text-align: center;
-					margin: 30upx 0;
-					color: $font-color-light;
+			}
+			.right{
+			   width: 76%;
+					left: 24%;
+				.category{
+					width: calc(100%);
+					padding: 20upx 15upx;
+					.banner{
+						width: 96%;
+						margin: 0 auto 20upx;
+						height: 24.262vw;
+						border-radius: 10upx;
+						overflow: hidden;
+						box-shadow: 0upx 5upx 20upx rgba(0,0,0,0.3);
+						image{
+							width: 100%;
+							height: 24.262vw;
+						}
+					}
+					.list{
+						margin-top: 40upx;
+						width: 100%;
+						display: flex;
+						flex-wrap: wrap;
+						.box{
+							width: calc(71.44vw / 3);
+							margin-bottom: 30upx;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							flex-wrap: wrap;
+							image{
+								width: 64%;
+								height: calc(71.44vw / 3 * 0.64);
+							}
+							.text{
+								margin-top: 8upx;
+								width: 100%;
+								display: flex;
+								justify-content: center;
+								font-size: 26upx;
+							}
+						}
+					}
+					.no-data {
+						text-align: center;
+						margin: 30upx 0;
+						color: $font-color-light;
+					}
 				}
 			}
 		}
 	}
-}
 </style>

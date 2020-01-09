@@ -57,7 +57,7 @@
 					</view>
 				</view>
 				<!--购买类型-->
-				<view class="c-row b-b" @click="toggleSpec">
+				<view class="c-row b-b" @tap="toggleSpec">
 					<text class="tit">购买类型</text>
 					<view class="con">
 						<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
@@ -73,7 +73,7 @@
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">优惠券</text>
-					<text class="con t-r red" @click="toggleMask('show')">领取优惠券</text>
+					<text class="con t-r red" @tap="toggleMask('show')">领取优惠券</text>
 					<text class="yticon icon-you"></text>
 				</view>
 				<view class="c-row b-b">
@@ -90,7 +90,7 @@
 						<text>最少可获得: {{ productDetail | givePointFilter }} </text>
 						<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
 						<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
-						<text class="buy-now" @click="addCart('buy')" v-show="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
+						<text class="buy-now" @tap="addCart('buy')" v-show="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
 					</view>
 				</view>
 				<view class="c-row b-b" @tap="showService">
@@ -132,7 +132,7 @@
 			</view>
 
 			<!-- 评价 -->
-			<view class="eva-section" @click="toEvaluateList">
+			<view class="eva-section" @tap="toEvaluateList">
 				<view class="e-header">
 					<text class="tit">评价</text>
 					<text>({{ productDetail.comment_num }})</text>
@@ -186,17 +186,17 @@
 					<text class="yticon icon-gouwuche"></text>
 					<text>购物车</text>
 				</navigator>
-				<view class="p-b-btn" :class="{active: favorite}" @click="toFavorite">
+				<view class="p-b-btn" :class="{active: favorite}" @tap="toFavorite">
 					<text class="yticon icon-shoucang"></text>
 					<text>收藏</text>
 				</view>
 
 				<view class="action-btn-group">
-					<button type="primary" class=" action-btn no-border buy-now-btn" @click="addCart('buy')">立即购买</button>
+					<button type="primary" class=" action-btn no-border buy-now-btn" @tap="addCart('buy')">立即购买</button>
 					<button type="primary"
 									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
 									class=" action-btn no-border add-cart-btn"
-									@click="addCart('cart')">加入购物车</button>
+									@tap="addCart('cart')">加入购物车</button>
 				</view>
 			</view>
 
@@ -212,7 +212,7 @@
 							<view class="description">此商品承诺{{item}}</view>
 						</view>
 					</view>
-					<button class="btn" @click="hideService">完成</button>
+					<button class="btn" @tap="hideService">完成</button>
 				</view>
 			</view>
 
@@ -228,7 +228,7 @@
 						</view>
 						</view>
 					</view>
-					<button class="btn" @click="hideService">完成</button>
+					<button class="btn" @tap="hideService">完成</button>
 				</view>
 			</view>
 
@@ -244,7 +244,7 @@
 							</view>
 						</view>
 					</view>
-					<button class="btn" @click="hideService">完成</button>
+					<button class="btn" @tap="hideService">完成</button>
 				</view>
 			</view>
 
@@ -253,11 +253,11 @@
 				class="popup spec"
 				:class="specClass"
 				@touchmove.stop.prevent="stopPrevent"
-				@click="toggleSpec"
+				@tap="toggleSpec"
 			>
 				<!-- 遮罩层 -->
-				<view class="mask" @click="hideSpec"></view>
-				<view class="layer attr-content" @click.stop="stopPrevent">
+				<view class="mask" @tap="hideSpec"></view>
+				<view class="layer attr-content" @tap.stop="stopPrevent">
 					<view class="a-t">
 						<image :src="showTypeImage || productDetail.picture"></image>
 						<view class="right">
@@ -284,7 +284,7 @@
 								:key="childIndex"
 								:class="{selected: childItem.selected}"
 								:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
-								@click="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
+								@tap="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
 							>
 								<text v-show="parseInt(item.show_type) === 1">
 									{{childItem.title }}
@@ -313,7 +313,7 @@
 							@eventChange="numberChange"
 						></uni-number-box>
 					</view>
-					<button class="btn" @click="toggleSpec">完成</button>
+					<button class="btn" @tap="toggleSpec">完成</button>
 				</view>
 			</view>
 			<!-- 分享 -->
@@ -323,10 +323,10 @@
 				:shareList="shareList"
 			></share>
 			<!-- 优惠券面板 -->
-			<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
-				<view class="mask-content" @click.stop.prevent="stopPrevent">
+			<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @tap="toggleMask">
+				<view class="mask-content" @tap.stop.prevent="stopPrevent">
 					<!-- 优惠券页面，仿mt -->
-					<view class="coupon-item" v-for="(item,index) in productDetail.canReceiveCoupon" :key="index" @click="getCoupon(item)">
+					<view class="coupon-item" v-for="(item,index) in productDetail.canReceiveCoupon" :key="index" @tap="getCoupon(item)">
 						<view class="con">
 							<view class="left">
 								<text class="title">{{item.title}}</text>

@@ -9,7 +9,7 @@
 				<text class="icon search">{{ iconSearch }}</text>
 			</div>
 			<text class="icon yuyin">{{ iconYuyin }}</text>
-			<text @click="toMsg" class="icon tongzhi">{{ iconTongzhi }}</text>
+			<text @tap="toMsg" class="icon tongzhi">{{ iconTongzhi }}</text>
 		</div>
 	</div>
 </template>

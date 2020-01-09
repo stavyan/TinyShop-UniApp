@@ -1,30 +1,30 @@
 <template>
 	<view class="container">
-		<view class="list-cell b-b m-t" @click="navTo('/pages/userinfo/userinfo')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b m-t" @tap="navTo('/pages/userinfo/userinfo')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">个人资料</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('/pages/public/password?type=1')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @tap="navTo('/pages/public/password?type=1')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">修改密码</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('/pages/third-party/list')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @tap="navTo('/pages/third-party/list')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">授权管理</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-<!--		<view class="list-cell b-b" @click="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">-->
+<!--		<view class="list-cell b-b" @tap="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">-->
 <!--			<text class="cell-tit">收货地址</text>-->
 <!--			<text class="cell-more yticon icon-you"></text>-->
 <!--		</view>-->
-		<view class="list-cell b-b m-t" @click="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b m-t" @tap="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">发票管理</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('/pages/invoice/list')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @tap="navTo('/pages/invoice/list')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">开票历史</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<!--<view class="list-cell" @click="navTo('实名认证')" hover-class="cell-hover" :hover-stay-time="50">-->
+		<!--<view class="list-cell" @tap="navTo('实名认证')" hover-class="cell-hover" :hover-stay-time="50">-->
 			<!--<text class="cell-tit">实名认证</text>-->
 			<!--<text class="cell-more yticon icon-you"></text>-->
 		<!--</view>-->
@@ -33,12 +33,12 @@
 			<text class="cell-tit">消息推送</text>
 			<switch checked color="#fa436a" @change="switchChange" />
 		</view>
-		<view class="list-cell m-t b-b" @click="navTo('清除缓存')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell m-t b-b" @tap="navTo('清除缓存')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">清除缓存</text>
 			<text class="cell-tip">{{ currentStorageSize }} kb</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navTo('/pages/about/about')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b" @tap="navTo('/pages/about/about')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">关于RF商城</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
@@ -47,11 +47,11 @@
 			<text class="cell-tip">当前版本 beta 1.0</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell m-t" @click="navTo('/pages/feedback/list')">
+		<view class="list-cell m-t" @tap="navTo('/pages/feedback/list')">
 			<text class="cell-tit">意见反馈</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell log-out-btn" @click="toLogout">
+		<view class="list-cell log-out-btn" @tap="toLogout">
 			<text class="cell-tit">退出登录</text>
 		</view>
 	</view>

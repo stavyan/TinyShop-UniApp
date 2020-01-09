@@ -6,7 +6,7 @@
       mark === true || mark === 'true' ? 'uni-tag--mark' : '',
       'uni-tag--' + size,
       'uni-tag--' + type
-    ]" class="uni-tag" @click="onClick()">
+    ]" class="uni-tag" @tap="onClick()">
 		{{ text }}
 	</view>
 </template>

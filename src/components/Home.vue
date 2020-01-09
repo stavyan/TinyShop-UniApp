@@ -5,7 +5,7 @@
       <text class="btn">购物车</text>
       <text class="btn">个人中心</text>
     </view>
-    <view class="picture" @click.stop="open">
+    <view class="picture" @tap.stop="open">
       <image
           :src="
           homeActive

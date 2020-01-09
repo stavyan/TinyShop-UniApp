@@ -6,8 +6,6 @@
 		</view>
 		<!-- 占位 -->
 		<view v-if="showHeader" class="place"></view>
-		<!-- 商品列表 -->
-
 		<!-- 购物车为空 -->
 		<view v-if="cartList.length === 0" class="empty">
 			<image src="/static/emptyCart.jpg" mode="aspectFit"></image>
@@ -17,10 +15,10 @@
 			</view>
 			<view v-else class="empty-tips">
 				空空如也
-				<view class="navigator" @click="navToLogin">去登陆></view>
+				<view class="navigator" @tap="navToLogin">去登陆></view>
 			</view>
 		</view>
-
+		<!-- 购物车列表 -->
 		<view class="goods-list" v-else>
        <view class="row" v-for="(row,index) in cartList" :key="index" >
 				<!-- 删除按钮 -->
@@ -50,9 +48,9 @@
 										<view class="icon jian"></view>
 									</view>
 									<view class="input" @tap.stop="discard">
-										<input type="number" v-model="row.number" @input="numberChange(row, $event,index)" />
+										<input type="number" v-model="row.number" @input.stop="numberChange(row, $event,index)" />
 									</view>
-									<view class="add"  @tap.stop="add(row, index)">
+									<view class="add" @tap.stop="add(row, index)">
 										<view class="icon jia"></view>
 									</view>
 								</view>
@@ -81,7 +79,7 @@
 </template>
 
 <script>
-	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum, orderPreview} from "../../api/product";
+	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum} from "../../api/product";
 	export default {
 		data() {
 			return {
@@ -126,7 +124,7 @@
 			this.initData();
 		},
 		methods: {
-			//删除
+			// 删除选中购物车商品
 			async deleteCartItem(id, type){
 				const sku_ids = []
 				if (type) {
@@ -156,13 +154,7 @@
 					console.log(err)
 				})
 			},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 18:21:31
-			 *@param arguments
-			 */
+			// 数据初始化
 			initData() {
 				this.token = uni.getStorageSync('accessToken') || undefined
 				if (this.token) {
@@ -172,23 +164,13 @@
 					this.getCartItemList();
 				}
 			},
-			/**
-			 *@des 跳转至登录页
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/06 17:42:31
-			 */
+			// 跳转至登录页
 			navToLogin(){
 				uni.navigateTo({
 					url: '/pages/public/login'
 				})
 			},
-			/**
-			 *@des 获取购物车列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 18:22:09
-			 */
+			// 获取购物车列表
 			async getCartItemList (type) {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${cartItemList}`, {}, {}, this).then(r=>{
@@ -197,6 +179,11 @@
 					}
 					if (r.code === 200) {
 						this.cartList = r.data
+						uni.setStorageSync('cartNum', r.data.length)
+						uni.setTabBarBadge({
+							index: 2,
+							text: r.data.length.toString()
+						});
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
@@ -204,7 +191,7 @@
 					console.log(err)
 				})
 			},
-			//清空
+			// 清空购物车
 			clearCart(){
 				uni.showModal({
 					content: '清空购物车？',
@@ -227,7 +214,7 @@
 					}
 				})
 			},
-			//控制左滑删除效果-begin
+			// 控制左滑删除效果
 			touchStart(index,event){
 				//多点触控不触发
 				if(event.touches.length>1){
@@ -275,7 +262,7 @@
 				//结束禁止触发效果
 				this.isStop = false;
 			},
-			//详情页
+			// 跳转至详情页
 			navToDetailPage(id) {
 				uni.navigateTo({
 					url: `/pages/product/product?id=${id}`
@@ -289,7 +276,7 @@
 				this.isAllselected = this.selectedList.length == this.cartList.length;
 				this.sum();
 			},
-			//全选
+			// 全选商品
 			allSelect(){
 				let len = this.cartList.length;
 				let arr = [];
@@ -301,7 +288,7 @@
 				this.isAllselected = this.isAllselected||this.cartList.length==0?false : true;
 				this.sum();
 			},
-			// 减少数量
+			// 减少数量(执行接口)
 			sub(item, index){
 				if(this.cartList[index].number<=1){
 					return;
@@ -309,12 +296,14 @@
 				this.cartList[index].number--;
 				this.numberChange(item);
 			},
-			// 增加数量
+			// 增加数量(执行接口)
 			add(item, index){
 				this.cartList[index].number++;
 				this.numberChange(item, undefined, index, 'add');
 			},
-			//数量
+			// 控制可输入购物车商品数量
+			discard() {},
+			// 监听购物车商品数量改变
 			async numberChange(item, data, index, type) {
 				if (data) {
 					this.cartList[index].number = data.detail.value;
@@ -339,7 +328,7 @@
 					console.log(err)
 				})
 			},
-			//创建订单
+			// 创建订单
 			async createOrder() {
 				if (this.selectedList.length === 0) return;
 				const data = {};
@@ -358,22 +347,6 @@
                 uni.navigateTo({
                     url: `/pages/order/createOrder?data=${JSON.stringify(data)}`
                 });
-				// await this.$get(`${orderPreview}`, {
-				// 	...data
-				// }).then(r => {
-				// 	if (r.code === 200) {
-				// 		this.selectedList.length = 0;
-				// 		this.isAllselected = false;
-				// 		this.sumPrice = 0;
-				// 		uni.navigateTo({
-				// 			url: `/pages/order/createOrder?data=${JSON.stringify(r.data)}&id=${ids.join(',')}`
-				// 		});
-				// 	} else {
-				// 		uni.showToast({title: r.message, icon: "none"});
-				// 	}
-				// }).catch(err => {
-				// 	console.log(err)
-				// });
 			},
 			// 合计
 			sum(){
@@ -383,45 +356,16 @@
 				for(let i=0;i<len;i++){
 					if(this.cartList[i].selected) {
 						arr.push(this.cartList[i]);
-						// const list = this.arrSort(arr);
-						// list.forEach(item => {
-						// 	const ladderPreferential = item.data[0].ladderPreferential;
-						// 	for (let j = 0; j < ladderPreferential.length; j++) {
-						// 		console.log(parseInt(ladderPreferential[j].quantity))
-						// 		console.log(item.num)
-						// 		console.log(j)
-						// 		if (item.num >= parseInt(ladderPreferential[j].quantity, 10)) {
-						// 			console.log(ladderPreferential[j]);
-						// 			break;
-						// 		}
-						// 	}
-							// try {
-							// 	item.data[0].ladderPreferential.forEach(item2 => {
-							// 		if (item.num >= parseInt(item2.quantity, 10)) {
-							// 			console.log(item2)
-							// 		}
-							// 	});
-							// } catch(e) {
-							// 			if(e.message!="EndIterative") throw e;
-							// 	};
-						// });
-						// this.sumPrice = this.sumPrice + (this.cartList[i].number * this.cartList[i].price) - this.arrSort(arr) + this.oldDiscount;
-						// this.sumPrice = this.sumPrice + (this.cartList[i].number * this.cartList[i].price);
-						// this.oldDiscount = this.arrSort(arr);
 						this.sumPrice = this.arrSort(arr);
 					}
 				}
 				this.sumPrice = this.sumPrice.toFixed(2);
-			},
+		},
+			// 向下舍去小数点后两位
 			floor(val) {
 				return Math.floor(val * 100) / 100;
 			},
-			ceil(val) {
-				return Math.ceil(val * 100) / 100;
-			},
-			discard() {
-				//丢弃
-			},
+			// 计算相同商品不同规格价格
 			arrSort (arr) {
 				const map = {},
     		dest = [];
@@ -451,7 +395,6 @@
 						item.num += parseInt(item2.number, 10)
 						item.price += parseInt(item2.number, 10) * item2.price;
 					})
-					console.log(item)
 					const ladderPreferential = item.data[0].ladderPreferential;
 					for (let i = 0; i < ladderPreferential.length; i++) {
 						if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
@@ -475,8 +418,6 @@
 				dest.forEach(item => {
 					amount += item.price;
 				});
-				console.error('discount', discount)
-				console.warn('amount', amount)
 				return amount - discount;
 			}
 		}
@@ -557,7 +498,6 @@
 			width: calc(92%);
 			height: calc(22vw + 40upx);
 			margin: 20upx auto;
-
 			border-radius: 15upx;
 			box-shadow: 0upx 5upx 20upx rgba(0,0,0,0.1);
 			display: flex;
@@ -609,7 +549,6 @@
 				z-index: 3;
 				display: flex;
 				align-items: center;
-
 				.goods-info{
 					width: 100%;
 					display: flex;
@@ -734,7 +673,7 @@
 	}
 	.footer{
 		width: 100%;
-		padding: 0 4%;
+		padding: 0 2%;
 		background-color: #fbfbfb;
 		height: 100upx;
 		display: flex;
@@ -747,23 +686,22 @@
 		.delBtn{
 			border: solid 1upx $base-color;
 			color: $base-color;
-			padding: 0 16upx;
-			height: 50upx;
+			padding: 0 24upx;
+			height: 42upx;
 			border-radius: 24upx;
+			font-size: $font-sm;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			margin-left: 5px;
 		}
 		.settlement{
-			width: 56%;
+			width: 52%;
 			display: flex;
 			justify-content: flex-end;
 			align-items: center;
 			.sum{
-				width: 50%;
-				font-size: 28upx;
-				margin-right: 10upx;
+				font-size: $font-base;
+				margin-right: 8upx;
 				display: flex;
 				justify-content: flex-end;
 				.money{
@@ -771,14 +709,13 @@
 				}
 			}
 			.btn{
-				padding: 0 30upx;
+				padding: 0 26upx;
 				height: 50upx;
 				background-color: $base-color;
 				color: #fff;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-
 				border-radius: 30upx;
 			}
 		}

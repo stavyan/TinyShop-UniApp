@@ -6,12 +6,12 @@
 					:key="index"
 					:options="itemOptions(item.is_evaluate, item.refund_status)"
 					:info="item"
-					@click="bindClick"
+					@tap="bindClick"
 					class="uni-list-cell"
 					hover-class="uni-list-cell-hover">
 					<view
 						class="uni-media-list">
-						<!--@click.stop="goEvaluation(item)"-->
+						<!--@tap.stop="goEvaluation(item)"-->
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
 									 :src="item.product_picture"></image>

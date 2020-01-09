@@ -5,7 +5,7 @@
 		<!-- 顶部导航栏 -->
 		<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">
 			<!-- 定位城市 -->
-			<view class="addr" @click.stop="toHome">
+			<view class="addr" @tap.stop="toHome">
 				<view class="icon yticon icon-xiatubiao--copy" ></view>
 				主页
 			</view>
@@ -18,40 +18,40 @@
 				  style="color:#888;"
 				 	placeholder-style="color:#ccc;"
 				/>
-				<view class="icon search" @click.prevent="handleSearchProductList"></view>
+				<view class="icon search" @tap.prevent="handleSearchProductList"></view>
 			</view>
 		</view>
 		<view v-show="isShowNavBar" class="navbar">
-			<view class="nav-item" :class="{current: filterIndex === 0}" @click="tabClick(0)">
+			<view class="nav-item" :class="{current: filterIndex === 0}" @tap="tabClick(0)">
 				综合排序
 			</view>
-			<view class="nav-item" :class="{current: filterIndex === 1}" @click="tabClick(1)">
+			<view class="nav-item" :class="{current: filterIndex === 1}" @tap="tabClick(1)">
 				<text>销量</text>
 				<view class="p-box">
 					<text :class="{active: salesOrder === 1 && filterIndex === 1}" class="yticon icon-shang"></text>
 					<text :class="{active: salesOrder === 2 && filterIndex === 1}" class="yticon icon-shang xia"></text>
 				</view>
 			</view>
-			<view class="nav-item" :class="{current: filterIndex === 2}" @click="tabClick(2)">
+			<view class="nav-item" :class="{current: filterIndex === 2}" @tap="tabClick(2)">
 				浏览量
 			</view>
-			<view class="nav-item" :class="{current: filterIndex === 3}" @click="tabClick(3)">
+			<view class="nav-item" :class="{current: filterIndex === 3}" @tap="tabClick(3)">
 				收藏
 			</view>
-			<view class="nav-item" :class="{current: filterIndex === 4}" @click="tabClick(4)">
+			<view class="nav-item" :class="{current: filterIndex === 4}" @tap="tabClick(4)">
 				<text>价格</text>
 				<view class="p-box">
 					<text :class="{active: priceOrder === 1 && filterIndex === 4}" class="yticon icon-shang"></text>
 					<text :class="{active: priceOrder === 2 && filterIndex === 4}" class="yticon icon-shang xia"></text>
 				</view>
 			</view>
-			<text class="cate-item yticon icon-fenlei1" @click="toggleCateMask('show')"></text>
+			<text class="cate-item yticon icon-fenlei1" @tap="toggleCateMask('show')"></text>
 		</view>
 		<view class="goods-list">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
 				class="goods-item"
-				@click="navToDetailPage(item)"
+				@tap="navToDetailPage(item)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
@@ -69,22 +69,22 @@
 		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
-					@click="toggleCateMask">
-			<view class="cate-content" @click.stop.prevent="stopPrevent" @touchmove.stop.prevent="stopPrevent">
+					@tap="toggleCateMask">
+			<view class="cate-content" @tap.stop.prevent="stopPrevent" @touchmove.stop.prevent="stopPrevent">
 				<scroll-view scroll-y class="cate-list">
 					<view v-for="item in cateList" :key="item.id">
-						<view class="cate-item one" @click.stop="changeCate(item.id)">{{item.title}}</view>
+						<view class="cate-item one" @tap.stop="changeCate(item.id)">{{item.title}}</view>
 						<view
 							v-for="sItem in item.child" :key="sItem.id"
 							class="cate-item two"
 							:class="{active: sItem.id==cateId}"
-							@click.stop="changeCate(sItem.id)">
+							@tap.stop="changeCate(sItem.id)">
 								{{sItem.title}}
 							<view
 								v-for="tItem in sItem.child" :key="tItem.id"
 								class="cate-item three"
 								:class="{active: tItem.id==cateId}"
-								@click.stop="changeCate(tItem.id)">
+								@tap.stop="changeCate(tItem.id)">
 								{{tItem.title}}
 							</view>
 						</view>

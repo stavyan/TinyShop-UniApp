@@ -1,7 +1,7 @@
 <template>
 	<view class="content b-t">
 		<view  v-if="invoiceList.length > 0">
-			<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @click="navTo(item.order_id)">
+			<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @tap="navTo(item.order_id)">
 				<view class="wrapper">
 					<view class="address-box">
 						<view class="order-fl">

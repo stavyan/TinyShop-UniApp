@@ -5,7 +5,7 @@
 					v-for="item in navList"
 					:key="item.title"
 					:title="item.title"
-					@click="navTo(`/pages/about/detail?field=${item.url}&title=${item.title}`)"></uni-list-item>
+					@tap="navTo(`/pages/about/detail?field=${item.url}&title=${item.title}`)"></uni-list-item>
 		</uni-list>
 		<view class="history-section icon">
 					<view class="sec-header">

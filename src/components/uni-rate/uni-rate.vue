@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-rate">
-		<view :key="index" :style="{ marginLeft: margin + 'px' }" @click="_onClick(index)" class="uni-rate__icon" v-for="(star, index) in stars">
+		<view :key="index" :style="{ marginLeft: margin + 'px' }" @tap="_onClick(index)" class="uni-rate__icon" v-for="(star, index) in stars">
 			<uni-icons :color="color" :size="size" :type="isFill ? 'star-filled' : 'star'" />
 			<!-- #ifdef APP-NVUE -->
 			<view :style="{ width: star.activeWitch.replace('%','')*size/100+'px'}" class="uni-rate__icon-on">

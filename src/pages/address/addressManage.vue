@@ -23,7 +23,7 @@
 		</view>
 		<view class="row b-b">
 			<text class="tit">详细地址</text>
-			<!--<text @click="chooseLocation" class="input">-->
+			<!--<text @tap="chooseLocation" class="input">-->
 				<!--{{addressData.addressName}}-->
 			<!--</text>-->
 			<!--<text class="yticon icon-shouhuodizhi"></text>-->
@@ -37,7 +37,7 @@
 			<text class="tit">设为默认</text>
 			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
-		<button class="add-btn" @click="confirm">提交</button>
+		<button class="add-btn" @tap="confirm">提交</button>
 	</view>
 </template>
 

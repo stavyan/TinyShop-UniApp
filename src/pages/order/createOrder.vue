@@ -39,7 +39,7 @@
 
 		<!-- 优惠明细 -->
 		<view class="yt-list">
-			<view class="yt-list-cell b-b" @click="toggleMask('show')">
+			<view class="yt-list-cell b-b" @tap="toggleMask('show')">
 				<view class="cell-icon">
 					券
 				</view>
@@ -49,7 +49,7 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" @click="showSinglePicker" v-show="parseInt(orderDetail.is_logistics, 10) === 1">
+			<view class="yt-list-cell b-b" @tap="showSinglePicker" v-show="parseInt(orderDetail.is_logistics, 10) === 1">
 				<view class="cell-icon">
 					寄
 				</view>
@@ -59,7 +59,7 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" @click="showCompanyPicker" v-show="parseInt(currentShippingType.value, 10) === 1">
+			<view class="yt-list-cell b-b" @tap="showCompanyPicker" v-show="parseInt(currentShippingType.value, 10) === 1">
 				<view class="cell-icon">
 					递
 				</view>
@@ -69,7 +69,7 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" @click="showPickupPointPicker" v-show="parseInt(currentShippingType.value, 10) === 2">
+			<view class="yt-list-cell b-b" @tap="showPickupPointPicker" v-show="parseInt(currentShippingType.value, 10) === 2">
 				<view class="cell-icon">
 					提
 				</view>
@@ -106,7 +106,7 @@
 				<text class="cell-tip disabled"></text>
 				<view class="cell-tip red">
 						<label class="radio">
-							<radio siza="mini" color="#fa436a" @click="handleIsUsePoint" :disabled="isUsePointDisabled" :checked="isUsePoint" />
+							<radio siza="mini" color="#fa436a" @tap="handleIsUsePoint" :disabled="isUsePointDisabled" :checked="isUsePoint" />
 						</label>
 				</view>
 			</view>
@@ -145,7 +145,7 @@
 					<text class="cell-tip">
 						<text v-if="invoiceItem.type">
 							{{ `电子发票 - ${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}
-							<text @click.stop="closeInvoice" class="yticon icon-shanchu4"></text>
+							<text @tap.stop="closeInvoice" class="yticon icon-shanchu4"></text>
 						</text>
 						<text v-else>本次不开具发票</text>
 					</text>
@@ -165,7 +165,7 @@
 				<text class="price">{{ realAmount }}</text>
 			</view>
 <!--			orderDetail.preview.point-->
-			<text class="submit" @click="submit" v-if="orderDetail.preview && (userInfo.account.user_integral > orderDetail.preview.point)">
+			<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral > orderDetail.preview.point)">
 				提交订单
 			</text>
 			<text class="submit disabled" v-else>
@@ -174,12 +174,12 @@
 		</view>
 
 		<!-- 优惠券面板 -->
-		<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
-			<view class="mask-content" @click.stop.prevent="stopPrevent">
+		<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @tap="toggleMask">
+			<view class="mask-content" @tap.stop.prevent="stopPrevent">
 				<!-- 优惠券页面，仿mt -->
 				<view class="coupon-item" v-for="(item,index) in orderDetail.coupons" :key="index">
 					<view class="con">
-						<view class="left" @click="selectCoupon(item)">
+						<view class="left" @tap="selectCoupon(item)">
 							<text class="title">{{item.title}}</text>
 							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>

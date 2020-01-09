@@ -4,7 +4,7 @@
 			<image class="bg" src="/static/user-bg2.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
       <!--#ifdef H5-->
-			<view class="portrait-box" @click="uploadImage">
+			<view class="portrait-box" @tap="uploadImage">
 				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
 				<!--<text class="pt-upload-btn yticon icon-paizhao">{{ // profileInfo.nickname || "暂无昵称" }}</text>-->
 			</view>

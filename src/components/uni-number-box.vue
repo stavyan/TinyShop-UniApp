@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-numbox">
 		<view class="uni-numbox-minus"
-			@click.stop="_calcValue('subtract')"
+			@tap.stop="_calcValue('subtract')"
 		>
 			<text class="yticon icon--jianhao" :class="minDisabled?'uni-numbox-disabled': ''" ></text>
 		</view>
@@ -14,7 +14,7 @@
 		>
 		<view
 			class="uni-numbox-plus"
-			@click.stop="_calcValue('add')"
+			@tap.stop="_calcValue('add')"
 		>
 			<text class="yticon icon-jia2" :class="maxDisabled?'uni-numbox-disabled': ''" ></text>
 		</view>

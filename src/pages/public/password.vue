@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!--<view class="left-bottom-sign"></view>-->
-		<view class="back-btn yticon icon-zuojiantou-up" @click="navBack"></view>
+		<view class="back-btn yticon icon-zuojiantou-up" @tap="navBack"></view>
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
@@ -32,7 +32,7 @@
 							maxlength="6"
 							data-key="mobile"
 						/>
-						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @click="getSmsCode">
+						<button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap="getSmsCode">
 							<span v-if="!smsCodeBtnDisabled">获取验证码</span>
 							<span v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</span>
 						</button>
@@ -63,13 +63,13 @@
 		</view>
 		<view class="register-section" v-if="type != 1">
 				又想起密码了?
-				<text @click="toLogin">马上登录</text>
+				<text @tap="toLogin">马上登录</text>
 					或者
-			<text @click="toHome">返回主页</text>
+			<text @tap="toHome">返回主页</text>
 		</view>
 		<view class="register-section" v-else>
 			不想修改了密码？
-			<text @click="toHome">返回主页</text>
+			<text @tap="toHome">返回主页</text>
 		</view>
 	</view>
 </template>

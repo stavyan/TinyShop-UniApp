@@ -32,7 +32,7 @@
             :class="current === index ? 'on' : ''"
             v-for="(item, index) in navList"
             :key="index"
-            @click="nav(index)"
+            @tap="nav(index)"
         >
           {{ item.name }}
         </div>

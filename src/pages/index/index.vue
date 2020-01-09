@@ -1,27 +1,12 @@
 <template>
 	<view class="index">
-		<!-- 状态栏 -->
-		<view v-if="showHeader" class="status" :style="{ position: headerPosition,top:statusTop,opacity: afterHeaderOpacity}"></view>
-		<!-- 顶部搜索栏 -->
-		<view v-if="showHeader" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
-			<!-- 跳转分类模块 -->
-			<view class="addr" @tap.stop="toCategory">
-				<view class="icon yticon icon-fenlei1" ></view>
-				分类
-			</view>
-			<!-- 搜索框 -->
-			<view class="input-box">
-				<input
-				 @tap="toSearch"
-				 disabled
-				 :value="hotSearchDefault"
-					placeholder-style="color:#ccc;"
-				/>
-				<view class="icon search"></view>
-			</view>
-		</view>
-		<!-- 占位 -->
-		<view v-if="showHeader" class="place"></view>
+		<!--搜索导航栏-->
+		<rf-search-bar
+			@link="toCategory"
+			@search="toSearch"
+			:icon="'icon-fenlei1'"
+			:headerShow="headerShow"
+			:placeholder="hotSearchDefault" />
 		<!-- 轮播图 -->
 		<view class="swiper">
 			<view class="swiper-box">
@@ -105,19 +90,15 @@
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	import rfSwipeDot from '@/components/rf-swipe-dot/rf-swipe-dot';
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
+	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	export default {
 		components: {
-			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot
+			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar
 		},
 		data() {
 			return {
 				current: 0,
-				showHeader:true,
-				afterHeaderOpacity: 1,//不透明度
-				headerPosition: 'fixed',
-				headerTop:null,
-				statusTop:null,
-				nVueTitle:null,
+				headerShow:true,
 				carouselList: {},
 				search: {},
 				hotSearchDefault: '输入关键字搜索',
@@ -206,6 +187,7 @@
 						this.productCateList = r.data.cate;
 						this.carouselList = r.data.adv;
 						this.search = r.data.search;
+						uni.setStorageSync('search', this.search)
 						this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
 						uni.setStorage({
 								key: 'hotSearchDefault',
@@ -252,81 +234,6 @@ page {
 		background-color: #fff;
 }
 .index {
-	.status {
-		width: 100%;
-		height: 0;
-		position: fixed;
-		z-index: 10;
-		background-color: #fff;
-		top: 0;
-		/*  #ifdef  APP-PLUS  */
-		height: var(--status-bar-height); //覆盖样式
-		/*  #endif  */
-	}
-	.header {
-		width: 96%;
-		height: 100upx;
-		display: flex;
-		align-items: center;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		background-color: #fff;
-		/*  #ifdef  APP-PLUS  */
-		top: var(--status-bar-height);
-		/*  #endif  */
-		.addr {
-			width: 120upx;
-			height: 60upx;
-			flex-shrink: 0;
-			display: flex;
-			align-items: center;
-			font-size: 28upx;
-			.icon {
-				height: 60upx;
-				margin-right: 5upx;
-				margin-left: 15upx;
-				display: flex;
-				align-items: center;
-				font-size: 38upx;
-				color: $base-color;
-			}
-		}
-		.input-box {
-			width: 100%;
-			height: 60upx;
-			background-color: #f5f5f5;
-			border-radius: 30upx;
-			position: relative;
-			display: flex;
-			align-items: center;
-			.icon {
-				display: flex;
-				align-items: center;
-				position: absolute;
-				top: 0;
-				right: 0;
-				width: 60upx;
-				height: 60upx;
-				font-size: 34upx;
-				color: #c0c0c0;
-			}
-			input {
-				width: 100%;
-				padding-left: 28upx;
-				height: 28upx;
-				color:#888;
-				font-size: 28upx;
-			}
-		}
-	}
-	.place {
-		background-color: #ffffff;
-		height: 100upx;
-		/*  #ifdef  APP-PLUS  */
-		margin-top: var(--status-bar-height);
-		/*  #endif  */
-	}
 	.swiper {
 		width: 100%;
 		margin-top: 10upx;
