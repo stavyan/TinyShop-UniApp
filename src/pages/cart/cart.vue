@@ -486,6 +486,7 @@
 	}
 	.goods-list{
 		width: 100%;
+		margin-bottom: 110upx;
 		.tis{
 			width: 100%;
 			height: 60upx;
