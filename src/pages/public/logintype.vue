@@ -48,7 +48,7 @@ export default{
 							 }
 						 });
 					 } else {
-						 await _this.login(r.data.user_info);
+						 await this.login(r.data.user_info);
 						 uni.showToast({title: '已为您授权登录', icon: "none"});
 						 const url = `/pages/user/user`;
 					   uni.reLaunch({
@@ -174,10 +174,10 @@ export default{
 		padding-top: 120upx;
 		.logo {
 			text-align: center;
-			margin-bottom: 60upx;
+			margin-bottom: 100upx;
 			image {
-				width: 144upx;
-				height: 144upx;
+				width: 180upx;
+				height: 180upx;
 			}
 		}
     .confirm-btn{
