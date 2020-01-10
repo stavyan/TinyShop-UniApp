@@ -69,11 +69,6 @@ export default {
 				this.getConfigList();
 			}
 		},
-		// 'title,web_url,key_words,web_desc,web_logo,web_qrcode,' +
-		// 			'web_wechat_qrcode,web_phone,web_email,web_qq,web_weixin' +
-		// 			'web_address,shouhou_date,copyright_logo,copyright_companyname' +
-		// 			'copyright_url,copyright_desc' +
-		// 			'protocol_register,protocol_privacy'
 		async getConfigList() {
 			await this.$get(`${configList}`, {
 				field: 'web_qrcode,web_wechat_qrcode'

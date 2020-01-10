@@ -1,15 +1,15 @@
 <template>
 	<view class="login-type">
 		<view class="logo">
-			<image src="/static/missing-face.png"></image>
+			<image src="/static/rage.png"></image>
 		</view>
 		<view>
 			<button class="confirm-btn" open-type="getUserInfo" formType="submit" @tap="toAuthLogin">授权登录</button>
-			<button class="confirm-btn plain" plain @tap="toLogin">已有RF账号登录</button>
+			<button class="confirm-btn plain" plain @tap="navTo(`/pages/public/login`)">已有RF账号登录</button>
 		</view>
 		<view class="footer">
 			登录表示同意
-			<text class="protocol" @tap="toProtocol">RangeFrame使用协议 / 隐私协议</text>
+			<text class="protocol" @tap="navTo(`/pages/about/detail?field=protocol_privacy&title=隐私协议`)">RangeFrame使用协议 / 隐私协议</text>
 		</view>
 	</view>
 </template>
@@ -61,12 +61,9 @@ export default{
 	},
 	methods: {
 		...mapMutations(['login']),
-    toProtocol () {
-      this.$api.msg('我就是RangeFrame使用协议 / 隐私协议！', 2000)
-    },
-		toLogin () {
+		navTo (url) {
       uni.navigateTo({
-        url: '/pages/public/login'
+        url
       });
 		},
 		toAuthLogin () {
@@ -93,7 +90,7 @@ export default{
 	          }
 	        });
 				} else {
-          this.$api.msg('当前平台不支持授权登录~')
+          this.$api.msg('当前平台不支持授权登录')
 				}
 				/*  #endif  */
         /*  #ifdef MP-WEIXIN */
@@ -152,6 +149,9 @@ export default{
           }
         });
         /*  #endif  */
+        /*  #ifdef MP-QQ */
+        this.$api.msg('当前平台不支持授权登录')
+        /*  #endif  */
 		},
 		isWechat(){
 				const ua = window.navigator.userAgent.toLowerCase();
@@ -171,21 +171,22 @@ export default{
 		height: calc(100% - 88upx);
 	}
 	.login-type {
-		padding-top: 120upx;
+		padding-top: 80upx;
 		.logo {
 			text-align: center;
-			margin-bottom: 100upx;
+			margin-bottom: 80upx;
 			image {
 				width: 180upx;
 				height: 180upx;
+				border-radius: 28upx;
 			}
 		}
     .confirm-btn{
-      width: 630upx;
-      height: 76upx;
-      line-height: 76upx;
+	    width: 84%;
+	    margin: 0 7% 50upx;
+      height: 84upx;
+      line-height: 84upx;
       border-radius: 12upx;
-      margin-bottom: 40upx;
 	    background-color: $base-color;
       color: #fff;
       font-size: $font-lg;
@@ -200,7 +201,7 @@ export default{
 			text-align: center;
 			position: fixed;
 			bottom: 40upx;
-			font-size: $font-sm;
+			font-size: $font-sm + 2upx;
 			.protocol {
 				color: $base-color;
 				margin: 0 10upx;

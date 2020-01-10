@@ -72,7 +72,11 @@
 		</view>
 		<view class="register-section">
 			已经注册过了?
-			<text @tap="toLogin">马上登录</text>
+			<text @tap="navTo('/pages/public/login')">马上登录</text>
+		</view>
+		<view class="footer">
+			注册表示同意
+			<text class="protocol" @tap="navTo(`/pages/about/detail?field=protocol_register&title=注册协议`)">RangeFrame使用协议 / 注册协议</text>
 		</view>
 	</view>
 </template>
@@ -112,10 +116,10 @@
 			navBack(){
 				uni.navigateBack();
 			},
-			toLogin(){
+			navTo(url){
 				// this.$api.msg('去注册');
 				uni.navigateTo({
-					url: '/pages/public/login'
+					url
 				})
 			},
 			/**
@@ -351,7 +355,7 @@
     }
   }
   .register-section{
-    margin: 50upx 0 50upx 0;
+    margin: 30upx 0 50upx;
     width: 100%;
     font-size: $font-sm+2upx;
     color: $font-color-base;
@@ -362,4 +366,14 @@
     }
   }
 }
+.footer {
+			width: 100%;
+			text-align: center;
+			margin: 20upx 0 20upx;
+			font-size: $font-sm + 2upx;
+			.protocol {
+				color: $base-color;
+				margin: 0 10upx;
+			}
+	}
 </style>

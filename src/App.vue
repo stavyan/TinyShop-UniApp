@@ -17,6 +17,8 @@
 					index: 2,
 					text: cartNum
 				});
+	    } else {
+				uni.removeTabBarBadge({ index: 2 });
 	    }
 		},
 		onHide () {

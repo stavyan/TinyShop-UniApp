@@ -61,14 +61,11 @@ export default {
 		 *@date 2019/12/19 15:16:17
 		 */
 		initData (options) {
-			this.token = uni.getStorageSync('accessToken') || undefined;
 			this.title = options.title;
 			uni.setNavigationBarTitle({
 				title: options.title
 			});
-			if (this.token) {
-				this.getConfigList(options.field);
-			}
+			this.getConfigList(options.field);
 		},
 		async getConfigList(field) {
 			await this.$get(`${configList}`, {

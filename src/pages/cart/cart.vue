@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="cart">
 		<view v-if="showHeader" class="status" :style="{position:headerPosition,top:statusTop}"></view>
 		<view v-if="showHeader" class="header" :style="{position:headerPosition,top:headerTop}">
 			<view class="title">购物车</view>
@@ -61,7 +61,7 @@
 			</view>
         </view>
 		<!-- 脚部菜单 -->
-		<view class="footer" :style="{bottom:footerbottom}" v-if="cartList.length !== 0">
+		<view class="footer" :style="{bottom: '150upx'}" v-if="cartList.length !== 0">
 			<view class="checkbox-box" @tap="allSelect">
 				<view class="checkbox">
 					<view :class="[isAllselected?'on':'']"></view>
@@ -96,7 +96,8 @@
 				isStop:false,
 				cartList: [],
 				token: null,
-				oldDiscount: 0
+				oldDiscount: 0,
+				footerbottom: 0
 			}
 		},
 		onPageScroll(e){
@@ -115,7 +116,7 @@
 		onShow() {
 			//兼容H5下结算条位置
 			// #ifdef H5
-			this.footerbottom = document.getElementsByTagName('uni-tabbar')[0].offsetHeight+'px';
+				this.footerbottom = document.getElementsByTagName('uni-tabbar')[0].offsetHeight+'px';
 			// #endif
 			// #ifdef APP-PLUS
 			this.showHeader = false;
@@ -486,7 +487,7 @@
 	}
 	.goods-list{
 		width: 100%;
-		margin-bottom: 110upx;
+		padding: 20upx 0 100upx 0;
 		.tis{
 			width: 100%;
 			height: 60upx;
