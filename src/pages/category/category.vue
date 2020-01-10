@@ -86,40 +86,29 @@
 				this.tList = [];
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productCate}`).then(r=>{
-					if (r.code === 200) {
-				    this.cateTop = uni.getStorageSync('cateTop');
-				    if (!this.cateTop) {
-			        this.getAdvList();
-				    }
-				    this.categoryList = r.data;
-				    // 查询第一个拥有二级菜单的子菜单
-            for (let i = 0; i < r.data.length; i++) {
-	              if (r.data[i].child.length > 0) {
-			            this.showCategoryIndex = i;
-			            break;
-			        }
-            }
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
-				})
+			    this.cateTop = uni.getStorageSync('cateTop');
+			    if (!this.cateTop) {
+		        this.getAdvList();
+			    }
+			    this.categoryList = r.data;
+			    // 查询第一个拥有二级菜单的子菜单
+          for (let i = 0; i < r.data.length; i++) {
+              if (r.data[i].child.length > 0) {
+		            this.showCategoryIndex = i;
+		            break;
+		        }
+          }
+				});
 			},
 			// 获取广告列表
 			async getAdvList() {
+				uni.showLoading({title:'加载中...'});
         await this.$get(`${advList}`, {
             location: 'cate_top'
         }).then(r => {
-            if (r.code === 200) {
-                this.cateTop = r.data.cate_top[0];
-                uni.setStorageSync('cateTop', r.data.cate_top[0]);
-            } else {
-                uni.showToast({title: r.message, icon: "none"});
-            }
-        }).catch(err => {
-          console.log(err)
-        })
+          this.cateTop = r.data.cate_top[0];
+          uni.setStorageSync('cateTop', r.data.cate_top[0]);
+        });
       },
 			//分类切换显示
 			showCategory(index){
@@ -144,13 +133,13 @@
 						url = `/pages/product/product?id=${url}`;
 						break;
 					case 'article_view':
-						uni.showToast({title: 'article_view', icon: "none"});
+						this.$api.msg('article_view');
 						break;
 					case 'coupon_view':
 						url = `/pages/coupon/detail?id=${url}`;
 						break;
 					case 'helper_view':
-						uni.showToast({title: 'helper_view', icon: "none"});
+						this.$api.msg('helper_view');
 						break;
 					case 'product_list_for_cate':
 						url = `/pages/product/list?cate_id=${url}`;

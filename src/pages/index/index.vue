@@ -152,13 +152,13 @@
 						url = `/pages/product/product?id=${id}`;
 						break;
 					case 'article_view':
-						uni.showToast({title: 'article_view', icon: "none"});
+						this.$api.msg('article_view');
 						break;
 					case 'coupon_view':
 						url = `/pages/coupon/detail?id=${id}`;
 						break;
 					case 'helper_view':
-						uni.showToast({title: 'helper_view', icon: "none"});
+						this.$api.msg('helper_view');
 						break;
 					case 'product_list_for_cate':
 						url = `/pages/product/list?cate_id=${id}`;
@@ -185,26 +185,20 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.productCateList = r.data.cate;
-						this.carouselList = r.data.adv;
-						this.search = r.data.search;
-						uni.setStorageSync('search', this.search)
-						this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
-						uni.setStorage({
-								key: 'hotSearchDefault',
-								data: r.data.search.hot_search_default
-						})
-						this.hotProductList = r.data.product_hot;
-						this.recommendProductList = r.data.product_recommend;
-						this.guessYouLikeProductList = r.data.guess_you_like;
-						this.newProductList = r.data.product_new;
-						this.config = r.data.config;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+					this.productCateList = r.data.cate;
+					this.carouselList = r.data.adv;
+					this.search = r.data.search;
+					uni.setStorageSync('search', this.search)
+					this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
+					uni.setStorage({
+							key: 'hotSearchDefault',
+							data: r.data.search.hot_search_default
+					})
+					this.hotProductList = r.data.product_hot;
+					this.recommendProductList = r.data.product_recommend;
+					this.guessYouLikeProductList = r.data.guess_you_like;
+					this.newProductList = r.data.product_new;
+					this.config = r.data.config;
 				})
 			},
 			// 跳转至商品详情页

@@ -140,7 +140,7 @@
 			}
 		},
     onShow() {
-			if (uni.getStorageSync('accessToken')) {
+			if (!uni.getStorageSync('accessToken')) {
 		    uni.removeTabBarBadge({ index: 2 })
 			}
 			this.initData();
@@ -188,33 +188,25 @@
 			},
 			// 获取用户信息
       async getMemberInfo() {
+				 uni.showLoading({title: '加载中...'});
          this.$get(memberInfo).then(r => {
-            if (r.code === 200) {
-                this.amountList[0].value = r.data.account.user_money || 0;
-                this.amountList[1].value = r.data.coupon_num || 0;
-                this.amountList[2].value = r.data.account.user_integral || 0;
-								this.getFootPrintList();
-                uni.setStorage({
-                    key: 'userInfo',
-                    data: r.data
-                })
-                this.userInfo = r.data || undefined;
-            } else {
-                uni.showToast({title: r.message, icon: "none"});
-            }
+          this.amountList[0].value = r.data.account.user_money || 0;
+          this.amountList[1].value = r.data.coupon_num || 0;
+          this.amountList[2].value = r.data.account.user_integral || 0;
+					this.getFootPrintList();
+          uni.setStorage({
+              key: 'userInfo',
+              data: r.data
+          })
+          this.userInfo = r.data || undefined;
         })
       },
 			// 获取足迹列表
 			async getFootPrintList() {
+				uni.showLoading({title: '加载中...'});
 				await this.$get(`${footPrintList}`).then(r => {
-					if (r.code === 200) {
-						this.footList = r.data
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
+					this.footList = r.data
+				});
 			},
 			// 统一跳转接口,拦截未登录路由
 			navTo(url){

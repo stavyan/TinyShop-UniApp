@@ -1,16 +1,16 @@
 <template>
   <view class="home">
     <view class="homeCon" :class="!homeActive ? 'on' : ''">
-      <text class="btn">主页</text>
-      <text class="btn">购物车</text>
-      <text class="btn">个人中心</text>
+      <text class="yticon icon-xiatubiao--copy" @tap="navTo('/pages/index/index')"></text>
+      <text class="yticon icon-gouwuche" @tap="navTo('/pages/cart/cart')"></text>
+      <text class="yticon icon-shoucang" @tap="navTo('/pages/user/user')"></text>
     </view>
     <view class="picture" @tap.stop="open">
       <image
           :src="
           homeActive
-            ? require('../static/close.gif')
-            : require('../static/open.gif')
+            ? require('@/static/close.gif')
+            : require('@/static/open.gif')
         "
           class="image"
       />
@@ -18,20 +18,21 @@
   </view>
 </template>
 <script>
-// import { mapGetters } from "vuex";
 export default {
-    name: "Home",
-    props: {},
-    data: function () {
-        return {
-            homeActive: true
-        };
+  name: "Home",
+  data () {
+    return {
+      homeActive: true
+    };
+  },
+  methods: {
+    open() {
+      this.homeActive = !this.homeActive;
     },
-    methods: {
-        open() {
-            this.homeActive = !this.homeActive;
-        }
+    navTo (url) {
+      uni.reLaunch({ url });
     }
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -58,14 +59,17 @@ export default {
   .home .on {
     opacity: 1;
     transform: scale(1);
-    height: 180upx;
-    padding: 20upx 0;
+    height: 210upx;
     width: 80upx;
-    margin-bottom: 10upx;
-    font-size: $font-sm;
-    color: #000;
-    .btn {
+    background: #f23f23;
+    margin-bottom: 20upx;
+    color: #fff;
+    .yticon {
       display: block;
+      height: 70upx;
+      line-height: 70upx;
+      font-size: $font-lg;
+      text-align: center;
     }
   }
 

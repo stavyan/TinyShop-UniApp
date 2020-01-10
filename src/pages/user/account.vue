@@ -72,12 +72,19 @@
 </template>
 
 <script>
-	import Home from '@/components/Home'
+  /**
+   * @des 用户账户中心
+   *
+   * @author stav stavyan@qq.com
+   * @date 2020-01-10 15:17
+   * @copyright 2019
+   */
+	import Home from '@/components/rf-back-home/rf-back-home';
   export default {
     components: {Home},
     data() {
       return {
-          userInfo: {}
+        userInfo: {}
       }
     },
     onLoad() {
@@ -91,13 +98,9 @@
        *@date 2019/11/18 09:57:30
        */
       initData() {
-          this.token = uni.getStorageSync('accessToken') || undefined;
-          if (this.token) {
-             this.userInfo = uni.getStorageSync('userInfo') || undefined;
-          }
+         this.userInfo = uni.getStorageSync('userInfo') || undefined;
       },
       navTo(url){
-        console.log(111)
         uni.navigateTo({
           url
         })
@@ -105,7 +108,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
   page {
     width: 100vw;
   }

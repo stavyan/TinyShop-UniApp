@@ -21,7 +21,7 @@
       </view>
       <uni-load-more class="load-more" :status="loadingType"></uni-load-more>
     </view>
-		<empty :info="'暂无积分记录'" v-if="integralList.length === 0"></empty>
+		<empty :info="'暂无账单记录'" v-if="integralList.length === 0"></empty>
   </view>
 </template>
 <script>
@@ -78,6 +78,7 @@ export default {
 		// #endif
 	},
   methods: {
+    // 顶部账单类型切换
 		switchType(type, state){
 			if(this.typeClass==type){
 				return ;
@@ -92,6 +93,7 @@ export default {
 			this.integralList = [];
 			this.getIntegralListList();
 		},
+	  // 数据初始化
 		initData (options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			this.state = parseInt(options.state, 10);
@@ -106,32 +108,27 @@ export default {
 				this.getIntegralListList();
 			}
 		},
+	  // 获取积分
     async getIntegralListList (type) {
-				uni.showLoading({title:'加载中...'});
-				const params = {};
-        params.credit_type = 1
-				if (this.state === 2) {
-          params.num_type = 1
-        } else if (this.state === 3) {
-          params.num_type = 2
-        }
-				params.page = this.page;
-				await this.$get(`${creditsLogList}`, {
-					...params
-				}).then(r=>{
-					if (type === 'refresh') {
-						uni.stopPullDownRefresh();
-					}
-					if (r.code === 200) {
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.integralList = [ ...this.integralList, ...r.data ]
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
-				})
-			},
+			uni.showLoading({title:'加载中...'});
+			const params = {};
+      params.credit_type = 1
+			if (this.state === 2) {
+        params.num_type = 1
+      } else if (this.state === 3) {
+        params.num_type = 2
+      }
+			params.page = this.page;
+			await this.$get(`${creditsLogList}`, {
+				...params
+			}).then(r=>{
+				if (type === 'refresh') {
+					uni.stopPullDownRefresh();
+				}
+				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+				this.integralList = [ ...this.integralList, ...r.data ]
+			});
+		},
   }
 };
 </script>

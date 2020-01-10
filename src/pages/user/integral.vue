@@ -68,86 +68,85 @@
   </view>
 </template>
 <script>
+/**
+ * @des 积分中心
+ *
+ * @author stav stavyan@qq.com
+ * @date 2020-01-10 15:24
+ * @copyright 2019
+ */
 import {creditsLogList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
 export default {
-    name: "Integral",
-    components: {
-      uniLoadMore,
-      empty
+  name: "Integral",
+  components: {
+    uniLoadMore,
+    empty
+  },
+  data () {
+    return {
+      navList: [
+          {name: "分值明细" },
+          {name: "分值提升" }
+      ],
+      current: 0,
+      integralList: [],
+      loadingType: 'more',
+      page: 1,
+      userInfo: {}
+    };
+  },
+  onLoad () {
+    this.initData();
+  },
+  filters: {
+    time(val) {
+      return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
     },
-    data () {
-      return {
-        navList: [
-            {name: "分值明细" },
-            {name: "分值提升" }
-        ],
-        current: 0,
-        integralList: [],
-        loadingType: 'more',
-        page: 1,
-        userInfo: {}
-      };
+    numFilter(val) {
+      return val >= 0 ? `+${val.toString()}` : val;
+    }
+  },
+  //加载更多
+  onReachBottom(){
+    this.page ++;
+    this.getIntegralListList();
+  },
+  methods: {
+    toCategory () {
+      uni.reLaunch({
+        url: `/pages/category/category`
+      })
     },
-    onLoad () {
-      this.initData();
-    },
-    filters: {
-      time(val) {
-        return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
+    nav (index) {
+          this.current = index;
       },
-      numFilter(val) {
-        return val >= 0 ? `+${val.toString()}` : val;
+    initData () {
+      this.token = uni.getStorageSync('accessToken') || undefined;
+      this.userInfo = uni.getStorageSync('userInfo') || undefined;
+      if (this.token) {
+        this.getIntegralListList();
       }
     },
-    //加载更多
-    onReachBottom(){
-      this.page ++;
-      this.getIntegralListList();
-    },
-    methods: {
-			toCategory () {
-				uni.reLaunch({
-					url: `/pages/category/category`
-				})
-			},
-      nav (index) {
-            this.current = index;
-        },
-      initData () {
-        this.token = uni.getStorageSync('accessToken') || undefined;
-			  this.userInfo = uni.getStorageSync('userInfo') || undefined;
-        if (this.token) {
-          this.getIntegralListList();
-        }
+    async getIntegralListList () {
+        uni.showLoading({title:'加载中...'});
+        const params = {};
+        params.page = this.page;
+        await this.$get(`${creditsLogList}`, {
+          ...params
+        }).then(r=>{
+          this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+          this.integralList = [ ...this.integralList, ...r.data ]
+        });
       },
-      async getIntegralListList () {
-          uni.showLoading({title:'加载中...'});
-          const params = {};
-          params.page = this.page;
-          await this.$get(`${creditsLogList}`, {
-            ...params
-          }).then(r=>{
-            if (r.code === 200) {
-              this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-              this.integralList = [ ...this.integralList, ...r.data ]
-            } else {
-              uni.showToast({ title: r.message, icon: "none" });
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-        },
-    }
+  }
 };
 </script>
-
 <style scoped lang="scss">
   .integral {
     .header {
-      /*background-image: url('/static/user-bg2.jpg');*/
       background-image: url('../../static/integralbg.jpg');
       background-repeat: no-repeat;
       background-size: 100% 100%;

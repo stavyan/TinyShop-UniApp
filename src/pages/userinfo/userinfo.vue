@@ -1,15 +1,18 @@
 <template>
-	<view>
+	<view class="userinfo">
+		<!--头像 + 背景-->
 		<view class="user-section">
 			<image class="bg" src="/static/user-bg2.jpg"></image>
 			<text class="bg-upload-btn yticon icon-paizhao"></text>
       <!--#ifdef H5-->
+			<!--h5直接上传头像-->
 			<view class="portrait-box" @tap="uploadImage">
 				<image class="portrait" :src="profileInfo.head_portrait || '/static/missing-face.png'"></image>
 				<!--<text class="pt-upload-btn yticon icon-paizhao">{{ // profileInfo.nickname || "暂无昵称" }}</text>-->
 			</view>
       <!-- #endif -->
 			<!--#ifndef H5-->
+			<!--非h5裁剪头像上传-->
 			<view class="portrait-box">
         <avatar
 					canRotate="false"
@@ -78,7 +81,6 @@
 				<view class="input-item">
 					<text class="tit">邮　箱</text>
 					<input
-						type="number"
 						:value="profileInfo.email"
 						name="email"
 						placeholder="请输入您的邮箱"
@@ -91,13 +93,18 @@
 </template>
 
 <script>
-	import {memberInfo, memberUpdate, uploadImage} from "../../api/userInfo";
-	const graceChecker = require("../../common/graceChecker.js");
-	import avatar from "@/components/rf-avatar/rf-avatar.vue";
+	/**
+	 * @des 修改用户信息
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-01-10 14:28
+	 * @copyright 2019
+	 */
+	import {memberInfo, memberUpdate, uploadImage} from '@/api/userInfo';
+	const graceChecker = require('@/common/graceChecker.js');
+	import avatar from '@/components/rf-avatar/rf-avatar';
 	export default {
-		components: {
-				avatar
-		},
+		components: { avatar },
 		data() {
 			const currentDate = this.getDate({
 					format: true
@@ -122,54 +129,30 @@
 				token: null
 			};
 		},
-    computed: {
-    },
 		onLoad () {
 			this.initData()
 		},
 		methods: {
-			myUpload(rsp) {
-					this.profileInfo.head_portrait = rsp.path; //更新头像方式一
-					//rsp.avatar.imgSrc = rsp.path; //更新头像方式二
-			},
-			/**
-			 *@des 修改头像
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/18 11:44:44
-			 *@param graceChecker
-			 */
+			// 上传头像
 			uploadImage () {
-				// 从相册选择6张图
+				// 从相册选择图片
 				const _this = this;
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['original', 'compressed'],
 					sourceType: ['album'],
 					success: function(res) {
-						_this.handleUploadFile(res.tempFilePaths)
-						// // 预览图片
-						// uni.previewImage({
-						// 		urls: res.tempFilePaths,
-						// 		longPressActions: {
-						// 				itemList: ['发送给朋友', '保存图片', '收藏'],
-						// 				success: function(data) {
-						// 						console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
-						// 				},
-						// 				fail: function(err) {
-						// 						console.log(err.errMsg);
-						// 				}
-						// 		}
-						// });
+						_this.handleUploadFile(res.tempFilePaths);
 					}
 				});
 			},
+			// 上传头像
 			handleUploadFile (data) {
-				console.log(data)
 				const _this = this;
+		    let filePath = data.path || data[0];
 				uni.uploadFile({
 					url : uploadImage,
-					filePath: data.path,
+					filePath,
 					name: 'file',
 					header: {
 						"x-api-key": _this.token,
@@ -186,55 +169,51 @@
 							_this.profileInfo.head_portrait = data.data.url;
 							_this.handleUpdateInfo(_this.profileInfo)
 						} else {
-							uni.showToast({ title: data.message, icon: "none" });
+							this.$api.msg('data.message')
 						}
 					}
 				 });
 			},
+			// 监听日期更改
 			bindDateChange(e) {
 				this.date = e.target.value
 			},
+			// 格式化日期
 			getDate(type) {
-						const date = new Date();
-						let year = date.getFullYear();
-						let month = date.getMonth() + 1;
-						let day = date.getDate();
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
 
-						if (type === 'start') {
-								year = year - 60;
-						} else if (type === 'end') {
-								year = year + 2;
-						}
-						month = month > 9 ? month : '0' + month;;
-						day = day > 9 ? day : '0' + day;
-						return `${year}-${month}-${day}`;
-				},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/16 11:07:25
-			 */
-			initData () {
-				this.token = uni.getStorageSync('accessToken') || undefined
+				if (type === 'start') {
+						year = year - 60;
+				} else if (type === 'end') {
+						year = year + 2;
+				}
+				month = month > 9 ? month : '0' + month;;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			},
+			// 数据初始化
+			initData(){
+		    this.token = uni.getStorageSync('accessToken') || undefined;
 				if (!this.token) {
-					uni.reLaunch({
+					uni.navigateTo({
 						url: "/pages/public/login",
 					})
 				} else {
 					this.getMemberInfo()
 				}
 			},
+			// 获取用户信息
 			async getMemberInfo () {
+				uni.showLoading({title:'加载中...'});
 				await this.$get(memberInfo).then(r => {
-					if (r.code === 200) {
-						this.profileInfo = r.data
-						this.date = this.profileInfo.birthday;
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.profileInfo = r.data;
+					this.date = this.profileInfo.birthday;
 				})
 			},
+			// 更新用户信息
 			async toUpdateInfo(e){
 				const formData = e.detail.value;
 				let rule = [
@@ -242,138 +221,133 @@
 				];
 				const checkRes = graceChecker.check(formData, rule);
 				if(!checkRes){
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+					this.$api.msg(graceChecker.error);
 					return;
 				}
-				this.handleUpdateInfo(formData, 'avatar');
+				this.handleUpdateInfo(formData);
 			},
-			async handleUpdateInfo (formData, type) {
+			// 更新用户信息
+			async handleUpdateInfo (formData) {
 				uni.showLoading({title:'资料修改中...'});
 				await this.$put(`${memberUpdate}?id=${this.profileInfo.id}`, {
 					...formData,
 					birthday: this.date
-				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 资料修改成功！', icon: "none" });
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
-				})
+				}).then(() =>{
+				    this.$api.msg('恭喜您, 资料修改成功!')
+				});
 			}
 		}
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scop>
 	.userinfo{
 		background: #fff;
-	}
-	.user-section{
-		display:flex;
-		align-items:center;
-		justify-content: center;
-		height: 300upx;
-		padding: 40upx 30upx 0;
-		overflow: hidden;
-		position:relative;
-		.bg{
-			position:absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			filter: blur(1px);
-			opacity: .7;
-		}
-		.portrait-box{
-			clear: both;
-			z-index: 2;
-		}
-		.portrait{
-			position: relative;
-			width: 200upx;
-			height: 200upx;
-			border-radius: 50%;
-      border: 6upx solid #fff;
-		}
-		.yticon{
-			position:absolute;
-			line-height: 1;
-			z-index: 5;
-			font-size: 48upx;
-			color: #fff;
-			padding: 4upx 6upx;
-			border-radius: 6upx;
-			background: rgba(0,0,0,.4);
-		}
-		.pt-upload-btn{
-			right: 0;
-			bottom: 10upx;
-		}
-		.bg-upload-btn{
-			right: 20upx;
-			bottom: 16upx;
-		}
-	}
-	.input-content{
-		padding: 40upx 60upx;
-		.input-item{
+		.user-section{
 			display:flex;
-			padding: 0 30upx;
-			background: $page-color-light;
-			height: 80upx;
-			line-height: 80upx;
-			border-radius: 4px;
-			margin-bottom: 30upx;
-			&:last-child{
-				margin-bottom: 0;
+			align-items:center;
+			justify-content: center;
+			height: 300upx;
+			padding: 40upx 30upx 0;
+			overflow: hidden;
+			position:relative;
+			.bg{
+				position:absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				filter: blur(1px);
+				opacity: .7;
 			}
-			.tit{
-				width: 90upx;
-				font-size: $font-sm+2upx;
-				color: $font-color-base;
+			.portrait-box{
+				clear: both;
+				z-index: 2;
 			}
-			input {
+			.portrait{
+				position: relative;
+				width: 200upx;
+				height: 200upx;
+				border-radius: 50%;
+	      border: 6upx solid #fff;
+			}
+			.yticon{
+				position:absolute;
+				line-height: 1;
+				z-index: 5;
+				font-size: 48upx;
+				color: #fff;
+				padding: 4upx 6upx;
+				border-radius: 6upx;
+				background: rgba(0,0,0,.4);
+			}
+			.pt-upload-btn{
+				right: 0;
+				bottom: 10upx;
+			}
+			.bg-upload-btn{
+				right: 20upx;
+				bottom: 16upx;
+			}
+		}
+		.input-content{
+			padding: 40upx 60upx;
+			.input-item{
+				display:flex;
+				padding: 0 30upx;
+				background: $page-color-light;
 				height: 80upx;
 				line-height: 80upx;
-				font-size: $font-base + 2upx;
-				color: $font-color-dark;
-			}
-			.date {
-				height: 80upx;
-				line-height: 80upx;
-				font-size: $font-base + 2upx;
-				color: $font-color-dark;
-			}
-			.gender {
-				margin: 10upx 0;
-				color: $font-color-dark;
-				font-size: $font-base;
-				.gender-item {
-					margin-right: 10upx;
-					.gender-item-text {
-						padding: 0 5upx;
-					}
-					radio .wx-radio-input.wx-radio-input-checked {
-						background: $uni-color-primary;
-						border-color: $uni-color-primary;
+				border-radius: 4px;
+				margin-bottom: 30upx;
+				&:last-child{
+					margin-bottom: 0;
+				}
+				.tit{
+					width: 90upx;
+					font-size: $font-sm+2upx;
+					color: $font-color-base;
+				}
+				input {
+					height: 80upx;
+					line-height: 80upx;
+					font-size: $font-base + 2upx;
+					color: $font-color-dark;
+				}
+				.date {
+					height: 80upx;
+					line-height: 80upx;
+					font-size: $font-base + 2upx;
+					color: $font-color-dark;
+				}
+				.gender {
+					margin: 10upx 0;
+					color: $font-color-dark;
+					font-size: $font-base;
+					.gender-item {
+						margin-right: 10upx;
+						.gender-item-text {
+							padding: 0 5upx;
+						}
+						radio .wx-radio-input.wx-radio-input-checked {
+							background: $uni-color-primary;
+							border-color: $uni-color-primary;
+						}
 					}
 				}
 			}
-		}
-		.confirm-btn{
-			width: 630upx;
-			height: 76upx;
-			line-height: 76upx;
-			border-radius: 50px;
-			margin-top: 50upx;
-			background: $uni-color-primary;
-			color: #fff;
-			font-size: $font-lg;
-			&:after{
-				border-radius: 100px;
+			.confirm-btn{
+				width: 630upx;
+				height: 76upx;
+				line-height: 76upx;
+				border-radius: 50px;
+				margin-top: 50upx;
+				background: $uni-color-primary;
+				color: #fff;
+				font-size: $font-lg;
+				&:after{
+					border-radius: 100px;
+				}
 			}
 		}
 	}

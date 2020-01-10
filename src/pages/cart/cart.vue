@@ -61,7 +61,7 @@
 			</view>
         </view>
 		<!-- 脚部菜单 -->
-		<view class="footer" :style="{bottom: '150upx'}" v-if="cartList.length !== 0">
+		<view class="footer" :style="{bottom: footerbottom}" v-if="cartList.length !== 0">
 			<view class="checkbox-box" @tap="allSelect">
 				<view class="checkbox">
 					<view :class="[isAllselected?'on':'']"></view>

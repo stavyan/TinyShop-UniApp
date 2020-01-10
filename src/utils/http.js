@@ -102,13 +102,8 @@ http.interceptors.response.use(response => {
             return response.data;
             break;
         case 401:
+		    uni.removeTabBarBadge({ index: 2 })
             uni.clearStorageSync();
-            uni.removeStorage({
-                key: 'accessToken'
-            })
-            uni.removeStorage({
-                key: 'refreshToken'
-            })
             uni.showToast({
                 title: "会话已过期， 请重新登录！",
                 icon: 'none'
@@ -136,7 +131,7 @@ http.interceptors.response.use(response => {
             uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
             break;
         default:
-            return response.data;
+            this.$api.msg(response.message)
             break
     }
 }, error => {

@@ -80,6 +80,7 @@
 	// #endif
 	import {isBindingCheck} from "../../api/login";
 	import {rechargeUrl} from "../../api/params";
+  import {memberInfo} from "../../api/userInfo";
 	export default {
 		data() {
 			return {
@@ -97,6 +98,7 @@
 		},
 		methods:{
 			async weixinPay() {
+		    const _this = this;
 				 await this.$post(`${isBindingCheck}`, {
 					// #ifdef H5
 					oauth_client: 'wechat',
@@ -125,23 +127,34 @@
 						 }).then(r => {
 							 if (r.code === 200) {
 				         // #ifdef H5
+							   if (!this.isWechat()) {
+									 this.$api.msg('请复制当前地址进入微信进行充值~')
+								   return;
+							   }
 							   jweixin.ready(() => {
 									 jweixin.chooseWXPay({
 										 ...r.data.config,
-										 success: function (res) {
+										 success (res) {
 											 // 支付成功后的回调函数
+											 _this.getMemberInfo();
+										 },
+										 fail (res) {
+											 // 支付成功后的回调函数
+		                    uni.showModal({
+		                        content: "支付失败,原因为: " + res
+		                            .errMsg,
+		                        showCancel: false
+		                    })
 										 }
 									 });
-								 })
+								 });
 					       // #endif
 								 // #ifdef MP-WEIXIN
 							   uni.requestPayment({
 		                ...r.data.config,
 									   timeStamp: r.data.config.timestamp,
 		                success: (res) => {
-		                    uni.showToast({
-		                        title: "感谢您的赞助!"
-		                    })
+											 _this.getMemberInfo();
 		                },
 		                fail: (res) => {
 		                    uni.showModal({
@@ -168,6 +181,17 @@
 					console.log(err)
 				});
 			 },
+			// 充值成功后更新用户信息
+      async getMemberInfo() {
+				 uni.showLoading({title: '加载中...'});
+         this.$get(memberInfo).then(r => {
+          uni.setStorage({
+              key: 'userInfo',
+              data: r.data
+          })
+          this.userInfo = r.data || undefined;
+        })
+      },
 			toTipDetail() {
 				uni.showToast({title: '我就是条款协议', icon: 'none'});
 			},
