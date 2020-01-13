@@ -1,5 +1,6 @@
 <template>
   <view class="my-account">
+		<!--账户信息面板-->
     <view class="header">
       <view class="account">
         <view class="assets">
@@ -28,6 +29,7 @@
         <image src="/static/accountBg.png" mode="aspectFill"></image>
       </view>
     </view>
+	  <!--余额/积分导航-->
     <view class="nav">
       <view class="item" @tap="navTo('/pages/user/bill')">
         <image src="/static/record1.png" />
@@ -46,6 +48,7 @@
         <text>积分中心</text>
       </view>
     </view>
+	  <!--广告-->
     <view class="advert">
         <view
           class="item"
@@ -67,6 +70,7 @@
           <div class="pictrue"><image src="/static/money.png" /></div>
         </view>
       </view>
+	  <!--引导跳转组件-->
     <Home></Home>
   </view>
 </template>

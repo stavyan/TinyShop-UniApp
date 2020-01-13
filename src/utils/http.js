@@ -113,26 +113,33 @@ http.interceptors.response.use(response => {
                     url: '/pages/public/login'
                 });
             }, 1.5 * 1000);
+            throw response.data.message;
             break;
         case 400:
             uni.showToast({title: "错误的请求", icon: 'none'});
+            throw response.data.message;
             break;
         case 405:
             // uni.clearStorageSync();
             uni.showToast({title: "当前操作不被允许", icon: 'none'});
+            throw response.data.message;
             break;
         case 404:
             // uni.showToast({title: "你似乎到了未知领取~", icon: 'none'});
+            throw response.data.message;
             break;
         case 429:
             uni.showToast({title: "请求过多，先休息一下吧~", icon: 'none'});
+            throw response.data.message;
             break;
         case 500:
             uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
+            throw response.data.message;
             break;
         default:
-            this.$api.msg(response.message)
-            break
+            uni.showToast({ title: response.data.message, icon: "none" });
+            throw response.data.message;
+            break;
     }
 }, error => {
     uni.hideLoading();

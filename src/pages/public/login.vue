@@ -1,7 +1,8 @@
 <template>
 	<view class="container">
-		<!--<view class="left-bottom-sign"></view>-->
+		<!--顶部返回按钮-->
 		<view class="back-btn yticon icon-zuojiantou-up" @tap="navBack"></view>
+		<!--插画-->
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
@@ -53,13 +54,13 @@
 			<view @tap="showLoginBySmsCode" class="forget-section">
 				{{ loginByPass ?  "验证码登录" : "密码登录" }}
 			</view>
-			<view class="forget-section" @tap="toForgetPass" >
+			<view class="forget-section" @tap="navTo('/pages/public/password')" >
 				忘记密码?
 			</view>
 		</view>
 		<view class="register-section">
 			还没有账号?
-			<text @tap="toRegister">马上注册</text>
+			<text @tap="navTo('/pages/public/register')">马上注册</text>
 			或者
 			<text @tap="toHome">返回主页</text>
 		</view>
@@ -91,26 +92,17 @@
 		},
 		methods: {
 			...mapMutations(['login']),
-			inputChange(e){
-				const key = e.currentTarget.dataset.key;
-				this[key] = e.detail.value;
-			},
-			/**
-			 *@des 验证手机号是否有效
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/15 11:54:25
-			 *@param mobile 手机号
-			 */
+			// 验证手机号是否有效
 			checkPhoneIsValid (mobile) {
 				const reg = /^1[0-9]{10,10}$/;
 				if (!reg.test(mobile)) {
-					uni.showToast({ title: "请输入正确的手机号", icon: "none" });
+					this.$api.msg('请输入正确的手机号');
 					return false;
 				} else {
 					return true;
 				}
 			},
+			// 发送验证码并进入倒计时
 			getSmsCode () {
 				if (!this.checkPhoneIsValid(this.mobile)) return;
 				uni.showLoading({title:'获取中...'});
@@ -118,81 +110,63 @@
 					mobile: this.mobile,
 					usage: 'login'
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: `验证码发送成功, 验证码是${r.data}`, icon: "none" });
-						this.smsCodeBtnDisabled = true;
-						let time = 59;
-						let timer = setInterval(() => {
-							if(time === 0) {
-								clearInterval(timer);
-								this.smsCodeBtnDisabled = false;
-							} else {
-								this.codeSeconds = time;
-								this.smsCodeBtnDisabled = true;
-								time--
-							 }
-						},1000)
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
+				  this.$api.msg(`验证码发送成功, 验证码是${r.data}`, 3 * 1000);
+					this.smsCodeBtnDisabled = true;
+					let time = 59;
+					let timer = setInterval(() => {
+						if(time === 0) {
+							clearInterval(timer);
+							this.smsCodeBtnDisabled = false;
+						} else {
+							this.codeSeconds = time;
+							this.smsCodeBtnDisabled = true;
+							time--
+						 }
+					},1000);
 				})
 			},
-			/**
-			 *@des 失去焦点的手机号
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/15 15:44:23
-			 */
+			// 失去焦点的手机号
 			blurMobileChange(e) {
 				this.mobile = e.detail.value
 			},
-			/**
-			 *@des 切换登录方式
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/15 15:39:26
-			 *@param loginByPass true 密码登录 false 验证码登录
-			 */
+			// 切换登录方式
 			showLoginBySmsCode () {
 				this.loginByPass = !this.loginByPass;
 			},
+			// 返回上一页
 			navBack(){
 				uni.navigateBack();
 			},
-			toRegister(){
+			// 统一跳转路由
+			navTo (url) {
 				uni.navigateTo({
-					url: '/pages/public/register'
+					url
 				})
 			},
-			toForgetPass(){
-				uni.navigateTo({
-					url: '/pages/public/password'
-				})
-			},
+			// 返回主页
 			toHome(){
 				uni.switchTab({
 					url: '/pages/index/index'
 				})
 			},
+			// 登录事件
 			async toLogin(e){
 				const formData = e.detail.value;
-				const params = {}
-				params.mobile = formData.mobile
+				const params = {};
+				params.mobile = formData.mobile;
 				let rule = [
 					{name:"mobile", checkType : "phoneno", checkRule:"11,11",  errorMsg:"请输入正确的手机号"}
 				];
 				if (this.loginByPass) {
-					params.password = formData.password
+					params.password = formData.password;
           rule[1] = {name:"password", checkType : "string", checkRule:"6,20",  errorMsg:"密码长度为6-20位"};
 				} else {
-					params.code = formData.code
+					params.code = formData.code;
           rule[1] = {name:"code", checkType : "notnull", checkRule:"",  errorMsg:"请输入验证码"};
 				}
 				const checkRes = graceChecker.check(formData, rule);
 				if(!checkRes){
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+					this.$api.msg(graceChecker.error);
 					return;
 				}
 				uni.showLoading({title:'登录中...'});
@@ -214,6 +188,7 @@
 					this.handleLoginBySmsCode(params)
 				}
 			},
+			// 密码登录
 			handleLoginByPass (params) {
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'
@@ -230,44 +205,31 @@
 				this.$post(loginByPass, {
 					...params
 				}).then(r=>{
-					if (r.code === 200) {
-						this.login(r.data);
-						if (this.userInfo) {
-							const oauthClientParams = {}
-							/*  #ifdef MP-WEIXIN */
-							oauthClientParams.oauth_client = 'wechatMp';
-							/*  #endif  */
-							/*  #ifndef MP-WEIXIN */
-							oauthClientParams.oauth_client = 'wechat';
-							/*  #endif  */
-							const userInfo = JSON.parse(this.userInfo);
-							console.log(userInfo);
-							this.$post(authLogin, {
-								...userInfo,
-								...oauthClientParams,
-								gender: userInfo.sex || userInfo.gender,
-								oauth_client_user_id: userInfo.openid || userInfo.openId,
-								head_portrait: userInfo.headimgurl || userInfo.avatarUrl,
-							}).then(r=>{
-								if (r.code === 200) {
-								} else {
-									uni.showToast({ title: r.message, icon: "none" });
-								}
-							}).catch(err => {
-								console.log(err)
-							})
-						}
-						uni.showToast({ title: '恭喜您，登录成功！', icon: "none" });
-						uni.reLaunch({
-							url: '/pages/user/user'
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
+					this.$api.msg('恭喜您，登录成功！');
+					this.login(r.data);
+					if (this.userInfo) {
+						const oauthClientParams = {}
+						/*  #ifdef MP-WEIXIN */
+						oauthClientParams.oauth_client = 'wechatMp';
+						/*  #endif  */
+						/*  #ifndef MP-WEIXIN */
+						oauthClientParams.oauth_client = 'wechat';
+						/*  #endif  */
+						const userInfo = JSON.parse(this.userInfo);
+						this.$post(authLogin, {
+							...userInfo,
+							...oauthClientParams,
+							gender: userInfo.sex || userInfo.gender,
+							oauth_client_user_id: userInfo.openid || userInfo.openId,
+							head_portrait: userInfo.headimgurl || userInfo.avatarUrl,
+						});
 					}
-				}).catch(err => {
-					console.log(err)
-				})
+					uni.reLaunch({
+						url: '/pages/user/user'
+					});
+				});
 			},
+			// 验证码登录
 			handleLoginBySmsCode (params) {
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'
@@ -284,17 +246,11 @@
 				this.$post(loginBySmsCode, {
 					...params
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您，登录成功！', icon: "none" });
-						this.login(r.data);
-						uni.switchTab({
-							url: '/pages/user/user'
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
+			    this.$api.msg('恭喜您，登录成功！')
+					this.login(r.data);
+					uni.switchTab({
+						url: '/pages/user/user'
+					})
 				})
 			}
 		}

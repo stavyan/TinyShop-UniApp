@@ -14,11 +14,13 @@
 	</view>
 </template>
 
-<script>/**
- *@des 登录类型
- *@author stav stavyan@qq.com
- *@blog https://stavtop.club
- *@date 2020/01/09 16:29:42
+<script>
+/**
+ * @des 登录类型
+ *
+ * @author stav stavyan@qq.com
+ * @date 2020-01-13 12:02
+ * @copyright 2019
  */
 import {mpWechatLogin, wechatH5Login} from "../../api/login";
 import {mapMutations} from "vuex";

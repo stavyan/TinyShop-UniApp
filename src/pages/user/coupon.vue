@@ -1,12 +1,15 @@
 <template>
 	<view>
+		<!--顶部导航栏-->
 		<view class="tabr" :style="{top:headerTop}">
 			<view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">可用 <text v-show="state === 1">({{couponList.length}})</text></view>
 			<view :class="{on:typeClass=='used'}"  @tap="switchType('used', 2)">已使用<text v-show="state === 2">({{couponList.length}})</text></view>
 			<view :class="{on:typeClass=='invalid'}"  @tap="switchType('invalid', 3)">已失效<text v-show="state === 3">({{couponList.length}})</text></view>
 			<view class="border" :class="typeClass"></view>
 		</view>
+		<!--占位符-->
 		<view class="place" ></view>
+		<!--优惠券列表-->
 		<view class="list">
 			<view v-show="state === 3" class="empty-invalid" @tap="emptyInvalidCoupon">
 				<view class="icon shanchu"></view>清空失效优惠券
@@ -60,6 +63,7 @@
 			<uni-load-more :status="loadingType"></uni-load-more>
 			<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 		</view>
+		<!--显示部分商品的抽屉-->
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
 				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
 					<uni-list-item :title="item.name" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
@@ -79,7 +83,7 @@
  * @date 2019-12-09 10:13
  * @copyright 2019
  */
-	import {couponClear, myCouponList} from "../../api/userInfo";
+import {couponClear, myCouponList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
@@ -112,9 +116,11 @@ export default {
 		}
 	},
 	filters: {
+    // 格式化时间
 		time(val) {
 			return moment(val * 1000).format('YYYY-MM-DD')
 		},
+    // 格式化时间
 		timeFull(val) {
 			return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 		}
@@ -131,6 +137,7 @@ export default {
 		this.getMyCouponList();
 	},
 	onLoad() {
+    // 数据初始化
 		this.initData();
 		//兼容H5下排序栏位置
 		// #ifdef H5
@@ -145,17 +152,21 @@ export default {
 		// #endif
 	},
 	methods: {
+    // 显示抽屉(可使用商品)
 		show(item) {
 			if (item.usableProduct.length === 0) return;
 			this.currentCoupon = item;
 			this.showRight = true
 		},
+		// 隐藏抽屉
 		hide() {
 			this.showRight = false
 		},
+		// 关闭抽屉
 		closeDrawer() {
 			this.showRight = false
 		},
+		// 切换顶部优惠券类型
 		switchType(type, state){
 			if(this.typeClass==type){
 				return ;
@@ -170,41 +181,27 @@ export default {
 			this.couponList = [];
 			this.getMyCouponList();
 		},
-		//删除商品
+		// 清空失效优惠券
 		async emptyInvalidCoupon() {
 			uni.showLoading({title: '正在清空购物车...'});
-			await this.$get(`${couponClear}`).then(r => {
-				if (r.code === 200) {
-					this.getMyCouponList();
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
-			}).catch(err => {
-				console.log(err)
+			await this.$get(`${couponClear}`).then(() => {
+				this.getMyCouponList();
 			})
 		},
+		// 占位方法
 		discard() {
 			//丢弃
 		},
-		/**
-		 *@des 初始化数据
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/18 09:57:30
-		 */
+		// 初始化数据
 		initData () {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
+				this.page = 1;
+				this.couponList = [];
 				this.getMyCouponList();
 			}
 		},
-		/**
-		 *@des 统一跳转接口
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/21 15:41:30
-		 *@param url 跳转地址
-		 */
+		// 统一跳转接口
 		navTo(url, type){
 			if(!this.token){
 				url = '/pages/public/login';
@@ -221,12 +218,7 @@ export default {
 				})
 			}
 		},
-		/**
-		 *@des 获取我的收货地址列表
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/20 18:16:58
-		 */
+		// 获取我的优惠券列表
 		async getMyCouponList (type) {
 			uni.showLoading({title:'加载中...'});
 			await this.$get(`${myCouponList}`, {
@@ -236,15 +228,9 @@ export default {
 				if (type === 'refresh') {
 					uni.stopPullDownRefresh();
 				}
-				if (r.code === 200) {
-					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-					this.couponList = [ ...this.couponList, ...r.data ]
-				} else {
-					uni.showToast({ title: r.message, icon: "none" });
-				}
-			}).catch(err => {
-				console.log(err)
-			})
+				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+				this.couponList = [ ...this.couponList, ...r.data ]
+			});
 		},
 	}
 }
@@ -507,5 +493,4 @@ export default {
 			}
 		}
 	}
-
 </style>

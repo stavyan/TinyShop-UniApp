@@ -41,6 +41,13 @@
 </template>
 
 <script>
+	/**
+	 * @des 领取中心
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-01-13 11:28
+	 * @copyright 2019
+	 */
 	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
@@ -169,7 +176,6 @@
 		}
 	}
 </script>
-
 <style lang='scss'>
 	page{
 		padding-bottom: 120upx;

@@ -1,12 +1,14 @@
 <template>
   <view>
+	  <!--顶部账单类型 全部/充值/消费-->
 		<view class="tab" :style="{top:headerTop}">
 			<view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">全部</view>
 			<view :class="{on:typeClass=='used'}"  @tap="switchType('used', 2)">充值</view>
 			<view :class="{on:typeClass=='invalid'}"  @tap="switchType('invalid', 3)">消费</view>
 			<view class="border" :class="typeClass"></view>
 		</view>
-		<view class="place" ></view>
+		<view class="place"></view>
+	  <!--账单明细列表-->
     <view class="wrapper">
       <view class="list b-b" v-for="(item, index) in integralList" :key="index" @tap="checkAddress(item)">
         <view class="wrapper">
@@ -25,6 +27,13 @@
   </view>
 </template>
 <script>
+/**
+ * @des 账单明细
+ *
+ * @author stav stavyan@qq.com
+ * @date 2020-01-13 11:18
+ * @copyright 2019
+ */
 import {creditsLogList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import empty from "@/components/empty";
