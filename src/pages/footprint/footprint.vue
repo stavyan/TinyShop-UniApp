@@ -1,5 +1,6 @@
 <template>
 	<view class="footprint">
+		<!--日历控件-->
 		<uni-calendar
 			class="date"
 			:insert="true"
@@ -8,14 +9,15 @@
 			:end-date="'2019-5-20'"
 			@change="handleDateChange"
 			 />
-			<uni-swipe-action
-							@tap="bindClick(item)"
-							v-for="(item, index) in footPrintList"
-							:info="item"
-							:options="options"
-							class="uni-list-cell"
-							hover-class="uni-list-cell-hover"
-							:key="index">
+		<!--足迹列表-->
+		<rf-swipe-action
+				@action="bindClick"
+				v-for="(item, index) in footPrintList"
+				:info="item"
+				:options="options"
+				class="uni-list-cell"
+				hover-class="uni-list-cell-hover"
+				:key="index">
 				<view class="uni-media-list" @tap="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
@@ -29,7 +31,8 @@
 							</view>
 						</view>
 				</view>
-			</uni-swipe-action>
+			</rf-swipe-action>
+		<!--足迹列表为0-->
 		<view v-if="footPrintList.length === 0" class="empty">
 			<image class="empty-content-image" :src="empty" mode="aspectFit"></image>
 			<text class="empty-content-text">这一天没有足迹哦</text>
@@ -40,23 +43,23 @@
 
 <script>
 /**
- * @des 我的收藏
+ * @des 我的足迹
  *
  * @author stav stavyan@qq.com
  * @date 2019-11-22 10:47
  * @copyright 2019
  */
-import {footPrintDel, footPrintList} from "../../api/userInfo";
+import {footPrintDel, footPrintList} from "@/api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
-import errorImg from './../../static/errorImage.jpg';
+import errorImg from '@/static/errorImage.jpg';
 import uniCalendar from "@/components/uni-calendar/uni-calendar";
-import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
+import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import moment from 'moment';
 export default {
 	components: {
 		uniLoadMore,
 		uniCalendar,
-		uniSwipeAction
+		rfSwipeAction
 	},
 	data() {
 		return {
@@ -65,8 +68,8 @@ export default {
 			page: 1,
 			loadingType: 'more',
 			token: null,
-			startTime: null,
-			endTime: null,
+			startTime: moment().startOf('day').format('X'),
+			endTime: moment().endOf('day').format('X'),
 			options: [
 				{ text: '删除', style: { backgroundColor: '#fa436a'}}
 			],
@@ -74,6 +77,7 @@ export default {
 		};
 	},
 	filters: {
+    // 时间格式化
 		time(val) {
 			return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 		}
@@ -81,26 +85,8 @@ export default {
 	onLoad () {
 		this.initData();
 	},
-	onPageScroll(e){
-		// //兼容iOS端下拉时顶部漂移
-		// if(e.scrollTop>=0){
-		// 	this.headerPosition = "fixed";
-		// }else{
-		// 	this.headerPosition = "absolute";
-		// }
-	},
-	//下拉刷新
-	onPullDownRefresh(){
-		this.page = 1;
-		this.footPrintList = [];
-		this.getFootPrintList('refresh');
-	},
-	//加载更多
-	onReachBottom(){
-		this.page ++;
-		this.getFootPrintList();
-	},
 	methods:{
+    // 监听日期变化
 		async handleDateChange(e) {
 			this.page = 1;
 			this.footPrintList = [];
@@ -108,43 +94,27 @@ export default {
 			this.endTime = await moment(`${e.year}-${e.month}-${e.date + 1} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
 			this.getFootPrintList();
 		},
+		// 删除足迹
 		async bindClick(e) {
 			uni.showLoading({title: '删除足迹中...'});
-			await this.$del(`${footPrintDel}?id=${e.id}`, {
+			await this.$del(`${footPrintDel}?id=${e.data.id}`, {
 				page: this.page
-			}).then(r => {
-				if (r.code === 200) {
-					uni.showToast({title: '删除足迹成功'});
-					this.page = 1;
-					this.footPrintList.length = 0;
-					this.getFootPrintList();
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
-			}).catch(err => {
-				console.log(err)
-			})
+			}).then(() => {
+				this.$api.msg('删除足迹成功');
+				this.page = 1;
+				this.footPrintList.length = 0;
+				this.getFootPrintList();
+			});
 		},
-		/**
-		 *@des 初始化数据
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/22 14:13:26
-		 *@param arguments
-		 */
+		// 数据初始化
 		initData () {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
 				this.getFootPrintList();
 			}
 		},
-		/**
-		 *@des 获取我的足迹
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/22 14:13:39
-		 */
-		async getFootPrintList(type) {
+		// 获取我的足迹列表
+		async getFootPrintList() {
 			uni.showLoading({title: '加载中...'});
 			const params = {};
 			params.page = this.page;
@@ -155,25 +125,15 @@ export default {
 			await this.$get(`${footPrintList}`, {
 				...params
 			}).then(r => {
-				if (type === 'refresh') {
-					uni.stopPullDownRefresh();
-				}
-				if (r.code === 200) {
-					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-					this.footPrintList = [ ...this.footPrintList, ...r.data ];
-					// if( this.footPrintList.length = 0) {
-					// 	this.loadingType = null;
-					// }
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
-			}).catch(err => {
-				console.log(err)
+				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+				this.footPrintList = [ ...this.footPrintList, ...r.data ];
 			})
 		},
+		// 图片异常处理
 		onImageError (index) {
 			this.footPrintList[index].product.picture = this.errorImg;
 		},
+		// 跳转至商品详情
 		goProduct(id) {
 			let url = `/pages/product/product?id=${id}`;
 			if (!this.token) {
@@ -187,7 +147,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .footprint {
 	background: $page-color-base;
 	height: 100vh;
@@ -214,24 +174,20 @@ export default {
 	width: 240upx;
 	height: 180upx;
 }
-
 .uni-media-list-body {
 	height: auto;
 	justify-content: space-around;
 }
-
 .uni-media-list-text-top {
 	height: 74upx;
 	font-size: 28upx;
 	overflow: hidden;
 }
-
 .uni-media-list-text-bottom {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 }
-
 .price{
 	font-size: $font-base;
 	color: $font-color-dark;

@@ -16,21 +16,31 @@
 		<text style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
 			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
 		</text>
-
 		<button class="add-btn" @tap="addAddress('add')">新增地址</button>
 	</view>
 </template>
 
 <script>
 	import {addressDelete, addressList} from "../../api/userInfo";
-
 	export default {
 		data() {
 			return {
 				timeOutEvent: 0,
 				source: 0,
+				page: 1,
 				addressList: []
 			}
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.page = 1;
+			this.addressList = [];
+			this.getAddressList('refresh');
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getAddressList();
 		},
 		onLoad(option){
 			this.source = option.source;
@@ -47,12 +57,8 @@
 				    content: '确定要删除该收货地址吗',
 				    success: (e)=>{
 				    	if(e.confirm){
-				    		this.$del(`${addressDelete}?id=${id}`).then(r => {
-									if (r.code === 200) {
-										this.getAddressList();
-									} else {
-										uni.showToast({ title: r.message, icon: "none" });
-									}
+				    		this.$del(`${addressDelete}?id=${id}`).then(() => {
+									this.getAddressList();
 								})
 				    	}
 				    }
@@ -61,43 +67,32 @@
 		 },
 		//手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
 		goTouchEnd(){
-				clearTimeout(this.timeOutEvent);
-					if(this.timeOutEvent!=0){
-				 }
+			clearTimeout(this.timeOutEvent);
+				if(this.timeOutEvent!=0){
+			 }
 		},
 		//如果手指有移动，则取消所有事件，此时说明用户只是要移动而不是长按
 		goTouchMove(){
 				 clearTimeout(this.timeOutEvent);//清除定时器
 				 this.timeOutEvent = 0;
 		},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 09:57:30
-			 */
+			// 数据初始化
 			initData () {
 				this.getAddressList();
 			},
-			/**
-			 *@des 获取收货地址列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 09:58:15
-			 */
-			async getAddressList () {
+			// 获取收货地址列表
+			async getAddressList (type) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${addressList}`).then(r=>{
-					if (r.code === 200) {
-						this.addressList = r.data
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
+				await this.$get(`${addressList}`, {
+				    page: this.page
+				}).then(r=>{
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
 					}
-				}).catch(err => {
-					console.log(err)
+					this.addressList = r.data
 				})
 			},
-			//选择地址
+			// 选择地址
 			checkAddress(item){
 				if(this.source == 1){
 					//this.$api.prePage()获取上一页实例，在App.vue定义
@@ -105,18 +100,12 @@
 					uni.navigateBack()
 				}
 			},
+			// 跳转添加地址页面
 			addAddress(type, item){
 				uni.navigateTo({
 					url: `/pages/address/addressManage?type=${type}&id=${item && item.id || undefined}`
 				})
 			},
-			//添加或修改成功之后回调
-			refreshList(data, type){
-				//添加或修改后事件，这里直接在最前面添加了一条数据，实际应用中直接刷新地址列表即可
-				this.addressList.unshift(data);
-
-				console.log(data, type);
-			}
 		}
 	}
 </script>

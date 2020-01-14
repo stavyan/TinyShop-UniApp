@@ -3,7 +3,7 @@
   "navigationBarTitleText": "我的收藏",
   "usingComponents": {
     "uni-load-more": "/components/uni-load-more/uni-load-more",
-    "uni-swipe-action": "/components/uni-swipe-action/uni-swipe-action",
+    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",
     "empty": "/components/empty"
   }
 }

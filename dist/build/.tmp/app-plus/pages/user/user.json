@@ -16,7 +16,6 @@
   },
   "usingComponents": {
     "list-cell": "/components/mix-list-cell",
-    "share": "/components/share",
     "uni-icons": "/components/uni-icons/uni-icons"
   }
 }

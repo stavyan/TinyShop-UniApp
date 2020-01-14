@@ -1,7 +1,9 @@
 {
   "navigationBarTitleText": "分类",
+  "onReachBottomDistance": 50,
   "bounce": "none",
+  "titleNView": false,
   "usingComponents": {
-    "empty": "/components/empty"
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar"
   }
 }

@@ -6,20 +6,9 @@
 				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "RageFrame商城",
 				"onReachBottomDistance":50,
-				// "navigationStyle": "custom",
 				"app-plus": {
-                    "pullToRefresh": {
-                        "support": true,
-                        "color": "#fa436a",
-                        "style": "default"
-                    },
-					"titleNView": false ,// 禁用原生导航栏
-					"softinputNavBar":"none",
-					"subNVues":[{
-						"id": "homeTitleNvue", // 唯一标识
-						"path": "pages/index/subNvue/homeTitleNvue", // 页面路径
-						"type":"navigationBar"
-					}]
+					"bounce": "none",
+					"titleNView": false
 				}
 			}
 		},
@@ -41,19 +30,9 @@
 				"navigationBarTitleText": "商品列表",
 				"onReachBottomDistance":50,
 				"app-plus": {
-					"titleNView": false,
-					"softinputNavBar":"none",
-                    "pullToRefresh": {
-                        "support": true,
-                        "color": "#fa436a",
-                        "style": "default"
-                    },
-					"subNVues":[{
-						"id": "homeTitleNvue", // 唯一标识
-						"path": "pages/index/subNvue/homeTitleNvue", // 页面路径
-						"type":"navigationBar"
-					}]
-                }
+					"bounce": "none",
+					"titleNView": false
+				}
 			}
         },
 		{
@@ -267,15 +246,7 @@
 		},{
 			"path": "pages/footprint/footprint",
 			"style": {
-				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "我的足迹",
-				"app-plus": {
-                    "pullToRefresh": {
-                        "support": true,
-                        "color": "#fa436a",
-                        "style": "default"
-                    }
-                }
+				"navigationBarTitleText": "我的足迹"
 			}
 		}, {
 			"path": "pages/user/coupon",

@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/category/category",
     "pages/product/list",
     "pages/product/product",
     "pages/about/about",
@@ -13,6 +14,7 @@
     "pages/feedback/feedback",
     "pages/cart/cart",
     "pages/public/login",
+    "pages/public/logintype",
     "pages/public/password",
     "pages/public/register",
     "pages/evaluation/evaluation",
@@ -40,8 +42,7 @@
     "pages/invoice/invoice",
     "pages/invoice/invoiceManage",
     "pages/money/pay",
-    "pages/money/paySuccess",
-    "pages/category/category"
+    "pages/money/paySuccess"
   ],
   "window": {
     "navigationBarTextStyle": "black",

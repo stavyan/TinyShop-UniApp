@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "发布评价",
+  "navigationBarTitleText": "发表评价",
   "usingComponents": {
     "uni-rate": "/components/uni-rate/uni-rate",
     "uni-icons": "/components/uni-icons/uni-icons"

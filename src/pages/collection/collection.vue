@@ -1,15 +1,15 @@
 <template>
 	<view class="collection">
 		<view v-if="collectionList.length > 0">
-			<uni-swipe-action
-						@tap="bindClick"
-						:info="item"
-						:options="options"
-						class="uni-list-cell"
-						hover-class="uni-list-cell-hover"
-						v-for="(item, index) in collectionList"
-						:key="index">
-						<view class="uni-media-list" @tap="goProduct(item.product.id)">
+			<rf-swipe-action
+					@action="bindClick"
+					:info="item"
+					:options="options"
+					class="uni-list-cell"
+					hover-class="uni-list-cell-hover"
+					v-for="(item, index) in collectionList"
+					:key="index">
+					<view class="uni-media-list" @tap="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
 									 @error="onImageError(index)"
@@ -22,7 +22,7 @@
 							</view>
 						</view>
 					</view>
-			</uni-swipe-action>
+			</rf-swipe-action>
 			<uni-load-more :status="loadingType" />
 		</view>
 		<empty :info="'快去收藏一些商品吧~'" v-else></empty>
@@ -40,14 +40,14 @@
 import {collectList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from './../../static/errorImage.jpg';
-import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
+import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import {collectDel} from "../../api/basic";
 import empty from "@/components/empty";
 import moment from 'moment'
 export default {
 	components: {
 		uniLoadMore,
-		uniSwipeAction,
+		rfSwipeAction,
 		empty
 	},
 	data() {
@@ -71,12 +71,6 @@ export default {
 		this.initData();
 	},
 	onPageScroll(e){
-		// //兼容iOS端下拉时顶部漂移
-		// if(e.scrollTop>=0){
-		// 	this.headerPosition = "fixed";
-		// }else{
-		// 	this.headerPosition = "absolute";
-		// }
 	},
 	//下拉刷新
 	onPullDownRefresh(){
@@ -91,21 +85,16 @@ export default {
 	},
 	methods:{
 		async bindClick(e) {
+	    console.log(e)
 			if (e.content.text === '取消收藏') {
 				uni.showLoading({title: '取消收藏中...'});
 				await this.$del(`${collectDel}?id=${e.data.id}`, {
 					page: this.page
-				}).then(r => {
-					if (r.code === 200) {
-						uni.showToast({title: '取消收藏成功'});
-						this.page = 1;
-						this.collectionList.length = 0;
-						this.getCollectionList();
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				}).then(() => {
+					uni.showToast({title: '取消收藏成功'});
+					this.page = 1;
+					this.collectionList.length = 0;
+					this.getCollectionList();
 				})
 			}
 		},
@@ -125,14 +114,8 @@ export default {
 				if (type === 'refresh') {
 					uni.stopPullDownRefresh();
 				}
-				if (r.code === 200) {
-					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-					this.collectionList = [ ...this.collectionList, ...r.data ];
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
-			}).catch(err => {
-				console.log(err)
+				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+				this.collectionList = [ ...this.collectionList, ...r.data ];
 			})
 		},
 		onImageError (index) {

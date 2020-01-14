@@ -52,7 +52,7 @@
 		data() {
 			return {
 				headerShow:true,
-				hotSearchDefault: '输入关键字搜索',
+				hotSearchDefault: '请输入关键字',
 				fList: [],
 				sList: [],
 				tList: [],
@@ -74,11 +74,11 @@
 				})
 			},
 			// 数据初始化
-	    initData () {
-				this.search = uni.getStorageSync('search')
-				this.hotSearchDefault = `请输入关键字 如: ${this.search.hot_search_default}`;
-				this.getProductCate();
-	    },
+	    async initData() {
+        this.search = uni.getStorageSync('search');
+        this.hotSearchDefault = '请输入关键字 ' + (this.search ? ('如: ' + this.search.hot_search_default) : '');
+        this.getProductCate();
+      },
 			// 获取商品分类列表
 			async getProductCate () {
 				this.fList = [];

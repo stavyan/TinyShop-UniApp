@@ -163,6 +163,8 @@
 					this.isAllselected = false;
 					this.sumPrice = 0;
 					this.getCartItemList();
+				} else {
+					this.selectedList.length = 0;
 				}
 			},
 			// 跳转至登录页

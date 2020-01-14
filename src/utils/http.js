@@ -64,28 +64,30 @@ http.interceptors.request.use(async config => {
                 };
                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {
-                uni.clearStorageSync();
-                uni.showToast({
-                    title: "会话已过期， 请重新登录！",
-                    icon: 'none'
-                });
-                setTimeout(() => {
-                    uni.reLaunch({
-                        url: '/pages/public/login'
-                    });
-                }, 1.5 * 1000);
+                uni.clearStorage();
+                uni.showModal({
+                     content: '会话已过期，是否跳转登录页面？',
+                     success: (confirmRes) => {
+                         if (confirmRes.confirm) {
+                            uni.reLaunch({
+                                url: '/pages/public/login'
+                            });
+                         }
+                     }
+                 });
             }
         }).catch(() => {
             uni.clearStorage();
-            uni.showToast({
-                title: "会话已过期， 请重新登录！",
-                icon: 'none'
-            });
-            setTimeout(() => {
-                uni.reLaunch({
-                    url: '/pages/public/login'
-                });
-            }, 1.5 * 1000);
+            uni.showModal({
+                     content: '会话已过期，是否跳转登录页面？',
+                     success: (confirmRes) => {
+                         if (confirmRes.confirm) {
+                            uni.reLaunch({
+                                url: '/pages/public/login'
+                            });
+                         }
+                     }
+             });
         })
         return config1;
     }
@@ -103,16 +105,17 @@ http.interceptors.response.use(response => {
             break;
         case 401:
 		    uni.removeTabBarBadge({ index: 2 })
-            uni.clearStorageSync();
-            uni.showToast({
-                title: "会话已过期， 请重新登录！",
-                icon: 'none'
-            });
-            setTimeout(() => {
-                uni.reLaunch({
-                    url: '/pages/public/login'
-                });
-            }, 1.5 * 1000);
+            uni.clearStorage();
+            uni.showModal({
+                 content: '会话已过期，是否跳转登录页面？',
+                 success: (confirmRes) => {
+                     if (confirmRes.confirm) {
+                        uni.reLaunch({
+                            url: '/pages/public/login'
+                        });
+                     }
+                 }
+             });
             throw response.data.message;
             break;
         case 400:

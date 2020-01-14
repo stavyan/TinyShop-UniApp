@@ -180,10 +180,14 @@
 			},
 			// 数据初始化
 			async initData() {
-				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+				this.userInfo = uni.getStorageSync('userInfo') || {};
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
 					await this.getMemberInfo();
+				} else {
+          this.amountList[0].value = 0;
+          this.amountList[1].value = 0;
+          this.amountList[2].value = 0;
 				}
 			},
 			// 获取用户信息
@@ -467,7 +471,7 @@
 				}
 				.no-foot-print {
 					text-align: center;
-					padding: 40upx 0;
+					padding: 48upx 0;
 					.no-foot-print-icon {
 						font-size: $font-lg;
 						margin-right: 10upx;

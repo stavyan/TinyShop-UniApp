@@ -1,10 +1,13 @@
 {
   "enablePullDownRefresh": true,
-  "navigationBarTitleText": "评论列表",
+  "navigationBarTitleText": "评价列表",
   "pullToRefresh": {
     "support": true,
     "color": "#fa436a",
     "style": "default"
   },
-  "usingComponents": {}
+  "usingComponents": {
+    "empty": "/components/empty",
+    "uni-rate": "/components/uni-rate/uni-rate"
+  }
 }

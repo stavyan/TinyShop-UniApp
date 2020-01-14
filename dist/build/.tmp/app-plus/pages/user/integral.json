@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "积分详情",
+  "usingComponents": {
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "empty": "/components/empty"
+  }
+}

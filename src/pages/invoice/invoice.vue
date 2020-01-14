@@ -3,10 +3,6 @@
 		<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @tap="checkAddress(item)">
 			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
 				<view class="address-box">
-					<!--type: '2',-->
-					<!--title: '',-->
-					<!--duty_paragraph: '',-->
-					<!--is_default: ''-->
 					<text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
 					<text class="address">{{item.title}}</text>
 				</view>

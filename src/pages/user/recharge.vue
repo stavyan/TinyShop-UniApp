@@ -134,7 +134,7 @@
 							   jweixin.ready(() => {
 									 jweixin.chooseWXPay({
 										 ...r.data.config,
-										 success (res) {
+										 success () {
 											 // 支付成功后的回调函数
 											 _this.getMemberInfo();
 										 },
@@ -153,7 +153,7 @@
 							   uni.requestPayment({
 		                ...r.data.config,
 									   timeStamp: r.data.config.timestamp,
-		                success: (res) => {
+		                success: () => {
 											 _this.getMemberInfo();
 		                },
 		                fail: (res) => {

@@ -1,12 +1,12 @@
 <template>
 	<view class="collection">
 		<view class="uni-list">
-			<uni-swipe-action
+			<rf-swipe-action
 					v-for="(item, index) in orderItemList"
 					:key="index"
 					:options="itemOptions(item.is_evaluate, item.refund_status)"
 					:info="item"
-					@tap="bindClick"
+					@action="bindClick"
 					class="uni-list-cell"
 					hover-class="uni-list-cell-hover">
 					<view
@@ -33,7 +33,7 @@
 							</view>
 						</view>
 					</view>
-			</uni-swipe-action>
+			</rf-swipe-action>
 		</view>
 	</view>
 </template>
@@ -48,13 +48,13 @@
  */
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from './../../static/errorImage.jpg';
-import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
+import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
 import {closeOrderRefundApply, orderDetail} from "../../api/userInfo";
 import moment from 'moment';
 export default {
 	components: {
-		uniSwipeAction,
+		rfSwipeAction,
 		uniLoadMore,
 		uniTag
 	},
@@ -74,7 +74,6 @@ export default {
 			return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		filterIsEvaluate(val) {
-			console.log(val)
 			const data = ['未评价', '已评价', '已追评'];
 			return data[parseInt(val, 10)]
 		},
@@ -137,7 +136,6 @@ export default {
 		itemOptions() {
 			return function (isEvaluate, refundStatus) {
 				const options = [];
-				console.log(refundStatus)
 				const status = this.orderStatus;
 				if (parseInt(status, 10) === 1) {
 					switch (refundStatus) {
@@ -196,7 +194,7 @@ export default {
 					return;
 				}
 				this.goRefund(e.data, 2)
-			} else if (e.content.text === '取消退货' || e.content.text === '取消退款') {
+			} else if (e.content.text === '取消' || e.content.text === '取消') {
 				this.handleCloseOrderRefundApply(e.data.id)
 			} else if (e.content.text === '评价') {
 				this.goEvaluation(e.data)

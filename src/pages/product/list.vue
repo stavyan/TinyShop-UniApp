@@ -10,7 +10,7 @@
 				主页
 			</view>
 			<!-- 搜索框 -->
-			<view class="input-box">
+			<view class="input-box" @tap.stop="discard">
 				<input
 					@confirm="handleSearchProduct"
 					@blur="handleSearchProductBlur"
@@ -18,10 +18,10 @@
 				  style="color:#888;"
 				 	placeholder-style="color:#ccc;"
 				/>
-				<view class="icon search" @tap.prevent="handleSearchProductList"></view>
+				<view class="icon search" @tap.stop="handleSearchProductList"></view>
 			</view>
 		</view>
-		<view v-show="isShowNavBar" class="navbar">
+		<view v-if="isShowNavBar" class="navbar">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @tap="tabClick(0)">
 				综合排序
 			</view>
@@ -47,7 +47,7 @@
 			</view>
 			<text class="cate-item yticon icon-fenlei1" @tap="toggleCateMask('show')"></text>
 		</view>
-		<view class="goods-list">
+		<view class="goods-list" :style="{marginTop: contentTop}">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
 				class="goods-item"
@@ -97,9 +97,9 @@
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
-	import empty from "@/components/empty";
+	import empty from '@/components/empty';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
-	import {guessYouLikeList, productCate, productList} from "../../api/product";
+	import {guessYouLikeList, productCate, productList} from "@/api/product";
 
 	export default {
 		components: {
@@ -118,7 +118,6 @@
 				cateMaskState: 0, //分类面板展开状态
 				headerPosition:"fixed",
 				headerTop:"0px",
-				contentTop: "96upx",
 				loadingType: 'more', //加载更多状态
 				filterIndex: 0,
 				cateId: 0, //已选三级分类id
@@ -131,7 +130,8 @@
 				page: 1,
 				filterParams: {},
 				isShowNavBar: true,
-				hotSearchDefault: '请输入关键词'
+				hotSearchDefault: '请输入关键字',
+				contentTop: '176rpx'
 			};
 		},
 		onLoad(options){
@@ -179,7 +179,7 @@
 					this.cateParams = JSON.parse(options.params);
 					if (this.cateParams.guessYouLike === 1) {
 						this.isShowNavBar = false;
-						this.contentTop = '20upx';
+						this.contentTop = '120rpx';
 						this.getGuessYouLikeList();
 						return;
 					}
@@ -201,9 +201,10 @@
 			handleSearchProductList () {
 				this.page = 1;
 				this.goodsList = [];
-				this.filterParams = {}
+				this.filterParams = {};
 				this.getProductList();
 			},
+			discard() {},
 			toHome () {
 				uni.reLaunch({
 					url: `/pages/index/index`
@@ -335,7 +336,7 @@
 				if(!id) {
 					this.cateParams = null;
 					this.cateId = null;
-					this.keywords = null;
+					this.keyword = null;
 				}
 				this.cateId = id;
 				this.keyword = undefined;
@@ -361,7 +362,7 @@
 </script>
 
 <style lang="scss">
-	page,{
+	page {
 		background: $page-color-base;
 	}
 	.navbar{
@@ -502,12 +503,6 @@
 	}
 	/* 商品列表 */
 	.goods-list{
-		/* #ifdef H5 */
-		margin-top: 176upx;
-    /* #endif */
-		/* #ifdef MP */
-		margin-top: 176upx;
-    /* #endif */
 		display:flex;
 		flex-wrap:wrap;
 		padding: 0 30upx;
@@ -621,6 +616,7 @@
 				height: 60upx;
 				font-size: 34upx;
 				color: #c0c0c0;
+				z-index: 9;
 			}
 			input {
 				width: 100%;

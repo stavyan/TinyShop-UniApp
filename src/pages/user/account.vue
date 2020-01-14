@@ -61,7 +61,7 @@
         </view>
         <view
           class="item on"
-          @tap="navTo('/pages/user/recharge')"
+          @tap="navTo('/pages/user/coupon-center')"
         >
           <view class="text">
             <view class="name">领取优惠券</view>
