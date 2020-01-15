@@ -22,12 +22,12 @@
 
 <script>
 	import uniIcons from '../uni-icons/uni-icons.vue'
-	import uniBadge from '../uni-badge/uni-badge.vue'
+	import rfBadge from '../rf-badge/rf-badge'
 	export default {
 		name: 'UniListItem',
 		components: {
 			uniIcons,
-			uniBadge
+			rfBadge
 		},
 		props: {
 			title: {

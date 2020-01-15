@@ -1,14 +1,14 @@
 <template>
 	<view class="collection">
 		<view class="uni-list">
-			<rf-swipe-action
-					v-for="(item, index) in orderItemList"
-					:key="index"
+			<rf-swipe-action>
+		    <rf-swipe-action-item
 					:options="itemOptions(item.is_evaluate, item.refund_status)"
-					:info="item"
-					@action="bindClick"
-					class="uni-list-cell"
-					hover-class="uni-list-cell-hover">
+			    :info="item"
+			    @action="bindClick"
+			    class="uni-list-cell"
+			    :key="index"
+			    v-for="(item, index) in orderItemList">
 					<view
 						class="uni-media-list">
 						<!--@tap.stop="goEvaluation(item)"-->
@@ -33,6 +33,7 @@
 							</view>
 						</view>
 					</view>
+		    </rf-swipe-action-item>
 			</rf-swipe-action>
 		</view>
 	</view>
@@ -48,13 +49,15 @@
  */
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from './../../static/errorImage.jpg';
-import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
 import {closeOrderRefundApply, orderDetail} from "../../api/userInfo";
+import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
+import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item.vue';
 import moment from 'moment';
 export default {
 	components: {
 		rfSwipeAction,
+		rfSwipeActionItem,
 		uniLoadMore,
 		uniTag
 	},

@@ -1,27 +1,28 @@
 <template>
 	<view class="collection">
 		<view v-if="collectionList.length > 0">
-			<rf-swipe-action
-					@action="bindClick"
-					:info="item"
-					:options="options"
-					class="uni-list-cell"
-					hover-class="uni-list-cell-hover"
-					v-for="(item, index) in collectionList"
-					:key="index">
-					<view class="uni-media-list" @tap="goProduct(item.product.id)">
-						<image class="uni-media-list-logo"
-									 mode="aspectFill"
-									 @error="onImageError(index)"
-									 :src="item.product && item.product.picture"></image>
-						<view class="uni-media-list-body">
-							<view class="uni-media-list-text-top">{{ item.product && item.product.name }}</view>
-							<view class="uni-media-list-text-bottom">
-								<text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
-								<text>{{ item.created_at | time }}</text>
+			<rf-swipe-action>
+		    <rf-swipe-action-item
+			    :options="options"
+			    :info="item"
+			    @action="bindClick"
+			    class="uni-list-cell"
+			    :key="index"
+			    v-for="(item, index) in collectionList">
+						<view class="uni-media-list" @tap="goProduct(item.product.id)">
+							<image class="uni-media-list-logo"
+										 mode="aspectFill"
+										 @error="onImageError(index)"
+										 :src="item.product && item.product.picture"></image>
+							<view class="uni-media-list-body">
+								<view class="uni-media-list-text-top">{{ item.product && item.product.name }}</view>
+								<view class="uni-media-list-text-bottom">
+									<text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
+									<text>{{ item.created_at | time }}</text>
+								</view>
 							</view>
 						</view>
-					</view>
+		    </rf-swipe-action-item>
 			</rf-swipe-action>
 			<uni-load-more :status="loadingType" />
 		</view>
@@ -40,14 +41,16 @@
 import {collectList} from "../../api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from './../../static/errorImage.jpg';
-import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import {collectDel} from "../../api/basic";
 import empty from "@/components/empty";
-import moment from 'moment'
+import moment from 'moment';
+import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
+import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
 export default {
 	components: {
 		uniLoadMore,
 		rfSwipeAction,
+		rfSwipeActionItem,
 		empty
 	},
 	data() {
@@ -85,7 +88,6 @@ export default {
 	},
 	methods:{
 		async bindClick(e) {
-	    console.log(e)
 			if (e.content.text === '取消收藏') {
 				uni.showLoading({title: '取消收藏中...'});
 				await this.$del(`${collectDel}?id=${e.data.id}`, {

@@ -1,7 +1,7 @@
 <template>
 	<view class="footprint">
 		<!--日历控件-->
-		<uni-calendar
+		<rf-calendar
 			class="date"
 			:insert="true"
 			:lunar="true"
@@ -10,14 +10,14 @@
 			@change="handleDateChange"
 			 />
 		<!--足迹列表-->
-		<rf-swipe-action
-				@action="bindClick"
-				v-for="(item, index) in footPrintList"
-				:info="item"
-				:options="options"
-				class="uni-list-cell"
-				hover-class="uni-list-cell-hover"
-				:key="index">
+		<rf-swipe-action>
+	    <rf-swipe-action-item
+		    :options="options"
+		    :info="item"
+		    @action="bindClick"
+		    class="uni-list-cell"
+		    :key="index"
+		    v-for="(item, index) in footPrintList">
 				<view class="uni-media-list" @tap="goProduct(item.product.id)">
 						<image class="uni-media-list-logo"
 									 mode="aspectFill"
@@ -31,7 +31,8 @@
 							</view>
 						</view>
 				</view>
-			</rf-swipe-action>
+	    </rf-swipe-action-item>
+		</rf-swipe-action>
 		<!--足迹列表为0-->
 		<view v-if="footPrintList.length === 0" class="empty">
 			<image class="empty-content-image" :src="empty" mode="aspectFit"></image>
@@ -52,14 +53,16 @@
 import {footPrintDel, footPrintList} from "@/api/userInfo";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more';
 import errorImg from '@/static/errorImage.jpg';
-import uniCalendar from "@/components/uni-calendar/uni-calendar";
+import rfCalendar from "@/components/rf-calendar/rf-calendar";
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
+import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
 import moment from 'moment';
 export default {
 	components: {
 		uniLoadMore,
-		uniCalendar,
-		rfSwipeAction
+		rfCalendar,
+		rfSwipeAction,
+    rfSwipeActionItem
 	},
 	data() {
 		return {
@@ -90,8 +93,13 @@ export default {
 		async handleDateChange(e) {
 			this.page = 1;
 			this.footPrintList = [];
-			this.startTime = await moment(`${e.year}-${e.month}-${e.date} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
-			this.endTime = await moment(`${e.year}-${e.month}-${e.date + 1} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
+			if (parseInt(e.type) !== 0) {
+				this.startTime = await moment(`${e.year}-${e.month}-${e.date} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
+				this.endTime = await moment(`${e.year}-${e.month}-${e.date + 1} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').valueOf() / 1000;
+			} else {
+				this.startTime = undefined;
+				this.startTime = undefined;
+			}
 			this.getFootPrintList();
 		},
 		// 删除足迹

@@ -19,6 +19,7 @@
 					<view class="uni-calendar__header-btn uni-calendar--right"></view>
 				</view>
 				<text class="uni-calendar__backtoday" @tap="backtoday">回到今天</text>
+				<text class="uni-calendar__all" @tap="searchAll">查看所有</text>
 			</view>
 			<view class="uni-calendar__box">
 				<view class="uni-calendar__box-bg">
@@ -26,7 +27,7 @@
 				</view>
 				<view class="uni-calendar__weeks" v-for="(item,weekIndex) in weeks" :key="weekIndex">
 					<view class="uni-calendar__weeks-item" v-for="(weeks,weeksIndex) in item" :key="weeksIndex">
-						<uni-calendar-item :weeks="weeks" :calendar="calendar" :selected="selected" :lunar="lunar" @change="choiceDate"></uni-calendar-item>
+						<rf-calendar-item :weeks="weeks" :calendar="calendar" :selected="selected" :lunar="lunar" @change="choiceDate"></rf-calendar-item>
 					</view>
 				</view>
 			</view>
@@ -36,10 +37,10 @@
 
 <script>
 	import Calendar from './util.js';
-	import uniCalendarItem from './uni-calendar-item.vue'
+	import rfCalendarItem from './rf-calendar-item'
 	export default {
 		components: {
-			uniCalendarItem
+			rfCalendarItem
 		},
 		props: {
 			/**
@@ -145,9 +146,9 @@
 				this.setEmit('confirm')
 				this.close()
 			},
-			change() {
+			change(type) {
 				if (!this.insert) return
-				this.setEmit('change')
+				this.setEmit('change', type)
 			},
 			monthSwitch() {
 				let {
@@ -159,7 +160,7 @@
 					month:Number(month)
 				})
 			},
-			setEmit(name) {
+			setEmit(name, type) {
 				let {
 					year,
 					month,
@@ -175,7 +176,8 @@
 					date,
 					fulldate: fullDate,
 					lunar,
-					extraInfo: extraInfo || {}
+					extraInfo: extraInfo || {},
+					type,
 				})
 			},
 			choiceDate(weeks) {
@@ -192,11 +194,13 @@
 				this.nowDate = this.calendar = this.cale.getInfo(this.date)
 				this.change()
 			},
+			searchAll () {
+				this.change(0)
+			},
 			pre() {
 				const preDate = this.cale.getDate(this.nowDate.fullDate, -1, 'month').fullDate
 				this.setDate(preDate)
 				this.monthSwitch()
-
 			},
 			next() {
 				const nextDate = this.cale.getDate(this.nowDate.fullDate, +1, 'month').fullDate
@@ -301,6 +305,20 @@
 		font-size: 12px;
 		border-top-left-radius: 25px;
 		border-bottom-left-radius: 25px;
+		color: $uni-text-color;
+		background-color: $uni-bg-color-hover;
+	}
+	.uni-calendar__all {
+		position: absolute;
+		left: 0;
+		top: 0;
+		padding: 0 5px;
+		padding-left: 10px;
+		height: 25px;
+		line-height: 25px;
+		font-size: 12px;
+		border-top-right-radius: 25px;
+		border-bottom-right-radius: 25px;
 		color: $uni-text-color;
 		background-color: $uni-bg-color-hover;
 	}

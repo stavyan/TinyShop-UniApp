@@ -11,7 +11,7 @@
 			</view>
 		</view>
 		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
-			<swiper-item class="tab-content" v-for="(tabItem,tabIndex) in navList" :key="tabIndex">
+			<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
 				<scroll-view
 					class="list-scroll-content"
 					scroll-y
@@ -89,13 +89,19 @@
 </template>
 
 <script>
+	/**
+	 * @des 订单管理
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-01-15 11:54
+	 * @copyright 2019
+	 */
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
-	import Json from '@/Json';
 	import moment from 'moment';
-  import {orderDelete, orderList, orderTakeDelivery} from "../../api/userInfo";
+  import {orderDelete, orderList, orderTakeDelivery} from "@/api/userInfo";
 	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
-	import {orderClose} from "../../api/product";
+	import {orderClose} from "@/api/product";
 	export default {
 		components: {
 			uniLoadMore,
@@ -133,6 +139,7 @@
 			};
 		},
 		computed: {
+			// 计算倒计时时间
 			second() {
 				return function (val) {
 					return Math.floor(15 * 60 - (new Date() / 1000 - val))
@@ -140,9 +147,11 @@
 			}
 		},
 		filters: {
+	    // 时间格式化
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
 			},
+			// 状态显示格式化
       orderStatusFilter (orderStatus) {
 			  let status = null;
 				const orderStatusList = [
@@ -375,6 +384,7 @@
 			},
 			//swiper 切换
 			changeTab(e){
+		    console.log(111)
 				this.page = 1;
 				this.orderList.length = 0;
 				this.tabCurrentIndex = e.target.current;
