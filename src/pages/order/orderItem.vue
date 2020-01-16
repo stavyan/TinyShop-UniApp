@@ -47,7 +47,7 @@
  * @date 2019-11-22 10:47
  * @copyright 2019
  */
-import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from './../../static/errorImage.jpg';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
 import {closeOrderRefundApply, orderDetail} from "../../api/userInfo";
@@ -58,7 +58,7 @@ export default {
 	components: {
 		rfSwipeAction,
 		rfSwipeActionItem,
-		uniLoadMore,
+		rfLoadMore,
 		uniTag
 	},
 	data() {

@@ -12,7 +12,7 @@
 </template>
 <script>
 	export default {
-		name: 'UniCountDown',
+		name: 'rfCountDown',
 		props: {
 			showDay: {
 				type: Boolean,

@@ -38,7 +38,7 @@
 			<image class="empty-content-image" :src="empty" mode="aspectFit"></image>
 			<text class="empty-content-text">这一天没有足迹哦</text>
 		</view>
-		<uni-load-more v-else :status="loadingType" />
+		<rf-load-more v-else :status="loadingType" />
 	</view>
 </template>
 
@@ -51,7 +51,7 @@
  * @copyright 2019
  */
 import {footPrintDel, footPrintList} from "@/api/userInfo";
-import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from '@/static/errorImage.jpg';
 import rfCalendar from "@/components/rf-calendar/rf-calendar";
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
@@ -59,7 +59,7 @@ import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action
 import moment from 'moment';
 export default {
 	components: {
-		uniLoadMore,
+		rfLoadMore,
 		rfCalendar,
 		rfSwipeAction,
     rfSwipeActionItem

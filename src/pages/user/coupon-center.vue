@@ -34,7 +34,7 @@
 							</text>
 					</view>
 				</view>
-				<uni-load-more :status="loadingType"></uni-load-more>
+				<rf-load-more :status="loadingType"></rf-load-more>
 				<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 			</view>
 	</view>
@@ -49,12 +49,12 @@
 	 * @copyright 2019
 	 */
 	import {couponList, couponReceive, myCouponList} from "../../api/userInfo";
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 	import empty from "@/components/empty";
 	import moment from 'moment';
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
 			empty,
 		},
 		data() {

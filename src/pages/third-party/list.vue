@@ -12,7 +12,7 @@
 				</view>
 				<text class="unbind" @tap.stop="unBind(item.id)">解除绑定</text>
 			</view>
-			<uni-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" />
 		</view>
 		<empty :info="'您暂未授权第三方平台~'" v-else></empty>
 	</view>
@@ -21,11 +21,11 @@
 <script>
 	import {thirdPartyAuthDelete, thirdPartyAuthList} from "../../api/userInfo";
 	import moment from 'moment';
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import empty from "@/components/empty";
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
 			empty
 		},
 		data() {

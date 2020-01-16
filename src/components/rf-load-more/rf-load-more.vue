@@ -1,6 +1,6 @@
 <template>
-	<view class="uni-load-more">
-		<view class="uni-load-more__img" v-show="status === 'loading' && showIcon">
+	<view class="rf-load-more">
+		<view class="rf-load-more__img" v-show="status === 'loading' && showIcon">
 			<view class="load1">
 				<view :style="{background:color}"></view>
 				<view :style="{background:color}"></view>
@@ -20,13 +20,13 @@
 				<view :style="{background:color}"></view>
 			</view>
 		</view>
-		<text class="uni-load-more__text" :style="{color:color}">{{status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore)}}</text>
+		<text class="rf-load-more__text" :style="{color:color}">{{status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore)}}</text>
 	</view>
 </template>
 
 <script>
 	export default {
-		name: "uni-load-more",
+		name: "rf-load-more",
 		props: {
 			status: {
 				//上拉的状态：more-loading前；loading-loading中；noMore-没有更多了
@@ -61,7 +61,7 @@
 <style>
 	@charset "UTF-8";
 
-	.uni-load-more {
+	.rf-load-more {
 		display: flex;
 		flex-direction: row;
 		height: 80upx;
@@ -69,22 +69,22 @@
 		justify-content: center
 	}
 
-	.uni-load-more__text {
+	.rf-load-more__text {
 		font-size: 28upx;
 		color: #999
 	}
 
-	.uni-load-more__img {
+	.rf-load-more__img {
 		height: 24px;
 		width: 24px;
 		margin-right: 10px
 	}
 
-	.uni-load-more__img>view {
+	.rf-load-more__img>view {
 		position: absolute
 	}
 
-	.uni-load-more__img>view view {
+	.rf-load-more__img>view view {
 		width: 6px;
 		height: 2px;
 		border-top-left-radius: 1px;
@@ -96,25 +96,25 @@
 		animation: load 1.56s ease infinite
 	}
 
-	.uni-load-more__img>view view:nth-child(1) {
+	.rf-load-more__img>view view:nth-child(1) {
 		transform: rotate(90deg);
 		top: 2px;
 		left: 9px
 	}
 
-	.uni-load-more__img>view view:nth-child(2) {
+	.rf-load-more__img>view view:nth-child(2) {
 		transform: rotate(180deg);
 		top: 11px;
 		right: 0
 	}
 
-	.uni-load-more__img>view view:nth-child(3) {
+	.rf-load-more__img>view view:nth-child(3) {
 		transform: rotate(270deg);
 		bottom: 2px;
 		left: 9px
 	}
 
-	.uni-load-more__img>view view:nth-child(4) {
+	.rf-load-more__img>view view:nth-child(4) {
 		top: 11px;
 		left: 0
 	}

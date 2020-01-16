@@ -1,14 +1,9 @@
 {
-  "enablePullDownRefresh": true,
   "navigationBarTitleText": "我的足迹",
-  "pullToRefresh": {
-    "support": true,
-    "color": "#fa436a",
-    "style": "default"
-  },
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
-    "uni-calendar": "/components/uni-calendar/uni-calendar",
-    "uni-swipe-action": "/components/uni-swipe-action/uni-swipe-action"
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "rf-calendar": "/components/rf-calendar/rf-calendar",
+    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",
+    "rf-swipe-action-item": "/components/rf-swipe-action-item/rf-swipe-action-item"
   }
 }

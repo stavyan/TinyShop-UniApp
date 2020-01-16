@@ -8,8 +8,8 @@
   },
   "bounce": "none",
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
     "empty": "/components/empty",
-    "uni-count-down": "/components/uni-count-down/uni-count-down"
+    "rf-count-down": "/components/rf-count-down/rf-count-down"
   }
 }

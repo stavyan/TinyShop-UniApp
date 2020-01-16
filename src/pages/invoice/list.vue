@@ -22,7 +22,7 @@
 
 				</view>
 			</view>
-			<uni-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" />
 		</view>
 		<empty :info="'您还未购买任何商品~'" v-else></empty>
 	</view>
@@ -31,11 +31,11 @@
 <script>
 	import {orderInvoiceList} from "../../api/userInfo";
 	import moment from 'moment';
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import empty from "@/components/empty";
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
 			empty
 		},
 		data() {

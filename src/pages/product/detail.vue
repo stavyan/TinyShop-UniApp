@@ -44,7 +44,7 @@
 				</view>
 			</view>
 		</view>
-		<uni-load-more :status="loadingType"></uni-load-more>
+		<rf-load-more :status="loadingType"></rf-load-more>
 		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
@@ -75,12 +75,12 @@
 </template>
 
 <script>
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 	import empty from "@/components/empty";
 	import {guessYouLikeList, productCate, productList} from "../../api/product";
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
 			empty
 		},
 		data() {

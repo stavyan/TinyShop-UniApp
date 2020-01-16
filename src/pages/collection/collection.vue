@@ -24,7 +24,7 @@
 						</view>
 		    </rf-swipe-action-item>
 			</rf-swipe-action>
-			<uni-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" />
 		</view>
 		<empty :info="'快去收藏一些商品吧~'" v-else></empty>
 	</view>
@@ -39,7 +39,7 @@
  * @copyright 2019
  */
 import {collectList} from "../../api/userInfo";
-import uniLoadMore from '@/components/uni-load-more/uni-load-more';
+import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from './../../static/errorImage.jpg';
 import {collectDel} from "../../api/basic";
 import empty from "@/components/empty";
@@ -48,7 +48,7 @@ import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
 export default {
 	components: {
-		uniLoadMore,
+		rfLoadMore,
 		rfSwipeAction,
 		rfSwipeActionItem,
 		empty

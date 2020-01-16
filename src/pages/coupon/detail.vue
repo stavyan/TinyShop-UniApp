@@ -72,7 +72,7 @@
  * @copyright 2019
  */
 	import {couponClear, couponDetail, couponReceive, myCouponList} from "../../api/userInfo";
-import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
 import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
@@ -80,7 +80,7 @@ import uniList from '@/components/uni-list/uni-list.vue'
 import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
 export default {
 	components: {
-		uniLoadMore,
+		rfLoadMore,
 		empty,
 		uniDrawer,
 		uniList,

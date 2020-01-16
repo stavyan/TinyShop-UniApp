@@ -7,7 +7,7 @@
     "style": "default"
   },
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
     "empty": "/components/empty",
     "uni-drawer": "/components/uni-drawer/uni-drawer",
     "uni-list": "/components/uni-list/uni-list",

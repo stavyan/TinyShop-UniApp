@@ -55,7 +55,7 @@
           </view>
           <text class="change-num" :class="parseFloat(item.num) >= 0 ? 'change-num-add' : 'change-num-reduce'">{{item.num | numFilter }}</text>
         </view>
-        <uni-load-more class="load-more" :status="loadingType"></uni-load-more>
+        <rf-load-more class="load-more" :status="loadingType"></rf-load-more>
       </view>
       <view class="list2" :hidden="current !== 1">
         <view class="item">
@@ -76,13 +76,13 @@
  * @copyright 2019
  */
 import {creditsLogList} from "../../api/userInfo";
-import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
 export default {
   name: "Integral",
   components: {
-    uniLoadMore,
+    rfLoadMore,
     empty
   },
   data () {

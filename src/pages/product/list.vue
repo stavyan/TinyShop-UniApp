@@ -1,27 +1,36 @@
 <template>
 	<view class="container">
-		<!-- 状态栏 -->
-		<view v-if="showHeader" class="status" :style="{ position: headerPosition1,top:statusTop,opacity: afterHeaderOpacity}"></view>
-		<!-- 顶部导航栏 -->
-		<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">
-			<!-- 定位城市 -->
-			<view class="addr" @tap.stop="toHome">
-				<view class="icon yticon icon-xiatubiao--copy" ></view>
-				主页
-			</view>
-			<!-- 搜索框 -->
-			<view class="input-box" @tap.stop="discard">
-				<input
-					@confirm="handleSearchProduct"
-					@blur="handleSearchProductBlur"
-					:value="keyword || hotSearchDefault"
-				  style="color:#888;"
-				 	placeholder-style="color:#ccc;"
-				/>
-				<view class="icon search" @tap.stop="handleSearchProductList"></view>
-			</view>
-		</view>
-		<view v-if="isShowNavBar" class="navbar">
+		<!--&lt;!&ndash; 状态栏 &ndash;&gt;-->
+		<!--<view v-if="showHeader" class="status" :style="{ position: headerPosition1,top:statusTop,opacity: afterHeaderOpacity}"></view>-->
+		<!--&lt;!&ndash; 顶部导航栏 &ndash;&gt;-->
+		<!--<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">-->
+			<!--&lt;!&ndash; 定位城市 &ndash;&gt;-->
+			<!--<view class="addr" @tap.stop="toHome">-->
+				<!--<view class="icon yticon icon-xiatubiao&#45;&#45;copy" ></view>-->
+				<!--主页-->
+			<!--</view>-->
+			<!--&lt;!&ndash; 搜索框 &ndash;&gt;-->
+			<!--<view class="input-box" @tap.stop="discard">-->
+				<!--<input-->
+					<!--@confirm="handleSearchProduct"-->
+					<!--@blur="handleSearchProductBlur"-->
+					<!--:value="keyword || hotSearchDefault"-->
+				  <!--style="color:#888;"-->
+				 	<!--placeholder-style="color:#ccc;"-->
+				<!--/>-->
+				<!--<view class="icon search" @tap.stop="handleSearchProductList"></view>-->
+			<!--</view>-->
+		<!--</view>-->
+		<!--顶部搜索导航栏-->
+		<rf-search-bar
+			@link="toIndex"
+			@search="toSearch"
+			:icon="'icon-xiatubiao--copy'"
+			:title="'主页'"
+			:headerShow="headerShow"
+			:placeholder="hotSearchDefault" />
+
+		<view v-if="isShowNavBar" class="navbar" :style="{top: navBarTop}">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @tap="tabClick(0)">
 				综合排序
 			</view>
@@ -47,6 +56,7 @@
 			</view>
 			<text class="cate-item yticon icon-fenlei1" @tap="toggleCateMask('show')"></text>
 		</view>
+
 		<view class="goods-list" :style="{marginTop: contentTop}">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
@@ -65,7 +75,7 @@
 				</view>
 			</view>
 		</view>
-		<uni-load-more :status="loadingType"></uni-load-more>
+		<rf-load-more :status="loadingType"></rf-load-more>
 		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
@@ -96,23 +106,25 @@
 </template>
 
 <script>
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 	import empty from '@/components/empty';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	import {guessYouLikeList, productCate, productList} from "@/api/product";
-
+	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
+			rfSearchBar,
 			empty,
 			uniIcons
 		},
 		data() {
 			return {
-				showHeader:true,
+				headerShow:true,
 				afterHeaderOpacity: 1,//不透明度
 				headerPosition1:"fixed",
 				headerTop1:"0px",
+				navBarTop:"0px",
 				statusTop:null,
 				nVueTitle:null,
 				cateMaskState: 0, //分类面板展开状态
@@ -131,7 +143,7 @@
 				filterParams: {},
 				isShowNavBar: true,
 				hotSearchDefault: '请输入关键字',
-				contentTop: '176rpx'
+				contentTop: '88upx'
 			};
 		},
 		onLoad(options){
@@ -174,12 +186,25 @@
 				if (navigator) {
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
+				/*  #ifdef  APP-PLUS  */
+				switch(uni.getSystemInfoSync().platform) {
+          case 'android':
+						this.navBarTop = '118upx';
+              break;
+          case 'ios':
+						this.navBarTop = '188upx';
+              break;
+        }
+				/*  #endif  */
+				/*  #ifndef  APP-PLUS  */
+				this.navBarTop = '88upx';
+				/*  #endif  */
 				this.cateId = options.cate_id;
 				if (options.params) {
 					this.cateParams = JSON.parse(options.params);
 					if (this.cateParams.guessYouLike === 1) {
 						this.isShowNavBar = false;
-						this.contentTop = '120rpx';
+						this.contentTop = '18upx';
 						this.getGuessYouLikeList();
 						return;
 					}
@@ -368,7 +393,6 @@
 	.navbar{
 		position: fixed;
 		left: 0;
-		top: 88upx;
 		/*top: var(--window-top);*/
 		display: flex;
 		width: 100%;
@@ -554,89 +578,6 @@
 				color: $font-color-light;
 				font-size: $font-base - 4upx;
 				text-decoration: line-through;
-			}
-		}
-	}
-	.status {
-		width: 100%;
-		height: 0;
-		position: fixed;
-		z-index: 10;
-		background-color: #fff;
-		top: 0;
-		/*  #ifdef  APP-PLUS  */
-		height: var(--status-bar-height); //覆盖样式
-		/*  #endif  */
-	}
-	.header {
-		width: 100%;
-		height: 100upx;
-		display: flex;
-		align-items: center;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		background-color: #fff;
-		/*  #ifdef  APP-PLUS  */
-		top: var(--status-bar-height);
-		/*  #endif  */
-		.addr {
-		width: 120upx;
-		height: 60upx;
-		flex-shrink: 0;
-		display: flex;
-		align-items: center;
-		font-size: 28upx;
-		.icon {
-			height: 60upx;
-			margin-right: 5upx;
-			margin-left: 15upx;
-			display: flex;
-			align-items: center;
-			font-size: 36upx;
-			color: $base-color;
-		}
-	}
-		.input-box {
-			width: 100%;
-			height: 60upx;
-			margin: 0 15upx;
-			background-color: #f5f5f5;
-			border-radius: 30upx;
-			position: relative;
-			display: flex;
-			align-items: center;
-			.icon {
-				display: flex;
-				align-items: center;
-				position: absolute;
-				top: 0;
-				right: 0;
-				width: 60upx;
-				height: 60upx;
-				font-size: 34upx;
-				color: #c0c0c0;
-				z-index: 9;
-			}
-			input {
-				width: 100%;
-				padding-left: 28upx;
-				height: 28upx;
-				font-size: 28upx;
-			}
-		}
-		.icon-btn {
-			width: 120upx;
-			height: 60upx;
-			flex-shrink: 0;
-			display: flex;
-			.icon {
-				width: 60upx;
-				height: 60upx;
-				display: flex;
-				justify-content: flex-end;
-				align-items: center;
-				font-size: 42upx;
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<!--导航栏-->
 		<view class="navbar">
 			<view
 				v-for="(item, index) in navList" :key="index"
@@ -10,6 +11,7 @@
 				{{item.text}}
 			</view>
 		</view>
+		<!--订单列表-->
 		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
 			<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
 				<scroll-view
@@ -28,14 +30,8 @@
 							<text class="time">{{item.created_at | time}}</text>
 							<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
 							<view class="example-body" v-else>
-								<uni-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
+								<rf-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
 							</view>
-              <!--:style="{color: item.stateTipColor}"-->
-							<!--<text-->
-								<!--v-show="parseInt(item.order_status, 10) === 0"-->
-								<!--class="del-btn yticon icon-iconfontshanchu1"-->
-								<!--@tap="deleteOrder(index)"-->
-							<!--&gt;</text>-->
 						</view>
 
 						<scroll-view @tap="toOrderDetail(item.id)" v-if="item && item.product && item.product.length > 1"
@@ -81,7 +77,7 @@
 						  <button class="action-btn recom" v-show="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
-					<uni-load-more :status="loadingType"></uni-load-more>
+					<rf-load-more :status="loadingType"></rf-load-more>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -96,17 +92,17 @@
 	 * @date 2020-01-15 11:54
 	 * @copyright 2019
 	 */
-	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 	import empty from "@/components/empty";
 	import moment from 'moment';
   import {orderDelete, orderList, orderTakeDelivery} from "@/api/userInfo";
-	import uniCountDown from '@/components/uni-count-down/uni-count-down.vue'
+	import rfCountDown from '@/components/rf-count-down/rf-count-down.vue'
 	import {orderClose} from "@/api/product";
 	export default {
 		components: {
-			uniLoadMore,
+			rfLoadMore,
 			empty,
-			uniCountDown
+			rfCountDown
 		},
 		data() {
 			return {
@@ -175,9 +171,11 @@
       }
 		},
 		onShow(){
+			// #ifdef H5
 			this.page = 1;
 			this.orderList.length = 0;
 			this.initData();
+			// #endif
 		},
 		onLoad(options){
 			/**
@@ -199,23 +197,11 @@
 			this.getOrderList();
 		},
 		methods: {
-			/**
-			 *@des 到时间回调
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/20 11:59:19
-			 *@param id 订单id
-			 */
+			// 倒计时关闭订单
 			timeUp(item) {
 				this.handleOrderClose(item.id);
 			},
-      /**
-       *@des
-       *@author stav stavyan@qq.com
-       *@blog https://stavtop.club
-       *@date 2019/11/27 10:14:47
-       *@param arguments
-       */
+			// 订单操作
       handleOrderOperation (item, type, refund_type) {
         switch (type) {
           case 'detail': // 订单详情
@@ -228,11 +214,10 @@
               this.handleOrderClose(item.id);
             break;
           case 'delete': // 删除订单
-						uni.showToast({title: '删除订单', icon: "none"});
               this.handleOrderDelete(item.id);
             break;
           case 'shipping': // 查看物流
-						uni.showToast({title: "后台没写", icon: "none"});
+	          this.$api.msg('后台没写');
             break;
           case 'refund': // 退货/退款
 						this.handleOrderEvaluation(item, 'refund', refund_type);
@@ -259,104 +244,57 @@
 				// 	}
         // }
       },
+			// 跳转至订单详情
       toOrderDetail(id) {
         uni.navigateTo({
           url: `/pages/order/detail?id=${id}`
         })
       },
-			/**
-			 *@des 取消订单
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/20 12:00:48
-			 */
+			// 取消订单
 			async handleOrderClose(id) {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderClose}`, {
 					id,
-				}).then(r => {
-					if (r.code === 200) {
-            this.page = 1;
-            this.orderList.length = 0;
-						this.getOrderList();
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				}).then(() => {
+          this.page = 1;
+          this.orderList.length = 0;
+					this.getOrderList();
 				})
 			},
-      /**
-       *@des 删除已关闭订单
-       *@author stav stavyan@qq.com
-       *@blog https://stavtop.club
-       *@date 2019/12/04 17:20:22
-       *@param id 订单id
-       */
+      // 删除已关闭订单
 			async handleOrderDelete(id) {
 				uni.showLoading({title: '加载中...'});
-				await this.$del(`${orderDelete}?id=${id}`, {}).then(r => {
-					if (r.code === 200) {
-						uni.showToast({title: '订单删除成功', icon: "none"});
-						setTimeout(() => {
-							this.page = 1;
-							this.orderList.length = 0;
-							this.getOrderList();
-						}, 500)
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				await this.$del(`${orderDelete}?id=${id}`, {}).then(() => {
+					this.$api.msg('订单删除成功');
+					setTimeout(() => {
+						this.page = 1;
+						this.orderList.length = 0;
+						this.getOrderList();
+					}, 500)
 				})
 			},
-      /**
-       *@des 确认收货
-       *@author stav stavyan@qq.com
-       *@blog https://stavtop.club
-       *@date 2019/11/27 17:48:34
-       */
+      // 确认收货
 			async handleOrderTakeDelivery(id) {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
-				}).then(r => {
-					if (r.code === 200) {
-            this.page = 1;
-            this.orderList.length = 0;
-						this.getOrderList();
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				}).then(() => {
+          this.page = 1;
+          this.orderList.length = 0;
+					this.getOrderList();
 				})
 			},
-			/**
-			 *@des 订单支付
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/20 13:49:55
-			 *@param id 订单id
-			 */
+			// 订单支付
 			async handlePayment(item) {
-				// const data = {}
-				// data.order_id = parseInt(item.id, 10);
 				uni.navigateTo({
-					// url: `/pages/money/pay?data=${JSON.stringify(data)}&money=${item.product_money}`
 					url: `/pages/money/pay?id=${item.id}`
 				})
 			},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/19 18:18:54
-			 *@param arguments
-			 */
+			// 数据初始化
 			initData () {
 				this.getOrderList();
 			},
+			// 获取订单列表
 			async getOrderList(type) {
 				let index = this.tabCurrentIndex;
 				let navItem = this.navList[index];
@@ -372,19 +310,12 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.orderList = [ ...this.orderList, ...r.data ]
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
-				})
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.orderList = [ ...this.orderList, ...r.data ]
+				});
 			},
-			//swiper 切换
+			// 监听swiper切换
 			changeTab(e){
-		    console.log(111)
 				this.page = 1;
 				this.orderList.length = 0;
 				this.tabCurrentIndex = e.target.current;
@@ -602,65 +533,6 @@
 		}
 	}
 
-
-	/* load-more */
-	.uni-load-more {
-		display: flex;
-		flex-direction: row;
-		height: 80upx;
-		align-items: center;
-		justify-content: center
-	}
-
-	.uni-load-more__text {
-		font-size: 28upx;
-		color: #999
-	}
-
-	.uni-load-more__img {
-		height: 24px;
-		width: 24px;
-		margin-right: 10px
-	}
-
-	.uni-load-more__img>view {
-		position: absolute
-	}
-
-	.uni-load-more__img>view view {
-		width: 6px;
-		height: 2px;
-		border-top-left-radius: 1px;
-		border-bottom-left-radius: 1px;
-		background: #999;
-		position: absolute;
-		opacity: .2;
-		transform-origin: 50%;
-		animation: load 1.56s ease infinite
-	}
-
-	.uni-load-more__img>view view:nth-child(1) {
-		transform: rotate(90deg);
-		top: 2px;
-		left: 9px
-	}
-
-	.uni-load-more__img>view view:nth-child(2) {
-		transform: rotate(180deg);
-		top: 11px;
-		right: 0
-	}
-
-	.uni-load-more__img>view view:nth-child(3) {
-		transform: rotate(270deg);
-		bottom: 2px;
-		left: 9px
-	}
-
-	.uni-load-more__img>view view:nth-child(4) {
-		top: 11px;
-		left: 0
-	}
 
 	.load1,
 	.load2,
