@@ -1,35 +1,15 @@
 <template>
 	<view class="container">
-		<!--&lt;!&ndash; 状态栏 &ndash;&gt;-->
-		<!--<view v-if="showHeader" class="status" :style="{ position: headerPosition1,top:statusTop,opacity: afterHeaderOpacity}"></view>-->
-		<!--&lt;!&ndash; 顶部导航栏 &ndash;&gt;-->
-		<!--<view v-if="showHeader" class="header" :style="{ position: headerPosition1,top:headerTop1,opacity: afterHeaderOpacity }">-->
-			<!--&lt;!&ndash; 定位城市 &ndash;&gt;-->
-			<!--<view class="addr" @tap.stop="toHome">-->
-				<!--<view class="icon yticon icon-xiatubiao&#45;&#45;copy" ></view>-->
-				<!--主页-->
-			<!--</view>-->
-			<!--&lt;!&ndash; 搜索框 &ndash;&gt;-->
-			<!--<view class="input-box" @tap.stop="discard">-->
-				<!--<input-->
-					<!--@confirm="handleSearchProduct"-->
-					<!--@blur="handleSearchProductBlur"-->
-					<!--:value="keyword || hotSearchDefault"-->
-				  <!--style="color:#888;"-->
-				 	<!--placeholder-style="color:#ccc;"-->
-				<!--/>-->
-				<!--<view class="icon search" @tap.stop="handleSearchProductList"></view>-->
-			<!--</view>-->
-		<!--</view>-->
 		<!--顶部搜索导航栏-->
 		<rf-search-bar
 			@link="toIndex"
-			@search="toSearch"
+			@search="handleSearchProductList"
 			:icon="'icon-xiatubiao--copy'"
 			:title="'主页'"
+			:inputDisabled="true"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
-
+		<!--分类栏目-->
 		<view v-if="isShowNavBar" class="navbar" :style="{top: navBarTop}">
 			<view class="nav-item" :class="{current: filterIndex === 0}" @tap="tabClick(0)">
 				综合排序
@@ -57,6 +37,7 @@
 			<text class="cate-item yticon icon-fenlei1" @tap="toggleCateMask('show')"></text>
 		</view>
 
+		<!--商品列表-->
 		<view class="goods-list" :style="{marginTop: contentTop}">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
@@ -77,6 +58,7 @@
 		</view>
 		<rf-load-more :status="loadingType"></rf-load-more>
 		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
+		<!--分类遮盖层-->
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
 					@tap="toggleCateMask">
@@ -175,6 +157,12 @@
 			this.getProductList();
 		},
 		methods: {
+			// 跳转至分类页
+			toIndex () {
+				uni.reLaunch({
+					url: `/pages/index/index`
+				})
+			},
 			/**
 			 *@des 初始化数据
 			 *@author stav stavyan@qq.com
@@ -186,7 +174,7 @@
 				if (navigator) {
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
 				}
-				/*  #ifdef  APP-PLUS  */
+				/*  #ifdef APP-PLUS  */
 				switch(uni.getSystemInfoSync().platform) {
           case 'android':
 						this.navBarTop = '118upx';
@@ -196,7 +184,7 @@
               break;
         }
 				/*  #endif  */
-				/*  #ifndef  APP-PLUS  */
+				/*  #ifndef APP-PLUS  */
 				this.navBarTop = '88upx';
 				/*  #endif  */
 				this.cateId = options.cate_id;
@@ -216,14 +204,8 @@
 				this.getProductCate()
 				this.getProductList();
 			},
-			handleSearchProduct (e) {
-				this.keyword = e.detail.value;
-				this.handleSearchProductList();
-			},
-			handleSearchProductBlur (e) {
-				this.keyword = e.detail.value;
-			},
-			handleSearchProductList () {
+			handleSearchProductList (e) {
+				this.keyword = e.searchValue;
 				this.page = 1;
 				this.goodsList = [];
 				this.filterParams = {};
@@ -260,15 +242,9 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.goodsList = [ ...this.goodsList, ...r.data ];
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
-				})
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.goodsList = [ ...this.goodsList, ...r.data ];
+				});
 			},
 			async getGuessYouLikeList (type) {
 				uni.showLoading({title:'加载中...'});
@@ -277,36 +253,19 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.goodsList = [ ...this.goodsList, ...r.data ];
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.goodsList = [ ...this.goodsList, ...r.data ];
 				})
 			},
-			/**
-			 *@des 获取商品分类
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/21 14:26:07
-			 */
+			// 获取商品分类
 			async getProductCate () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productCate}`).then(r=>{
-					if (r.code === 200) {
-						this.cateList = r.data
-						this.cateList.unshift({
-							title: '全部商品',
-							id: ''
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
-					console.log(err)
+					this.cateList = r.data
+					this.cateList.unshift({
+						title: '全部商品',
+						id: ''
+					})
 				})
 			},
 			//筛选点击
@@ -527,6 +486,9 @@
 	}
 	/* 商品列表 */
 	.goods-list{
+		/*  #ifndef APP-PLUS  */
+		margin-top: 88upx;
+		/*  #endif  */
 		display:flex;
 		flex-wrap:wrap;
 		padding: 0 30upx;

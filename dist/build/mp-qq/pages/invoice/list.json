@@ -2,7 +2,7 @@
   "enablePullDownRefresh": true,
   "navigationBarTitleText": "开票历史",
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
     "empty": "/components/empty"
   }
 }

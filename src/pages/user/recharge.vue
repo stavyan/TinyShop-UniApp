@@ -102,7 +102,7 @@
 				 await this.$post(`${isBindingCheck}`, {
 					// #ifdef H5
 					oauth_client: 'wechat',
-				 // #endif//
+				 // #endif
 				 // #ifdef MP-QQ
 					oauth_client: 'qq',
 				 // #endif

@@ -1,102 +1,98 @@
 <template>
 	<view class="content">
-			<view class="label">
-				<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList('', index, label.type)" :key="index">
-					{{label.name}}
-					({{label.number}})
-				</view>
-			</view>
-			<view class="list" v-if="evaluationList.length > 0">
-				<view class="row" v-for="(row, index) in evaluationList" :key="index">
-					<view class="left">
-						<view class="face">
-							<image class="avatar" :src="row.member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
-						</view>
-					</view>
-					<view class="right">
-						<view class="name-date">
-							<view class="username">
-								{{row.member_nickname || '匿名用户'}}
-							</view>
-							<view class="date">
-								{{ row.created_at | time }}
-							</view>
-						</view>
-						<view class="spec">
-							<text>
-								规格: {{ row.sku_name || '基础款' }}
-							</text>
-							<text>
-								<uni-rate
-									size="16"
-									:value="row.scores"
-									active-color="#fa436a" />
-							</text>
-						</view>
-						<view class="first">
-							<view class="rat">
-								{{row.content}}
-							</view>
-							<view class="img-video">
-								<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
-									<image mode="aspectFill" :src="item"></image>
-								</view>
-							</view>
-						</view>
-						<view class="append" v-if="parseInt(row.has_again, 10) === 1">
-							<view class="date">
-								{{ row | againDay }}
-							</view>
-							<view class="rat">
-								{{row.again_content}}
-							</view>
-							<view class="img-video">
-								<view class="box" v-for="item in row.again_covers" @tap="showBigImg(item,row.covers)" :key="item">
-									<image mode="aspectFill" :src="item"></image>
-								</view>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view class="no-evaluation" v-else>
-				暂无相关评价
+		<!--评价分类选项-->
+		<view class="label">
+			<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList('', index, label.type)" :key="index">
+				{{label.name}}
+				({{label.number}})
 			</view>
 		</view>
+		<!--评价列表-->
+		<view class="list" v-if="evaluationList.length > 0">
+			<view class="row" v-for="(row, index) in evaluationList" :key="index">
+				<view class="left">
+					<view class="face">
+						<image class="avatar" :src="row.member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="right">
+					<view class="name-date">
+						<view class="username">
+							{{row.member_nickname || '匿名用户'}}
+						</view>
+						<view class="date">
+							{{ row.created_at | time }}
+						</view>
+					</view>
+					<view class="spec">
+						<text>
+							规格: {{ row.sku_name || '基础款' }}
+						</text>
+						<text>
+							<rf-rate
+								size="16"
+							  disabled="true"
+								:value="row.scores"
+								active-color="#fa436a" />
+						</text>
+					</view>
+					<view class="first">
+						<view class="rat">
+							{{row.content}}
+						</view>
+						<view class="img-video">
+							<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
+								<image mode="aspectFill" :src="item"></image>
+							</view>
+						</view>
+					</view>
+					<view class="append" v-if="parseInt(row.has_again, 10) === 1">
+						<view class="date">
+							{{ row | againDay }}
+						</view>
+						<view class="rat">
+							{{row.again_content}}
+						</view>
+						<view class="img-video">
+							<view class="box" v-for="item in row.again_covers" @tap="showBigImg(item,row.covers)" :key="item">
+								<image mode="aspectFill" :src="item"></image>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="no-evaluation" v-else>
+			暂无相关评价
+		</view>
+	</view>
 </template>
 
 <script>
 	import {evaluateList} from "../../api/product";
 	import moment from 'moment';
 	import empty from "@/components/empty";
-	import uniRate from "@/components/uni-rate/uni-rate.vue";
+	import rfRate from "@/components/rf-rate/rf-rate";
 	export default {
 		components: {
 			empty,
-			uniRate
+			rfRate
 		},
 		data() {
 			return {
 				evaluateStat: {},
-				labelList:[
-					// {name:'全部',number:25,type: {}},
-					// {name:'好评',number: this.evaluateStat.good_num, type: { explain_type: 3 }},
-					// {name:'中评',number:1,type: { explain_type: 2 }},
-					// {name:'差评',number:1,type: { explain_type: 1 }},
-					// {name:'文字',number:12,type: { has_content: 1 }},
-					// {name:'有图',number:12,type: { has_cover: 1 }},
-					// {name:'视频',number:2,type: { has_video: 1 }},
-					// {name:'追加',number:2,type: { has_again: 1 }}
-				],
+				labelList:[],
 				labelIndex: 0,
 				evaluationList: [],
 				page: 1
 			};
 		},
 		filters: {
+	    // 时间格式化
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			},
+	    // 计算评论与追评时间
 			againDay(val) {
 				const day = moment(val.again_addtime * 1000).format('DD') - moment(val.created_at * 1000).format('DD');
 				return day ? `${day}天后追加` : '当天追加'
@@ -120,12 +116,7 @@
 			onImageError(index, index2) {
 				this.evaluationList[index].covers[index2] = this.errorImg;
 			},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/28 15:41:29
-			 */
+			// 初始化数据
 			initData (options) {
 				this.evaluateStat = JSON.parse(options.evaluateStat);
 				this.id = this.evaluateStat.product_id;
@@ -141,6 +132,7 @@
 				]
 				this.getEvaluationList();
 			},
+			// 获取评论列表
 			async getEvaluationList(type, index = 0, params) {
 				if (params) {
 					this.page = 1;
@@ -155,16 +147,11 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.labelIndex = index;
-						this.evaluationList = [...this.evaluationList, ...r.data];
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-						console.log(err)
+					this.labelIndex = index;
+					this.evaluationList = [...this.evaluationList, ...r.data];
 				})
 			},
+			// 图片预览
 			showBigImg(src, srclist){
 				uni.previewImage({
 					current:src,

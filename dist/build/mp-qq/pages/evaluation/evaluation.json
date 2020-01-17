@@ -1,7 +1,7 @@
 {
   "navigationBarTitleText": "发表评价",
   "usingComponents": {
-    "uni-rate": "/components/uni-rate/uni-rate",
+    "rf-rate": "/components/rf-rate/rf-rate",
     "uni-icons": "/components/uni-icons/uni-icons"
   }
 }

@@ -1,5 +1,6 @@
 <template>
 	<view class="evaluation">
+		<!--商品信息-->
 		<view class="product-info">
 			<image class="product-image"
 						 mode="aspectFill"
@@ -10,17 +11,19 @@
 				<text class="product-price">{{ productInfo.product_money }} * {{ productInfo.num }}</text>
 			</view>
 		</view>
+		<!--整体评价-->
 		<view class="product-rate" v-show="evaluationType !== 'add'">
 			整体评价
-			<view class="product-rate-wrapper"><uni-rate
-				size="24"
+			<view class="product-rate-wrapper"><rf-rate
+				size="22"
 				:value="evaluate.scores"
 				 @change="handleScoreChange"
-				:margin="12"
+				:margin="8"
 				class="rate"
 				active-color="#fa436a" />
 			</view>
 		</view>
+		<!--详细描述信息-->
 		<view class="product-textarea">
        <textarea class="textarea" maxlength="140"
 								 @input="handleContentChange"
@@ -40,6 +43,7 @@
 				<text>{{ anonymousText }}</text>
 			</view>
 		</view>
+		<!--上传图片-->
 		<view class="upload-image">
 			<view class="upload-image-wrapper"
 					 v-for="(item, index) in imageList"
@@ -58,23 +62,24 @@
 			<view class="add" @tap="uploadImage">+</view>
 		</view>
 
+		<!--发表评价-->
 		<button class="confirm-btn" @tap="handleEvaluate">{{ evaluationType === 'add' ? '我要追评' : '发表评价'}}</button>
 	</view>
 </template>
 
 <script>
 	/**
-	 * @des 发布评价
+	 * @des 发表评价
 	 *
 	 * @author stav stavyan@qq.com
 	 * @date 2019-11-27 14:32
 	 * @copyright 2019
 	 */
-	import uniRate from "@/components/uni-rate/uni-rate.vue";
+	import rfRate from "@/components/rf-rate/rf-rate.vue";
 	import {evaluateCreate, evaluateAgain, uploadImage} from "../../api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	export default{
-		components: { uniRate, uniIcons },
+		components: { rfRate, uniIcons },
 		data(){
 			return {
 				productInfo: {},
@@ -83,6 +88,7 @@
 				content: '',
 				anonymousText: '不匿名',
 				evaluationType: null,
+				// 评论表单
 				evaluate: {
 					'scores' : 5,
 					'content' : '',
@@ -93,51 +99,42 @@
 			}
 		},
 		computed: {
+	    // 限制140字
 			wordLimit () {
 				return 140 - this.evaluate.content.length;
 			}
 		},
 		onLoad(options){
-			this.productInfo = JSON.parse(options.data);
-			this.evaluationType = options.type;
-			this.token = uni.getStorageSync('accessToken') || undefined;
-			let title = '发表评价';
-			if(options.type === 'add'){
-				title = '追加评价'
-			}
-			uni.setNavigationBarTitle({
-				title
-			});
+		    this.initData(options);
 		},
 		methods: {
-			/**
-			 *@des 评价内容监听事件
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/27 15:51:21
-			 *@param arguments
-			 */
+	    // 数据初始化
+	    initData(options) {
+				this.productInfo = JSON.parse(options.data);
+				this.evaluationType = options.type;
+				this.token = uni.getStorageSync('accessToken') || undefined;
+				let title = '发表评价';
+				if(options.type === 'add'){
+					title = '追加评价'
+				}
+				// 设置标题
+				uni.setNavigationBarTitle({
+					title
+				});
+	    },
+			// 评价内容监听事件
 			handleContentChange (e) {
 				this.evaluate.content = e.detail.value;
 			},
+			// 评分监听事件
 			handleScoreChange (e) {
 				this.evaluate.scores = e.value;
 			},
-			/**
-			 *@des 删除定制已删除图片
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/28 17:39:04
-			 */
+			// 删除定制已删除图片
 			handleImageDelete (index) {
 				this.imageList.splice(index, 1)
 			},
-			/**
-			 *@des 监听是否匿名
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/27 16:28:18
-			 */
+			// 监听是否匿名
 			handleAnonymousChange (e) {
 				if (e.detail.value) {
 					this.evaluate.is_anonymous = 1;
@@ -147,6 +144,7 @@
 					this.anonymousText = '不匿名';
 				}
 			},
+			// 监听图片上传
 			uploadImage () {
 				// 从相册选择6张图
 				const _this = this;
@@ -156,33 +154,10 @@
 					sourceType: ['album'],
 					success: function(res) {
 						_this.handleUploadFile(res.tempFilePaths)
-						// _this.$post(`${uploadFile}`, {
-						// 	file: res.tempFilePaths[0]
-						// }).then(r=>{
-						// 	if (r.code === 200) {
-						// 		console.log(r)
-						// 	} else {
-						// 		uni.showToast({ title: r.message, icon: "none" });
-						// 	}
-						// }).catch(err => {
-						// 	console.log(err)
-						// })
-							// // 预览图片
-							// uni.previewImage({
-							// 		urls: res.tempFilePaths,
-							// 		longPressActions: {
-							// 				itemList: ['发送给朋友', '保存图片', '收藏'],
-							// 				success: function(data) {
-							// 						console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
-							// 				},
-							// 				fail: function(err) {
-							// 						console.log(err.errMsg);
-							// 				}
-							// 		}
-							// });
 					}
 				});
 			},
+			// 图片上传
 			handleUploadFile (data) {
 				const _this = this;
 				data.forEach(item => {
@@ -204,18 +179,13 @@
 						if (data.code === 200) {
 							_this.imageList.push(data.data.url)
 						} else {
-							uni.showToast({ title: data.message, icon: "none" });
+						    this.$api.msg(data.message);
 						}
 					}
 				 });
 				})
 			},
-			/**
-			 *@des 提交评价
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/27 16:50:56
-			 */
+			// 提交评价
 			async handleEvaluate() {
 				this.evaluate.order_product_id = this.productInfo.id;
 				this.evaluate.covers = this.imageList;
@@ -232,48 +202,24 @@
 					this.handleEvaluateAgain(params);
 				}
 			},
-			/**
-			 *@des 发布评价
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/16 17:16:54
-			 *@param params 发布评价参数
-			 */
+			// 发表评价
 			async handleEvaluateCreate(params) {
 				await this.$post(`${evaluateCreate}`, {
 					...params
-				}).then(r => {
-					if (r.code === 200) {
-						uni.navigateBack({
-							delta: 2
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				}).then(() => {
+					uni.navigateBack({
+						delta: 2
+					});
 				})
 			},
-			/**
-			 *@des 追加评价
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/12/16 17:17:10
-			 *@param params 发布评价参数
-			 */
+			// 追加评价
 			async handleEvaluateAgain(params) {
 				await this.$post(`${evaluateAgain}?order_product_id=${this.productInfo.id}`, {
 					...params
-				}).then(r => {
-					if (r.code === 200) {
-						uni.navigateBack({
-							delta: 2
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
-				}).catch(err => {
-					console.log(err)
+				}).then(() => {
+					uni.navigateBack({
+						delta: 2
+					});
 				})
 			}
 		}

@@ -1,8 +1,9 @@
 {
   "navigationBarTitleText": "我的足迹",
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
-    "uni-calendar": "/components/uni-calendar/uni-calendar",
-    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action"
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "rf-calendar": "/components/rf-calendar/rf-calendar",
+    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",
+    "rf-swipe-action-item": "/components/rf-swipe-action-item/rf-swipe-action-item"
   }
 }

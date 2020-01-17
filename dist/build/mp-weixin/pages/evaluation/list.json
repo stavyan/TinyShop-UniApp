@@ -3,6 +3,6 @@
   "navigationBarTitleText": "评价列表",
   "usingComponents": {
     "empty": "/components/empty",
-    "uni-rate": "/components/uni-rate/uni-rate"
+    "rf-rate": "/components/rf-rate/rf-rate"
   }
 }

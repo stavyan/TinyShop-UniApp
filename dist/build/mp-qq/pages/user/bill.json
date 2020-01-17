@@ -2,7 +2,7 @@
   "enablePullDownRefresh": true,
   "navigationBarTitleText": "账单明细",
   "usingComponents": {
-    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
     "empty": "/components/empty"
   }
 }

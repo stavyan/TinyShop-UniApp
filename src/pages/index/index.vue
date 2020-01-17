@@ -115,6 +115,12 @@
 		onLoad() {
 			this.initData();
 		},
+		onShareAppMessage() {
+      return {
+        title: '欢迎来到RageFrame商城',
+        path: `/pages/index/index`
+      }
+		},
 		//下拉刷新
 		onPullDownRefresh(){
 			this.getIndexList('refresh');

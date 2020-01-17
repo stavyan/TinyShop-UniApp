@@ -8,7 +8,12 @@
 				"onReachBottomDistance":50,
 				"app-plus": {
 					"bounce": "none",
-					"titleNView": false
+					"titleNView": false,
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
 				}
 			}
 		},
@@ -19,7 +24,12 @@
 				"onReachBottomDistance":50,
 				"app-plus": {
 					"bounce": "none",
-					"titleNView": false
+					"titleNView": false,
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
 				}
 			}
         },
@@ -31,7 +41,12 @@
 				"onReachBottomDistance":50,
 				"app-plus": {
 					"bounce": "none",
-					"titleNView": false
+					"titleNView": false,
+                    "pullToRefresh": {
+                        "support": true,
+                        "color": "#fa436a",
+                        "style": "default"
+                    }
 				}
 			}
         },

@@ -10,7 +10,17 @@
 				{{ title }}
 			</view>
 			<!-- 搜索框 -->
-			<view class="input-box">
+			<view class="input-box" @tap.stop="discard" v-if="inputDisabled">
+				<input
+					@confirm="toSearch"
+				  :value="placeholder"
+					@input="handleSearchValueChange"
+				  style="color:#888;"
+				 	placeholder-style="color:#ccc;"
+				/>
+				<view class="icon search" @tap.stop="toSearch"></view>
+			</view>
+			<view class="input-box" v-else>
 				<input
 				 @tap="toSearch"
 				 disabled
@@ -32,6 +42,10 @@ export default {
 				type: Boolean,
 				default: true
 			},
+			inputDisabled: {
+				type: Boolean,
+				default: false
+			},
 			placeholder: {
 				type: String,
 				default: '输入关键字搜索'
@@ -51,16 +65,23 @@ export default {
 				headerPosition: 'fixed',
 				headerTop:null,
 				statusTop:null,
-				nVueTitle:null
+				nVueTitle:null,
+		    searchValue: this.placeholder
 	    }
 		},
 		methods: {
+	    async handleSearchValueChange(e) {
+          this.searchValue = await e.detail.value;
+      },
+			discard() {},
 			link() {
 				this.$emit('link')
 			},
-			toSearch() {
-				this.$emit('search')
-			}
+			async toSearch() {
+          await this.$emit('search', {
+              searchValue: this.searchValue
+          })
+      }
 		}
 	}
 </script>

@@ -1,6 +1,7 @@
 <template>
-	<view class="container">
+	<view class="product">
 		<view v-if="isShowProduct">
+			<!--顶部商品轮播图-->
 			<view class="carousel">
 				<swiper indicator-dots circular=true duration="400">
 				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
@@ -14,6 +15,7 @@
 				</swiper-item>
 			</swiper>
 			</view>
+			<!--商品信息-->
 			<view class="introduce-section">
 				<text class="title">{{ productDetail.name }}</text>
 				<text class="sketch">{{ productDetail.sketch }}</text>
@@ -48,6 +50,7 @@
 				</button>
 			</view>
 
+			<!--发货地址-->
 			<view class="c-list">
 				<!--发货地址-->
 				<view class="c-row b-b" v-if="productDetail.address_name">
@@ -169,6 +172,7 @@
 				</view>
 			</view>
 
+			<!--底部商品详情-->
 			<view class="detail-desc">
 				<view class="d-header">
 					<text>商品详情</text>
@@ -380,23 +384,23 @@
 			 * @returns {void|string|*}
 			 */
 			formatRichText (html) { //控制小程序中图片大小
-                if (html) {
-                    let newContent= html.replace(/<img[^>]*>/gi,function(match,capture){
-                        match = match.replace(/style="[^"]+"/gi, '').replace(/style='[^']+'/gi, '');
-                        match = match.replace(/width="[^"]+"/gi, '').replace(/width='[^']+'/gi, '');
-                        match = match.replace(/height="[^"]+"/gi, '').replace(/height='[^']+'/gi, '');
-                        return match;
-                    });
-                    newContent = newContent.replace(/style="[^"]+"/gi,function(match,capture){
-                        match = match.replace(/width:[^;]+;/gi, 'max-width:100%;').replace(/width:[^;]+;/gi, 'max-width:100%;');
-                        return match;
-                    });
-                    newContent = newContent.replace(/<br[^>]*\/>/gi, '');
-                    newContent = newContent.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:inline-block;margin:10rpx auto;"');
-                    return newContent;
-                } else {
-                    return '暂无商品详情'
-                }
+        if (html) {
+            let newContent= html.replace(/<img[^>]*>/gi,function(match,capture){
+                match = match.replace(/style="[^"]+"/gi, '').replace(/style='[^']+'/gi, '');
+                match = match.replace(/width="[^"]+"/gi, '').replace(/width='[^']+'/gi, '');
+                match = match.replace(/height="[^"]+"/gi, '').replace(/height='[^']+'/gi, '');
+                return match;
+            });
+            newContent = newContent.replace(/style="[^"]+"/gi,function(match,capture){
+                match = match.replace(/width:[^;]+;/gi, 'max-width:100%;').replace(/width:[^;]+;/gi, 'max-width:100%;');
+                return match;
+            });
+            newContent = newContent.replace(/<br[^>]*\/>/gi, '');
+            newContent = newContent.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:inline-block;margin:10rpx auto;"');
+            return newContent;
+        } else {
+            return '暂无商品详情'
+        }
 			},
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
@@ -435,26 +439,6 @@
 				favorite: false,
 				shareList: [],
 				currentStock: null,
-				imgList: [
-					{
-						src: 'https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg'
-					},
-					{
-						src: 'https://gd3.alicdn.com/imgextra/i3/TB1RPFPPFXXXXcNXpXXXXXXXXXX_!!0-item_pic.jpg_400x400.jpg'
-					},
-					{
-						src: 'https://gd2.alicdn.com/imgextra/i2/38832490/O1CN01IYq7gu1UGShvbEFnd_!!38832490.jpg_400x400.jpg'
-					}
-				],
-				desc: `
-					<div style="width:100%">
-						<img style="width:100%;display:block;" src="https://gd3.alicdn.com/imgextra/i4/479184430/O1CN01nCpuLc1iaz4bcSN17_!!479184430.jpg_400x400.jpg" />
-						<img style="width:100%;display:block;" src="https://gd2.alicdn.com/imgextra/i2/479184430/O1CN01gwbN931iaz4TzqzmG_!!479184430.jpg_400x400.jpg" />
-						<img style="width:100%;display:block;" src="https://gd3.alicdn.com/imgextra/i3/479184430/O1CN018wVjQh1iaz4aupv1A_!!479184430.jpg_400x400.jpg" />
-						<img style="width:100%;display:block;" src="https://gd4.alicdn.com/imgextra/i4/479184430/O1CN01tWg4Us1iaz4auqelt_!!479184430.jpg_400x400.jpg" />
-						<img style="width:100%;display:block;" src="https://gd1.alicdn.com/imgextra/i1/479184430/O1CN01Tnm1rU1iaz4aVKcwP_!!479184430.jpg_400x400.jpg" />
-					</div>
-				`,
 				specList: [],
 				specChildList: [],
 				cartCount: 1,
@@ -464,8 +448,6 @@
 		},
 		async onLoad(options){
 			this.initData(options.id);
-			//接收传值,id里面放的是标题，因为测试数据并没写id
-			// let id = options.id;
 			//规格 默认选中第一条
 			this.specList.forEach(item=>{
 				for(let cItem of this.specChildList){
@@ -479,21 +461,23 @@
 			this.product_id = options.id;
 		},
 		onShareAppMessage(res) {
+		  // #ifdef MP-WEIXIN
       this.$post(`${transmitCreate}`, {
         topic_type: 'product',
-        topic_id: this.productDetail.id,
-      }).then(r=>{
-        if (r.code === 200) {
-          return {
-            title: this.productDetail.name,
-            path: `/pages/product/product?id=${this.productDetail.id}`
-          }
-        } else {
-          uni.showToast({ title: r.message, icon: "none" });
+        topic_id: this.product_id,
+      }).then(()=>{
+        return {
+          title: this.productDetail.name,
+          path: '/pages/product/product?id=' + this.product_id
         }
-      }).catch(err => {
-        console.log(err)
       })
+		  // #endif
+		  // #ifdef MP-QQ
+      return {
+        title: this.productDetail.name,
+        path: '/pages/product/product?id=' + this.product_id
+      }
+		  // #endif
 		},
 		methods:{
 			//服务弹窗
@@ -881,7 +865,6 @@
 			stopPrevent(){
 			}
 		},
-
 	}
 </script>
 

@@ -45,7 +45,7 @@
 	 * @date 2019-11-27 14:32
 	 * @copyright 2019
 	 */
-	import uniRate from "@/components/uni-rate/uni-rate.vue"
+	import uniRate from "@/components/rf-rate/rf-rate.vue"
 	import {orderRefundApply} from "../../api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	const graceChecker = require("../../common/graceChecker.js");
