@@ -66,7 +66,7 @@
 		<!--显示部分商品的抽屉-->
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
 				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-					<uni-list-item :title="item.name" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
+					<uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
 				</uni-list>
 				<view class="close">
 					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
@@ -491,6 +491,24 @@ export default {
 					}
 				}
 			}
+		}
+	}
+	.drawer {
+		.close {
+			.btn{
+	      width: 360upx;
+	      height: 76upx;
+	      line-height: 76upx;
+	      border-radius: 50px;
+	      margin-top: 70upx;
+	      background: $uni-color-primary;
+	      color: #fff;
+	      font-size: $font-lg;
+	      border: none;
+	      &:after{
+	        border-radius: 100px;
+	      }
+	    }
 		}
 	}
 </style>

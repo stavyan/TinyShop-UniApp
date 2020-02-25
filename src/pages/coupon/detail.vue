@@ -54,7 +54,7 @@
 		</view>
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
 				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-					<uni-list-item :title="item.name" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
+					<uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
 				</uni-list>
 				<view class="close">
 					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
@@ -116,7 +116,6 @@ export default {
 	},
 	methods: {
 		show(item) {
-	    console.log(item);
 			if (item.usableProduct.length === 0) return;
 			this.currentCoupon = item;
 			this.showRight = true
@@ -149,8 +148,8 @@ export default {
 		initData (options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
-				this.getMyCouponDetail(options.id);
 			}
+			this.getMyCouponDetail(options.id);
 		},
 		/**
 		 *@des 获取优惠券
@@ -184,9 +183,9 @@ export default {
 		 *@param url 跳转地址
 		 */
 		navTo(url, type){
-			if(!this.token){
-				url = '/pages/public/login';
-			}
+			// if(!this.token){
+			// 	url = '/pages/public/login';
+			// }
 			if (type) {
 				uni.switchTab({url});
 				return;
@@ -482,5 +481,22 @@ export default {
 			}
 		}
 	}
-
+	.drawer {
+		.close {
+			.btn{
+	      width: 320upx;
+	      height: 76upx;
+	      line-height: 76upx;
+	      border-radius: 50px;
+	      margin-top: 70upx;
+	      background: $uni-color-primary;
+	      color: #fff;
+	      font-size: $font-lg;
+	      border: none;
+	      &:after{
+	        border-radius: 100px;
+	      }
+	    }
+		}
+	}
 </style>
