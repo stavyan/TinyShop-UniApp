@@ -21,7 +21,7 @@
 				<text class="name red">{{ orderDetail.order_status | orderStatusFilter  }}</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in orderDetail.product">
+			<view class="g-item" v-for="item in orderDetail.product"  @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
 				<image :src="item.product_picture" mode="aspectFill"></image>
 				<view class="right">
 					<text class="title clamp in2line">{{ item.product_name }}</text>
@@ -323,6 +323,9 @@
 			this.initData(options);
 		},
 		methods: {
+	    navTo(url) {
+        uni.navigateTo({ url });
+	    },
 			/**
 			 *@des 计算运费
 			 *@author stav stavyan@qq.com

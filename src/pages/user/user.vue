@@ -22,10 +22,10 @@
 				<!--</view>-->
 				<view class="tit">
 					<text class="yticon icon-iLinkapp-"></text>
-					欢迎来到RageFrame商城
+					欢迎来到RageFrame微商城
 				</view>
-				<text class="e-m">RageFrame</text>
-				<text class="e-b">正在开发中...</text>
+				<text class="e-m">RageFrame 版权所有</text>
+				<!--<text class="e-b">正在开发中...</text>-->
 			</view>
 		</view>
 		<view
@@ -87,11 +87,11 @@
 										 type="locked" />
 					登陆后查看
 				</view>
-				<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="navTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
+				<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="directTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 				<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
 				<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
 				<button class="share-btn" open-type="share">
-					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="navTo()" tips="将RageFrame分享分享给你的好友">
+					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" tips="将RageFrame分享分享给你的好友">
 					</list-cell>
 				</button>
 				<!--<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>-->
@@ -244,6 +244,11 @@
             url
           })
         }
+			},
+			directTo (url){
+        uni.navigateTo({
+          url
+        })
 			},
 			/**
 			 *  会员卡下拉和回弹

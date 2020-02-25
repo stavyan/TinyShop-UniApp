@@ -116,6 +116,7 @@ export default {
 	},
 	methods: {
 		show(item) {
+	    console.log(item);
 			if (item.usableProduct.length === 0) return;
 			this.currentCoupon = item;
 			this.showRight = true

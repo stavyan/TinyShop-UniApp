@@ -20,12 +20,16 @@
 		</view>
 		<view class="shop-info" v-show="title === '证照信息'"></view>
 		<view class="shop-info" v-show="title === '注册协议'">
-			<view v-show="detail.protocol_register"><text>注册协议: </text><text>{{ detail.protocol_register }}</text></view>
+			<view v-show="detail.protocol_register"><text>注册协议: </text><text v-html="detail.protocol_register"></text></view>
 			<empty :info="`暂无${title}`" v-if="!detail.protocol_register"></empty>
 		</view>
 		<view class="shop-info" v-show="title === '隐私协议'">
-			<view v-show="detail.protocol_privacy"><text>隐私协议: </text><text>{{ detail.protocol_privacy }}</text></view>
+			<view v-show="detail.protocol_privacy"><text>隐私协议: </text><text v-html="detail.protocol_privacy"></text></view>
 			<empty :info="`暂无${title}`" v-if="!detail.protocol_privacy"></empty>
+		</view>
+		<view class="shop-info" v-show="title === '充值协议'">
+			<view v-show="detail.protocol_recharge"><text>充值协议: </text><text v-html="detail.protocol_recharge"></text></view>
+			<empty :info="`暂无${title}`" v-if="!detail.protocol_recharge"></empty>
 		</view>
 		<empty :info="`暂无${title}`" v-if="detail.length === 0"></empty>
 	</view>

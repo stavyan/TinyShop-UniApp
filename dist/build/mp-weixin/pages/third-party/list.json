@@ -1,8 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "navigationBarTitleText": "授权列表",
-  "usingComponents": {
-    "rf-load-more": "/components/rf-load-more/rf-load-more",
-    "empty": "/components/empty"
-  }
-}

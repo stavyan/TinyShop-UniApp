@@ -198,6 +198,7 @@
 					}
 				}
 				this.keyword = options.keyword;
+				this.hotSearchDefault = options.keyword;
 				if (!this.keyword) {
 					this.hotSearchDefault = uni.getStorageSync('hotSearchDefault')
 				}

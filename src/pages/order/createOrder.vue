@@ -24,7 +24,7 @@
 				<text class="name">商品列表</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in orderDetail.products">
+			<view class="g-item" v-for="item in orderDetail.products" @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
 				<image :src="item.product_picture" mode="aspectFill"></image>
 				<view class="right">
 					<text class="title clamp in2line">{{ item.product_name }}</text>
@@ -308,6 +308,9 @@
 			this.initData(options);
 		},
 		methods: {
+	    navTo(url) {
+        uni.navigateTo({ url });
+	    },
 			closeInvoice() {
 				this.invoiceItem = {}
 			},

@@ -104,7 +104,7 @@
 					<view class="con-list" v-else>
 						暂无服务
 					</view>
-					<text class="yticon icon-you"></text>
+					<text class="yticon icon-you" v-if="productDetail.tags && productDetail.tags.length >= 1"></text>
 				</view>
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
@@ -118,7 +118,7 @@
 					<view class="con-list" v-else>
 						暂无服务
 					</view>
-					<text class="yticon icon-you"></text>
+					<text class="yticon icon-you" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1"></text>
 				</view>
 				<view class="c-row b-b" v-if="productDetail.attributeValue" @tap="showAttributeValue">
 					<text class="tit">参数</text>
@@ -130,7 +130,7 @@
 					<view class="con-list" v-else>
 						暂无商品基本信息
 					</view>
-					<text class="yticon icon-you"></text>
+					<text class="yticon icon-you" v-if="productDetail.attributeValue && productDetail.attributeValue.length >= 1"></text>
 				</view>
 			</view>
 
@@ -162,10 +162,19 @@
 					<image class="portrait"
 								 :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
 					<view class="right">
-						<text class="name">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname || '匿名用户' }}</text>
+						<view class="name">
+							<text>
+								{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname || '匿名用户' }}
+							</text>
+							<rf-rate
+								size="16"
+							  disabled="true"
+								:value="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].scores || 3"
+								active-color="#fa436a" />
+						</view>
 						<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
 						<view class="bot">
-							<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name }}</text>
+							<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name || '基础版' }}</text>
 							<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
 						</view>
 					</view>
@@ -367,9 +376,11 @@
 	import errorImg from './../../static/errorImage.jpg';
 	import {couponReceive} from "../../api/userInfo";
 	import empty from "@/components/empty";
+	import rfRate from "@/components/rf-rate/rf-rate";
 	export default{
 		components: {
 			share,
+			rfRate,
 			uniNumberBox,
 			empty
 		},
@@ -1116,6 +1127,11 @@
 				justify-content: space-between;
 				font-size: $font-sm;
 				color:$font-color-light;
+			}
+			.name {
+				align-items: center;
+				display: flex;
+				justify-content: space-between;
 			}
 		}
 	}

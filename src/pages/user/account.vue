@@ -37,11 +37,11 @@
       </view>
       <view class="item" @tap="navTo('/pages/user/bill?state=2')">
         <image src="/static/record2.png" />
-        <text>消费记录</text>
+        <text>充值记录</text>
       </view>
       <view class="item" @tap="navTo('/pages/user/bill?state=3')">
         <image src="/static/record3.png" />
-        <text>充值记录</text>
+        <text>消费记录</text>
       </view>
       <view class="item" @tap="navTo('/pages/user/integral')">
         <image src="/static/record4.png" />
@@ -71,7 +71,7 @@
         </view>
       </view>
 	  <!--引导跳转组件-->
-    <Home></Home>
+    <!--<Home></Home>-->
   </view>
 </template>
 

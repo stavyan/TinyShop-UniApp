@@ -66,7 +66,7 @@
 			<view class="btn" @tap="weixinPay">立即充值</view>
 			<view class="tis">
 				点击立即充值，即代表您同意<view class="terms" @tap="toTipDetail">
-					《条款协议》
+					《充值协议》
 				</view>
 			</view>
 		</view>
@@ -99,6 +99,12 @@
 		methods:{
 			async weixinPay() {
 		    const _this = this;
+		    // #ifdef H5
+		    if (!this.isWechat()) {
+					this.$api.msg('请从微信进入进行充值~')
+				    return;
+		    }
+		    // #endif
 				 await this.$post(`${isBindingCheck}`, {
 					// #ifdef H5
 					oauth_client: 'wechat',
@@ -193,7 +199,7 @@
         })
       },
 			toTipDetail() {
-				uni.showToast({title: '我就是条款协议', icon: 'none'});
+		    uni.navigateTo({url: `/pages/about/detail?field=protocol_privacy&title=隐私协议`})
 			},
 			/**
 			 *@des 初始化数据

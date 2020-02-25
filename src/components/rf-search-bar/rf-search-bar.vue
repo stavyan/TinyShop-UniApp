@@ -14,7 +14,7 @@
 				<input
 					@confirm="toSearch"
 				  :value="placeholder"
-					@input="handleSearchValueChange"
+					@change="handleSearchValueChange"
 				  style="color:#888;"
 				 	placeholder-style="color:#ccc;"
 				/>
@@ -71,7 +71,7 @@ export default {
 		},
 		methods: {
 	    async handleSearchValueChange(e) {
-          this.searchValue = await e.detail.value;
+        this.searchValue = await e.detail.value;
       },
 			discard() {},
 			link() {

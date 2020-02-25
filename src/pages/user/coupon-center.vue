@@ -94,10 +94,7 @@
 			 *@date 2019/11/18 09:57:30
 			 */
 			initData () {
-				this.token = uni.getStorageSync('accessToken') || undefined;
-				if (this.token) {
-					this.getCouponList();
-				}
+				this.getCouponList();
 			},
 			/**
 			 *@des 统一跳转接口

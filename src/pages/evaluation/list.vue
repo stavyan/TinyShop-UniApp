@@ -26,7 +26,7 @@
 					</view>
 					<view class="spec">
 						<text>
-							规格: {{ row.sku_name || '基础款' }}
+							购买类型: {{ row.sku_name || '基础款' }}
 						</text>
 						<text>
 							<rf-rate

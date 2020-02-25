@@ -183,10 +183,10 @@
 					if (r.code === 200) {
 						this.cartList = r.data
 						uni.setStorageSync('cartNum', r.data.length)
-						uni.setTabBarBadge({
-							index: 2,
-							text: r.data.length.toString()
-						});
+						// uni.setTabBarBadge({
+						// 	index: 2,
+						// 	text: r.data.length.toString()
+						// });
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
