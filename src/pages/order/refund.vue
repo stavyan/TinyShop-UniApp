@@ -1,87 +1,68 @@
 <template>
 	<view class="content">
-		<!--导航栏-->
-		<view class="navbar">
-			<view
-				v-for="(item, index) in navList" :key="index"
-				class="nav-item"
-				:class="{current: tabCurrentIndex === index}"
-				@tap="tabClick(index)"
-			>
-				{{item.text}}
-			</view>
-		</view>
 		<!--订单列表-->
-		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
-			<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
-				<scroll-view
-					class="list-scroll-content"
-					scroll-y
-					@scrolltolower="getMoreOrderList"
-				>
-					<!-- 空白页 -->
-					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
-					<!-- 订单列表 -->
-					<view
-						v-for="(item,index) in orderList" :key="index"
-						class="order-item"
-					>
-						<view class="i-top b-b">
-							<text class="time">订单号：{{item.order_sn}}</text>
-							<!--<text class="time">{{item.created_at | time}}</text>-->
-							<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
-							<view class="example-body" v-else>
-								<rf-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
-							</view>
-						</view>
-
-						<scroll-view @tap="toOrderDetail(item.id)" v-if="item && item.product && item.product.length > 1"
-												 class="goods-box" scroll-x>
-							<view
-								v-for="(goodsItem, goodsIndex) in item.product"
-								:key="goodsIndex"
-								class="goods-item"
-							>
-								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
-								<text class="goods-title in2line">{{goodsItem.product_name}}</text>
-							</view>
-						</scroll-view>
-						<view
-							v-if="item.product && item.product.length === 1"
-							class="goods-box-single"
-              @tap="toOrderDetail(item.id)"
-							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
-						>
-							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
-							<view class="right">
-								<text class="title in2line">{{goodsItem.product_name}}</text>
-								<text class="attr-box">{{goodsItem.sku_name || '基础版'}}</text>
-								<text class="price">{{goodsItem.price}}  x {{goodsItem.num}}</text>
-							</view>
-						</view>
-
-						<view class="price-box">
-							共
-							<text class="num">{{ item.product_count }}</text>
-							件商品 实付款
-							<text class="price">{{ item.pay_money }}</text>
-						</view>
-						<view class="action-box b-t">
-							<button class="action-btn" v-show="item.order_status == 0" @tap="handleOrderOperation(item, 'close')">取消订单</button>
-              <button class="action-btn" @tap="handleOrderOperation(item, 'detail')">订单详情</button>
-							<button class="action-btn recom" v-show="item.order_status == 0" @tap="handlePayment(item)">立即支付</button>
-						  <button class="action-btn recom" v-show="item.order_status == 1" @tap="handleOrderOperation(item, 'refund', 1)">申请退款</button>
-						  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
-              <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
-						  <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
-						  <button class="action-btn recom" v-show="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
-            </view>
+		<scroll-view
+			class="list-scroll-content"
+			scroll-y
+			@scrolltolower="getMoreOrderList"
+		>
+			<!-- 空白页 -->
+			<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
+			<!-- 订单列表 -->
+			<view
+				v-for="(item,index) in orderList" :key="index"
+				class="order-item"
+			>
+				<view class="i-top b-b">
+					<text class="time">订单号：{{item.order_sn}}</text>
+					<!--<text class="time">{{item.created_at | time}}</text>-->
+					<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
+					<view class="example-body" v-else>
+						<rf-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
 					</view>
-					<rf-load-more :status="loadingType"></rf-load-more>
+				</view>
+
+				<scroll-view @tap="toOrderDetail(item.id)" v-if="item && item.product && item.product.length > 1"
+										 class="goods-box" scroll-x>
+					<view
+						v-for="(goodsItem, goodsIndex) in item.product"
+						:key="goodsIndex"
+						class="goods-item"
+					>
+						<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
+						<text class="goods-title in2line">{{goodsItem.product_name}}</text>
+					</view>
 				</scroll-view>
-			</swiper-item>
-		</swiper>
+				<view
+					v-if="item.product && item.product.length === 1"
+					class="goods-box-single"
+          @tap="toOrderDetail(item.id)"
+					v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
+				>
+					<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
+					<view class="right">
+						<text class="title in2line">{{goodsItem.product_name}}</text>
+						<text class="attr-box">{{goodsItem.sku_name || '基础版'}}</text>
+						<text class="price">{{goodsItem.price}}  x {{goodsItem.num}}</text>
+					</view>
+				</view>
+
+				<view class="price-box">
+					共
+					<text class="num">{{ item.product_count }}</text>
+					件商品 实付款
+					<text class="price">{{ item.pay_money }}</text>
+				</view>
+				<view class="action-box b-t">
+          <button class="action-btn" @tap="handleOrderOperation(item, 'detail')">订单详情</button>
+				  <button class="action-btn recom" v-show="item.order_status == 1" @tap="handleOrderOperation(item, 'refund', 1)">申请退款</button>
+				  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
+          <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
+				  <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
+        </view>
+			</view>
+			<rf-load-more :status="loadingType"></rf-load-more>
+		</scroll-view>
 	</view>
 </template>
 
@@ -107,30 +88,7 @@
 		},
 		data() {
 			return {
-				tabCurrentIndex: 0,
 				loadingType: 'more',
-				navList: [
-					{
-						state: undefined,
-						text: '全部'
-					},
-					{
-						state: 0,
-						text: '待付款'
-					},
-					{
-						state: 1,
-						text: '待发货'
-					},
-					{
-						state: 2,
-						text: '待收货'
-					},
-					{
-						state: 3,
-						text: '评价'
-					}
-				],
 				orderList: [],
 				page: 1
 			};
@@ -172,11 +130,7 @@
       }
 		},
 		onShow(){
-			// #ifdef H5
-			this.page = 1;
-			this.orderList.length = 0;
 			this.initData();
-			// #endif
 		},
 		onLoad(options){
 			/**
@@ -297,13 +251,9 @@
 			},
 			// 获取订单列表
 			async getOrderList(type) {
-				let index = this.tabCurrentIndex;
-				let navItem = this.navList[index];
-				const params = {};
-				if (navItem.state || navItem.state === 0) {
-					params.synthesize_status = navItem.state;
-				}
+		    const params = {};
 				params.page = this.page;
+				params.synthesize_status = -1;
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${orderList}`, {
 					...params
@@ -314,19 +264,6 @@
 					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 					this.orderList = [ ...this.orderList, ...r.data ]
 				});
-			},
-			// 监听swiper切换
-			changeTab(e){
-				this.page = 1;
-				this.orderList.length = 0;
-				this.tabCurrentIndex = e.target.current;
-				this.getOrderList();
-			},
-			//顶部tab点击
-			tabClick(index){
-				this.page = 1;
-				this.orderList.length = 0;
-				this.tabCurrentIndex = index;
 			},
 			//顶部tab点击
 			getMoreOrderList(){

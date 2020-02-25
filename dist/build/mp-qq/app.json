@@ -22,6 +22,7 @@
     "pages/evaluation/list",
     "pages/user/user",
     "pages/order/order",
+    "pages/order/refund",
     "pages/money/money",
     "pages/order/createOrder",
     "pages/order/detail",

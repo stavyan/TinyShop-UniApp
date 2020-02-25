@@ -88,7 +88,7 @@ export default {
 			let status = null;
 			if (parseInt(item.refund_status, 10) !== 0) {
 				const refundStatusList = [
-					{key: 1, value: '退款申请'},
+					{key: 1, value: '退款/退货申请'},
 					{key: 2, value: '等待退货'},
 					{key: 3, value: '等待确认收货'},
 					{key: 4, value: '等待确认退款'},

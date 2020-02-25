@@ -90,8 +90,11 @@
 				<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="navTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 				<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
 				<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
-				<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="navTo()" tips="邀请好友拿佣金"></list-cell>
-				<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>
+				<button class="share-btn" open-type="share">
+					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" @eventClick="navTo()" tips="将RageFrame分享分享给你的好友">
+					</list-cell>
+				</button>
+				<!--<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>-->
 				<list-cell icon="icon-shezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 			</view>
 		</view>
@@ -130,7 +133,7 @@
 					{ title: '待发货', icon: 'yticon icon-shouye', url: '/pages/order/order?state=1' },
 					{ title: '待收货', icon: 'yticon icon-yishouhuo', url: '/pages/order/order?state=2' },
 					{ title: '评价', icon: 'yticon icon-pingjia', url: '/pages/order/order?state=3' },
-					{ title: '退款/售后', icon: 'yticon icon-shouhoutuikuan', url: '' },
+					{ title: '退款/售后', icon: 'yticon icon-shouhoutuikuan', url: '/pages/order/refund' },
 				],
 				amountList: [
 					{ title: '余额', value: 0, url: '/pages/user/account' },
@@ -138,6 +141,12 @@
 					{ title: '积分', value: 0, url: '/pages/user/integral' }
 				]
 			}
+		},
+		onShareAppMessage() {
+      return {
+        title: '欢迎来到RageFrame商城',
+        path: `/pages/index/index`
+      }
 		},
     onShow() {
 			if (!uni.getStorageSync('accessToken')) {
@@ -277,8 +286,12 @@
 	}
 </script>
 <style lang='scss' scoped>
+	page {
+		background-color: $page-color-base;
+	}
 	.user {
 		.user-section{
+			background-color: $page-color-base;
 			height: 520upx;
 			padding: 100upx 30upx 0;
 			position:relative;
@@ -371,12 +384,10 @@
 			}
 		}
 		.cover-container{
-			background: $page-color-base;
 			margin-top: -150upx;
-			padding: 0 30upx;
+			padding: 0 30upx 20upx;
 			position:relative;
-			background: #f5f5f5;
-			padding-bottom: 20upx;
+			background-color: $page-color-base;
 			.arc{
 				position:absolute;
 				left: 0;
@@ -477,6 +488,17 @@
 						margin-right: 10upx;
 					}
 				}
+				.share-btn{
+					height: 102upx;
+					text-align: left;
+					background: none;
+					padding: 0;
+					margin: 0;
+				}
+		    .share-btn:after {
+		      border: none;
+			    border-radius: none;
+		    }
 			}
 		}
 	}
