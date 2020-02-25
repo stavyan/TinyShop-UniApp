@@ -50,15 +50,15 @@
     </view>
 	  <!--广告-->
     <view class="advert">
-        <view
-          class="item"
-        >
-          <view class="text">
-            <view class="name">签到领积分</view>
-            <text class="desc">赚积分抵现金</text>
-          </view>
-          <image src="/static/gift.png" mode="aspectFill" />
-        </view>
+        <!--<view-->
+          <!--class="item"-->
+        <!--&gt;-->
+          <!--<view class="text">-->
+            <!--<view class="name">签到领积分</view>-->
+            <!--<text class="desc">赚积分抵现金</text>-->
+          <!--</view>-->
+          <!--<image src="/static/gift.png" mode="aspectFill" />-->
+        <!--</view>-->
         <view
           class="item on"
           @tap="navTo('/pages/user/coupon-center')"

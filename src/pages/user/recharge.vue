@@ -199,7 +199,7 @@
         })
       },
 			toTipDetail() {
-		    uni.navigateTo({url: `/pages/about/detail?field=protocol_privacy&title=隐私协议`})
+		    uni.navigateTo({url: `/pages/about/detail?field=protocol_recharge&title=充值协议`})
 			},
 			/**
 			 *@des 初始化数据

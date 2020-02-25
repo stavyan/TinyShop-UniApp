@@ -169,7 +169,7 @@
 							<rf-rate
 								size="16"
 							  disabled="true"
-								:value="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].scores || 3"
+								:value="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].scores"
 								active-color="#fa436a" />
 						</view>
 						<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>

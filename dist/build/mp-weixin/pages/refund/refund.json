@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "退款/退货",
+  "usingComponents": {
+    "uni-rate": "/components/rf-rate/rf-rate",
+    "uni-icons": "/components/uni-icons/uni-icons"
+  }
+}

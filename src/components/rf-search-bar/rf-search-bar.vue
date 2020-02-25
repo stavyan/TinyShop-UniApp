@@ -14,7 +14,7 @@
 				<input
 					@confirm="toSearch"
 				  :value="placeholder"
-					@change="handleSearchValueChange"
+					@input="handleSearchValueChange"
 				  style="color:#888;"
 				 	placeholder-style="color:#ccc;"
 				/>

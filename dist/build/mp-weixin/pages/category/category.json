@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "分类",
+  "onReachBottomDistance": 50,
+  "usingComponents": {
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar"
+  }
+}
