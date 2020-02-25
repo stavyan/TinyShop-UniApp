@@ -167,9 +167,10 @@
 								{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname || '匿名用户' }}
 							</text>
 							<rf-rate
+								v-if="evaluateList.length > 0"
 								size="16"
 							  disabled="true"
-								:value="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].scores"
+								:value="evaluateList[0].scores"
 								active-color="#fa436a" />
 						</view>
 						<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
@@ -180,7 +181,6 @@
 					</view>
 				</view>
 			</view>
-
 			<!--底部商品详情-->
 			<view class="detail-desc">
 				<view class="d-header">
@@ -454,7 +454,8 @@
 				specChildList: [],
 				cartCount: 1,
 				product_id: null,
-				isShowProduct: true
+				isShowProduct: true,
+				evaluateList: []
 			};
 		},
 		async onLoad(options){
@@ -581,39 +582,40 @@
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productDetail}`, {
 					id,
-				}).then(r=>{
-					if (r.code === 200) {
-						this.isShowProduct = true;
-						this.productDetail = r.data;
-						this.favorite = this.productDetail.myCollect ? true : false;
-						this.specList = this.productDetail.base_attribute_format
-						this.specList.forEach(item => {
-							this.specChildList = [ ...this.specChildList, ...item.value ]
-						});
-            /**
-             * 修复选择规格存储错误
-             * 将这几行代码替换即可
-             * 选择的规格存放在specSelected中
-             */
-            this.specSelected = [];
-            r.data.base_attribute_format.forEach(item=>{
-							item.value[0].selected = true
-              this.specSelected.push(item.value[0]);
-            });
-						let skuStr = [];
-						this.specSelected.forEach(item => {
-							skuStr.push(item.base_spec_value_id)
-						})
-						this.productDetail.sku.forEach(item => {
-								if (item.data === skuStr.join('-')) {
-									this.currentStock = item.stock;
-									return;
-								}
-							})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
-				}).catch(err => {
+				}).then(async r => {
+            if (r.code === 200) {
+                this.isShowProduct = true;
+                this.productDetail = r.data;
+                this.evaluateList = await r.data.evaluate;
+                this.favorite = this.productDetail.myCollect ? true : false;
+                this.specList = this.productDetail.base_attribute_format
+                this.specList.forEach(item => {
+                    this.specChildList = [...this.specChildList, ...item.value]
+                });
+                /**
+                 * 修复选择规格存储错误
+                 * 将这几行代码替换即可
+                 * 选择的规格存放在specSelected中
+                 */
+                this.specSelected = [];
+                r.data.base_attribute_format.forEach(item => {
+                    item.value[0].selected = true
+                    this.specSelected.push(item.value[0]);
+                });
+                let skuStr = [];
+                this.specSelected.forEach(item => {
+                    skuStr.push(item.base_spec_value_id)
+                })
+                this.productDetail.sku.forEach(item => {
+                    if (item.data === skuStr.join('-')) {
+                        this.currentStock = item.stock;
+                        return;
+                    }
+                })
+            } else {
+                uni.showToast({title: r.message, icon: "none"});
+            }
+        }).catch(err => {
 					this.isShowProduct = false;
 					console.log(err)
 				})
