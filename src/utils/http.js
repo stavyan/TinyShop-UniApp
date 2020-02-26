@@ -17,7 +17,7 @@ const http = axios.create({
 http.interceptors.request.use(async config => {
     const token = uni.getStorageSync('accessToken');
     const userInfo = uni.getStorageSync('userInfo');
-    const merchantId = uni.getStorageSync('merchantId');
+    const merchantId = uni.getStorageSync('merchantId') || 1;
     let commonHeader = {};
     if (token && userInfo) {
         commonHeader = {
@@ -32,6 +32,11 @@ http.interceptors.request.use(async config => {
     const currentTime = new Date().getTime() / 1000;
     const config1 = config;
     if (!token || currentTime + 500- loginTime < user.expiration_time) {
+        commonHeader = {
+            "x-api-key": token,
+            "merchant-id": merchantId
+        };
+        config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
         return config
     } else {
         //刷新token
@@ -92,6 +97,7 @@ http.interceptors.request.use(async config => {
                      }
              });
         })
+
         return config1;
     }
 }, (error) => {

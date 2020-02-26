@@ -88,7 +88,7 @@
 		},
 		onLoad(options){
 			this.userInfo = options.userInfo;
-      uni.clearStorageSync();
+      // uni.clearStorageSync();
 		},
 		methods: {
 			...mapMutations(['login']),

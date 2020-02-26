@@ -147,8 +147,12 @@
         uni.setStorageSync('merchantId', this.merchantList[e.target.value].id);
         uni.setStorageSync('merchantIndex', e.target.value);
         this.index = e.target.value;
-        uni.removeStorageSync('token');
-        uni.removeStorageSync('userInfo');
+				uni.removeStorage({
+	                key: 'userInfo'
+	            })
+				uni.removeStorage({
+	                key: 'accessToken'
+	            })
 				this.getIndexList();
       },
 	    // 监听轮播图切换
@@ -158,6 +162,7 @@
 			// 数据初始化
 			initData () {
 		    uni.removeStorageSync('cateTop');
+		    console.log(uni.getStorageSync('merchantId'));
 		    this.index = uni.getStorageSync('merchantIndex') || 0;
 				this.getIndexList();
 			},
