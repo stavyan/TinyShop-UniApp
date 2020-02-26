@@ -1,9 +1,8 @@
 <template>
 	<view>
-
 		<!-- 优惠明细 -->
-		<view class="yt-list">
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data && shippingDetail.data[0].member_username">
+		<view class="yt-list" v-if="shippingDetail.data">
+			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].member_username">
 				<view class="cell-icon">
 					名
 				</view>
@@ -13,7 +12,7 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data && shippingDetail.data[0].express_no">
+			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_no">
 				<view class="cell-icon">
 					单
 				</view>
@@ -23,17 +22,17 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data && shippingDetail.data[0].express_company">
-	<view class="cell-icon">
-		司
-	</view>
-	<text class="cell-tit clamp">快递公司</text>
-	<text class="cell-tip active">
-		{{ shippingDetail.data && shippingDetail.data[0].express_company }}
-	</text>
-	<text class="cell-more wanjia wanjia-gengduo-d"></text>
-</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data && shippingDetail.data[0].express_name">
+			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_company">
+				<view class="cell-icon">
+					司
+				</view>
+				<text class="cell-tit clamp">快递公司</text>
+				<text class="cell-tip active">
+					{{ shippingDetail.data && shippingDetail.data[0].express_company }}
+				</text>
+				<text class="cell-more wanjia wanjia-gengduo-d"></text>
+			</view>
+			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_name">
 				<view class="cell-icon">
 					寄
 				</view>
@@ -44,7 +43,8 @@
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
 		</view>
-		<view class="uni-timeline" style="padding: 30upx 40upx; background-color: #fff;">
+		<empty :info="'暂无物流信息'" v-if="shippingDetail.count === 0"></empty>
+		<view class="uni-timeline" v-else style="padding: 30upx 40upx; background-color: #fff;">
 			 <!--uni-timeline-first-item-->
 			<view
 					class="uni-timeline-item"
@@ -229,7 +229,6 @@
 <style lang="scss">
 	page {
 		background: $page-color-base;
-		padding-bottom: 100upx;
 	}
 
 	.address-section {
