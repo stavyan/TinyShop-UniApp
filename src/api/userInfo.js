@@ -89,6 +89,9 @@ const thirdPartyAuthList = "/tiny-shop/v1/member/auth/index";
 // 解除第三方授权列表
 const thirdPartyAuthDelete = "/tiny-shop/v1/member/auth/delete";
 
+// 充值金额
+const rechargeConfigIndex = "/tiny-shop/v1/member/recharge-config/index";
+
 // 上传图片
 const uploadImage = "https://www.yllook.com/api/tiny-shop/v1/common/file/images";
 // 上传图片
@@ -133,5 +136,6 @@ export {
     opinionCreate,
     opinionDetail,
     thirdPartyAuthList,
-    thirdPartyAuthDelete
+    thirdPartyAuthDelete,
+    rechargeConfigIndex
 };

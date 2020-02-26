@@ -42,7 +42,10 @@ const orderFreightFee = "/tiny-shop/v1/order/order/freight-fee";
 // 商品评价列表
 const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 
-// 品牌列表
+// 商品评价列表
+const orderProductExpressDetails = "/tiny-shop/v1/member/order-product-express/details";
+
+// 物流信息
 const brandList = "/tiny-shop/v1/product/brand/index";
 
 export {
@@ -63,5 +66,6 @@ export {
     orderFreightFee,
     evaluateList,
     orderPreview,
-    brandList
+    brandList,
+    orderProductExpressDetails
 };

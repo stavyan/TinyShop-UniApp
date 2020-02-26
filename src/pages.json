@@ -255,6 +255,11 @@
 				"navigationBarTitleText": "订单详情"
 			}
 		}, {
+			"path": "pages/order/shipping",
+			"style": {
+				"navigationBarTitleText": "物流详情"
+			}
+		}, {
 			"path": "pages/collection/collection",
 			"style": {
 				"enablePullDownRefresh": true,

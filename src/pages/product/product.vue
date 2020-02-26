@@ -455,7 +455,8 @@
 				cartCount: 1,
 				product_id: null,
 				isShowProduct: true,
-				evaluateList: []
+				evaluateList: [],
+				token: null,
 			};
 		},
 		async onLoad(options){
@@ -524,19 +525,20 @@
 			 *@param arguments
 			 */
 			async getCoupon(item) {
+				if (!this.token) {
+					this.$api.msg('请您先登录！');
+					this.maskState = 0;
+					return;
+				}
 				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
 					id: item.id
-				}).then(r => {
-					if (r.code === 200) {
-						this.maskState = 0
-						uni.showToast({title: '领取成功', icon: "none"});
-					} else {
-						this.maskState = 0
-						uni.showToast({title: r.message, icon: "none"});
-					}
+				}).then(() => {
+					uni.showToast({title: '领取成功', icon: "none"});
+					this.maskState = 0;
 				}).catch(err => {
-					console.log(err)
+					this.maskState = 0;
+					console.log(err);
 				})
 			},
 			/**
@@ -570,6 +572,7 @@
 			 *@date 2019/11/18 15:48:21
 			 */
 			async initData(id) {
+				this.token = uni.getStorageSync('accessToken');
 				await this.getProductDetail(id);
 			},
 			/**
@@ -623,6 +626,11 @@
 			//规格弹窗开关
 			toggleSpec() {
 				if(this.specClass === 'show'){
+					if (!this.token) {
+						this.specClass = 'none';
+						this.$api.msg('请您先登录！');
+						return;
+					}
           if (this.specSelected.length < this.productDetail.base_attribute_format.length){
             uni.showToast({ title: "请先选择规格", icon: "none" });
             return;
@@ -770,6 +778,11 @@
 			 *@date 2019/11/21 17:00:45
 			 */
 			async toFavorite() {
+				if (!this.token) {
+					this.specClass = 'none';
+					this.$api.msg('请您先登录！');
+					return;
+				}
 				if (this.favorite) {
 					this.handleCollectDel()
 				} else {

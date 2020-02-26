@@ -18,8 +18,9 @@
 			<view class="content">
 				<view class="amount">
 					<view class="list">
-						<view class="box" v-for="(amount,index) in amountList" :key="index" @tap="select(amount)" :class="{'on':amount == inputAmount}">
-							{{amount}}元
+						<view class="box" v-for="(amount,index) in amountList" :key="index" @tap="select(amount)" :class="{'on':amount.price == inputAmount}">
+							<view class="real">{{amount.price}}元</view>
+							<text class="give">赠送 {{ amount.give_price }}元</text>
 						</view>
 					</view>
 					<view class="num">
@@ -27,8 +28,9 @@
 							自定义充值金额
 						</view>
 						<view class="input">
-							<input type="number" v-model="inputAmount" />
+							<input type="number" @input="handleInputAmountChange" v-model="inputAmount" />
 						</view>
+						<text class="give" v-if="inputAmountGive > 0">赠送 {{ inputAmountGive }}元</text>
 					</view>
 				</view>
 			</view>
@@ -80,28 +82,50 @@
 	// #endif
 	import {isBindingCheck} from "../../api/login";
 	import {rechargeUrl} from "../../api/params";
-  import {memberInfo} from "../../api/userInfo";
+  import {memberInfo, rechargeConfigIndex} from "../../api/userInfo";
 	export default {
 		data() {
 			return {
-				inputAmount: 0.01,//金额
-				amountList:[10,50,100],//预设3个可选快捷金额
+				inputAmount: 0,//金额
+				inputAmountGive: 0,//金额
+				amountList:[],//预设3个可选快捷金额
 				payType: 1,//支付类型
 				userInfo: {},
 				loading: false,
 				providerList: [],
-				code: null
+				code: null,
 			};
 		},
 		onLoad(options) {
 			this.initData(options);
 		},
 		methods:{
+			handleInputAmountChange (e) {
+				this.inputAmount = parseFloat(e.detail.value);
+				if (this.inputAmount < this.amountList[0].price) {
+				    this.inputAmountGive = 0;
+				    return;
+				}
+				if (this.inputAmount >= this.amountList[this.amountList.length - 1].price) {
+				    this.inputAmountGive = this.amountList[this.amountList.length - 1].give_price;
+				    return;
+				}
+				for (let i = 0; i < this.amountList.length; i++) {
+						if (this.inputAmount >= this.amountList[i].price && this.inputAmount < this.amountList[i + 1].price) {
+							this.inputAmountGive = this.amountList[i].give_price;
+						}
+				}
+				// this.amountList.forEach(item => {
+				// 	if (this.inputAmount > item.price) {
+				// 		this.inputAmountGive = item.give_price;
+				// 	}
+				// })
+			},
 			async weixinPay() {
 		    const _this = this;
 		    // #ifdef H5
 		    if (!this.isWechat()) {
-					this.$api.msg('请从微信进入进行充值~')
+					this.$api.msg('仅支持微信H5和微信小程序充值~')
 				    return;
 		    }
 		    // #endif
@@ -208,10 +232,17 @@
 			 *@date 2019/12/11 11:01:12
 			 */
 			async initData(options) {
-					this.code = options.code;
-					this.userInfo = uni.getStorageSync('userInfo') || undefined;
-					// #ifdef H5
-					if (this.isWechat() && !this.code) {
+				this.code = options.code;
+				this.userInfo = uni.getStorageSync('userInfo') || undefined;
+				await this.$get(`${rechargeConfigIndex}`).then(r => {
+					this.amountList = r.data;
+					this.inputAmount =  r.data[0] && r.data[0].price || 0.01;
+					this.inputAmountGive =  r.data[0] && r.data[0].give_price || 0;
+				}).catch(err => {
+					console.log(err)
+				});
+				// #ifdef H5
+				if (this.isWechat() && !this.code) {
 						const url = window.location.href;
 						window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?
 						appid=wxc052ebc5038f31c0&
@@ -227,13 +258,9 @@
 					jsApiList,
 					debug: false,
 				}).then(r => {
-					if (r.code === 200) {
-						jweixin.config({
-							...r.data
-						})
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					jweixin.config({
+						...r.data
+					})
 				}).catch(err => {
 					console.log(err)
 				});
@@ -280,8 +307,9 @@
 							return false;
 					}
 			},
-			select(amount){
-				this.inputAmount = amount;
+			select(item){
+				this.inputAmount = item.price;
+				this.inputAmountGive = item.give_price;
 			},
 		}
 	}
@@ -289,8 +317,8 @@
 
 <style lang="scss">
 	.block{
-		width: 94%;
-		padding: 20upx 3%;
+		width: 100%;
+		padding: 20upx;
 		.title{
 			width: 100%;
 			font-size: 34upx;
@@ -311,25 +339,35 @@
 			}
 			.amount{
 				width: 100%;
-
 				.list{
 					display: flex;
 					justify-content: space-between;
-					padding: 20upx 0;
+					padding-top: 20upx;
+					flex-wrap: wrap;
 					.box{
-						width: 30%;
+						width: 31%;
+						margin-bottom: 20upx;
 						height: 120upx;
-						display: flex;
-						justify-content: center;
-						align-items: center;
+						text-align: center;
 						border-radius: 10upx;
 						box-shadow: 0upx 5upx 20upx rgba(0,0,0,0.05);
-						font-size: 36upx;
 						background-color: #f1f1f1;
 						color: 333;
 						&.on{
 							background-color: #f06c7a;
 							color: #fff;
+							.give {
+								color: #fff;
+							}
+						}
+						.real {
+							font-size: $font-lg;
+							margin-top: 10upx;
+						}
+						.give {
+							display: block;
+							font-size: $font-sm;
+							color: $base-color;
 						}
 					}
 				}
@@ -342,10 +380,13 @@
 						padding-right: 10upx;
 						font-size: 30upx;
 					}
+					.give {
+						font-size: $font-sm;
+						color: $base-color;
+					}
 					.input{
 						width: 28.2vw;
 						border-bottom: solid 2upx #999;
-
 						justify-content: flex-end;
 						align-items: center;
 						input{

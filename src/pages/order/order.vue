@@ -206,7 +206,7 @@
       handleOrderOperation (item, type, refund_type) {
         switch (type) {
           case 'detail': // 订单详情
-              this.toOrderDetail(item.id);
+              this.navTo(`/pages/order/detail?id=${item.id}`);
             break;
           case 'evaluation': // 我要评价
               this.handleOrderEvaluation(item, 'evaluation');
@@ -218,7 +218,7 @@
               this.handleOrderDelete(item.id);
             break;
           case 'shipping': // 查看物流
-	          this.$api.msg('暂未实现');
+						this.navTo(`/pages/order/shipping?id=${item.id}`);
             break;
           case 'refund': // 退货/退款
 						this.handleOrderEvaluation(item, 'refund', refund_type);
@@ -245,10 +245,10 @@
 				// 	}
         // }
       },
-			// 跳转至订单详情
-      toOrderDetail(id) {
+			// 跳转页面
+      navTo (url) {
         uni.navigateTo({
-          url: `/pages/order/detail?id=${id}`
+          url
         })
       },
 			// 取消订单

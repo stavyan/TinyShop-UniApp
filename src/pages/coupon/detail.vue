@@ -23,8 +23,8 @@
 							<view class="icon shixiao" v-show="state === 3" />
 							<view class="used" v-show="state === 2">已使用</view>
 							<view class="usage">
-								{{parseInt(row.max_fetch, 10) === 0 ? '不限' : `每人限领${row.max_fetch}` }}
-								已领{{ row.get_count }}
+								{{parseInt(row.max_fetch, 10) === 0 ? '不限' : `每人限领 ${row.max_fetch}` }}
+								总领取 {{ row.get_count }}
 								<text v-show="row.percentage">剩余{{ row.percentage }}%</text>
 							</view>
 						</view>
@@ -40,7 +40,7 @@
 							<view class="use view" @tap="show(row)" v-show="parseInt(row.range_type, 10) === 2">
 								商品
 							</view>
-							<view class="use" @tap="getCoupon(row.id)">
+							<view class="use" @tap="getCoupon(row)">
 								领取
 							</view>
 <!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @tap="show(row)">-->
@@ -157,10 +157,18 @@ export default {
 		 *@blog https://stavtop.club
 		 *@date 2019/11/25 13:41:19
 		 */
-		async getCoupon(id) {
+		async getCoupon(item) {
+			if (!this.token) {
+				this.$api.msg('请您先登录！');
+				return;
+			}
+			if (item.is_get == 0) {
+				this.$api.msg('该优惠券暂不可领取！');
+				return;
+			}
 			uni.showLoading({title: '领取中...'});
 			await this.$post(`${couponReceive}`, {
-				id
+				id: item.id
 			}).then(r => {
 				if (r.code === 200) {
 					uni.showToast({title: '领取成功', icon: "none"});
