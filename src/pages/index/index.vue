@@ -125,7 +125,7 @@
 				productCateList: [],
 				brandList: [],
 				config: {},
-				index: 1,
+				index: 0,
 				merchantList: [],
 			};
 		},
@@ -162,8 +162,6 @@
 			// 数据初始化
 			initData () {
 		    uni.removeStorageSync('cateTop');
-		    console.log(uni.getStorageSync('merchantId'));
-		    this.index = uni.getStorageSync('merchantIndex') || 0;
 				this.getIndexList();
 			},
 			// 跳转至商品分类列表(分类id)
@@ -221,6 +219,7 @@
 				await this.$get(`${indexList}`, {}).then(async r => {
             await this.$get(`${merchantIndex}`, {}).then(r => {
                 this.merchantList = r.data
+		            this.index = uni.getStorageSync('merchantIndex') || r.data.length - 1;
             })
             if (type === 'refresh') {
                 uni.stopPullDownRefresh();
