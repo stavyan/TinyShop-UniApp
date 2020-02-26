@@ -30,6 +30,9 @@ const payCreate = "/tiny-shop/v1/common/pay/create";
 // 充值
 const wechatConfig = "/tiny-shop/v1/third-party/wechat-js-sdk";
 
+// 商户列表
+const merchantIndex = "/merchants/v1/merchant/index";
+
 export {
     provinceList,
     collectCreate,
@@ -39,5 +42,6 @@ export {
     advList,
     payCreate,
     configList,
-    wechatConfig
+    wechatConfig,
+    merchantIndex
 };

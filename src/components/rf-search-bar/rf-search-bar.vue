@@ -70,14 +70,16 @@ export default {
 	    }
 		},
 		methods: {
-	    async handleSearchValueChange(e) {
-        this.searchValue = await e.detail.value;
+	    handleSearchValueChange(e) {
+        console.log(this.searchValue)
+        this.searchValue = e.detail.value;
       },
 			discard() {},
 			link() {
 				this.$emit('link')
 			},
 			async toSearch() {
+	        console.log(this.searchValue)
           await this.$emit('search', {
               searchValue: this.searchValue
           })
@@ -138,6 +140,7 @@ export default {
 			display: flex;
 			align-items: center;
 			.icon {
+				z-index: 9;
 				display: flex;
 				align-items: center;
 				position: absolute;

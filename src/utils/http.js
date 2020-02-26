@@ -17,11 +17,13 @@ const http = axios.create({
 http.interceptors.request.use(async config => {
     const token = uni.getStorageSync('accessToken');
     const userInfo = uni.getStorageSync('userInfo');
+    const merchantId = uni.getStorageSync('merchantId');
     let commonHeader = {};
     if (token && userInfo) {
         commonHeader = {
             "x-api-key": token,
-            "merchant-id": userInfo.merchant_id
+            // "merchant-id": userInfo.merchant_id
+            "merchant-id": merchantId
         };
     }
     config.headers = {...config.headers, ...commonHeader};
@@ -60,7 +62,8 @@ http.interceptors.request.use(async config => {
                 uni.setStorageSync('refreshToken', data.data.refresh_token);
                 commonHeader = await {
                     "x-api-key": data.data.access_token,
-                    "merchant-id": data.data.member.merchant_id
+                    // "merchant-id": data.data.member.merchant_id
+                    "merchant-id": merchantId
                 };
                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {

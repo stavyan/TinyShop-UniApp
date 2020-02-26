@@ -73,6 +73,20 @@
 		<view class="copyright" v-show="config.web_site_icp">
 			{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
 		</view>
+
+		<view class="uni-title uni-common-pl">商户切换</view>
+		<view class="uni-list">
+      <view class="uni-list-cell">
+        <view class="uni-list-cell-left">
+            当前选择
+        </view>
+        <view class="uni-list-cell-db">
+            <picker @change="bindPickerChange" range-key="title" :value="index" :range="merchantList">
+                <view class="uni-input">{{merchantList[index] && merchantList[index].title}}</view>
+            </picker>
+        </view>
+    </view>
+		</view>
 		<!--#endif-->
 	</view>
 </template>
@@ -92,6 +106,7 @@
 	import rfSwipeDot from '@/components/rf-swipe-dot/rf-swipe-dot';
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
+  import {merchantIndex} from "../../api/basic";
 	export default {
 		components: {
 			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar
@@ -110,6 +125,8 @@
 				productCateList: [],
 				brandList: [],
 				config: {},
+				index: 1,
+				merchantList: [],
 			};
 		},
 		onLoad() {
@@ -126,6 +143,14 @@
 			this.getIndexList('refresh');
 		},
 		methods: {
+      bindPickerChange (e) {
+        uni.setStorageSync('merchantId', this.merchantList[e.target.value].id);
+        uni.setStorageSync('merchantIndex', e.target.value);
+        this.index = e.target.value;
+        uni.removeStorageSync('token');
+        uni.removeStorageSync('userInfo');
+				this.getIndexList();
+      },
 	    // 监听轮播图切换
 			handleDotChange(e) {
 				this.current = e.detail.current
@@ -133,6 +158,7 @@
 			// 数据初始化
 			initData () {
 		    uni.removeStorageSync('cateTop');
+		    this.index = uni.getStorageSync('merchantIndex') || 0;
 				this.getIndexList();
 			},
 			// 跳转至商品分类列表(分类id)
@@ -187,25 +213,28 @@
 			// 获取主页数据
 			async getIndexList(type) {
 				uni.showLoading({title: '加载中...'});
-				await this.$get(`${indexList}`, {}).then(r => {
-					if (type === 'refresh') {
-						uni.stopPullDownRefresh();
-					}
-					this.productCateList = r.data.cate;
-					this.carouselList = r.data.adv;
-					this.search = r.data.search;
-					uni.setStorageSync('search', this.search)
-					this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
-					uni.setStorage({
-							key: 'hotSearchDefault',
-							data: r.data.search.hot_search_default
-					})
-					this.hotProductList = r.data.product_hot;
-					this.recommendProductList = r.data.product_recommend;
-					this.guessYouLikeProductList = r.data.guess_you_like;
-					this.newProductList = r.data.product_new;
-					this.config = r.data.config;
-				})
+				await this.$get(`${indexList}`, {}).then(async r => {
+            await this.$get(`${merchantIndex}`, {}).then(r => {
+                this.merchantList = r.data
+            })
+            if (type === 'refresh') {
+                uni.stopPullDownRefresh();
+            }
+            this.productCateList = r.data.cate;
+            this.carouselList = r.data.adv;
+            this.search = r.data.search;
+            uni.setStorageSync('search', this.search)
+            this.hotSearchDefault = `请输入关键字 如: ${r.data.search.hot_search_default}`;
+            uni.setStorage({
+                key: 'hotSearchDefault',
+                data: r.data.search.hot_search_default
+            })
+            this.hotProductList = r.data.product_hot;
+            this.recommendProductList = r.data.product_recommend;
+            this.guessYouLikeProductList = r.data.guess_you_like;
+            this.newProductList = r.data.product_new;
+            this.config = r.data.config;
+        })
 			},
 			// 跳转至商品详情页
 			navToDetailPage(data) {
@@ -312,6 +341,14 @@ page {
 			display: block;
 			color: #666;
 			text-decoration: none;
+		}
+	}
+	.uni-list {
+		padding: 20upx 0;
+		.uni-list-cell {
+			.uni-input {
+				padding: 0;
+			}
 		}
 	}
 }

@@ -28,13 +28,11 @@
 						<text>
 							购买类型: {{ row.sku_name || '基础款' }}
 						</text>
-						<text>
-							<rf-rate
-								size="16"
-							  disabled="true"
-								:value="row.scores"
-								active-color="#fa436a" />
-						</text>
+						<rf-rate
+							size="16"
+						  disabled="true"
+							:value="row.scores"
+							active-color="#fa436a" />
 					</view>
 					<view class="first">
 						<view class="rat">
