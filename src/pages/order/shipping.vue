@@ -1,67 +1,73 @@
 <template>
 	<view>
 		<!-- 优惠明细 -->
-		<view class="yt-list" v-if="shippingDetail.data">
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].member_username">
-				<view class="cell-icon">
-					名
+		<view v-for="item in shippingDetail.data">
+			<!-- 商品信息 -->
+			<view class="goods-section">
+				<view class="g-header b-b">
+					<text class="name">商品信息</text>
 				</view>
-				<text class="cell-tit clamp">收件人</text>
-				<text class="cell-tip active">
-					{{ shippingDetail.data && shippingDetail.data[0].member_username }}
-				</text>
-				<text class="cell-more wanjia wanjia-gengduo-d"></text>
+				<!-- 商品信息 @tap="navTo(`/pages/product/product?id=${item.order_product.id}`)" -->
+				<view class="g-item">
+					<image :src="item.order_product.product_picture" mode="aspectFill"></image>
+					<view class="right">
+						<text class="title clamp">{{ item.order_product.product_name }}</text>
+					</view>
+				</view>
 			</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_no">
-				<view class="cell-icon">
-					单
+			<view class="yt-list">
+				<view class="yt-list-cell b-b" v-if="item.member_username">
+					<view class="cell-icon">
+						名
+					</view>
+					<text class="cell-tit clamp">收件人</text>
+					<text class="cell-tip active">
+						{{ item.member_username }}
+					</text>
+					<text class="cell-more wanjia wanjia-gengduo-d"></text>
 				</view>
-				<text class="cell-tit clamp">快递单号</text>
-				<text class="cell-tip active">
-					{{ shippingDetail.data && shippingDetail.data[0].express_no }}
-				</text>
-				<text class="cell-more wanjia wanjia-gengduo-d"></text>
+				<view class="yt-list-cell b-b" v-if="item.express_no">
+					<view class="cell-icon">
+						单
+					</view>
+					<text class="cell-tit clamp">快递单号</text>
+					<text class="cell-tip active">
+						{{ item.express_no }}
+					</text>
+					<text class="cell-more wanjia wanjia-gengduo-d"></text>
+				</view>
+				<view class="yt-list-cell b-b" v-if="item.express_company">
+					<view class="cell-icon">
+						司
+					</view>
+					<text class="cell-tit clamp">快递公司</text>
+					<text class="cell-tip active">
+						{{ item.express_company }}
+					</text>
+					<text class="cell-more wanjia wanjia-gengduo-d"></text>
+				</view>
 			</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_company">
-				<view class="cell-icon">
-					司
+			<view class="uni-timeline" style="padding: 30upx 40upx; background-color: #fff;">
+				 <!--uni-timeline-first-item-->
+				<view
+						class="uni-timeline-item"
+						:class="{'uni-timeline-first-item': index === 0, 'uni-timeline-last-item': index === item.trace.length - 1, }"
+						v-for="(row, index) in item.trace"
+						:key="index">
+					<view class="uni-timeline-item-divider"></view>
+					<view class="uni-timeline-item-content">
+						<view>
+							{{ row.value }}
+						</view>
+						<view class="datetime">
+							{{ row.time }}
+						</view>
+					</view>
 				</view>
-				<text class="cell-tit clamp">快递公司</text>
-				<text class="cell-tip active">
-					{{ shippingDetail.data && shippingDetail.data[0].express_company }}
-				</text>
-				<text class="cell-more wanjia wanjia-gengduo-d"></text>
-			</view>
-			<view class="yt-list-cell b-b" v-if="shippingDetail.data[0] && shippingDetail.data[0].express_name">
-				<view class="cell-icon">
-					寄
-				</view>
-				<text class="cell-tit clamp">快递名称</text>
-				<text class="cell-tip active">
-					{{ shippingDetail.data && shippingDetail.data[0].express_name }}
-				</text>
-				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
 		</view>
+
 		<empty :info="'暂无物流信息'" v-if="shippingDetail.count === 0"></empty>
-		<view class="uni-timeline" v-else style="padding: 30upx 40upx; background-color: #fff;">
-			 <!--uni-timeline-first-item-->
-			<view
-					class="uni-timeline-item"
-					:class="{'uni-timeline-first-item': index === 0, 'uni-timeline-last-item': index === shippingTimeLine.length - 1, }"
-					v-for="(item, index) in shippingTimeLine"
-					:key="index">
-				<view class="uni-timeline-item-divider"></view>
-				<view class="uni-timeline-item-content">
-					<view>
-						{{ item.value }}
-					</view>
-					<view class="datetime">
-						{{ item.time }}
-					</view>
-				</view>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -79,33 +85,6 @@
 			return {
 				shippingDetail: {},
 				shippingTimeLine: []
-			}
-		},
-		computed: {
-			orderTimeLine () {
-				const timeLine = []
-				if (this.shippingDetail.created_at != 0) {
-					timeLine.push({ time: this.shippingDetail.created_at, value: '订单创建' });
-				}
-				if (this.shippingDetail.close_time < (new Date().getTime() / 1000 && this.shippingDetail.pay_time != 0)) {
-					timeLine.push({ time: this.shippingDetail.close_time, value: '未付款订单关闭时间' });
-				}
-				if (this.shippingDetail.pay_time != 0) {
-					timeLine.push({ time: this.shippingDetail.pay_time, value: '订单支付' });
-				}
-				if (this.shippingDetail.shipping_time != 0) {
-					timeLine.push({ time: this.shippingDetail.shipping_time, value: '买家要求发货' });
-				}
-				if (this.shippingDetail.consign_time != 0) {
-					timeLine.push({ time: this.shippingDetail.consign_time, value: '卖家发货' });
-				}
-				if (this.shippingDetail.sign_time != 0) {
-					timeLine.push({ time: this.shippingDetail.sign_time, value: '买家确认收货' });
-				}
-				if (this.shippingDetail.finish_time != 0) {
-					timeLine.push({ time: this.shippingDetail.finish_time, value: '订单完成' });
-				}
-				return timeLine;
 			}
 		},
 		filters: {
@@ -187,10 +166,6 @@
 				const data = ['', '物流配送', '买家自提', '本地配送'];
 				return data[parseInt(value, 10)]
 			},
-			filterShippingType (value) {
-				const data = ['', '物流配送', '买家自提', '本地配送'];
-				return data[parseInt(value, 10)]
-			}
 		},
 		onLoad(options){
 			this.initData(options);
@@ -214,10 +189,15 @@
 				await this.$get(`${orderProductExpressDetails}`, {
 					order_id
 				}).then(r => {
-					this.shippingDetail = r.data;
-					r.data.data[0] && r.data.data[0].trace.forEach(item => {
-					    this.shippingTimeLine.push({ time: item.datetime, value: item.remark })
+					r.data.data.forEach(row => {
+				    const traceArr = [];
+						row.trace.forEach(item => {
+						    traceArr.push({ time: item.datetime, value: item.remark })
+						});
+						row.trace = traceArr;
 					});
+					console.log(r.data);
+					this.shippingDetail = r.data;
 				}).catch(err => {
 					console.log(err)
 				})

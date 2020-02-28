@@ -470,7 +470,7 @@
 						break; //forEach不能使用break
 					}
 				}
-			})
+			});
 			this.product_id = options.id;
 		},
 		onShareAppMessage(res) {

@@ -232,7 +232,7 @@
             uni.setStorage({
                 key: 'hotSearchDefault',
                 data: r.data.search.hot_search_default
-            })
+            });
             this.hotProductList = r.data.product_hot;
             this.recommendProductList = r.data.product_recommend;
             this.guessYouLikeProductList = r.data.guess_you_like;

@@ -142,13 +142,21 @@
 			<navigator url="/pages/invoice/invoice?source=1">
 				<view class="yt-list-cell b-b">
 					<text class="cell-tit clamp">开具发票</text>
-					<text class="cell-tip">
+					<view class="cell-tip">
 						<text v-if="invoiceItem.type">
 							{{ `电子发票 - ${parseInt(invoiceItem.type, 10) === 1 ? '公司' : '个人'} - ${invoiceItem.title}` }}
 							<text @tap.stop="closeInvoice" class="yticon icon-shanchu4"></text>
 						</text>
 						<text v-else>本次不开具发票</text>
-					</text>
+						<view v-if="invoiceItem.type">
+							<radio-group name="gender" class="gender">
+								<label class="gender-item" v-for="(item, index) in orderDetail.invoice && orderDetail.invoice.list" :key="index">
+									<radio @click.stop="handleInvoiceChange(item)" style="transform:scale(0.7)" class="gender-item-radio" color="#fa436a" :checked="index === 0" />
+									<text class="gender-item-text">{{ item }}</text>
+								</label>
+							</radio-group>
+						</view>
+					</view>
 				</view>
 			</navigator>
 			<view class="yt-list-cell desc-cell">
@@ -263,7 +271,9 @@
 				isUsePoint: false,
 				isUsePointDisabled: false,
 				data: {},
-				userInfo: {}
+				userInfo: {},
+				use_point: 0,
+				invoiceContent: null,
 			}
 		},
 		computed: {
@@ -308,6 +318,9 @@
 			this.initData(options);
 		},
 		methods: {
+	    handleInvoiceChange (val) {
+        this.invoiceContent = val;
+	    },
 	    navTo(url) {
         uni.navigateTo({ url });
 	    },
@@ -322,7 +335,13 @@
 				// 	uni.showToast({title: '本单不支持积分抵扣', icon: "none"});
 				// 	return;
 				// } else {
-					this.isUsePoint = !this.isUsePoint;
+					if (this.isUsePoint) {
+					    this.isUsePoint = false;
+              this.use_point = 0;
+					} else {
+					    this.isUsePoint = true;
+              this.use_point = this.maxUsePoint;
+					}
 				// }
 			},
 			/**
@@ -363,11 +382,19 @@
 			async onCompanyConfirm(e) {
 				e.value = e.value[0]
         this.currentCompany = e;
+		    if (this.orderDetail.is_full_mail) {
+		       this.shippingMoney = 0;
+		       return;
+		    }
 				this.getOrderFreightFee();
       },
 			async onPickupPointConfirm(e) {
 				e.value = e.value[0]
        	this.currentPickupPoint = e;
+				if (this.currentPickupPoint) {
+					this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
+					return;
+				}
       },
 			/**
 			 *@des 计算运费
@@ -376,10 +403,6 @@
 			 *@date 2019/12/02 10:43:11
 			 */
 			async getOrderFreightFee() {
-				if (this.currentPickupPoint) {
-					this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
-					return;
-				}
 				uni.showLoading({title: '加载中...'});
 				const params = {};
 				if (this.addressData) {
@@ -392,11 +415,7 @@
 					...params,
 					...this.data
 				}).then(r => {
-					if (r.code === 200) {
-						this.shippingMoney = r.data.shipping_money;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.shippingMoney = r.data.shipping_money;
 				}).catch(err => {
 					console.log(err)
 				})
@@ -484,6 +503,7 @@
 				}
 				if (this.invoiceItem && this.invoiceItem.id) {
 					params.invoice_id = this.invoiceItem.id;
+					params.invoice_content = this.invoiceContent || this.orderDetail.invoice.list[0];
 				}
 				if (this.currentCompany.value) {
 					params.company_id = this.currentCompany.value;
@@ -493,6 +513,9 @@
 				}
 				if (this.currentShippingType.value) {
 					params.shipping_type = this.currentShippingType.value;
+				}
+				if (this.use_point) {
+					params.use_point = this.use_point;
 				}
 				await this.$post(`${orderCreate}`, {
 					...params,

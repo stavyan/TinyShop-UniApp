@@ -40,7 +40,7 @@
 						</view>
 						<view class="info">
 							<view class="title">{{row.product_name}}</view>
-							<view class="spec">{{row.sku_name || '基础版'}}</view>
+							<view class="spec" @tap.stop="toggleSpec(row)">{{row.sku_name || '基础版'}}</view>
 							<view class="price-number">
 								<view class="price">￥{{row.price}}</view>
 								<view class="number">
@@ -75,11 +75,76 @@
 				<view class="btn" @tap="createOrder">结算({{selectedList.length}})</view>
 			</view>
 		</view>
+		<!-- 规格-模态层弹窗 -->
+		<view
+			class="popup spec"
+			:class="specClass"
+			@touchmove.stop.prevent="stopPrevent"
+			@tap="hideSpec"
+		>
+			<!-- 遮罩层 -->
+			<view class="mask" @tap="hideSpec"></view>
+			<view class="layer attr-content" @tap.stop="stopPrevent">
+				<view class="a-t">
+					<image :src="showTypeImage || productDetail.picture"></image>
+					<view class="right">
+						<text class="title">{{ productDetail.name }}</text>
+						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
+						<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
+						<view class="selected" v-if="specSelected.length > 0">
+							已选：
+							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
+								{{sItem.title}}
+							</text>
+							<text v-show="specSelected.length > 0">
+								 * {{ cartCount }}
+							</text>
+						</view>
+					</view>
+				</view>
+				<view v-for="(item,index) in specList" :key="index" class="attr-list">
+					<text>{{item.title}}</text>
+					<view class="item-list">
+						<view class="tit"
+							v-for="(childItem, childIndex) in specChildList"
+							v-if="childItem.base_spec_id === item.base_spec_id"
+							:key="childIndex"
+							:class="{selected: childItem.selected}"
+							:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
+							@tap="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
+						>
+							<text v-show="parseInt(item.show_type) === 1">
+								{{childItem.title }}
+							</text>
+							<text v-show="parseInt(item.show_type) === 2">
+								{{childItem.title }}
+							</text>
+							<view v-show="parseInt(item.show_type) === 3">
+								<image
+									class="img"
+									:src="childItem.data || productDetail.picture"
+									mode="aspectFill"
+								></image>
+								{{childItem.title }}
+							</view>
+						</view>
+					</view>
+				</view>
+				<button class="btn" @tap="toggleSpec">完成</button>
+			</view>
+	</view>
 	</view>
 </template>
 
 <script>
-	import {cartItemClear, cartItemDel, cartItemList, cartItemUpdateNum} from "../../api/product";
+    import {
+        cartItemClear,
+        cartItemDel,
+        cartItemList,
+        cartItemUpdateNum,
+        cartItemUpdateSku,
+        productDetail
+    } from "../../api/product";
 	export default {
 		data() {
 			return {
@@ -97,7 +162,18 @@
 				cartList: [],
 				token: null,
 				oldDiscount: 0,
-				footerbottom: 0
+				footerbottom: 0,
+				specClass: 'none',
+				showTypeImage: null,
+				productDetail: {},
+				specSelected: [],
+				specChildList: [],
+				specList: [],
+				currentStock: 0,
+				cartCount: 0,
+				currentSkuId: null,
+				currentNewSkuId: null,
+				styleObject: {},
 			}
 		},
 		onPageScroll(e){
@@ -125,6 +201,134 @@
 			this.initData();
 		},
 		methods: {
+			//规格弹窗开关
+			toggleSpec(row) {
+				if(this.specClass === 'show'){
+					if (!this.token) {
+						this.specClass = 'none';
+						this.$api.msg('请您先登录！');
+						return;
+					}
+          if (this.specSelected.length < this.productDetail.base_attribute_format.length){
+            uni.showToast({ title: "请先选择规格", icon: "none" });
+            return;
+          }
+					this.handleCartItemUpdateSku(this.currentSkuId, this.currentNewSkuId);
+					this.specClass = 'hide';
+					setTimeout(() => {
+						this.specClass = 'none';
+					}, 250);
+				} else if(this.specClass === 'none'){
+					this.specClass = 'show';
+			    if (row) {
+		        this.specChildList = [];
+		        this.cartCount = row.number;
+			      this.getProductDetail(row);
+			    }
+				}
+			},
+			//选择规格
+			selectSpec(index, pid, type){
+				let list = this.specChildList;
+				list.forEach(item=>{
+					if(item.base_spec_id === pid){
+						this.$set(item, 'selected', false);
+					}
+				});
+				if (parseInt(type, 10) === 3) {
+					this.showTypeImage = list[index].data;
+				}
+				if (parseInt(type, 10) === 2) {
+					this.styleObject = {
+						color: list[index].data,
+						// border: `1px solid ${list[index].data}`,
+					};
+				}
+				this.$set(list[index], 'selected', true);
+				//存储已选择
+				/**
+				 * 修复选择规格存储错误
+				 * 将这几行代码替换即可
+				 * 选择的规格存放在specSelected中
+				 */
+				this.specSelected = [];
+				list.forEach(item=>{
+					if(item.selected === true){
+						this.specSelected.push(item);
+					}
+				})
+				let skuStr = []
+				this.specSelected.forEach(item => {
+					skuStr.push(item.base_spec_value_id)
+				})
+				this.productDetail.sku.forEach(item => {
+						if (item.data === skuStr.join('-')) {
+							this.currentStock = item.stock;
+							this.currentNewSkuId = item.id;
+							return;
+						}
+					})
+			},
+			// 获取产品详情
+			async getProductDetail (row) {
+		    this.currentSkuId = row.sku_id;
+		    this.currentNewSkuId = row.sku_id;
+				uni.showLoading({title:'加载中...'});
+				await this.$get(`${productDetail}`, {
+					id: row.product_id,
+				}).then(async r => {
+            if (r.code === 200) {
+                this.productDetail = r.data;
+                this.specList = this.productDetail.base_attribute_format;
+                this.specList.forEach(item => {
+                    this.specChildList = [...this.specChildList, ...item.value]
+                });
+                /**
+                 * 修复选择规格存储错误
+                 * 将这几行代码替换即可
+                 * 选择的规格存放在specSelected中
+                 */
+                this.specSelected = [];
+                // r.data.base_attribute_format.forEach(item => {
+                //     item.value[0].selected = true
+                //     this.specSelected.push(item.value[0]);
+                // });
+                // let skuStr = [];
+                // this.specSelected.forEach(item => {
+                //     skuStr.push(item.base_spec_value_id)
+                // });
+								this.specChildList.forEach(item=>{
+									if(row.sku_name.indexOf(item.title) !== -1){
+                    item.selected = true;
+                    this.specSelected.push(item);
+									}
+								})
+
+                let skuStr = [];
+                this.specSelected.forEach(item => {
+                    skuStr.push(item.base_spec_value_id)
+                });
+                this.productDetail.sku.forEach(item => {
+                    if (item.data === skuStr.join('-')) {
+                        this.currentStock = item.stock;
+                        return;
+                    }
+                });
+            } else {
+                uni.showToast({title: r.message, icon: "none"});
+            }
+        }).catch(err => {
+					console.log(err)
+				})
+			},
+			hideSpec() {
+				this.specClass = 'hide';
+				setTimeout(() => {
+					this.specClass = 'none';
+				}, 250);
+			},
+			stopPrevent(){
+			},
 			// 删除选中购物车商品
 			async deleteCartItem(id, type){
 				const sku_ids = []
@@ -151,6 +355,21 @@
 					} else {
 						uni.showToast({ title: r.message, icon: "none" });
 					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			// 修改购物车商品sku
+			async handleCartItemUpdateSku(sku_id, new_sku_id){
+				uni.showLoading({title:'正在修改购物车商品sku...'});
+				await this.$post(`${cartItemUpdateSku}`, {
+					sku_id,
+					new_sku_id
+				}).then(() => {
+					this.selectedList.length = 0;
+					this.isAllselected = false;
+					this.sumPrice = 0;
+			    this.getCartItemList();
 				}).catch(err => {
 					console.log(err)
 				})
@@ -579,6 +798,7 @@
 						.title{
 							width: 100%;
 							font-size: 28upx;
+							line-height: 1.5;
 							display: -webkit-box;
 							-webkit-box-orient: vertical;
 							-webkit-line-clamp: 2;
@@ -589,7 +809,7 @@
 							font-size: 20upx;
 							background-color: #f3f3f3;
 							color: #a7a7a7;
-							height: 30upx;
+							height: 20upx;
 							display: flex;
 							align-items: center;
 							padding: 0 10upx;
@@ -721,6 +941,202 @@
 				justify-content: center;
 				align-items: center;
 				border-radius: 30upx;
+			}
+		}
+	}
+
+	/*  弹出层 */
+	.popup {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 99;
+		&.show {
+			display: block;
+			.mask{
+				animation: showPopup 0.2s linear both;
+			}
+			.layer {
+				animation: showLayer 0.2s linear both;
+			}
+		}
+		&.hide {
+			.mask{
+				animation: hidePopup 0.2s linear both;
+			}
+			.layer {
+				animation: hideLayer 0.2s linear both;
+			}
+		}
+		&.none {
+			display: none;
+		}
+		.mask{
+			position: fixed;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
+		.layer {
+			position: fixed;
+			z-index: 99;
+			bottom: 90upx;
+			width: 100%;
+			border-radius: 10upx 10upx 0 0;
+			background-color: #fff;
+			.content {
+				width: 100%;
+				padding: 20upx 0;
+			}
+			.btn{
+				height: 66upx;
+				line-height: 66upx;
+				border-radius: 100upx;
+				background: $uni-color-primary;
+				font-size: $font-base + 2upx;
+				color: #fff;
+				margin: 30upx 30upx 20upx;
+			}
+		}
+		.layer-service {
+			min-height: 600upx;
+			.btn {
+				width: calc(100% - 60upx);
+				position: absolute;
+				bottom: 0;
+			}
+		}
+		&.service {
+			min-height: 600upx;
+			.row {
+				margin: 30upx;
+				.title {
+					font-size: 30upx;
+					margin: 10upx 0;
+				}
+				.description {
+					font-size: 28upx;
+					color: #999;
+				}
+			}
+		}
+		@keyframes showPopup {
+			0% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+		@keyframes hidePopup {
+			0% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 0;
+			}
+		}
+		@keyframes showLayer {
+			0% {
+				transform: translateY(120%);
+			}
+			100% {
+				transform: translateY(0%);
+			}
+		}
+		@keyframes hideLayer {
+			0% {
+				transform: translateY(0);
+			}
+			100% {
+				transform: translateY(120%);
+			}
+		}
+	}
+	/* 规格选择弹窗 */
+	.attr-content{
+		padding: 10upx 30upx;
+		.select-count {
+			padding: 30upx 0 10upx;
+			margin: 20upx 0;
+			border-top: 1px solid #ccc;
+			display: flex;
+			justify-content:space-between;
+			overflow: hidden;
+			position: relative;
+			font-size: $font-base + 6upx;
+			color: $font-color-base;
+			line-height: 60upx;
+			.step {
+				position: absolute;
+				left: 60vw;
+				bottom: 10upx;
+			}
+		}
+		.a-t{
+			display: flex;
+			image{
+				width: 170upx;
+				height: 170upx;
+				flex-shrink: 0;
+				margin-top: -40upx;
+				border-radius: 8upx;;
+			}
+			.right{
+				display: flex;
+				flex-direction: column;
+				padding-left: 24upx;
+				font-size: $font-sm + 2upx;
+				color: $font-color-base;
+				line-height: 42upx;
+				.price{
+					font-size: $font-lg;
+					color: $uni-color-primary;
+					margin-bottom: 10upx;
+				}
+				.selected-text{
+					margin-right: 10upx;
+				}
+			}
+		}
+		.attr-list{
+			display: flex;
+			flex-direction: column;
+			font-size: $font-base + 2upx;
+			color: $font-color-base;
+			padding-top: 30upx;
+			padding-left: 10upx;
+		}
+		.item-list{
+			padding: 20upx 0 0;
+			display: flex;
+			flex-wrap: wrap;
+			.tit{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #eee;
+				margin-right: 20upx;
+				margin-bottom: 20upx;
+				border-radius: 100upx;
+				min-width: 60upx;
+				height: 60upx;
+				padding: 0 20upx;
+				font-size: $font-base;
+				color: $font-color-dark;
+				.img {
+					width: 36upx;
+					height: 24upx;
+					margin: 0 4upx;
+				}
+			}
+			.selected{
+				background: #fbebee;
+				color: $uni-color-primary;
 			}
 		}
 	}

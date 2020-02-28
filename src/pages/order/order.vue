@@ -27,7 +27,7 @@
 						class="order-item"
 					>
 						<view class="i-top b-b">
-							<text class="time">订单号：{{item.order_sn}}</text>
+							<text class="time in1line">订单号：{{item.order_sn}}</text>
 							<!--<text class="time">{{item.created_at | time}}</text>-->
 							<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
 							<view class="example-body" v-else>

@@ -26,6 +26,8 @@ const cartItemDel = "/tiny-shop/v1/member/cart-item/delete-ids";
 const cartItemClear = "/tiny-shop/v1/member/cart-item/clear";
 // 修改购物车商品数量
 const cartItemUpdateNum = "/tiny-shop/v1/member/cart-item/update-num";
+// 修改购物车商品sku
+const cartItemUpdateSku = "/tiny-shop/v1/member/cart-item/update-sku";
 
 // 订单创建
 const orderCreate = "/tiny-shop/v1/order/order/create";
@@ -45,7 +47,7 @@ const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 // 商品评价列表
 const orderProductExpressDetails = "/tiny-shop/v1/member/order-product-express/details";
 
-// 物流信息
+// 品牌列表
 const brandList = "/tiny-shop/v1/product/brand/index";
 
 export {
@@ -67,5 +69,6 @@ export {
     evaluateList,
     orderPreview,
     brandList,
-    orderProductExpressDetails
+    orderProductExpressDetails,
+    cartItemUpdateSku
 };
