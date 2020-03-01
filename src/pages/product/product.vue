@@ -21,8 +21,8 @@
 				<text class="sketch">{{ productDetail.sketch }}</text>
 				<view class="price-box">
 					<text class="price-tip">¥</text>
-					<text class="price">{{ productDetail.minSkuPrice }}</text>
-					<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
+					<text class="price">{{ productDetail.price }}</text>
+					<text class="m-price" v-if="productDetail.price < productDetail.market_price">¥{{ productDetail.market_price }}</text>
 					<!--<text class="coupon-tip">7折</text>-->
 				</view>
 				<view class="bot-row">

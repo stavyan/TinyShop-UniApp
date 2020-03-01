@@ -28,10 +28,10 @@
 				</view>
 				<text class="title clamp in2line">{{item.name}}</text>
 				<view class="last-line">
-					<text class="price">{{item.price}}
+					<text class="price in1line">{{item.price}}
 						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
 					</text>
-					<text class="sales"><text class="red">{{ item.sales }}</text>付款</text>
+					<text class="sales in1line"><text class="red">{{ item.sales }}</text>付款</text>
 				</view>
 			</view>
 		</view>
@@ -245,6 +245,7 @@ export default {
 			font-size: $font-base;
 			color: $font-color-dark;
 			line-height: 40upx;
+			height: 80upx;
 		}
 		.last-line {
 			display: flex;
@@ -253,11 +254,14 @@ export default {
 			.red {
 				color: $base-color;
 				font-size: $font-sm + 2upx;
-				margin-right: 4upx;
+				margin-right: 2upx;
+			}
+			.sales {
+				font-size: $font-sm + 2upx;
 			}
 		}
 		.price{
-			font-size: $font-lg;
+			font-size: $font-base;
 			color: $uni-color-primary;
 			line-height: 1;
 			&:before{
@@ -265,9 +269,9 @@ export default {
 				font-size: 26upx;
 			}
 			.m-price{
-				margin-left: 8upx;
+				margin-left: 4upx;
 				color: $font-color-light;
-				font-size: $font-base - 4upx;
+				font-size: $font-sm;
 				text-decoration: line-through;
 			}
 		}
