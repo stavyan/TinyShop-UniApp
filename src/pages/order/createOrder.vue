@@ -289,7 +289,7 @@
 				return parseInt(this.couponItem.type, 10) === 2 ? discountMoney : this.couponItem.money || 0;
 			},
 			realAmount(){
-				const realAmount = this.amountGoods - this.discountAmount + this.shippingMoney - (this.isUsePoint ? this.maxUsePointFee : 0)
+				const realAmount = this.amountGoods - this.discountAmount + parseFloat(this.shippingMoney) - (this.isUsePoint ? this.maxUsePointFee : 0)
 				return (this.floor(parseFloat(this.invoiceAmount) + realAmount) || 0).toFixed(2);
 			},
 		  invoiceAmount () {
@@ -370,9 +370,9 @@
 				this.currentShippingType = e;
 				if (this.currentShippingType.value == 2) {
 					if (parseFloat(this.realAmount) > parseFloat(this.orderDetail.pickup_point_config.pickup_point_freight)) {
-						this.shippingMoney = 0
+						this.shippingMoney = 0;
 					} else {
-						this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
+						this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee) || 0;
 					}
 				} else {
 					this.currentCompany = this.orderDetail.company[0];
@@ -392,7 +392,7 @@
 				e.value = e.value[0]
        	this.currentPickupPoint = e;
 				if (this.currentPickupPoint) {
-					this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee);
+					this.shippingMoney = parseFloat(this.orderDetail.pickup_point_config.pickup_point_fee) || 0;
 					return;
 				}
       },
@@ -415,7 +415,7 @@
 					...params,
 					...this.data
 				}).then(r => {
-					this.shippingMoney = r.data.shipping_money;
+					this.shippingMoney = r.data.shipping_money || 0;
 				}).catch(err => {
 					console.log(err)
 				})
