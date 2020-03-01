@@ -72,7 +72,8 @@
 							<button class="action-btn recom" v-show="item.order_status == 0" @tap="handlePayment(item)">立即支付</button>
 						  <button class="action-btn recom" v-show="item.order_status == 1" @tap="handleOrderOperation(item, 'refund', 1)">申请退款</button>
 						  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
+              <button class="action-btn" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'refund', 3)">订单售后</button>
+							<button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
               <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
 						  <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
 						  <button class="action-btn recom" v-show="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
@@ -156,7 +157,7 @@
 					{key: 1, value: '待发货'},
 					{key: 2, value: '已发货'},
 					{key: 3, value: '已收货'},
-					{key: 4, value: '已完成'},
+					{key: 4, value: '待评价'},
 					{key: -1, value: '退货申请'},
 					{key: -2, value: '退款中'},
 					{key: -3, value: '退款完成'},

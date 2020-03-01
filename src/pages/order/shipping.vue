@@ -196,7 +196,6 @@
 						});
 						row.trace = traceArr;
 					});
-					console.log(r.data);
 					this.shippingDetail = r.data;
 				}).catch(err => {
 					console.log(err)

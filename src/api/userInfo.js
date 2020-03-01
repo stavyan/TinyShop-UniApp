@@ -92,10 +92,21 @@ const thirdPartyAuthDelete = "/tiny-shop/v1/member/auth/delete";
 // 充值金额
 const rechargeConfigIndex = "/tiny-shop/v1/member/recharge-config/index";
 
+// 订单售后
+// 申请退款/退货
+const orderCustomerRefundApply = "/tiny-shop/v1/member/order-customer/refund-apply";
+// 退货提交物流
+const orderCustomerSalesReturn = "/tiny-shop/v1/member/order-customer/sales-return";
+// 退款/退货关闭申请
+const orderCustomerRefundClose = "/tiny-shop/v1/member/order-customer/refund-close";
+
 // 上传图片
 const uploadImage = "https://www.yllook.com/api/tiny-shop/v1/common/file/images";
 // 上传图片
 const uploadBase64Image = "https://www.yllook.com/api/tiny-shop/v1/common/file/base64";
+
+
+
 
 export {
     memberInfo,

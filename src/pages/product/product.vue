@@ -44,7 +44,7 @@
 				</view>
 				<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
 				<text class="yticon icon-bangzhu1"></text>
-				<button class="share-btn" open-type="share">
+				<button class="share-btn" open-type="share" @click="shareProduct">
 					立即分享
 					<text class="yticon icon-you"></text>
 				</button>
@@ -494,6 +494,11 @@
 		  // #endif
 		},
 		methods:{
+			shareProduct () {
+				// #ifdef H5
+				this.$api.msg('H5不支持分享，请复制链接进行分享！')
+				// #endif
+			},
 			//服务弹窗
 			showService() {
 				if(this.productDetail.tags.length === 0) return;
