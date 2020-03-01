@@ -75,7 +75,7 @@
 				</view>
 				<text class="cell-tit clamp">门店自提点</text>
 				<text class="cell-tip active in1line">
-					{{ currentPickupPoint.label || '门店自提点' }}
+					{{ currentPickupPoint && currentPickupPoint.label || '门店自提点' }}
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
@@ -173,7 +173,7 @@
 				<text class="price">{{ realAmount }}</text>
 			</view>
 <!--			orderDetail.preview.point-->
-			<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral > orderDetail.preview.point)">
+			<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
 				提交订单
 			</text>
 			<text class="submit disabled" v-else>

@@ -89,7 +89,7 @@
 					<image :src="showTypeImage || productDetail.picture"></image>
 					<view class="right">
 						<text class="title">{{ productDetail.name }}</text>
-						<text class="price">¥{{ productDetail.minSkuPrice }}</text>
+						<text class="price">¥{{ currentSkuPrice || productDetail.minSkuPrice }}</text>
 						<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
 						<view class="selected" v-if="specSelected.length > 0">
 							已选：
@@ -170,6 +170,7 @@
 				specChildList: [],
 				specList: [],
 				currentStock: 0,
+				currentSkuPrice: 0,
 				cartCount: 0,
 				currentSkuId: null,
 				currentNewSkuId: null,
@@ -264,6 +265,7 @@
 				this.productDetail.sku.forEach(item => {
 						if (item.data === skuStr.join('-')) {
 							this.currentStock = item.stock;
+							this.currentSkuPrice = item.price;
 							this.currentNewSkuId = item.id;
 							return;
 						}
@@ -311,6 +313,7 @@
                 this.productDetail.sku.forEach(item => {
                     if (item.data === skuStr.join('-')) {
                         this.currentStock = item.stock;
+												this.currentSkuPrice = item.price;
                         return;
                     }
                 });
