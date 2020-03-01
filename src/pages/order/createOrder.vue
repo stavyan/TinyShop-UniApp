@@ -189,7 +189,7 @@
 					<view class="con">
 						<view class="left" @tap="selectCoupon(item)">
 							<text class="title">{{item.title}}</text>
-							<text class="time">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
+							<text class="time in1line">有效期 {{ item.start_time | time }} - {{ item.end_time | time }}</text>
 						</view>
 						<view class="right">
 							<text class="price" v-if="parseInt(item.couponType.type, 10) === 1">{{item.money}}</text>
@@ -455,7 +455,7 @@
 								item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
 								item.value = item.id;
 							});
-							this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0];
+							this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0] || {};
 							if (parseInt(this.orderDetail.pickup_point_config.pickup_point_is_open, 10) !== 1) {
 								this.shippingMoney = 0;
 							}
@@ -505,13 +505,13 @@
 					params.invoice_id = this.invoiceItem.id;
 					params.invoice_content = this.invoiceContent || this.orderDetail.invoice.list[0];
 				}
-				if (this.currentCompany.value) {
+				if (this.currentCompany && this.currentCompany.value) {
 					params.company_id = this.currentCompany.value;
 				}
-				if (this.currentPickupPoint.value) {
+				if (this.currentPickupPoint && this.currentPickupPoint.value) {
 					params.pickup_id = this.currentPickupPoint.value;
 				}
-				if (this.currentShippingType.value) {
+				if (this.currentShippingType && this.currentShippingType.value) {
 					params.shipping_type = this.currentShippingType.value;
 				}
 				if (this.use_point) {
