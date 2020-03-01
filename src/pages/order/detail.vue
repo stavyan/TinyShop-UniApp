@@ -98,7 +98,7 @@
 				<text class="cell-tit clamp">开具发票</text>
 				<text class="cell-tip red in1line">
 					<text>
-						{{ `电子发票 -${parseInt(orderDetail.invoice && orderDetail.invoice.type, 10) === 1 ? '公司' : '个人'}-${orderDetail.invoice && orderDetail.invoice.title} [ ${orderDetail.invoice.content} ]` }}</text>
+						{{ `电子发票 -${parseInt(orderDetail.invoice && orderDetail.invoice.type, 10) === 1 ? '公司' : '个人'}-${orderDetail.invoice && orderDetail.invoice.title} [ ${orderDetail.invoice && orderDetail.invoice.content} ]` }}</text>
 				</text>
 			</view>
 			<view class="yt-list-cell b-b">
