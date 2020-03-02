@@ -65,7 +65,7 @@
 				</view>
 				<text class="cell-tit clamp">快递公司</text>
 				<text class="cell-tip active">
-					{{ currentCompany.label || '选择快递公司' }}
+					{{ currentCompany && currentCompany.label || '选择快递公司' }}
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
