@@ -27,10 +27,11 @@
 					<text class="title clamp in2line">{{ item.product_name }}</text>
 					<text class="spec">{{ item.sku_name || '基础款' }}</text>
 					<view class="price-box">
-						<text>
+						<text class="price-wrapper">
 							<text class="price">￥ {{item.price}}</text>
 							<text class="number"> * {{ item.num }}</text>
 						</text>
+						<text class="status" @tap.stop="navTo(`/pages/order/shipping?id=${item.id}`)" v-if="item.shipping_status == '1'">查看物流</text>
 						<text class="status"> {{ item | filterProductStatus }}</text>
 					</view>
 				</view>
@@ -520,13 +521,16 @@
 				justify-content:space-between;
 				font-size: 28upx;
 				color: $font-color-dark;
-				.price {
-					margin-bottom: 4upx;
-				}
-				.number{
-					font-size: 26upx;
-					color: $font-color-base;
-					margin-left: 20upx;
+				.price-wrapper {
+					width: 50%;
+					.price {
+						margin-bottom: 4upx;
+					}
+					.number{
+						font-size: 26upx;
+						color: $font-color-base;
+						margin-left: 20upx;
+					}
 				}
 				.status {
 					font-size: 24upx;

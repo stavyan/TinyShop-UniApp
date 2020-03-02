@@ -22,7 +22,7 @@
 			<scroll-view  scroll-y="true" class="right">
 		    <view class="category" v-if="n.child.length > 0" v-for="(n,index) in categoryList" :key="n.id" v-show="index==showCategoryIndex" >
 					<view class="banner" @tap="indexTopToDetailPage(cateTop.jump_type, cateTop.jump_link)">
-						<image :src="cateTop.cover" mode="aspectFill" />
+						<image :src="cateTop && cateTop.cover" mode="aspectFill" />
 					</view>
 			    <view class="box" v-for="(o,i) in n.child" :key="i" @tap="navToList(o.id)">
 						<view class="text">{{o.title}}</view>
@@ -60,7 +60,7 @@
 				//分类列表
 				categoryList: [],
 				search: '',
-				cateTop: null
+				cateTop: {}
 			}
 		},
 		onShow() {
