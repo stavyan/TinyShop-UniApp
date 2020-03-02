@@ -31,7 +31,7 @@
 							<text class="price">￥ {{item.price}}</text>
 							<text class="number"> * {{ item.num }}</text>
 						</text>
-						<text class="status" @tap.stop="navTo(`/pages/order/shipping?id=${item.id}`)" v-if="item.shipping_status == '1'">查看物流</text>
+						<text class="status" @tap.stop="navTo(`/pages/order/shipping?id=${item.order_id}`)" v-if="item.shipping_status == '1'">查看物流</text>
 						<text class="status"> {{ item | filterProductStatus }}</text>
 					</view>
 				</view>
