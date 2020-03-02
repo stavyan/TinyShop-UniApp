@@ -10,7 +10,7 @@
 				<view class="portrait-box">
 					<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
 					<text class="username">
-						{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname ||'请先登录'}}
+						{{ userInfo && (userInfo.nickname || userInfo.realname) || user_info.nickname || user_info.username ||'请先登录'}}
 					</text>
 				</view>
 			</view>
