@@ -527,11 +527,11 @@
 			async getCoupon(item) {
 				if (!this.token) {
 					this.maskState = 0;
-          uni.clearStorage();
           uni.showModal({
              content: '会话已过期，是否跳转登录页面？',
              success: (confirmRes) => {
                  if (confirmRes.confirm) {
+                    uni.clearStorage();
                     uni.reLaunch({
                         url: '/pages/public/login'
                     });
@@ -638,11 +638,11 @@
 				if(this.specClass === 'show'){
 					if (!this.token) {
 						this.specClass = 'none';
-	          uni.clearStorage();
 	          uni.showModal({
 	             content: '会话已过期，是否跳转登录页面？',
 	             success: (confirmRes) => {
 	                 if (confirmRes.confirm) {
+	                    uni.clearStorage();
 	                    uni.reLaunch({
 	                        url: '/pages/public/login'
 	                    });
@@ -800,11 +800,11 @@
 			async toFavorite() {
 				if (!this.token) {
 					this.specClass = 'none';
-          uni.clearStorage();
           uni.showModal({
              content: '会话已过期，是否跳转登录页面？',
              success: (confirmRes) => {
                  if (confirmRes.confirm) {
+                    uni.clearStorage();
                     uni.reLaunch({
                         url: '/pages/public/login'
                     });

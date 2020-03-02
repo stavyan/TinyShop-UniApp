@@ -137,7 +137,7 @@ http.interceptors.response.use(response => {
             throw response.data.message;
             break;
         case 404:
-            // uni.showToast({title: "你似乎到了未知领取~", icon: 'none'});
+            uni.showToast({title: response.data.message, icon: 'none'});
             throw response.data.message;
             break;
         case 429:
