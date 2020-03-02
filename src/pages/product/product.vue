@@ -21,8 +21,8 @@
 				<text class="sketch">{{ productDetail.sketch }}</text>
 				<view class="price-box">
 					<text class="price-tip">¥</text>
-					<text class="price">{{ productDetail.price }}</text>
-					<text class="m-price" v-if="productDetail.price < productDetail.market_price">¥{{ productDetail.market_price }}</text>
+					<text class="price">{{ productDetail.minSkuPrice }}</text>
+					<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
 					<!--<text class="coupon-tip">7折</text>-->
 				</view>
 				<view class="bot-row">
@@ -44,7 +44,7 @@
 				</view>
 				<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
 				<text class="yticon icon-bangzhu1"></text>
-				<button class="share-btn" open-type="share" @click="shareProduct">
+				<button class="share-btn" open-type="share">
 					立即分享
 					<text class="yticon icon-you"></text>
 				</button>
@@ -275,7 +275,7 @@
 						<image :src="showTypeImage || productDetail.picture"></image>
 						<view class="right">
 							<text class="title">{{ productDetail.name }}</text>
-							<text class="price">¥{{ currentSkuPrice || productDetail.minSkuPrice }}</text>
+							<text class="price">¥{{ productDetail.minSkuPrice }}</text>
 							<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
 							<view class="selected" v-if="specSelected.length > 0">
 								已选：
@@ -450,7 +450,6 @@
 				favorite: false,
 				shareList: [],
 				currentStock: null,
-				currentSkuPrice: null,
 				specList: [],
 				specChildList: [],
 				cartCount: 1,
@@ -494,11 +493,6 @@
 		  // #endif
 		},
 		methods:{
-			shareProduct () {
-				// #ifdef H5
-				this.$api.msg('H5不支持分享，请复制链接进行分享！')
-				// #endif
-			},
 			//服务弹窗
 			showService() {
 				if(this.productDetail.tags.length === 0) return;
@@ -532,8 +526,18 @@
 			 */
 			async getCoupon(item) {
 				if (!this.token) {
-					this.$api.msg('请您先登录！');
 					this.maskState = 0;
+          uni.clearStorage();
+          uni.showModal({
+             content: '会话已过期，是否跳转登录页面？',
+             success: (confirmRes) => {
+                 if (confirmRes.confirm) {
+                    uni.reLaunch({
+                        url: '/pages/public/login'
+                    });
+                 }
+             }
+           });
 					return;
 				}
 				uni.showLoading({title: '领取中...'});
@@ -618,7 +622,6 @@
                 this.productDetail.sku.forEach(item => {
                     if (item.data === skuStr.join('-')) {
                         this.currentStock = item.stock;
-                        this.currentSkuPrice = item.price;
                         return;
                     }
                 })
@@ -635,7 +638,17 @@
 				if(this.specClass === 'show'){
 					if (!this.token) {
 						this.specClass = 'none';
-						this.$api.msg('请您先登录！');
+	          uni.clearStorage();
+	          uni.showModal({
+	             content: '会话已过期，是否跳转登录页面？',
+	             success: (confirmRes) => {
+	                 if (confirmRes.confirm) {
+	                    uni.reLaunch({
+	                        url: '/pages/public/login'
+	                    });
+	                 }
+	             }
+	           });
 						return;
 					}
           if (this.specSelected.length < this.productDetail.base_attribute_format.length){
@@ -763,7 +776,6 @@
 				this.productDetail.sku.forEach(item => {
 						if (item.data === skuStr.join('-')) {
 							this.currentStock = item.stock;
-							this.currentSkuPrice = item.price;
 							return;
 						}
 					})
@@ -788,7 +800,17 @@
 			async toFavorite() {
 				if (!this.token) {
 					this.specClass = 'none';
-					this.$api.msg('请您先登录！');
+          uni.clearStorage();
+          uni.showModal({
+             content: '会话已过期，是否跳转登录页面？',
+             success: (confirmRes) => {
+                 if (confirmRes.confirm) {
+                    uni.reLaunch({
+                        url: '/pages/public/login'
+                    });
+                 }
+             }
+           });
 					return;
 				}
 				if (this.favorite) {
