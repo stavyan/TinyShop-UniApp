@@ -42,7 +42,7 @@
 							<view class="title">{{row.product_name}}</view>
 							<view class="spec" @tap.stop="toggleSpec(row)">{{row.sku_name || '基础版'}}</view>
 							<view class="price-number">
-								<view class="price">￥{{row.price}}</view>
+								<view class="price">￥{{row.sku && row.sku.price}}</view>
 								<view class="number">
 									<view class="sub" @tap.stop="sub(row, index)">
 										<view class="icon jian"></view>
