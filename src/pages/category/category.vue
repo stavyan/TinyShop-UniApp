@@ -63,7 +63,7 @@
 				cateTop: null
 			}
 		},
-		onLoad() {
+		onShow() {
 	    this.initData();
 		},
 		methods: {
