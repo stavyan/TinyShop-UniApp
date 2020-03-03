@@ -19,6 +19,14 @@ http.interceptors.request.use(async config => {
     const userInfo = uni.getStorageSync('userInfo');
     const merchantId = uni.getStorageSync('merchantId') || 1;
     let commonHeader = {};
+    const res  = uni.getSystemInfoSync();
+    const headers11 = {
+        'device-name': res.brand, // 设备名称
+        'width': res.screenWidth, // 屏幕宽度
+        'height': res.screenHeight, // 屏幕高度
+        'os': res.platform, // 客户端平台
+        'os-version': res.system // 操作系统版本
+        };
     if (token && userInfo) {
         commonHeader = {
             "x-api-key": token,
@@ -26,7 +34,7 @@ http.interceptors.request.use(async config => {
             "merchant-id": merchantId
         };
     }
-    config.headers = {...config.headers, ...commonHeader};
+    config.headers = {...config.headers, ...commonHeader,};
     const user = uni.getStorageSync('user');
     const loginTime = uni.getStorageSync('loginTime');
     const currentTime = new Date().getTime() / 1000;
@@ -34,9 +42,9 @@ http.interceptors.request.use(async config => {
     if (!token || currentTime + 500- loginTime < user.expiration_time) {
         commonHeader = {
             "x-api-key": token,
-            "merchant-id": merchantId
+            "merchant-id": merchantId,
         };
-        config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
+        config1.headers = await {'Content-Type': 'application/json', ...commonHeader, ...headers11 };
         return config
     } else {
         //刷新token
@@ -68,7 +76,7 @@ http.interceptors.request.use(async config => {
                 commonHeader = await {
                     "x-api-key": data.data.access_token,
                     // "merchant-id": data.data.member.merchant_id
-                    "merchant-id": merchantId
+                    "merchant-id": merchantId,
                 };
                 config1.headers = await {'Content-Type': 'application/json', ...commonHeader};
             } else {
