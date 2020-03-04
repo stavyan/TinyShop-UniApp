@@ -26,6 +26,7 @@
     "pages/money/money",
     "pages/order/createOrder",
     "pages/order/detail",
+    "pages/order/shipping",
     "pages/collection/collection",
     "pages/order/orderItem",
     "pages/footprint/footprint",

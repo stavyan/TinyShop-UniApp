@@ -129,6 +129,10 @@
 				    return;
 		    }
 		    // #endif
+		    // #ifdef MP-QQ
+				this.$api.msg('QQ小程序暂不支持充值~')
+		    return;
+		    // #endif
 				 await this.$post(`${isBindingCheck}`, {
 					// #ifdef H5
 					oauth_client: 'wechat',

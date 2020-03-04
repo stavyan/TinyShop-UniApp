@@ -4,6 +4,11 @@
   "onReachBottomDistance": 50,
   "bounce": "none",
   "titleNView": false,
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
   "usingComponents": {
     "rf-load-more": "/components/rf-load-more/rf-load-more",
     "rf-search-bar": "/components/rf-search-bar/rf-search-bar",

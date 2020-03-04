@@ -4,6 +4,11 @@
   "onReachBottomDistance": 50,
   "bounce": "none",
   "titleNView": false,
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
   "usingComponents": {
     "uni-grid": "/components/uni-grid/uni-grid",
     "uni-icons": "/components/uni-icons/uni-icons",
