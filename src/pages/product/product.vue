@@ -544,7 +544,7 @@
 				await this.$post(`${couponReceive}`, {
 					id: item.id
 				}).then(() => {
-					uni.showToast({title: '领取成功', icon: "none"});
+			    this.$api.msg('领取成功');
 					this.maskState = 0;
 				}).catch(err => {
 					this.maskState = 0;
@@ -596,38 +596,34 @@
 				await this.$get(`${productDetail}`, {
 					id,
 				}).then(async r => {
-            if (r.code === 200) {
-                this.isShowProduct = true;
-                this.productDetail = r.data;
-                this.evaluateList = await r.data.evaluate;
-                this.favorite = this.productDetail.myCollect ? true : false;
-                this.specList = this.productDetail.base_attribute_format
-                this.specList.forEach(item => {
-                    this.specChildList = [...this.specChildList, ...item.value]
-                });
-                /**
-                 * 修复选择规格存储错误
-                 * 将这几行代码替换即可
-                 * 选择的规格存放在specSelected中
-                 */
-                this.specSelected = [];
-                r.data.base_attribute_format.forEach(item => {
-                    item.value[0].selected = true
-                    this.specSelected.push(item.value[0]);
-                });
-                let skuStr = [];
-                this.specSelected.forEach(item => {
-                    skuStr.push(item.base_spec_value_id)
-                })
-                this.productDetail.sku.forEach(item => {
-                    if (item.data === skuStr.join('-')) {
-                        this.currentStock = item.stock;
-                        return;
-                    }
-                })
-            } else {
-                uni.showToast({title: r.message, icon: "none"});
-            }
+          this.isShowProduct = true;
+          this.productDetail = r.data;
+          this.evaluateList = await r.data.evaluate;
+          this.favorite = this.productDetail.myCollect ? true : false;
+          this.specList = this.productDetail.base_attribute_format
+          this.specList.forEach(item => {
+              this.specChildList = [...this.specChildList, ...item.value]
+          });
+          /**
+           * 修复选择规格存储错误
+           * 将这几行代码替换即可
+           * 选择的规格存放在specSelected中
+           */
+          this.specSelected = [];
+          r.data.base_attribute_format.forEach(item => {
+              item.value[0].selected = true
+              this.specSelected.push(item.value[0]);
+          });
+          let skuStr = [];
+          this.specSelected.forEach(item => {
+              skuStr.push(item.base_spec_value_id)
+          })
+          this.productDetail.sku.forEach(item => {
+              if (item.data === skuStr.join('-')) {
+                  this.currentStock = item.stock;
+                  return;
+              }
+          })
         }).catch(err => {
 					this.isShowProduct = false;
 					console.log(err)
@@ -652,7 +648,7 @@
 						return;
 					}
           if (this.specSelected.length < this.productDetail.base_attribute_format.length){
-            uni.showToast({ title: "请先选择规格", icon: "none" });
+				    this.$api.msg('请先选择规格');
             return;
           }
 					if (this.cartType === 'cart') {
@@ -695,21 +691,21 @@
 				} else {
 					if (this.productDetail.base_attribute_format.length === 1) {
 						if (this.specSelected.length < 1) {
-							uni.showToast({ title: "请先选择规格", icon: "none" });
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}`
 						}
 					} else if (this.productDetail.base_attribute_format.length === 2) {
 						if (this.specSelected.length < 2) {
-							uni.showToast({ title: "请先选择规格", icon: "none" });
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
 						}
 					} else if (this.productDetail.base_attribute_format.length === 3) {
 						if (this.specSelected.length < 3) {
-							uni.showToast({ title: "请先选择规格", icon: "none" });
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
@@ -727,14 +723,7 @@
 					sku_id,
 					num: this.cartCount
 				}).then(r=>{
-					if (r.code === 200) {
-						// uni.switchTab({
-						// 	url: '/pages/cart/cart'
-						// })
-						uni.showToast({ title: '添加成功，在购物车等亲', icon: "none" });
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.$api.msg('添加成功，在购物车等');
 				}).catch(err => {
 					console.log(err)
 				})
@@ -832,12 +821,8 @@
 					topic_id: this.product_id,
 					topic_type: 'product'
 				}).then(r => {
-					if (r.code === 200) {
-						this.favorite = !this.favorite;
-						uni.showToast({title: '收藏成功', icon: "none"});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.favorite = !this.favorite;
+					this.$api.msg('收藏成功');
 				}).catch(err => {
 					console.log(err)
 				})
@@ -851,12 +836,8 @@
 			async handleCollectDel() {
 				uni.showLoading({title: '加载中'});
 				await this.$del(`${collectDel}?id=${this.productDetail.myCollect.id}`).then(r => {
-					if (r.code === 200) {
-						this.favorite = !this.favorite;
-						uni.showToast({title: '取消收藏成功', icon: "none"});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.favorite = !this.favorite;
+					this.$api.msg('取消收藏成功');
 				}).catch(err => {
 					console.log(err)
 				})
@@ -870,7 +851,7 @@
 				} else {
 					if (this.productDetail.base_attribute_format.length === 1) {
 						if (this.specSelected.length < 1) {
-							uni.showToast({title: "请先选择规格", icon: "none"});
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}`;
@@ -878,7 +859,7 @@
 						}
 					} else if (this.productDetail.base_attribute_format.length === 2) {
 						if (this.specSelected.length < 2) {
-							uni.showToast({title: "请先选择规格", icon: "none"});
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
@@ -886,7 +867,7 @@
 						}
 					} else if (this.productDetail.base_attribute_format.length === 3) {
 						if (this.specSelected.length < 3) {
-							uni.showToast({title: "请先选择规格", icon: "none"});
+							this.$api.msg('请先选择规格');
 							return;
 						} else {
 							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`

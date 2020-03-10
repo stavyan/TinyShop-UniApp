@@ -15,7 +15,7 @@
 			</view>
 			<view v-else class="empty-tips">
 				空空如也
-				<view class="navigator" @tap="navToLogin">去登陆></view>
+				<view class="navigator" @tap="navTo('/pages/public/logintype')">去登陆></view>
 			</view>
 		</view>
 		<!-- 购物车列表 -->
@@ -23,7 +23,7 @@
        <view class="row" v-for="(row,index) in cartList" :key="index" >
 				<!-- 删除按钮 -->
 				<view class="menu" @tap.stop="deleteCartItem(row.sku_id, 'one')">
-					<view class="icon shanchu"></view>
+					<i class="iconfont icon iconiconfontshanchu1"></i>
 				</view>
 				<!-- 商品 -->
 				<view class="carrier" :class="[theIndex==index?'open':oldIndex==index?'close':'']" @touchstart="touchStart(index,$event)" @touchmove="touchMove(index,$event)" @touchend="touchEnd(index,$event)">
@@ -34,7 +34,7 @@
 						</view>
 					</view>
 					<!-- 商品信息 -->
-					<view class="goods-info" @tap="navToDetailPage(row.product.id)">
+					<view class="goods-info" @tap="navTo(`/pages/product/product?id=${row.product.id}`)">
 						<view class="img">
 							<image :src="row.product_img"></image>
 						</view>
@@ -45,13 +45,13 @@
 								<view class="price">￥{{row.sku && row.sku.price}}</view>
 								<view class="number">
 									<view class="sub" @tap.stop="sub(row, index)">
-										<view class="icon jian"></view>
+										<i class="iconfont icon icon-jianhao"></i>
 									</view>
 									<view class="input" @tap.stop="discard">
 										<input type="number" v-model="row.number" @input.stop="numberChange(row, $event,index)" />
 									</view>
 									<view class="add" @tap.stop="add(row, index)">
-										<view class="icon jia"></view>
+										<i class="iconfont icon iconjia1"></i>
 									</view>
 								</view>
 							</view>
@@ -137,14 +137,14 @@
 </template>
 
 <script>
-    import {
-        cartItemClear,
-        cartItemDel,
-        cartItemList,
-        cartItemUpdateNum,
-        cartItemUpdateSku,
-        productDetail
-    } from "../../api/product";
+  import {
+      cartItemClear,
+      cartItemDel,
+      cartItemList,
+      cartItemUpdateNum,
+      cartItemUpdateSku,
+      productDetail
+  } from "@/api/product";
 	export default {
 		data() {
 			return {
@@ -211,7 +211,7 @@
 						return;
 					}
           if (this.specSelected.length < this.productDetail.base_attribute_format.length){
-            uni.showToast({ title: "请先选择规格", icon: "none" });
+						this.$api.msg('请先选择规格');
             return;
           }
 					this.handleCartItemUpdateSku(this.currentSkuId, this.currentNewSkuId);
@@ -258,7 +258,7 @@
 						this.specSelected.push(item);
 					}
 				})
-				let skuStr = []
+				let skuStr = [];
 				this.specSelected.forEach(item => {
 					skuStr.push(item.base_spec_value_id)
 				})
@@ -279,47 +279,35 @@
 				await this.$get(`${productDetail}`, {
 					id: row.product_id,
 				}).then(async r => {
-            if (r.code === 200) {
-                this.productDetail = r.data;
-                this.specList = this.productDetail.base_attribute_format;
-                this.specList.forEach(item => {
-                    this.specChildList = [...this.specChildList, ...item.value]
-                });
-                /**
-                 * 修复选择规格存储错误
-                 * 将这几行代码替换即可
-                 * 选择的规格存放在specSelected中
-                 */
-                this.specSelected = [];
-                // r.data.base_attribute_format.forEach(item => {
-                //     item.value[0].selected = true
-                //     this.specSelected.push(item.value[0]);
-                // });
-                // let skuStr = [];
-                // this.specSelected.forEach(item => {
-                //     skuStr.push(item.base_spec_value_id)
-                // });
-								this.specChildList.forEach(item=>{
-									if(row.sku_name.indexOf(item.title) !== -1){
-                    item.selected = true;
-                    this.specSelected.push(item);
-									}
-								})
+          this.productDetail = r.data;
+          this.specList = this.productDetail.base_attribute_format;
+          this.specList.forEach(item => {
+              this.specChildList = [...this.specChildList, ...item.value]
+          });
+          /**
+           * 修复选择规格存储错误
+           * 将这几行代码替换即可
+           * 选择的规格存放在specSelected中
+           */
+          this.specSelected = [];
+					this.specChildList.forEach(item=>{
+						if(row.sku_name.indexOf(item.title) !== -1){
+              item.selected = true;
+              this.specSelected.push(item);
+						}
+					})
 
-                let skuStr = [];
-                this.specSelected.forEach(item => {
-                    skuStr.push(item.base_spec_value_id)
-                });
-                this.productDetail.sku.forEach(item => {
-                    if (item.data === skuStr.join('-')) {
-                        this.currentStock = item.stock;
-												this.currentSkuPrice = item.price;
-                        return;
-                    }
-                });
-            } else {
-                uni.showToast({title: r.message, icon: "none"});
-            }
+          let skuStr = [];
+          this.specSelected.forEach(item => {
+              skuStr.push(item.base_spec_value_id)
+          });
+          this.productDetail.sku.forEach(item => {
+              if (item.data === skuStr.join('-')) {
+                  this.currentStock = item.stock;
+									this.currentSkuPrice = item.price;
+                  return;
+              }
+          });
         }).catch(err => {
 					console.log(err)
 				})
@@ -348,16 +336,12 @@
 				await this.$post(`${cartItemDel}`, {
 					sku_ids: JSON.stringify(sku_ids)
 				}).then(r=>{
-					if (r.code === 200) {
 						this.selectedList.length = 0;
 						this.isAllselected = false;
 						this.sumPrice = 0;
 						this.getCartItemList();
 						this.oldIndex = null;
 						this.theIndex = null;
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -389,10 +373,10 @@
 					this.selectedList.length = 0;
 				}
 			},
-			// 跳转至登录页
-			navToLogin(){
+			// 通用跳转
+			navTo(url){
 				uni.navigateTo({
-					url: '/pages/public/login'
+					url
 				})
 			},
 			// 获取购物车列表
@@ -402,16 +386,8 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.cartList = r.data
-						uni.setStorageSync('cartNum', r.data.length)
-						// uni.setTabBarBadge({
-						// 	index: 2,
-						// 	text: r.data.length.toString()
-						// });
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.cartList = r.data
+					uni.setStorageSync('cartNum', r.data.length)
 				}).catch(err => {
 					console.log(err)
 				})
@@ -424,14 +400,10 @@
 						if (e.confirm) {
 							uni.showLoading({title: '正在清空购物车...'});
 							await this.$post(`${cartItemClear}`).then(r => {
-								if (r.code === 200) {
 									this.selectedList.length = 0;
 									this.isAllselected = false;
 									this.sumPrice = 0;
 									this.getCartItemList();
-								} else {
-									uni.showToast({title: r.message, icon: "none"});
-								}
 							}).catch(err => {
 								console.log(err)
 							})
@@ -487,12 +459,6 @@
 				//结束禁止触发效果
 				this.isStop = false;
 			},
-			// 跳转至详情页
-			navToDetailPage(id) {
-				uni.navigateTo({
-					url: `/pages/product/product?id=${id}`
-				})
-			},
 			// 选中商品
 			selected(index){
 				this.cartList[index].selected = this.cartList[index].selected?false:true;
@@ -544,7 +510,7 @@
 						if (type === 'add'){
 							this.cartList[index].number--;
 						}
-						uni.showToast({title: r.message, icon: "none"});
+						this.$api.msg(r.message);
 					}
 				}).catch(err => {
 					if (type === 'add'){
@@ -566,12 +532,10 @@
 				}
 				data.type = 'cart';
 				data.data = ids.join(',');
-                this.selectedList.length = 0;
-                this.isAllselected = false;
-                this.sumPrice = 0;
-                uni.navigateTo({
-                    url: `/pages/order/createOrder?data=${JSON.stringify(data)}`
-                });
+        this.selectedList.length = 0;
+        this.isAllselected = false;
+        this.sumPrice = 0;
+        this.navTo(`/pages/order/createOrder?data=${JSON.stringify(data)}`);
 			},
 			// 合计
 			sum(){
@@ -735,7 +699,7 @@
 			.menu{
 				.icon{
 					color: #fff;
-					// font-size: 25upx;
+					font-size: 60upx;
 				}
 				position: absolute;
 				width: 30%;

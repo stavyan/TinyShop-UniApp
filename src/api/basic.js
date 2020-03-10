@@ -16,9 +16,6 @@ const collectDel = "/tiny-shop/v1/common/collect/delete";
 // 分享/转发
 const transmitCreate = "/tiny-shop/v1/common/transmit/create";
 
-// 上传文件/图片
-const uploadFile = "/v1/file/images";
-
 // 广告
 const advList = "/tiny-shop/v1/common/adv/index";
 
@@ -30,18 +27,13 @@ const payCreate = "/tiny-shop/v1/common/pay/create";
 // 充值
 const wechatConfig = "/tiny-shop/v1/third-party/wechat-js-sdk";
 
-// 商户列表
-const merchantIndex = "/merchants/v1/merchant/index";
-
 export {
     provinceList,
     collectCreate,
     collectDel,
     transmitCreate,
-    uploadFile,
     advList,
     payCreate,
     configList,
-    wechatConfig,
-    merchantIndex
+    wechatConfig
 };

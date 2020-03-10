@@ -35,28 +35,27 @@ export default{
        this.$get(wechatH5Login, {
         code: this.code
 			 }).then(async r => {
-				 if (r.code === 200) {
-					 if (!r.data.login) {
-						 this.user_info = r.data.user_info.original;
-						 uni.showModal({
-							 content: '你尚未绑定账号，是否跳转登录页面？',
-							 success: (confirmRes) => {
-								 if (confirmRes.confirm) {
-									 const url = `/pages/public/login?userInfo=${JSON.stringify(this.user_info)}`;
-									 uni.navigateTo({
-										 url
-									 })
-								 }
+				 if (!r.data.login) {
+					 this.user_info = r.data.user_info.original;
+					 uni.showModal({
+						 content: '你尚未绑定账号，是否跳转登录页面？',
+						 success: (confirmRes) => {
+							 if (confirmRes.confirm) {
+								 const url = `/pages/public/login?userInfo=${JSON.stringify(this.user_info)}`;
+								 uni.navigateTo({
+									 url
+								 })
 							 }
-						 });
-					 } else {
-						 await this.login(r.data.user_info);
-						 uni.showToast({title: '已为您授权登录', icon: "none"});
-						 const url = `/pages/user/user`;
-					   uni.reLaunch({
-						    url
-					   });
-					 }
+						 }
+					 });
+				 } else {
+					 await this.login(r.data.user_info);
+					 this.$api.msg('已为您授权登录');
+					 const url = `/pages/user/user`;
+
+				   uni.reLaunch({
+					    url
+				   });
 				 }
 			 })
 		}
@@ -114,31 +113,27 @@ export default{
                                     iv: infoRes.iv,
                                     code: loginRes.code
                                 }).then(async r => {
-                                    if (r.code === 200) {
-                                        if (!r.data.login) {
-                                            _this.user_info = r.data.user_info;
-                                            uni.showModal({
-                                                content: '你尚未绑定账号，是否跳转登录页面？',
-                                                success: (confirmRes) => {
-                                                    if (confirmRes.confirm) {
-                                                        const url = `/pages/public/login?userInfo=${JSON.stringify(_this.user_info)}`;
-                                                        uni.navigateTo({
-                                                            url
-                                                        })
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            await _this.login(r.data.user_info);
-                                            uni.showToast({title: '已为您授权登录', icon: "none"});
-                                            const url = `/pages/user/user`;
-                                            uni.reLaunch({
-                                                url
-                                            });
-                                        }
-                                    } else {
-                                        uni.showToast({title: r.message, icon: "none"});
-                                    }
+                                  if (!r.data.login) {
+                                      _this.user_info = r.data.user_info;
+                                      uni.showModal({
+                                          content: '你尚未绑定账号，是否跳转登录页面？',
+                                          success: (confirmRes) => {
+                                              if (confirmRes.confirm) {
+                                                  const url = `/pages/public/login?userInfo=${JSON.stringify(_this.user_info)}`;
+                                                  uni.navigateTo({
+                                                      url
+                                                  })
+                                              }
+                                          }
+                                      });
+                                  } else {
+                                    await _this.login(r.data.user_info);
+                                    this.$api.msg('已为您授权登录');
+                                    const url = `/pages/user/user`;
+                                    uni.reLaunch({
+                                        url
+                                    });
+                                  }
                                 })
                             },
                             fail: function (err) {

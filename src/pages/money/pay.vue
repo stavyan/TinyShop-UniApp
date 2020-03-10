@@ -94,11 +94,7 @@
 					id,
 					simplify: 1
 				}).then(r => {
-					if (r.code === 200) {
-						this.money = r.data.pay_money
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.money = r.data.pay_money
 				}).catch(err => {
 					console.log(err)
 				});
@@ -113,11 +109,7 @@
 				await this.$get(`${configList}`, {
 					field: 'order_balance_pay,order_wechat_pay,order_ali_pay'
 				}).then(r => {
-					if (r.code === 200) {
-						this.payTypeList = r.data
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.payTypeList = r.data
 				}).catch(err => {
 					console.log(err)
 				});
@@ -125,7 +117,7 @@
 			//确认支付
 			async confirm () {
 				if (this.payType !== 5) {
-					uni.showToast({title: '暂时只提供余额支付~', icon: "none"});
+			    this.$api.msg('暂时只提供余额支付~');
 					return
 				}
 				uni.showLoading({title: '正在支付...'});
@@ -153,14 +145,10 @@
 					trade_type: 'js',
 					pay_type: this.payType
 				}).then(async r => {
-					if (r.code === 200) {
-						uni.showToast({title: '支付成功', icon: "none"});
-						uni.redirectTo({
-							url: '/pages/money/paySuccess'
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+				  this.$api.msg('支付成功~');
+					uni.redirectTo({
+						url: '/pages/money/paySuccess'
+					});
 				}).catch(err => {
 					console.log(err)
 				})

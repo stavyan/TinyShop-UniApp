@@ -47,9 +47,6 @@ const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 // 商品评价列表
 const orderProductExpressDetails = "/tiny-shop/v1/member/order-product-express/details";
 
-// 品牌列表
-const brandList = "/tiny-shop/v1/product/brand/index";
-
 export {
     indexList,
     productCate,
@@ -68,7 +65,6 @@ export {
     orderFreightFee,
     evaluateList,
     orderPreview,
-    brandList,
     orderProductExpressDetails,
     cartItemUpdateSku
 };

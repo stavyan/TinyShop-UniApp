@@ -5,7 +5,7 @@
 			@link="toCategory"
 			@search="toSearch"
 			:title="'分类'"
-			:icon="'icon-fenlei1'"
+			:icon="'iconfenlei'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
 		<!-- 轮播图 -->
@@ -99,14 +99,14 @@
 	 * @date 2020-01-08 14:14
 	 * @copyright 2019
 	 */
-	import {brandList, indexList} from "@/api/product";
+	import {indexList} from "@/api/product";
+  import {merchantIndex} from "@/api/merchant";
 	import uniGrid from "@/components/uni-grid/uni-grid.vue";
 	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	import rfSwipeDot from '@/components/rf-swipe-dot/rf-swipe-dot';
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
-  import {merchantIndex} from "../../api/basic";
 	export default {
 		components: {
 			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar
@@ -143,6 +143,7 @@
 			this.getIndexList('refresh');
 		},
 		methods: {
+	    // 监听切换商户
       bindPickerChange (e) {
         uni.setStorageSync('merchantId', this.merchantList[e.target.value].id);
         uni.setStorageSync('merchantIndex', e.target.value);
@@ -264,11 +265,8 @@
 	}
 </script>
 <style lang="scss" scoped>
-page {
-		position: relative;
-		background-color: #fff;
-}
 .index {
+	/*轮播图*/
 	.swiper {
 		width: 100%;
 		margin-top: 10upx;
@@ -295,6 +293,7 @@ page {
 			}
 		}
 	}
+	/*分类列表*/
 	.category-list {
 		width: 100%;
 		padding: 0 0 30upx 0;
@@ -326,16 +325,7 @@ page {
 			}
 		}
 	}
-	.banner {
-		width: 92%;
-		margin: 20upx 4% 0;
-		image {
-			width: 100%;
-			height: 22vw;
-			border-radius: 11vw;
-			box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.3);
-		}
-	}
+	/*版权显示*/
 	.copyright {
 		margin: 10upx 0;
 		width: 100%;
@@ -347,6 +337,7 @@ page {
 			text-decoration: none;
 		}
 	}
+	/*商户切换*/
 	.uni-list {
 		padding: 20upx 0;
 		.uni-list-cell {

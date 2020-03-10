@@ -39,7 +39,8 @@
 						<view v-for="(keyword,index) in oldKeywordList" @tap="doSearch(keyword)" :key="index">{{keyword}}</view>
 					</view>
 				</view>
-				<view class="keyword-block">
+				{{ hotKeywordList.length }}
+				<view class="keyword-block" v-if="hotKeywordList.length > 0">
 					<view class="keyword-list-header">
 						<view>热门搜索</view>
 						<view>
@@ -155,11 +156,7 @@
 				key = key ? key : this.keyword ? this.keyword : this.defaultKeyword;
 				this.keyword = key;
 				this.saveKeyword(key); //保存为历史
-				uni.showToast({
-					title: key,
-					icon: 'none',
-					duration: 2000
-				});
+				this.$api.msg(key);
 				uni.navigateTo({
 					url: `/pages/product/list?keyword=${key}`
 				})

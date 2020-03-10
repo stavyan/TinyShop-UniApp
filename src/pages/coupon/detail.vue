@@ -130,11 +130,7 @@ export default {
 		async emptyInvalidCoupon() {
 			uni.showLoading({title: '正在清空购物车...'});
 			await this.$get(`${couponClear}`).then(r => {
-				if (r.code === 200) {
-					this.getMyCouponList();
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
+				this.getMyCouponList();
 			}).catch(err => {
 				console.log(err)
 			})
@@ -170,15 +166,11 @@ export default {
 			await this.$post(`${couponReceive}`, {
 				id: item.id
 			}).then(r => {
-				if (r.code === 200) {
-					uni.showToast({title: '领取成功', icon: "none"});
-					setTimeout(() => {
-						this.couponList = [];
-						this.getMyCouponDetail(id);
-					}, 1.5 * 1000)
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
+        this.$api.msg('领取成功');
+				setTimeout(() => {
+					this.couponList = [];
+					this.getMyCouponDetail(id);
+				}, 1.5 * 1000)
 			}).catch(err => {
 				console.log(err)
 			})
@@ -217,12 +209,7 @@ export default {
 			await this.$get(`${couponDetail}`, {
 				id,
 			}).then(r=>{
-				if (r.code === 200) {
-					this.couponList.push(r.data);
-					console.log(this.couponList)
-				} else {
-					uni.showToast({ title: r.message, icon: "none" });
-				}
+				this.couponList.push(r.data);
 			}).catch(err => {
 				console.log(err)
 			})

@@ -207,10 +207,7 @@
 								}
 							},
 							fail: ()=>{
-								uni.showToast({
-									title: "error3",
-									duration: 2000,
-								})
+						    this.$api.msg('error3');
 							},
 							complete() {
 								uni.hideLoading();
@@ -282,10 +279,7 @@
 											});
 										},
 										fail: ()=>{
-											uni.showToast({
-												title: "error0",
-												duration: 2000,
-											})
+						          this.$api.msg('error0');
 										}
 									});
 								});
@@ -299,10 +293,7 @@
 						// #endif
 					},
 					fail: (res)=>{
-						uni.showToast({
-							title: "error1",
-							duration: 2000,
-						})
+	          this.$api.msg('error1');
 					},
 					complete: () => {
 						uni.hideLoading();

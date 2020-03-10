@@ -112,7 +112,7 @@
 			checkPhoneIsValid (mobile) {
 				const reg = /^1[0-9]{10,10}$/;
 				if (!reg.test(mobile)) {
-					uni.showToast({ title: "请输入正确的手机号", icon: "none" });
+				  this.$api.msg('请输入正确的手机号');
 					return false;
 				} else {
 					return true;
@@ -120,7 +120,7 @@
 			},
 			blurRePasswordChange(e) {
 				if (this.password !== e.detail.value) {
-					uni.showToast({ title: "两次输入的密码不一致", icon: "none" });
+				  this.$api.msg('两次输入的密码不一致');
 				}
 			},
 			getSmsCode () {
@@ -130,23 +130,19 @@
 					mobile: this.mobile,
 					usage: 'up-pwd'
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: `验证码发送成功, 验证码是${r.data}`, icon: "none" });
-						this.smsCodeBtnDisabled = true;
-						let time = 59;
-						let timer = setInterval(() => {
-							if(time === 0) {
-								clearInterval(timer);
-								this.smsCodeBtnDisabled = false;
-							} else {
-								this.codeSeconds = time;
-								this.smsCodeBtnDisabled = true;
-								time--
-							 }
-						},1000)
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+				  this.$api.msg(`验证码发送成功, 验证码是${r.data}`);
+					this.smsCodeBtnDisabled = true;
+					let time = 59;
+					let timer = setInterval(() => {
+						if(time === 0) {
+							clearInterval(timer);
+							this.smsCodeBtnDisabled = false;
+						} else {
+							this.codeSeconds = time;
+							this.smsCodeBtnDisabled = true;
+							time--
+						 }
+					},1000)
 				}).catch(err => {
 					console.log(err)
 				})
@@ -194,7 +190,7 @@
 			async toUpdatePassword(e){
 				const formData = e.detail.value;
 				if (formData.password !== formData.password_repetition) {
-					uni.showToast({ title: "两次输入的密码不一致", icon: "none" });
+			    this.$api.msg('两次输入的密码不一致');
 					return;
 				}
 				const rule = [
@@ -205,7 +201,7 @@
 				];
 				const checkRes = graceChecker.check(formData, rule);
 				if(!checkRes){
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+			    this.$api.msg(graceChecker.error);
 					return;
 				}
 				uni.showLoading({title:'请稍等...'});
@@ -225,15 +221,11 @@
 				this.$post(updatePassword, {
 					...params,
 					...formData
-				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '密码重置成功！', icon: "none" });
-						uni.navigateTo({
-							url: '/pages/public/login'
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+				}).then(() =>{
+			    this.$api.msg('密码重置成功');
+					uni.navigateTo({
+						url: '/pages/public/login'
+					})
 				}).catch(err => {
 					console.log(err)
 				})

@@ -71,11 +71,7 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.feedbackList = r.data
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.feedbackList = r.data
 				}).catch(err => {
 					console.log(err)
 				})

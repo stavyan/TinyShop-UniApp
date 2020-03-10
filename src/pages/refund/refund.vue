@@ -127,7 +127,7 @@
 				];
 				const checkRes = graceChecker.check(formData, rule);
 				if(!checkRes){
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+					this.$api.msg(graceChecker.error);
 					return;
 				}
 				uni.showLoading({title: '加载中...'});
@@ -135,14 +135,10 @@
 					id: this.productInfo.id,
 					...formData
 				}).then(r => {
-					if (r.code === 200) {
-						uni.showToast({title: '退款成功', icon: "none"});
-						uni.navigateBack({
-							delta: 2
-						});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.$api.msg('退款成功');
+					uni.navigateBack({
+						delta: 2
+					});
 				}).catch(err => {
 					console.log(err)
 				})

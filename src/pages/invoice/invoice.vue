@@ -47,11 +47,7 @@
 				    success: (e)=>{
 				    	if(e.confirm){
 				    		this.$del(`${invoiceDel}?id=${id}`).then(r => {
-									if (r.code === 200) {
-										this.getInvoiceList();
-									} else {
-										uni.showToast({ title: r.message, icon: "none" });
-									}
+									this.getInvoiceList();
 								})
 				    	}
 				    }
@@ -87,11 +83,7 @@
 			async getInvoiceList () {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${invoiceList}`).then(r=>{
-					if (r.code === 200) {
-						this.invoiceList = r.data
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.invoiceList = r.data
 				}).catch(err => {
 					console.log(err)
 				})

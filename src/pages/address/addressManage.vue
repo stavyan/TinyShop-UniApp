@@ -23,16 +23,8 @@
 		</view>
 		<view class="row b-b">
 			<text class="tit">详细地址</text>
-			<!--<text @tap="chooseLocation" class="input">-->
-				<!--{{addressData.addressName}}-->
-			<!--</text>-->
-			<!--<text class="yticon icon-shouhuodizhi"></text>-->
 			<input class="input" type="text" v-model="addressData.address_details" @blur="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
 		</view>
-		<!--<view class="row b-b">-->
-			<!--<text class="tit">门牌号</text>-->
-			<!--<input class="input" type="text" v-model="addressData.area" placeholder="楼号、门牌" placeholder-class="placeholder" />-->
-		<!--</view>-->
 		<view class="row default-row">
 			<text class="tit">设为默认</text>
 			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
@@ -42,9 +34,15 @@
 </template>
 
 <script>
-	import {addressCreate, addressUpdate, addressDetail} from "../../api/userInfo";
-	import {provinceList} from "../../api/basic";
-
+	/**
+	 * @des 收货地址列表
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-03-10 18:00
+	 * @copyright 2019
+	 */
+	import {addressCreate, addressUpdate, addressDetail} from "@/api/userInfo";
+	import {provinceList} from "@/api/basic";
 	export default {
 		data() {
 			return {
@@ -67,6 +65,7 @@
 			this.initData(options);
 		},
 		methods: {
+	    // 数据初始化
 			async initData(options) {
 				let title = '新增收货地址';
 				if(options.type==='edit'){
@@ -79,16 +78,13 @@
 				});
 				await this.getProvinceList();
 			},
+	    // 获取收货地址
 			async getAddressDetail(id) {
 				uni.showLoading({title:'加载中...'});
 				await this.$get(`${addressDetail}`, {
 					id
 				}).then(async r => {
-					if (r.code === 200) {
-						this.addressData = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.addressData = r.data;
 				}).catch(err => {
 					console.log(err)
 				})
@@ -103,8 +99,8 @@
 				let province_name = null;
 				let city_name = null;
 				let area_name = null;
+				uni.showLoading({title:'加载中...'});
 				await this.$get(`${provinceList}`).then(async r => {
-					if (r.code === 200) {
 						this.multiArray[0] = r.data;
 						if (this.addressData.province_id) {
 							r.data.forEach((item, index) => {
@@ -118,10 +114,10 @@
 							province_id = this.multiArray[0][0].id
 							province_name = this.multiArray[0][0].title
 						}
+						uni.showLoading({title:'加载中...'});
 						await this.$get(`${provinceList}`, {
 							pid: province_id
 						}).then(async r => {
-							if (r.code === 200) {
 								this.multiArray[1] = r.data;
 								if (this.addressData.city_id) {
 									r.data.forEach((item, index) => {
@@ -135,10 +131,10 @@
 									city_id = this.multiArray[1][0].id
 									city_name = this.multiArray[1][0].title
 								}
+								uni.showLoading({title:'加载中...'});
 								await this.$get(`${provinceList}`, {
 									pid: city_id
 								}).then(r => {
-									if (r.code === 200) {
 										this.multiArray[2] = r.data;
 										if (this.addressData.area_id) {
 											r.data.forEach((item, index) => {
@@ -157,21 +153,12 @@
 										this.addressData.city_id = city_id
 										this.addressData.area_id = area_id
 										this.addressData.address_name = `${province_name}, ${city_name}, ${area_name}`
-									} else {
-										uni.showToast({title: r.message, icon: "none"});
-									}
 								}).catch(err => {
 									console.log(err)
 								})
-							} else {
-								uni.showToast({title: r.message, icon: "none"});
-							}
 						}).catch(err => {
 							console.log(err)
 						})
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -197,7 +184,6 @@
 								await this.$get(`${provinceList}`, {
 									pid: this.multiArray[0][e.detail.value].id
 								}).then(async r => {
-									if (r.code === 200) {
 										this.multiArray[1] = r.data;
 										city_id = this.multiArray[1][0].id;
 										city_name = this.multiArray[1][0].title;
@@ -207,19 +193,12 @@
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.column].id
 										}).then(r => {
-											if (r.code === 200) {
 												this.multiArray[2] = r.data
 												area_id = this.multiArray[2][0].id;
 												area_name = this.multiArray[2][0].title;
-											} else {
-												uni.showToast({title: r.message, icon: "none"});
-											}
 										}).catch(err => {
 											console.log(err)
 										})
-									} else {
-										uni.showToast({title: r.message, icon: "none"});
-									}
 								}).catch(err => {
 									console.log(err)
 								});
@@ -237,14 +216,11 @@
 										city_name = this.multiArray[1][e.detail.value].title;
 										cityIndex = e.detail.value;
 										this.multiIndex = [this.multiIndex[0], cityIndex, 0];
+										uni.showLoading({title:'加载中...'});
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.value].id
 										}).then(r => {
-											if (r.code === 200) {
 												this.multiArray[2] = r.data
-											} else {
-												uni.showToast({title: r.message, icon: "none"});
-											}
 										}).catch(err => {
 											console.log(err)
 										})
@@ -341,12 +317,8 @@
 					city_id: data.city_id,
 					area_id: data.area_id
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 收货地址修改成功！', icon: "none" });
+						this.$api.msg('恭喜您, 收货地址修改成功！');
 						uni.navigateBack();
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -362,12 +334,8 @@
 					city_id: data.city_id,
 					area_id: data.area_id
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 收货地址创建成功！', icon: "none" });
+						this.$api.msg('恭喜您, 收货地址修改成功！');
 						uni.navigateBack();
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -401,7 +369,7 @@
 			font-size: 30upx;
 			color: $font-color-dark;
 		}
-		.icon-shouhuodizhi{
+		.iconfont {
 			font-size: 36upx;
 			color: $font-color-light;
 		}

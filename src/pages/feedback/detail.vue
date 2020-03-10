@@ -97,11 +97,7 @@
                 await this.$get(`${opinionDetail}`, {
                     id
                 }).then(r => {
-                    if (r.code === 200) {
-                        this.feedbackDetail = r.data;
-                    } else {
-                        uni.showToast({title: r.message, icon: "none"});
-                    }
+                    this.feedbackDetail = r.data;
                 }).catch(err => {
                     console.log(err)
                 })

@@ -85,12 +85,7 @@ export default {
 				//上传失败处理
 				this.imageList.pop();
 				uni.hideLoading();
-				uni.showToast({
-					title: '上传中出现问题，已终止上传',
-					icon: 'none',
-					mask: true,
-					duration: 2000
-				});
+		    this.$api.msg('上传中出现问题，已终止上传');
 			}
 		},
 		uploadImage: function(file){

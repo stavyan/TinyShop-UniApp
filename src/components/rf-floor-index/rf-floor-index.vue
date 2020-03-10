@@ -9,7 +9,7 @@
 		</view>
 		<!--列表-->
 		<view class="f-header" @tap="toList">
-			<image src="/static/h1.png"></image>
+			<i class="iconfont icontuijian" />
 			<view class="tit-box">
 				<text class="tit">{{ header.title }}</text>
 				<text class="tit2">{{ header.desc }}</text>
@@ -111,10 +111,9 @@ export default {
 		height: 140upx;
 		padding: 6upx 30upx 8upx;
 		background: #fff;
-		image{
-			flex-shrink: 0;
-			width: 80upx;
-			height: 80upx;
+		.iconfont {
+			color: $base-color;
+			font-size: $font-lg + 30upx;
 			margin-right: 20upx;
 		}
 		.tit-box{

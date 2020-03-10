@@ -136,28 +136,28 @@ http.interceptors.response.use(response => {
             throw response.data.message;
             break;
         case 400:
-            uni.showToast({title: "错误的请求", icon: 'none'});
+            this.$api.msg('错误的请求');
             throw response.data.message;
             break;
         case 405:
             // uni.clearStorageSync();
-            uni.showToast({title: "当前操作不被允许", icon: 'none'});
+            this.$api.msg('当前操作不被允许');
             throw response.data.message;
             break;
         case 404:
-            uni.showToast({title: response.data.message, icon: 'none'});
+            this.$api.msg(response.data.message);
             throw response.data.message;
             break;
         case 429:
-            uni.showToast({title: "请求过多，先休息一下吧~", icon: 'none'});
+            this.$api.msg('请求过多，先休息一下吧~');
             throw response.data.message;
             break;
         case 500:
-            uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
+            this.$api.msg('服务器打瞌睡了~');
             throw response.data.message;
             break;
         default:
-            uni.showToast({ title: response.data.message, icon: "none" });
+            this.$api.msg(response.data.message);
             throw response.data.message;
             break;
     }

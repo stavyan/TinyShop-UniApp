@@ -4,7 +4,7 @@
 		<rf-search-bar
 			@link="toIndex"
 			@search="toSearch"
-			:icon="'icon-xiatubiao--copy'"
+			:icon="'iconxiatubiao--copy'"
 			:title="'主页'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
@@ -42,9 +42,16 @@
 	</view>
 </template>
 <script>
+	/**
+	 * @des 分类
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-03-10 18:19
+	 * @copyright 2019
+	 */
 	import {productCate} from "@/api/product";
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
-  import {advList} from "../../api/basic";
+  import {advList} from "@/api/basic";
   export default {
 		components: {
 			rfSearchBar
@@ -161,6 +168,7 @@
 		background-color: #fff;
 	}
 	#category {
+		/*模块分类*/
 		.category-list{
 			width: 100%;
 			background-color: #fff;

@@ -162,7 +162,7 @@
 						if (data.code === 200) {
 							_this.imageList.push(data.data.url)
 						} else {
-							uni.showToast({ title: data.message, icon: "none" });
+						    this.$api.msg(data.message);
 						}
 					}
 				 });
@@ -199,14 +199,10 @@
                 uni.showLoading({title: '反馈中...'});
                 await this.$post(`${opinionCreate}`, {
                     ...this.sendDate
-                }).then(r => {
-                    if (r.code === 200) {
-                        uni.navigateBack({
-                          delta: 1
-                        });
-                    } else {
-                        uni.showToast({title: r.message, icon: "none"});
-                    }
+                }).then(() => {
+                    uni.navigateBack({
+                      delta: 1
+                    });
                 }).catch(err => {
                     console.log(err)
                 })

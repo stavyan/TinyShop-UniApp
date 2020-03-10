@@ -349,11 +349,7 @@
 				await this.$get(`${orderFreightFee}`, {
 					...params
 				}).then(r => {
-					if (r.code === 200) {
 						this.shippingMoney = r.data.shipping_money;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -378,11 +374,7 @@
 				await this.$get(`${orderDetail}`, {
 					id
 				}).then(r => {
-					if (r.code === 200) {
-						this.orderDetail = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.orderDetail = r.data;
 				}).catch(err => {
 					console.log(err)
 				})

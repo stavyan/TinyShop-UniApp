@@ -6,7 +6,7 @@
 		<view v-if="headerShow" class="header" :style="{ position: headerPosition,top:headerTop,opacity: afterHeaderOpacity }">
 			<!-- 跳转分类模块 -->
 			<view class="addr" @tap.stop="link">
-				<view class="icon yticon" :class="icon" ></view>
+				<i class="iconfont" :class="icon"></i>
 				{{ title }}
 			</view>
 			<!-- 搜索框 -->
@@ -121,7 +121,7 @@ export default {
 			display: flex;
 			align-items: center;
 			font-size: 28upx;
-			.icon {
+			.iconfont {
 				height: 60upx;
 				margin-right: 6upx;
 				margin-left: 15upx;

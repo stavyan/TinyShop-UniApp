@@ -167,11 +167,7 @@ export default {
 		async emptyInvalidCoupon() {
 			uni.showLoading({title: '正在清空购物车...'});
 			await this.$get(`${couponClear}`).then(r => {
-				if (r.code === 200) {
-					this.getMyCouponList();
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
+				this.getMyCouponList();
 			}).catch(err => {
 				console.log(err)
 			})
@@ -229,12 +225,8 @@ export default {
 				if (type === 'refresh') {
 					uni.stopPullDownRefresh();
 				}
-				if (r.code === 200) {
 					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 					this.couponList = [ ...this.couponList, ...r.data ]
-				} else {
-					uni.showToast({ title: r.message, icon: "none" });
-				}
 			}).catch(err => {
 				console.log(err)
 			})

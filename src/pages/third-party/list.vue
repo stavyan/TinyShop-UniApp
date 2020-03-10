@@ -99,12 +99,8 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
 						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 						this.thirdPartyAuthList = [ ...this.thirdPartyAuthList, ...r.data ];
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
 				}).catch(err => {
 					console.log(err)
 				})
@@ -118,13 +114,9 @@
 			async unBind (id) {
 				uni.showLoading({title:'加载中...'});
 				await this.$del(`${thirdPartyAuthDelete}?id=${id}`).then(r=>{
-					if (r.code === 200) {
 						this.page = 1;
 						this.thirdPartyAuthList = [];
 						this.getThirdPartyAuthList();
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
 				}).catch(err => {
 					console.log(err)
 				})

@@ -21,11 +21,10 @@
 					<!--立即开通-->
 				<!--</view>-->
 				<view class="tit">
-					<text class="yticon icon-iLinkapp-"></text>
+					<i class="iconfont iconiLinkapp-" />
 					欢迎来到RageFrame微商城
 				</view>
 				<text class="e-m">RageFrame 版权所有</text>
-				<!--<text class="e-b">正在开发中...</text>-->
 			</view>
 		</view>
 		<view
@@ -57,14 +56,14 @@
 					@tap="navTo(item.url)"
 					hover-class="common-hover"
 					:hover-stay-time="50">
-					<text :class="item.icon"></text>
+					<i class="iconfont" :class="item.icon" />
 					<text>{{ item.title }}</text>
 				</view>
 			</view>
 			<!-- 浏览历史 -->
 			<view class="history-section icon">
 				<view class="sec-header" @tap="navTo('/pages/footprint/footprint')">
-					<text class="yticon icon-lishijilu"></text>
+					<i class="iconfont yticon iconlishijilu"></i>
 					<text>我的足迹</text>
 				</view>
 				<view v-if="token">
@@ -78,24 +77,23 @@
 						</view>
 					</scroll-view>
 					<view class="no-foot-print" v-else-if="footList.length === 0" @tap="navTo('/pages/product/list')">
-						<uni-icons class="no-foot-print-icon" color="#fa436a" size="28" type="undo" />
+						<i class="iconfont iconshare no-foot-print-icon" />
 						先去浏览一些吧~
 					</view>
 				</view>
 				<view class="no-foot-print" v-else @tap="navTo('/pages/footprint/footprint')">
-					<uni-icons class="no-foot-print-icon" color="#fa436a" size="28"
-										 type="locked" />
+					<i class="iconfont iconmima no-foot-print-icon" />
 					登陆后查看
 				</view>
-				<list-cell icon="icon-iconfontweixin" iconColor="#e07472" @eventClick="directTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
-				<list-cell icon="icon-dizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
-				<list-cell icon="icon-shoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
+				<list-cell icon="iconiconfontweixin" iconColor="#e07472" @eventClick="directTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
+				<list-cell icon="icondizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
+				<list-cell icon="iconshoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
 				<button class="share-btn" open-type="share">
-					<list-cell icon="icon-share" iconColor="#9789f7" title="分享" tips="将RageFrame分享分享给你的好友">
+					<list-cell icon="iconshare" iconColor="#9789f7" title="分享" tips="将RageFrame分享给你的好友">
 					</list-cell>
 				</button>
 				<!--<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>-->
-				<list-cell icon="icon-shezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
+				<list-cell icon="iconshezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 			</view>
 		</view>
 	</view>
@@ -110,14 +108,12 @@
 	 */
 	import listCell from '@/components/mix-list-cell';
   import {footPrintList, memberInfo} from '@/api/userInfo';
-	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	import {wechatH5Login} from '@/api/login';
 	import {mapMutations} from 'vuex';
 	let startY = 0, moveY = 0, pageAtTop = true;
   export default {
 		components: {
-			listCell,
-			uniIcons
+			listCell
 		},
 		data(){
 			return {
@@ -129,11 +125,11 @@
 				footList: [],
 				user_info: {},
 				orderSectionList: [
-					{ title: '待付款', icon: 'yticon icon-daifukuan', url: '/pages/order/order?state=0' },
-					{ title: '待发货', icon: 'yticon icon-shouye', url: '/pages/order/order?state=1' },
-					{ title: '待收货', icon: 'yticon icon-yishouhuo', url: '/pages/order/order?state=2' },
-					{ title: '评价', icon: 'yticon icon-pingjia', url: '/pages/order/order?state=3' },
-					{ title: '退款/售后', icon: 'yticon icon-shouhoutuikuan', url: '/pages/order/refund' },
+					{ title: '待付款', icon: 'yticon icondaifukuan', url: '/pages/order/order?state=0' },
+					{ title: '待发货', icon: 'yticon iconshouye', url: '/pages/order/order?state=1' },
+					{ title: '待收货', icon: 'yticon iconyishouhuo', url: '/pages/order/order?state=2' },
+					{ title: '评价', icon: 'yticon iconpingjia', url: '/pages/order/order?state=3' },
+					{ title: '退款/售后', icon: 'yticon iconshouhoutuikuan', url: '/pages/order/refund' },
 				],
 				amountList: [
 					{ title: '余额', value: 0, url: '/pages/user/account' },
@@ -224,7 +220,7 @@
 			// 统一跳转接口,拦截未登录路由
 			navTo(url){
 				if (!url) {
-					uni.showToast({title: '我还没写', icon: "none"});
+          this.$api.msg('我还没写');
 					return;
 				}
 				if(!this.token){
@@ -431,7 +427,6 @@
 				}
 				.yticon{
 					font-size: 48upx;
-					margin-bottom: 18upx;
 					color: #fa436a;
 				}
 				.icon-shouhoutuikuan{
@@ -489,7 +484,8 @@
 					text-align: center;
 					padding: 48upx 0;
 					.no-foot-print-icon {
-						font-size: $font-lg;
+						color: $base-color;
+						font-size: $font-lg + 2upx;
 						margin-right: 10upx;
 					}
 				}
@@ -520,5 +516,4 @@
 	  background: #fff;
 	  border-radius: 10upx;
 	}
-
 </style>

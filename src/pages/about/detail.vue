@@ -1,34 +1,23 @@
 <template>
 	<view class="about">
-		<view class="shop-info" v-show="title === '商城介绍'">
-			<image :src="detail.web_logo" />
-			<view v-show="detail.title"><text>商城名称: </text><text>{{ detail.title }}</text></view>
-			<view v-show="detail.web_url"><text>官方网址: </text><text>{{ detail.web_url }}</text></view>
-<!--			<view v-show="detail.key_words"><text>商城关键字: </text><text>{{ detail.key_words }}</text></view>-->
-<!--			<view v-show="detail.web_desc"><text>商城描述: </text><text>{{ detail.web_desc	 }}</text></view>-->
-			<view v-show="detail.web_phone"><text>商城联系方式: </text><text>{{ detail.web_phone }}</text></view>
-			<view v-show="detail.web_email"><text>商城邮箱: </text><text>{{ detail.web_email }}</text></view>
-			<view v-show="detail.web_qq"><text>商城QQ号: </text><text>{{ detail.web_qq }}</text></view>
-			<view v-show="detail.web_weixin"><text>商城微信号: </text><text>{{ detail.web_weixin }}</text></view>
-			<view v-show="detail.web_address"><text>联系地址: </text><text>{{ detail.web_address }}</text></view>
-			<view v-show="detail.shouhou_date"><text>售后设置: </text><text>{{ detail.shouhou_date }}</text></view>
+		<view class="shop-info" v-if="title === '商城介绍'">
+			<rf-image :src="detail.cover || detail.web_logo"></rf-image>
+			<view v-if="detail.title"><text>商城名称: </text><text>{{ detail.title }}</text></view>
+			<view v-if="detail.address_name"><text>联系地址: </text><text>{{ detail.address_name }}</text></view>
+			<view v-if="detail.address_details"><text>详细地址: </text><text>{{ detail.address_details }}</text></view>
+			<view v-if="detail.mobile"><text>手机号码: </text><text>{{ detail.mobile }}</text></view>
+			<view v-if="detail.qq"><text>QQ: </text><text>{{ detail.qq }}</text></view>
 		</view>
-		<view class="shop-info" v-show="title === '版权信息'">
-			<view v-show="detail.copyright_companyname"><text>公司名称: </text><text>{{ detail.copyright_companyname }}</text></view>
-			<view v-show="detail.copyright_url"><text>版权链接: </text><text>{{ detail.copyright_url }}</text></view>
-			<view v-show="detail.copyright_desc"><text>版权信息: </text><text>{{ detail.copyright_desc }}</text></view>
-		</view>
-		<view class="shop-info" v-show="title === '证照信息'"></view>
-		<view class="shop-info" v-show="title === '注册协议'">
-			<view v-show="detail.protocol_register"><text v-html="detail.protocol_register"></text></view>
+		<view class="shop-info" v-if="title === '注册协议'">
+			<view v-if="detail.protocol_register"><text v-html="detail.protocol_register"></text></view>
 			<empty :info="`暂无${title}`" v-if="!detail.protocol_register"></empty>
 		</view>
-		<view class="shop-info" v-show="title === '隐私协议'">
-			<view v-show="detail.protocol_privacy"><text v-html="detail.protocol_privacy"></text></view>
+		<view class="shop-info" v-if="title === '隐私协议'">
+			<view v-if="detail.protocol_privacy"><text v-html="detail.protocol_privacy"></text></view>
 			<empty :info="`暂无${title}`" v-if="!detail.protocol_privacy"></empty>
 		</view>
-		<view class="shop-info" v-show="title === '充值协议'">
-			<view v-show="detail.protocol_recharge"><text v-html="detail.protocol_recharge"></text></view>
+		<view class="shop-info" v-if="title === '充值协议'">
+			<view v-if="detail.protocol_recharge"><text v-html="detail.protocol_recharge"></text></view>
 			<empty :info="`暂无${title}`" v-if="!detail.protocol_recharge"></empty>
 		</view>
 		<empty :info="`暂无${title}`" v-if="detail.length === 0"></empty>
@@ -42,11 +31,14 @@
 * @date 2019-12-09 10:13
 * @copyright 2019
 */
-import {configList} from "../../api/basic";
+import {configList} from "@/api/basic";
+import {merchantView} from "@/api/merchant";
 import empty from "@/components/empty";
+import rfImage from "@/components/rf-image/rf-image";
 export default {
 		components: {
-			empty
+			empty,
+			rfImage,
 		},
 	data() {
 		return {
@@ -72,17 +64,28 @@ export default {
 			this.getConfigList(options.field);
 		},
 		async getConfigList(field) {
-			await this.$get(`${configList}`, {
-				field,
-			}).then(r => {
-				if (r.code === 200) {
+	    if (field.indexOf('protocol') !== -1) {
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${configList}`, {
+					field,
+				}).then(r => {
 					this.detail = r.data
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
-			}).catch(err => {
-				console.log(err)
-			});
+				}).catch(err => {
+					console.log(err)
+				});
+	    } else {
+			  const userInfo = uni.getStorageSync('userInfo');
+		    if (!userInfo) return;
+				uni.showLoading({title: '加载中...'});
+				await this.$get(`${merchantView}`, {
+					id: userInfo.merchant_id,
+					field,
+				}).then(r => {
+					this.detail = r.data
+				}).catch(err => {
+					console.log(err)
+				});
+	    }
 		}
 	}
 }

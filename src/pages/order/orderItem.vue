@@ -187,13 +187,13 @@ export default {
 		bindClick(e) {
 			if (e.content.text === '仅退款') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
-					uni.showToast({title: '您已经提交了退款申请', icon: 'none'})
+					this.$api.msg('您已经提交了退款申请');
 					return;
 				}
 				this.goRefund(e.data, 1)
 			} else if (e.content.text === '退款/退货') {
 				if (parseInt(e.data.refund_status, 10) !== 0) {
-					uni.showToast({title: '您已经提交了退货申请', icon: 'none'})
+					this.$api.msg('您已经提交了退货申请');
 					return;
 				}
 				this.goRefund(e.data, 2)
@@ -217,13 +217,9 @@ export default {
 			await this.$post(`${closeOrderRefundApply}`, {
 				id,
 			}).then(r => {
-				if (r.code === 200) {
-					uni.navigateBack({
-						delta: 1
-					});
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
+				uni.navigateBack({
+					delta: 1
+				});
 			}).catch(err => {
 				console.log(err)
 			})
@@ -233,12 +229,8 @@ export default {
 			await this.$get(`${orderDetail}`, {
 				id: options.id
 			}).then(r => {
-				if (r.code === 200) {
-					this.orderItemList = r.data.product;
-					this.orderStatus =  r.data.order_status;
-				} else {
-					uni.showToast({title: r.message, icon: "none"});
-				}
+				this.orderItemList = r.data.product;
+				this.orderStatus =  r.data.order_status;
 			}).catch(err => {
 				console.log(err)
 			});

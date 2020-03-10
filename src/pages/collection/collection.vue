@@ -93,7 +93,7 @@ export default {
 				await this.$del(`${collectDel}?id=${e.data.id}`, {
 					page: this.page
 				}).then(() => {
-					uni.showToast({title: '取消收藏成功'});
+					this.$api.msg('取消收藏成功');
 					this.page = 1;
 					this.collectionList.length = 0;
 					this.getCollectionList();

@@ -11,18 +11,30 @@
 					<text class="mobile">{{item.mobile}}</text>
 				</view>
 			</view>
-			<text class="yticon icon-bianji" @tap.stop="addAddress('edit', item)"></text>
+			<i class="iconfont iconbianji" @tap.stop="addAddress('edit', item)"></i>
 		</view>
-		<text style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
+		<text v-if="addressList.length > 0" style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
 			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
 		</text>
+		<empty :info="`暂无收货地址，请添加地址`" v-else></empty>
 		<button class="add-btn" @tap="addAddress('add')">新增地址</button>
 	</view>
 </template>
 
 <script>
-	import {addressDelete, addressList} from "../../api/userInfo";
+	/**
+	 * @des 收货地址列表
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-03-10 18:00
+	 * @copyright 2019
+	 */
+	import {addressDelete, addressList} from "@/api/userInfo";
+	import empty from "@/components/empty";
 	export default {
+		components: {
+			empty,
+		},
 		data() {
 			return {
 				timeOutEvent: 0,
@@ -155,7 +167,7 @@
 			margin-right: 30upx;
 		}
 	}
-	.icon-bianji{
+	.iconfont{
 		display: flex;
 		align-items: center;
 		height: 80upx;

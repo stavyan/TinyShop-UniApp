@@ -1,15 +1,7 @@
 <template>
 	<view class="content">
-
 		<view class="mix-list-cell" :class="border" @tap="eventClick" hover-class="cell-hover"  :hover-stay-time="50">
-			<text
-				v-if="icon"
-				class="cell-icon yticon"
-				:style="[{
-					color: iconColor,
-				}]"
-				:class="icon"
-			></text>
+			<i v-if="icon" class="iconfont cell-icon" :style="[{ color: iconColor }]" :class="icon" />
 			<text class="cell-tit clamp">{{title}}</text>
 			<text v-if="tips" class="cell-tip">{{tips}}</text>
 			<text class="cell-more yticon"

@@ -144,7 +144,6 @@
 					oauth_client: 'wechatMp',
 				 // #endif
 				}).then(async res => {
-					 if (res.code === 200) {
 						 const params = {};
 						 params.money = parseFloat(this.inputAmount);
 						 await this.$post(`${payCreate}`, {
@@ -159,58 +158,51 @@
 							 data: JSON.stringify(params),
 							 openid: res.data.openid
 						 }).then(r => {
-							 if (r.code === 200) {
-				         // #ifdef H5
-							   if (!this.isWechat()) {
-									 this.$api.msg('请复制当前地址进入微信进行充值~')
-								   return;
-							   }
-							   jweixin.ready(() => {
-									 jweixin.chooseWXPay({
-										 ...r.data.config,
-										 success () {
-											 // 支付成功后的回调函数
-											 _this.getMemberInfo();
-										 },
-										 fail (res) {
-											 // 支付成功后的回调函数
-		                    uni.showModal({
-		                        content: "支付失败,原因为: " + res
-		                            .errMsg,
-		                        showCancel: false
-		                    })
-										 }
-									 });
+			         // #ifdef H5
+						   if (!this.isWechat()) {
+								 this.$api.msg('请复制当前地址进入微信进行充值~')
+							   return;
+						   }
+						   jweixin.ready(() => {
+								 jweixin.chooseWXPay({
+									 ...r.data.config,
+									 success () {
+										 // 支付成功后的回调函数
+										 _this.getMemberInfo();
+									 },
+									 fail (res) {
+										 // 支付成功后的回调函数
+	                    uni.showModal({
+	                        content: "支付失败,原因为: " + res
+	                            .errMsg,
+	                        showCancel: false
+	                    })
+									 }
 								 });
-					       // #endif
-								 // #ifdef MP-WEIXIN
-							   uni.requestPayment({
-		                ...r.data.config,
-									   timeStamp: r.data.config.timestamp,
-		                success: () => {
-											 _this.getMemberInfo();
-		                },
-		                fail: (res) => {
-		                    uni.showModal({
-		                        content: "支付失败,原因为: " + res
-		                            .errMsg,
-		                        showCancel: false
-		                    })
-		                },
-		                complete: () => {
-		                    this.loading = false;
-		                }
-		             })
-								 // #endif
-							 } else {
-						 		uni.showToast({title: res.message, icon: "none"});
-							 }
+							 });
+				       // #endif
+							 // #ifdef MP-WEIXIN
+						   uni.requestPayment({
+	                ...r.data.config,
+								   timeStamp: r.data.config.timestamp,
+	                success: () => {
+										 _this.getMemberInfo();
+	                },
+	                fail: (res) => {
+	                    uni.showModal({
+	                        content: "支付失败,原因为: " + res
+	                            .errMsg,
+	                        showCancel: false
+	                    })
+	                },
+	                complete: () => {
+	                    this.loading = false;
+	                }
+	             })
+							 // #endif
 						 }).catch(err => {
 							 console.log(err)
 						 })
-					 } else {
-						 uni.showToast({title: res.message, icon: "none"});
-					 }
 				 }).catch(err => {
 					console.log(err)
 				});

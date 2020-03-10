@@ -74,11 +74,7 @@
 				await this.$get(`${invoiceDetail}`, {
 					id
 				}).then(async r => {
-					if (r.code === 200) {
-						this.invoiceData = r.data;
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.invoiceData = r.data;
 				}).catch(err => {
 					console.log(err)
 				})
@@ -100,12 +96,12 @@
 			confirm(){
 				let data = this.invoiceData;
 				if(!data.title){
-					uni.showToast({ title: '请填写发票抬头', icon: "none" });
+					this.$api.msg('请填写发票抬头');
 					return;
 				}
 				if(data.type === 1){
 					if (!data.duty_paragraph) {
-						uni.showToast({ title: '请填写发票税号', icon: "none" });
+						this.$api.msg('请填写发票税号');
 						return;
 					}
 				}
@@ -124,14 +120,10 @@
 					duty_paragraph: data.duty_paragraph,
 					is_default: data.is_default
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 发票修改成功！', icon: "none" });
-						uni.navigateBack({
-							url: '/pages/invoice/invoice'
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.$api.msg('恭喜您, 发票修改成功！');
+					uni.navigateBack({
+						url: '/pages/invoice/invoice'
+					})
 				}).catch(err => {
 					console.log(err)
 				})
@@ -141,14 +133,10 @@
 				await this.$post(`${invoiceCreate}`, {
 					...data
 				}).then(r=>{
-					if (r.code === 200) {
-						uni.showToast({ title: '恭喜您, 发票添加成功！', icon: "none" });
-						uni.navigateBack({
-							url: '/pages/invoice/invoice'
-						})
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+			    this.$api.msg('恭喜您, 发票添加成功！');
+					uni.navigateBack({
+						url: '/pages/invoice/invoice'
+					})
 				}).catch(err => {
 					console.log(err)
 				})

@@ -96,13 +96,7 @@
 			initData () {
 				this.getCouponList();
 			},
-			/**
-			 *@des 统一跳转接口
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/21 15:41:30
-			 *@param url 跳转地址
-			 */
+			// 统一跳转接口
 			navTo(url, type){
 				if(!this.token){
 					url = '/pages/public/login';
@@ -132,12 +126,8 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.couponList = [ ...this.couponList, ...r.data ]
-					} else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.couponList = [ ...this.couponList, ...r.data ]
 				}).catch(err => {
 					console.log(err);
 				})
@@ -151,21 +141,17 @@
 			async getCoupon(item) {
 				if (this.type) return;
 				if (parseInt(item.is_get, 10) === 0) {
-						uni.showToast({title: '该优惠券不可领取', icon: "none"});
+            this.$api.msg('该优惠券不可领取');
 						return;
 				}
 				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
 					id: item.id
 				}).then(r => {
-					if (r.code === 200) {
-						this.page = 1;
-						this.couponList = [];
-						this.getCouponList();
-						uni.showToast({title: '领取成功', icon: "none"});
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					this.page = 1;
+					this.couponList = [];
+					this.getCouponList();
+          this.$api.msg('领取成功');
 				}).catch(err => {
 					console.log(err)
 				})

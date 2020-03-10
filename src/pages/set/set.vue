@@ -95,7 +95,7 @@
 				    }
 					});
 				} else if (!url) {
-					uni.showToast({ title: '我还没写', icon: "none" });
+					this.$api.msg('我还没写');
 				} else {
 					uni.navigateTo({
 						url,
@@ -109,14 +109,10 @@
 				    success: (e)=>{
 				    	if(e.confirm){
 				    		this.$post(`${logout}`).then(r => {
-									if (r.code === 200) {
-										this.logout();
-										uni.reLaunch({
-											url: '/pages/user/user'
-										})
-									} else {
-										uni.showToast({ title: r.message, icon: "none" });
-									}
+									this.logout();
+									uni.reLaunch({
+										url: '/pages/user/user'
+									})
 								})
 				    	}
 				    }

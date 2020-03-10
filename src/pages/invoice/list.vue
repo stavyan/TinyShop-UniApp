@@ -91,12 +91,8 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					if (r.code === 200) {
-						this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
-						this.invoiceList = [...this.invoiceList, ...r.data];
-					}else {
-						uni.showToast({ title: r.message, icon: "none" });
-					}
+					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+					this.invoiceList = [...this.invoiceList, ...r.data];
 				}).catch(err => {
 					console.log(err)
 				})

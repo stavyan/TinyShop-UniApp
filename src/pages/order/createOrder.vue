@@ -436,34 +436,30 @@
 				await this.$get(`${orderPreview}`, {
 					...data
 				}).then(r => {
-					if (r.code === 200) {
-						this.orderDetail = r.data;
-						this.pointConfig = this.orderDetail.point_config
-						this.addressData = this.orderDetail.address;
-						this.currentShippingType = this.pickerShippingType[0]
-						this.orderDetail.company.forEach(item => {
-							item.label = item.title;
+					this.orderDetail = r.data;
+					this.pointConfig = this.orderDetail.point_config
+					this.addressData = this.orderDetail.address;
+					this.currentShippingType = this.pickerShippingType[0]
+					this.orderDetail.company.forEach(item => {
+						item.label = item.title;
+						item.value = item.id;
+					});
+					this.currentCompany = this.orderDetail.company[0];
+					this.pointExchangeType = [];
+					this.orderDetail.products.forEach(item => {
+						this.pointExchangeType.push(item.point_exchange_type)
+					});
+					if (parseInt(this.orderDetail.pickup_point_config.buyer_self_lifting, 10) === 1) {
+						this.orderDetail.pickup_point_config.list.forEach(item => {
+							item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
 							item.value = item.id;
 						});
-						this.currentCompany = this.orderDetail.company[0];
-						this.pointExchangeType = [];
-						this.orderDetail.products.forEach(item => {
-							this.pointExchangeType.push(item.point_exchange_type)
-						});
-						if (parseInt(this.orderDetail.pickup_point_config.buyer_self_lifting, 10) === 1) {
-							this.orderDetail.pickup_point_config.list.forEach(item => {
-								item.label = `${item.contact || '无名'} - ${item.name || '未知'} - ${item.address || '未知'}`;
-								item.value = item.id;
-							});
-							this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0] || {};
-							if (parseInt(this.orderDetail.pickup_point_config.pickup_point_is_open, 10) !== 1) {
-								this.shippingMoney = 0;
-							}
-						} else {
-							this.orderDetail.pickup_point_config.list = [];
+						this.currentPickupPoint = this.orderDetail.pickup_point_config.list[0] || {};
+						if (parseInt(this.orderDetail.pickup_point_config.pickup_point_is_open, 10) !== 1) {
+							this.shippingMoney = 0;
 						}
 					} else {
-						uni.showToast({title: r.message, icon: "none"});
+						this.orderDetail.pickup_point_config.list = [];
 					}
 				}).catch(err => {
 					console.log(err)
@@ -495,7 +491,7 @@
 				if (this.addressData && this.addressData.id) {
 					params.address_id = this.addressData.id;
 				} else {
-					uni.showToast({title: '请选择收货地址', icon: "none"});
+			    this.$api.msg('请选择收货地址');
 					return;
 				}
 				if (this.couponItem && this.couponItem.id) {
@@ -521,21 +517,17 @@
 					...params,
 					...this.data
 				}).then(r => {
-					if (r.code === 200) {
-						const data = {}
-						data.order_id = parseInt(r.data.id, 10);
-						if (parseInt(r.data.pay_status, 10) === 1) {
-              uni.redirectTo({
-                url: '/pages/money/paySuccess'
-              });
-            } else {
-              uni.redirectTo({
-                url: `/pages/money/pay?id=${r.data.id}`
-              })
-            }
-					} else {
-						uni.showToast({title: r.message, icon: "none"});
-					}
+					const data = {}
+					data.order_id = parseInt(r.data.id, 10);
+					if (parseInt(r.data.pay_status, 10) === 1) {
+            uni.redirectTo({
+              url: '/pages/money/paySuccess'
+            });
+          } else {
+            uni.redirectTo({
+              url: `/pages/money/pay?id=${r.data.id}`
+            })
+          }
 				}).catch(err => {
 					console.log(err)
 				})
@@ -544,7 +536,7 @@
 			},
 			selectCoupon(item){
 				if (this.amountGoods < item.at_least) {
-					uni.showToast({ title: '不满足优惠券使用条件~', icon: "none" });
+			    this.$api.msg('不满足优惠券使用条件~');
 					return;
 				}
 				this.maskState = 0;
