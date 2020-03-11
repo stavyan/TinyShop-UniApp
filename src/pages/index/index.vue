@@ -132,6 +132,14 @@
 		onLoad() {
 			this.initData();
 		},
+		onShow() {
+			if (uni.getStorageSync('cartNum')) {
+		    uni.setTabBarBadge({
+	        index: 2,
+	        text: uni.getStorageSync('cartNum').toString(),
+	      });
+			}
+		},
 		onShareAppMessage() {
       return {
         title: '欢迎来到RageFrame商城',

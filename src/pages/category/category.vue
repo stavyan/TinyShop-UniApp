@@ -82,6 +82,12 @@
 			},
 			// 数据初始化
 	    async initData() {
+				if (uni.getStorageSync('cartNum')) {
+			    uni.setTabBarBadge({
+		        index: 2,
+		        text: uni.getStorageSync('cartNum').toString(),
+		      });
+				}
         this.search = uni.getStorageSync('search');
         this.hotSearchDefault = '请输入关键字 ' + (this.search ? ('如: ' + this.search.hot_search_default) : '');
         this.getProductCate();

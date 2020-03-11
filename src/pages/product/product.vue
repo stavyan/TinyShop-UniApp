@@ -723,12 +723,8 @@
 					sku_id,
 					num: this.cartCount
 				}).then(async r => {
-					await this.$post(`${cartItemCount}`, {}).then(r => {
-						uni.setStorageSync('cartNum', r.data)
-		        uni.setTabBarBadge({
-		          index: 2,
-		          text: r.data
-		        });
+					await this.$get(`${cartItemCount}`).then(r => {
+						uni.setStorageSync('cartNum', r.data);
 					});
 					this.$api.msg('添加成功，在购物车等');
 				}).catch(err => {
