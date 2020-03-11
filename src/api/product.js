@@ -20,6 +20,8 @@ const guessYouLikeList = "/tiny-shop/v1/product/product/guess-you-like";
 const cartItemCreate = "/tiny-shop/v1/member/cart-item/create";
 // 购物车列表
 const cartItemList = "/tiny-shop/v1/member/cart-item/index";
+// 购物车列表
+const cartItemCount = "/tiny-shop/v1/member/cart-item/count";
 // 删除购物车商品
 const cartItemDel = "/tiny-shop/v1/member/cart-item/delete-ids";
 // 清空购物车
@@ -66,5 +68,6 @@ export {
     evaluateList,
     orderPreview,
     orderProductExpressDetails,
-    cartItemUpdateSku
+    cartItemUpdateSku,
+    cartItemCount
 };

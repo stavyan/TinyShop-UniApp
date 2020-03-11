@@ -3,6 +3,6 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "list-cell": "/components/mix-list-cell",
-    "uni-icons": "/components/uni-icons/uni-icons"
+    "rf-badge": "/components/rf-badge/rf-badge"
   }
 }

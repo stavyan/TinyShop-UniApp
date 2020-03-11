@@ -2,6 +2,7 @@ import Vue from 'vue';
 import store from './store';
 import App from './App';
 import  http, { get } from '@/utils/http';
+import '@/common/css/iconfont/iconfont.css';
 
 // 封装msg方法
 const msg = (title, duration=1500, mask=false, icon='none')=>{

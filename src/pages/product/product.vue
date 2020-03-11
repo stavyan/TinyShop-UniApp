@@ -369,7 +369,7 @@
 
 <script>
 	import share from '@/components/share';
-	import {cartItemCreate, orderPreview, productDetail} from "../../api/product";
+	import {cartItemCount, cartItemCreate, orderPreview, productDetail} from "../../api/product";
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
   import moment from 'moment';
@@ -722,7 +722,14 @@
 				await this.$post(`${cartItemCreate}`, {
 					sku_id,
 					num: this.cartCount
-				}).then(r=>{
+				}).then(async r => {
+					await this.$post(`${cartItemCount}`, {}).then(r => {
+						uni.setStorageSync('cartNum', r.data)
+		        uni.setTabBarBadge({
+		          index: 2,
+		          text: r.data
+		        });
+					});
 					this.$api.msg('添加成功，在购物车等');
 				}).catch(err => {
 					console.log(err)

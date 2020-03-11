@@ -64,7 +64,7 @@
 			<!-- 浏览历史 -->
 			<view class="history-section icon">
 				<view class="sec-header" @tap="navTo('/pages/footprint/footprint')">
-					<i class="iconfont yticon iconlishijilu"></i>
+					<i class="iconfont iconlishijilu"></i>
 					<text>我的足迹</text>
 				</view>
 				<view v-if="token">
@@ -128,11 +128,11 @@
 				footList: [],
 				user_info: {},
 				orderSectionList: [
-					{ title: '待付款', icon: 'yticon icondaifukuan', url: '/pages/order/order?state=0' },
-					{ title: '待发货', icon: 'yticon iconshouye', url: '/pages/order/order?state=1' },
-					{ title: '待收货', icon: 'yticon iconyishouhuo', url: '/pages/order/order?state=2' },
-					{ title: '评价', icon: 'yticon iconpingjia', url: '/pages/order/order?state=3' },
-					{ title: '退款/售后', icon: 'yticon iconshouhoutuikuan', url: '/pages/order/refund' },
+					{ title: '待付款', icon: 'iconfont icondaifukuan', url: '/pages/order/order?state=0' },
+					{ title: '待发货', icon: 'iconfont iconshouye', url: '/pages/order/order?state=1' },
+					{ title: '待收货', icon: 'iconfont iconyishouhuo', url: '/pages/order/order?state=2' },
+					{ title: '评价', icon: 'iconfont iconpingjia', url: '/pages/order/order?state=3' },
+					{ title: '退款/售后', icon: 'iconfont iconshouhoutuikuan', url: '/pages/order/refund' },
 				],
 				amountList: [
 					{ title: '余额', value: 0, url: '/pages/user/account' },
@@ -382,8 +382,9 @@
 					font-size: $font-base+2upx;
 					color: #f7d680;
 					margin-bottom: 28upx;
-					.yticon{
+					.iconfont{
 						color: #f6e5a3;
+						display: inline-block;
 						margin-right: 16upx;
 					}
 				}
@@ -441,7 +442,7 @@
 					top: 0;
 					right: 4upx;
 				}
-				.yticon{
+				.iconfont{
 					font-size: 48upx;
 					color: #fa436a;
 				}
@@ -461,7 +462,7 @@
 					color: $font-color-dark;
 					line-height: 40upx;
 					margin-left: 30upx;
-					.yticon{
+					.iconfont{
 						font-size: 44upx;
 						color: #5eba8f;
 						margin-right: 16upx;
