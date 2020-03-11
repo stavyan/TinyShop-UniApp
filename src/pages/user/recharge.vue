@@ -43,7 +43,7 @@
 				<view class="pay-list">
 				  <!--#ifdef MP-ALIPAY-->
 					<view class="row" @tap="payType='2'">
-						<text class="icon yticon icon-alipay"></text>
+						<i class="icon iconfont iconalipay"></i>
 							<view class="center">
 								支付宝支付
 							</view>
@@ -53,7 +53,7 @@
 					</view>
 					<!-- #endif-->
 					<view class="row" @tap="payType='1'">
-							<text class="icon yticon icon-weixinzhifu"></text>
+							<i class="icon iconfont iconweixinzhifu"></i>
 							<view class="center">
 								微信支付
 							</view>
@@ -409,13 +409,13 @@
 						font-size: 52upx;
 						margin-left: 15upx;
 					}
-					.icon-erjiye-yucunkuan {
+					.iconerjiye-yucunkuan {
 						color: #fe8e2e;
 					}
-					.icon-weixinzhifu {
+					.iconweixinzhifu {
 						color: #36cb59;
 					}
-					.icon-alipay {
+					.iconalipay {
 						color: #01aaef;
 					}
 					.center{

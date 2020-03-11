@@ -8,7 +8,7 @@
 		<view class="pay-type-list">
 
 			<view class="type-item b-b" @tap="changePayType(1)" v-if="parseInt(payTypeList.order_wechat_pay, 10) === 1">
-				<text class="icon yticon icon-weixinzhifu"></text>
+				<i class="iconfont icon iconweixinzhifu"></i>
 				<view class="con">
 					<text class="tit">微信支付</text>
 					<text>推荐使用微信支付</text>
@@ -18,7 +18,7 @@
 				</label>
 			</view>
 			<view class="type-item b-b" @tap="changePayType(2)"  v-if="parseInt(payTypeList.order_ali_pay, 10) === 1">
-				<text class="icon yticon icon-alipay"></text>
+				<i class="iconfont icon iconalipay"></i>
 				<view class="con">
 					<text class="tit">支付宝支付</text>
 				</view>
@@ -27,7 +27,7 @@
 				</label>
 			</view>
 			<view class="type-item" @tap="changePayType(5)" v-show="parseInt(payTypeList.order_balance_pay, 10) === 1">
-				<text class="icon yticon icon-erjiye-yucunkuan"></text>
+				<i class="iconfont icon iconerjiye-yucunkuan"></i>
 				<view class="con">
 					<text class="tit">预存款支付</text>
 					<text>可用余额 {{ userInfo && userInfo.account && userInfo.account.user_money }}</text>
@@ -43,9 +43,9 @@
 </template>
 
 <script>
-	import {orderPay} from "../../api/product";
-	import {memberInfo, orderDetail} from "../../api/userInfo";
-	import {configList} from "../../api/basic";
+	import {orderPay} from "@/api/product";
+	import {memberInfo, orderDetail} from "@/api/userInfo";
+	import {configList} from "@/api/basic";
 
 	export default {
 		data() {
@@ -211,13 +211,13 @@
 			width: 100upx;
 			font-size: 52upx;
 		}
-		.icon-erjiye-yucunkuan {
+		.iconerjiye-yucunkuan {
 			color: #fe8e2e;
 		}
-		.icon-weixinzhifu {
+		.iconweixinzhifu {
 			color: #36cb59;
 		}
-		.icon-alipay {
+		.iconalipay {
 			color: #01aaef;
 		}
 		.tit{

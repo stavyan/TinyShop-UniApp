@@ -127,7 +127,7 @@
 						uni.stopPullDownRefresh();
 					}
 					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-					this.couponList = [ ...this.couponList, ...r.data ]
+					this.couponList = [ ...this.couponList, ...r.data];
 				}).catch(err => {
 					console.log(err);
 				})

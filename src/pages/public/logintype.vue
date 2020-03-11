@@ -22,7 +22,7 @@
  * @date 2020-01-13 12:02
  * @copyright 2019
  */
-import {mpWechatLogin, wechatH5Login} from "../../api/login";
+import {mpWechatLogin, wechatH5Login} from "@/api/login";
 import {mapMutations} from "vuex";
 export default{
 	data(){
@@ -52,7 +52,6 @@ export default{
 					 await this.login(r.data.user_info);
 					 this.$api.msg('已为您授权登录');
 					 const url = `/pages/user/user`;
-
 				   uni.reLaunch({
 					    url
 				   });

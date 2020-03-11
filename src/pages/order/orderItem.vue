@@ -50,7 +50,7 @@
 import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from './../../static/errorImage.jpg';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
-import {closeOrderRefundApply, orderDetail} from "../../api/userInfo";
+import {closeOrderRefundApply, orderDetail} from "@/api/userInfo";
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item.vue';
 import moment from 'moment';
@@ -78,10 +78,6 @@ export default {
 		},
 		filterIsEvaluate(val) {
 			const data = ['未评价', '已评价', '已追评'];
-			return data[parseInt(val, 10)]
-		},
-		filterEvaluateType(val) {
-			const data = ['primary', 'warning', 'success'];
 			return data[parseInt(val, 10)]
 		},
 		filterProductStatus(item) {
@@ -226,6 +222,7 @@ export default {
 		},
 		async initData(options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
+			uni.showLoading({title: '加载中...'});
 			await this.$get(`${orderDetail}`, {
 				id: options.id
 			}).then(r => {
@@ -234,30 +231,6 @@ export default {
 			}).catch(err => {
 				console.log(err)
 			});
-			// if (this.token) {
-			// 	// this.orderItemList = JSON.parse(options.list);
-			// 	this.orderStatus = options.orderStatus
-			// 	// this.initOptions(options.orderStatus)
-			// }
-		},
-		initOptions (status) {
-			if (parseInt(status, 10) === 1) {
-				this.options.push({ text: '退款'})
-				this.options.push({ text: '取消退款', style: { backgroundColor: 'rgb(254,156,1)' }})
-			} else if (parseInt(status, 10) === 2) {
-				this.options.push({ text: '退货'})
-				this.options.push({ text: '取消退货', style: { backgroundColor: 'rgb(254,156,1)' }})
-			} else if (parseInt(status, 10) === 3) {
-				let option1 = [], option2 = [];
-				this.orderItemList.forEach(item => {
-					if (parseInt(item.is_evaluate) === 0) {
-						option1.push({text: '评价', style: { backgroundColor: 'rgb(254,156,1)' }});
-					} else if (parseInt(item.is_evaluate) === 1) {
-						option2.push({text: '追加评价', style: { backgroundColor: 'rgb(255,58,49)' }});
-					}
-				})
-				this.options = option1 || option2 || [];
-			}
 		},
 		onImageError (index) {
 			this.orderItemList[index].picture = this.errorImg;

@@ -76,8 +76,8 @@
 	 * @copyright 2019
 	 */
 	import rfRate from "@/components/rf-rate/rf-rate.vue";
-	import {evaluateCreate, evaluateAgain, uploadImage} from "../../api/userInfo";
-	import uniIcons from '@/components/uni-icons/uni-icons.vue'
+	import {evaluateCreate, evaluateAgain, uploadImage} from "@/api/userInfo";
+	import uniIcons from '@/components/uni-icons/uni-icons'
 	export default{
 		components: { rfRate, uniIcons },
 		data(){
@@ -204,6 +204,7 @@
 			},
 			// 发表评价
 			async handleEvaluateCreate(params) {
+				uni.showLoading({title: '加载中...'});
 				await this.$post(`${evaluateCreate}`, {
 					...params
 				}).then(() => {
@@ -214,6 +215,7 @@
 			},
 			// 追加评价
 			async handleEvaluateAgain(params) {
+				uni.showLoading({title: '加载中...'});
 				await this.$post(`${evaluateAgain}?order_product_id=${this.productInfo.id}`, {
 					...params
 				}).then(() => {
@@ -263,7 +265,7 @@
 		}
 		.product-textarea {
 			margin-top: 20upx;
-			height: 300upx;
+			height: 360upx;
 			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 			position: relative;
 			.textarea {

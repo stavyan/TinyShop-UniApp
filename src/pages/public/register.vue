@@ -85,8 +85,8 @@
 	import {
         mapMutations
     } from 'vuex';
-	import {registerByPass, smsCode} from "../../api/login";
-	const graceChecker = require("../../common/graceChecker.js");
+	import {registerByPass, smsCode} from "@/api/login";
+	const graceChecker = require("@/common/graceChecker.js");
 	export default{
 		data(){
 			return {

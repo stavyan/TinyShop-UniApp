@@ -1,9 +1,6 @@
 <template>
-	<view>
+	<view class="coupon-detail">
 		<view class="list">
-			<view v-show="state === 3" class="empty-invalid" @tap="emptyInvalidCoupon">
-				<view class="icon shanchu"></view>清空失效优惠券
-			</view>
 			<!-- 优惠券列表 -->
 			<view class="sub-list valid" :style="{marginTop: state === 3 ? '40upx' : 0}">
 				<view class="row" v-for="(row,index) in couponList" :key="index" >
@@ -71,7 +68,7 @@
  * @date 2019-12-09 10:13
  * @copyright 2019
  */
-	import {couponClear, couponDetail, couponReceive, myCouponList} from "../../api/userInfo";
+import {couponClear, couponDetail, couponReceive} from "@/api/userInfo";
 import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 import empty from "@/components/empty";
 import moment from 'moment';
@@ -126,15 +123,6 @@ export default {
 		closeDrawer() {
 			this.showRight = false
 		},
-		//删除商品
-		async emptyInvalidCoupon() {
-			uni.showLoading({title: '正在清空购物车...'});
-			await this.$get(`${couponClear}`).then(r => {
-				this.getMyCouponList();
-			}).catch(err => {
-				console.log(err)
-			})
-		},
 		/**
 		 *@des 初始化数据
 		 *@author stav stavyan@qq.com
@@ -183,9 +171,6 @@ export default {
 		 *@param url 跳转地址
 		 */
 		navTo(url, type){
-			// if(!this.token){
-			// 	url = '/pages/public/login';
-			// }
 			if (type) {
 				uni.switchTab({url});
 				return;
@@ -224,46 +209,6 @@ export default {
 
 	}
 	page{position: relative;background-color: #f5f5f5;}
-	.hidden{
-		display: none !important;
-	}
-	.place{
-		width: 100%;
-		height: 95upx;
-	}
-	.tabr{
-		background-color: #fff;
-		width: 100%;
-		height: 95upx;
-		padding: 0 3%;
-		border-bottom: solid 1upx #dedede;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		view{
-			width: 33.3%;
-			height: 90upx;
-			justify-content: center;
-			align-items: center;
-			font-size: 32upx;
-			color: #999;
-		}
-		.on{
-			color: $base-color;
-		}
-		.border{
-			height: 4upx;
-			background-color: $base-color;
-			transition: all .3s ease-out;
-			&.used{
-				transform: translate3d(100%,0,0);
-			}
-			&.invalid{
-				transform: translate3d(200%,0,0);
-			}
-		}
-
-	}
 	.list{
 		width: 100%;
 		display: block;

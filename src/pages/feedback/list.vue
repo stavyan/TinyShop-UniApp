@@ -13,22 +13,27 @@
 			</view>
 		</view>
 		<empty :info="'您还没有反馈意见'" v-if="feedbackList.length === 0"></empty>
+		<rf-load-more v-else :status="loadingType" />
 		<button class="add-btn" @tap="addFeedback()">意见反馈</button>
 	</view>
 </template>
 
 <script>
-    import {addressDelete, feedbackList, opinionList} from "../../api/userInfo";
+  import {feedbackList, opinionList} from "@/api/userInfo";
 	import empty from "@/components/empty";
+	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	export default {
 		components: {
-			empty
+			empty,
+			rfLoadMore
 		},
 		data() {
 			return {
+		    page: 1,
 				timeOutEvent: 0,
 				source: 0,
-				feedbackList: []
+				feedbackList: [],
+				loadingType: 'more',
 			}
 		},
 		filters: {
@@ -43,8 +48,13 @@
 		//下拉刷新
 		onPullDownRefresh(){
 			this.page = 1;
-			this.feedbackList = [];
+			this.feedbackList.length = 0;
 			this.getFeedbackList('refresh');
+		},
+		//加载更多
+		onReachBottom(){
+			this.page ++;
+			this.getFeedbackList();
 		},
 		onShow() {
 			this.initData()
@@ -57,6 +67,7 @@
 			 *@date 2019/11/18 09:57:30
 			 */
 			initData () {
+				this.page = 1;
 				this.getFeedbackList();
 			},
 			/**
@@ -67,11 +78,12 @@
 			 */
 			async getFeedbackList (type) {
 				uni.showLoading({title:'加载中...'});
-				await this.$get(`${opinionList}`).then(r=>{
+				await this.$get(`${opinionList}`, {page: this.page}).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					this.feedbackList = r.data
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.feedbackList = [ ...this.feedbackList, ...r.data ];
 				}).catch(err => {
 					console.log(err)
 				})

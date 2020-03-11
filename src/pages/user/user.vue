@@ -58,6 +58,7 @@
 					:hover-stay-time="50">
 					<i class="iconfont" :class="item.icon" />
 					<text>{{ item.title }}</text>
+					<rf-badge type="error" size="small" class="badge" :text="item.num"></rf-badge>
 				</view>
 			</view>
 			<!-- 浏览历史 -->
@@ -110,10 +111,12 @@
   import {footPrintList, memberInfo} from '@/api/userInfo';
 	import {wechatH5Login} from '@/api/login';
 	import {mapMutations} from 'vuex';
+	import rfBadge from '@/components/rf-badge/rf-badge'
 	let startY = 0, moveY = 0, pageAtTop = true;
   export default {
 		components: {
-			listCell
+			listCell,
+			rfBadge
 		},
 		data(){
 			return {
@@ -188,6 +191,13 @@
 				this.userInfo = uni.getStorageSync('userInfo') || {};
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
+					const orderSynthesizeNumArr = [];
+					for (let item in this.userInfo.order_synthesize_num) {
+						orderSynthesizeNumArr.push(this.userInfo.order_synthesize_num[item])
+					}
+					for (let i = 0; i < this.orderSectionList.length; i++) {
+						this.orderSectionList[i].num = orderSynthesizeNumArr[i].toString();
+					}
 					await this.getMemberInfo();
 				} else {
           this.amountList[0].value = 0;
@@ -424,6 +434,12 @@
 					border-radius: 10upx;
 					font-size: $font-sm;
 					color: $font-color-dark;
+					position: relative;
+				}
+				.badge {
+					position: absolute;
+					top: 0;
+					right: 4upx;
 				}
 				.yticon{
 					font-size: 48upx;

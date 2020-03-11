@@ -1,83 +1,82 @@
 <template>
-    <view class="page">
-        <view class='feedback-title'>
-            <text>问题和意见</text>
-            <text class="feedback-quick" @tap="chooseMsg">快速键入</text>
-        </view>
-        <view class="feedback-body">
-            <textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
-            </view>
-        <view class='feedback-title'>
-            <text>图片(选填,提供问题截图,总大小10M以下)</text>
-        </view>
-        <view class="feedback-body feedback-uploader">
-            <view class="uni-uploader">
-                <view class="uni-uploader-head">
-                    <view class="uni-uploader-title">点击预览图片</view>
-                    <view class="uni-uploader-info">{{imageList.length}}/9</view>
-                </view>
-                <view class="uni-uploader-body">
-                    <view class="uni-uploader__files">
-                        <block v-for="(image,index) in imageList" :key="index">
-                            <view class="uni-uploader__file" style="position: relative;">
-                                <image class="uni-uploader__img" :src="image" @tap="previewImage"></image>
-                                <view class="close-view" @tap="close(index)">x</view>
-                            </view>
-                        </block>
-                        <view class="uni-uploader__input-box" v-show="imageList.length < 8">
-                        	<view class="uni-uploader__input" @tap="uploadImage"></view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-        </view>
-        <view class='feedback-title'>
-            <text>反馈类型</text>
-        </view>
-        <view class="feedback-body">
-						<radio-group class="feedback-type" @change="handleFeedbackTypeChange">
-							<label class="feedback-type-item" v-for="(item, index) in feedbackType" :key="index">
-								<radio color="#fa436a" :value="item.value" :checked="item.value === sendDate.type" />
-								<text>{{ item.name }}</text>
-							</label>
-            </radio-group>
-        </view>
-        <view class='feedback-title'>
-            <text>QQ/邮箱/手机号</text>
-        </view>
-        <view class="feedback-body">
-            <input class="feedback-input" v-model="sendDate.contact_way" placeholder="(选填,方便我们联系你 )" />
-        </view>
-        <button class="feedback-submit" @tap="send">提交</button>
-        <view class='feedback-title'>
-            <text>反馈结果可在设置 -> 意见反馈 -> 点击列表后查看！</text>
-        </view>
+  <view class="page">
+    <view class='feedback-title'>
+      <text>问题和意见</text>
+      <text class="feedback-quick" @tap="chooseMsg">快速键入</text>
     </view>
+    <view class="feedback-body">
+      <textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare"/>
+    </view>
+    <view class='feedback-title'>
+      <text>图片(选填,提供问题截图,总大小10M以下)</text>
+    </view>
+    <view class="feedback-body feedback-uploader">
+      <view class="uni-uploader">
+        <view class="uni-uploader-head">
+          <view class="uni-uploader-title">点击预览图片</view>
+          <view class="uni-uploader-info">{{imageList.length}}/9</view>
+        </view>
+        <view class="uni-uploader-body">
+          <view class="uni-uploader__files">
+            <block v-for="(image,index) in imageList" :key="index">
+              <view class="uni-uploader__file" style="position: relative;">
+                <image class="uni-uploader__img" :src="image" @tap="previewImage"></image>
+                <view class="close-view" @tap="close(index)">x</view>
+              </view>
+            </block>
+            <view class="uni-uploader__input-box" v-show="imageList.length < 8">
+              <view class="uni-uploader__input" @tap="uploadImage"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class='feedback-title'>
+      <text>反馈类型</text>
+    </view>
+    <view class="feedback-body">
+      <radio-group class="feedback-type" @change="handleFeedbackTypeChange">
+        <label class="feedback-type-item" v-for="(item, index) in feedbackType" :key="index">
+          <radio color="#fa436a" :value="item.value" :checked="item.value === sendDate.type"/>
+          <text>{{ item.name }}</text>
+        </label>
+      </radio-group>
+    </view>
+    <view class='feedback-title'>
+      <text>QQ/邮箱/手机号</text>
+    </view>
+    <view class="feedback-body">
+      <input class="feedback-input" v-model="sendDate.contact_way" placeholder="(选填,方便我们联系你 )"/>
+    </view>
+    <button class="feedback-submit" @tap="send">提交</button>
+    <view class='feedback-title'>
+      <text>反馈结果可在设置 -> 意见反馈 -> 点击列表后查看！</text>
+    </view>
+  </view>
 </template>
 
 <script>
-    import {opinionCreate, uploadImage} from "../../api/userInfo";
-
-    export default {
+    import {opinionCreate, uploadImage} from "@/api/userInfo";
+   export default {
         data() {
             return {
                 msgContents: ["界面显示错乱", "启动缓慢，卡出翔了", "UI无法直视，丑哭了", "偶发性崩溃"],
                 stars: [1, 2, 3, 4, 5],
-				        token: null,
+                token: null,
                 imageList: [],
-				        feedbackType: [
-					{
-						value: '1',
-						name: '功能建议'
-					},
-					{
-						value: '2',
-						name: 'BUG反馈'
-					},
-					{
-						value: '3',
-						name: '业务咨询'
-					}],
+                feedbackType: [
+                    {
+                        value: '1',
+                        name: '功能建议'
+                    },
+                    {
+                        value: '2',
+                        name: 'BUG反馈'
+                    },
+                    {
+                        value: '3',
+                        name: '业务咨询'
+                    }],
                 sendDate: {
                     type: '1',
                     covers: "",
@@ -88,7 +87,7 @@
         },
         onLoad() {
 
-			      this.token = uni.getStorageSync('accessToken') || undefined;
+            this.token = uni.getStorageSync('accessToken') || undefined;
             // let deviceInfo = {
             //     appid: plus.runtime.appid,
             //     imei: plus.device.imei, //设备标识
@@ -102,74 +101,48 @@
             // this.sendDate = Object.assign(deviceInfo, this.sendDate);
         },
         methods: {
-        handleFeedbackTypeChange (e) {
-           this.sendDate.type = e.detail.value
-        },
-        uploadImage () {
-        // 从相册选择6张图
-        const _this = this;
-        uni.chooseImage({
-          count: 6,
-          sizeType: ['original', 'compressed'],
-          sourceType: ['album'],
-          success: function(res) {
-            _this.handleUploadFile(res.tempFilePaths)
-            // _this.$post(`${uploadFile}`, {
-            // 	file: res.tempFilePaths[0]
-            // }).then(r=>{
-            // 	if (r.code === 200) {
-            // 		console.log(r)
-            // 	} else {
-            // 		uni.showToast({ title: r.message, icon: "none" });
-            // 	}
-            // }).catch(err => {
-            // 	console.log(err)
-            // })
-              // // 预览图片
-              // uni.previewImage({
-              // 		urls: res.tempFilePaths,
-              // 		longPressActions: {
-              // 				itemList: ['发送给朋友', '保存图片', '收藏'],
-              // 				success: function(data) {
-              // 						console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
-              // 				},
-              // 				fail: function(err) {
-              // 						console.log(err.errMsg);
-              // 				}
-              // 		}
-              // });
-          }
-        });
-      },
-        handleUploadFile (data) {
-				const _this = this;
-				data.forEach(item => {
-					uni.uploadFile({
-					url : uploadImage,
-					filePath: item,
-					name: 'file',
-					header: {
-						"x-api-key": _this.token,
-						"merchant-id": 1
-					},
-					formData: {
-						'access-token': _this.token,
-						"merchant-id": 1
-					},
-					success (r) {
-						uni.hideLoading();
-						const data = JSON.parse(r.data);
-						if (data.code === 200) {
-							_this.imageList.push(data.data.url)
-						} else {
-						    this.$api.msg(data.message);
-						}
-					}
-				 });
-				})
-			},
-            close(e){
-                this.imageList.splice(e,1);
+            handleFeedbackTypeChange(e) {
+                this.sendDate.type = e.detail.value
+            },
+            uploadImage() {
+                // 从相册选择6张图
+                const _this = this;
+                uni.chooseImage({
+                    count: 6,
+                    sizeType: ['original', 'compressed'],
+                    sourceType: ['album'],
+                    success: function (res) {
+                        _this.handleUploadFile(res.tempFilePaths)
+                    }
+                });
+            },
+            handleUploadFile(data) {
+                const _this = this;
+                data.forEach(item => {
+                    uni.uploadFile({
+                        url: uploadImage,
+                        filePath: item,
+                        name: 'file',
+                        header: {
+                            "x-api-key": _this.token,
+                        },
+                        formData: {
+                            'access-token': _this.token,
+                        },
+                        success(r) {
+                            uni.hideLoading();
+                            const data = JSON.parse(r.data);
+                            if (data.code === 200) {
+                                _this.imageList.push(data.data.url)
+                            } else {
+                                this.$api.msg(data.message);
+                            }
+                        }
+                    });
+                })
+            },
+            close(e) {
+                this.imageList.splice(e, 1);
             },
             chooseMsg() { //快速输入
                 uni.showActionSheet({
@@ -179,29 +152,19 @@
                     }
                 })
             },
-            chooseImg() { //选择图片
-                uni.chooseImage({
-                    sourceType: ["camera", "album"],
-                    sizeType: "compressed",
-                    count: 8 - this.imageList.length,
-                    success: (res) => {
-                        this.imageList = this.imageList.concat(res.tempFilePaths);
-                    }
-                })
-            },
             previewImage() { //预览图片
                 uni.previewImage({
                     urls: this.imageList
                 });
             },
             async send() { //发送反馈
-					      this.sendDate.covers = JSON.stringify(this.imageList);
+                this.sendDate.covers = JSON.stringify(this.imageList);
                 uni.showLoading({title: '反馈中...'});
                 await this.$post(`${opinionCreate}`, {
                     ...this.sendDate
                 }).then(() => {
                     uni.navigateBack({
-                      delta: 1
+                        delta: 1
                     });
                 }).catch(err => {
                     console.log(err)

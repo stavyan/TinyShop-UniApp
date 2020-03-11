@@ -242,9 +242,6 @@
                 }
 			}
 		}, {
-			"path": "pages/money/money",
-			"style": {}
-		}, {
 			"path": "pages/order/createOrder",
 			"style": {
 				"navigationBarTitleText": "创建订单"

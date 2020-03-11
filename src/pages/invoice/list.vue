@@ -8,13 +8,13 @@
 							订单编号: <text class="order-sn">{{item.order_sn}}</text>
 						</view>
 						<view class="order-wrapper">
-							<text class="address">{{item.title}}</text>
+							<text class="address">{{item.title}}<text v-if="item.content">{{ ` - ${item.content}` }}</text></text>
 							<text class="address">开票金额: {{item.tax_money}}</text>
 						</view>
 					</view>
 					<view class="u-box">
-						<view>
-							<text class="name">{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}</text>
+						<view class="in1line">
+							<text class="name">[{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}]</text>
 							<text class="mobile">{{ item.duty_paragraph || '个人发票无税号' }}</text>
 						</view>
 						<text class="time">{{item.created_at | time}}</text>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-	import {orderInvoiceList} from "../../api/userInfo";
+	import {orderInvoiceList} from "@/api/userInfo";
 	import moment from 'moment';
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import empty from "@/components/empty";
@@ -49,7 +49,7 @@
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
+				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			}
 		},
 		onLoad(option){
@@ -127,7 +127,7 @@
 	}
 	.address-box{
 		.order-fl {
-			font-size: $font-sm;
+			font-size: $font-base;
 			margin-bottom: 10upx;
 			.order-sn {
 				margin-left: 14upx;
@@ -160,7 +160,6 @@
 		display: flex;
 		justify-content: space-between;
 		.name{
-			margin-right: 30upx;
 		}
 		.time {
 			font-size: $font-sm + 2upx;

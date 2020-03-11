@@ -5,7 +5,7 @@
 			@link="toCategory"
 			@search="toSearch"
 			:title="'分类'"
-			:icon="'iconfenlei'"
+			:icon="'iconfenlei1'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
 		<!-- 轮播图 -->

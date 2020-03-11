@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!--顶部返回按钮-->
-		<view class="back-btn yticon icon-zuojiantou-up" @tap="navBack"></view>
+		<i class="back-btn iconfont iconzuojiantou-up" @tap="navBack"></i>
 		<!--插画-->
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
@@ -68,11 +68,9 @@
 </template>
 
 <script>
-	import {
-        mapMutations
-    } from 'vuex';
-	import {authLogin, loginByPass, loginBySmsCode, smsCode} from "../../api/login";
-	const graceChecker = require("../../common/graceChecker.js");
+	import {mapMutations} from 'vuex';
+	import {authLogin, loginByPass, loginBySmsCode, smsCode} from "@/api/login";
+	const graceChecker = require("@/common/graceChecker.js");
 	export default{
 		data(){
 			return {

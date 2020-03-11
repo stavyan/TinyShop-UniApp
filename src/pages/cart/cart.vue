@@ -386,6 +386,10 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
+					uni.setTabBarBadge({
+						index: 2,
+						text: r.data.length.toString()
+					});
 					this.cartList = r.data
 					uni.setStorageSync('cartNum', r.data.length)
 				}).catch(err => {

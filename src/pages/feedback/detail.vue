@@ -14,7 +14,7 @@
             <view class="uni-uploader__files">
                 <block v-for="(image,index) in feedbackDetail.covers" :key="index">
                     <view class="uni-uploader__file">
-                        <image class="uni-uploader__img" :src="image" @tap="previewImage(feedbackDetail.covers)"></image>
+                        <rf-image class="uni-uploader__img" :src="image"></rf-image>
                     </view>
                 </block>
             </view>
@@ -49,8 +49,19 @@
 </template>
 
 <script>
-    import {opinionDetail} from "../../api/userInfo";
+    /**
+     * @des 意见反馈详情
+     *
+     * @author stav stavyan@qq.com
+     * @date 2020-03-11 10:20
+     * @copyright 2019
+     */
+    import {opinionDetail} from "@/api/userInfo";
+    import rfImage from '@/components/rf-image/rf-image';
     export default {
+        components: {
+            rfImage
+        },
         data() {
             return {
                 feedbackDetail: {},

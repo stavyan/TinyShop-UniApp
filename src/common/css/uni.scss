@@ -1457,3 +1457,12 @@ radio-group label, checkbox-group label{
   -webkit-box-orient: vertical !important;
   -webkit-line-clamp: 2;
 }
+
+.in10line {
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 10;
+}

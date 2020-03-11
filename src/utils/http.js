@@ -1,9 +1,10 @@
 import axios from './uni-axios'
-import {refreshToken} from "../api/login";
+import {refreshToken} from "@/api/login";
+import {baseUrl} from "@/api/params";
 
 // 创建自定义接口服务实例
 const http = axios.create({
-    baseURL: 'https://www.yllook.com/api', // baseUrl 公共前缀
+    baseURL: baseUrl, // baseUrl 公共前缀
     timeout: 60 * 1000,  // 不可超过 manifest.json 中配置 networkTimeout的超时时间
     // #ifdef H5
     withCredentials: true,
@@ -136,28 +137,28 @@ http.interceptors.response.use(response => {
             throw response.data.message;
             break;
         case 400:
-            this.$api.msg('错误的请求');
+            uni.showToast({title: "错误的请求", icon: 'none'});
             throw response.data.message;
             break;
         case 405:
             // uni.clearStorageSync();
-            this.$api.msg('当前操作不被允许');
+            uni.showToast({title: "当前操作不被允许", icon: 'none'});
             throw response.data.message;
             break;
         case 404:
-            this.$api.msg(response.data.message);
+            uni.showToast({title: response.data.message, icon: 'none'});
             throw response.data.message;
             break;
         case 429:
-            this.$api.msg('请求过多，先休息一下吧~');
+            uni.showToast({title: "请求过多，先休息一下吧~", icon: 'none'});
             throw response.data.message;
             break;
         case 500:
-            this.$api.msg('服务器打瞌睡了~');
+            uni.showToast({title: "服务器打瞌睡了~", icon: 'none'});
             throw response.data.message;
             break;
         default:
-            this.$api.msg(response.data.message);
+            uni.showToast({ title: response.data.message, icon: "none" });
             throw response.data.message;
             break;
     }

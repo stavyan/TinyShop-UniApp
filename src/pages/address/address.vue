@@ -1,125 +1,133 @@
 <template>
-	<view class="content b-t">
-		<view class="list b-b" v-for="(item, index) in addressList" :key="index" @tap="checkAddress(item)">
-			<view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
-				<view class="address-box">
-					<text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
-					<text class="address">{{item.address_name}} {{item.address_details}}</text>
-				</view>
-				<view class="u-box">
-					<text class="name">{{item.realname}}</text>
-					<text class="mobile">{{item.mobile}}</text>
-				</view>
-			</view>
-			<i class="iconfont iconbianji" @tap.stop="addAddress('edit', item)"></i>
-		</view>
-		<text v-if="addressList.length > 0" style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
-			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
-		</text>
-		<empty :info="`暂无收货地址，请添加地址`" v-else></empty>
-		<button class="add-btn" @tap="addAddress('add')">新增地址</button>
-	</view>
+  <view class="content b-t">
+    <view class="list b-b" v-for="(item, index) in addressList" :key="index" @tap="checkAddress(item)">
+      <view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
+        <view class="address-box">
+          <text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
+          <text class="address">{{item.address_name}} {{item.address_details}}</text>
+        </view>
+        <view class="u-box">
+          <text class="name">{{item.realname}}</text>
+          <text class="mobile">{{item.mobile}}</text>
+        </view>
+      </view>
+      <i class="iconfont iconbianji" @tap.stop="addAddress('edit', item)"></i>
+    </view>
+    <text v-if="addressList.length > 0"
+          style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
+      提示：长按可删除当前收货地址。最多只能存在一个默认地址。
+    </text>
+    <empty :info="`暂无收货地址，请添加地址`" v-else></empty>
+    <rf-load-more v-if="addressList.length > 0" :status="loadingType"/>
+    <button class="add-btn" @tap="addAddress('add')">新增地址</button>
+  </view>
 </template>
 
 <script>
-	/**
-	 * @des 收货地址列表
-	 *
-	 * @author stav stavyan@qq.com
-	 * @date 2020-03-10 18:00
-	 * @copyright 2019
-	 */
-	import {addressDelete, addressList} from "@/api/userInfo";
-	import empty from "@/components/empty";
-	export default {
-		components: {
-			empty,
-		},
-		data() {
-			return {
-				timeOutEvent: 0,
-				source: 0,
-				page: 1,
-				addressList: []
-			}
-		},
-		//下拉刷新
-		onPullDownRefresh(){
-			this.page = 1;
-			this.addressList = [];
-			this.getAddressList('refresh');
-		},
-		//加载更多
-		onReachBottom(){
-			this.page ++;
-			this.getAddressList();
-		},
-		onLoad(option){
-			this.source = option.source;
-		},
-		onShow() {
-			this.initData()
-		},
-		methods: {
-			goTouchStart(id){
-			 clearTimeout(this.timeOutEvent);//清除定时器
-			 this.timeOutEvent = 0;
-			 this.timeOutEvent = setTimeout(() => {
-				uni.showModal({
-				    content: '确定要删除该收货地址吗',
-				    success: (e)=>{
-				    	if(e.confirm){
-				    		this.$del(`${addressDelete}?id=${id}`).then(() => {
-									this.getAddressList();
-								})
-				    	}
-				    }
-				});
-			 }, 0.5 * 1000);//这里设置定时
-		 },
-		//手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
-		goTouchEnd(){
-			clearTimeout(this.timeOutEvent);
-				if(this.timeOutEvent!=0){
-			 }
-		},
-		//如果手指有移动，则取消所有事件，此时说明用户只是要移动而不是长按
-		goTouchMove(){
-				 clearTimeout(this.timeOutEvent);//清除定时器
-				 this.timeOutEvent = 0;
-		},
-			// 数据初始化
-			initData () {
-				this.getAddressList();
-			},
-			// 获取收货地址列表
-			async getAddressList (type) {
-				uni.showLoading({title:'加载中...'});
-				await this.$get(`${addressList}`, {
-				    page: this.page
-				}).then(r=>{
-					if (type === 'refresh') {
-						uni.stopPullDownRefresh();
-					}
-					this.addressList = r.data
-				})
-			},
-			// 选择地址
-			checkAddress(item){
-				if(this.source == 1){
-					//this.$api.prePage()获取上一页实例，在App.vue定义
-					this.$api.prePage().addressData = item;
-					uni.navigateBack()
-				}
-			},
-			// 跳转添加地址页面
-			addAddress(type, item){
-				uni.navigateTo({
-					url: `/pages/address/addressManage?type=${type}&id=${item && item.id || undefined}`
-				})
-			},
-		}
-	}
+    /**
+     * @des 收货地址列表
+     *
+     * @author stav stavyan@qq.com
+     * @date 2020-03-10 18:00
+     * @copyright 2019
+     */
+    import {addressDelete, addressList} from "@/api/userInfo";
+    import empty from "@/components/empty";
+    import rfLoadMore from '@/components/rf-load-more/rf-load-more';
+
+    export default {
+        components: {
+            empty,
+            rfLoadMore
+        },
+        data() {
+            return {
+                timeOutEvent: 0,
+                source: 0,
+                page: 1,
+                addressList: [],
+                loadingType: 'more'
+            }
+        },
+        //下拉刷新
+        onPullDownRefresh() {
+            this.page = 1;
+            this.addressList = [];
+            this.getAddressList('refresh');
+        },
+        //加载更多
+        onReachBottom() {
+            this.page++;
+            this.getAddressList();
+        },
+        onLoad(option) {
+            this.source = option.source;
+        },
+        onShow() {
+            this.initData()
+        },
+        methods: {
+            goTouchStart(id) {
+                clearTimeout(this.timeOutEvent);//清除定时器
+                this.timeOutEvent = 0;
+                this.timeOutEvent = setTimeout(() => {
+                    uni.showModal({
+                        content: '确定要删除该收货地址吗',
+                        success: (e) => {
+                            if (e.confirm) {
+                                this.$del(`${addressDelete}?id=${id}`).then(() => {
+                                    this.getAddressList();
+                                })
+                            }
+                        }
+                    });
+                }, 0.5 * 1000);//这里设置定时
+            },
+            //手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
+            goTouchEnd() {
+                clearTimeout(this.timeOutEvent);
+                if (this.timeOutEvent != 0) {
+                }
+            },
+            //如果手指有移动，则取消所有事件，此时说明用户只是要移动而不是长按
+            goTouchMove() {
+                clearTimeout(this.timeOutEvent);//清除定时器
+                this.timeOutEvent = 0;
+            },
+            // 数据初始化
+            initData() {
+                this.page = 1;
+                this.getAddressList();
+            },
+            // 获取收货地址列表
+            async getAddressList(type) {
+                uni.showLoading({title: '加载中...'});
+                await this.$get(`${addressList}`, {
+                    page: this.page
+                }).then(r => {
+                    if (type === 'refresh') {
+                        uni.stopPullDownRefresh();
+                    }
+                    this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+                    this.addressList = [...this.addressList, ...r.data];
+                })
+            },
+            // 选择地址
+            checkAddress(item) {
+                if (this.source == 1) {
+                    //this.$api.prePage()获取上一页实例，在App.vue定义
+                    this.$api.prePage().addressData = item;
+                    uni.navigateBack()
+                }
+            },
+            // 跳转添加地址页面
+            addAddress(type, item) {
+                uni.navigateTo({
+                    url: `/pages/address/addressManage?type=${type}&id=${item && item.id || undefined}`
+                })
+            },
+        }
+    }
 </script>
 
 <style lang='scss'>

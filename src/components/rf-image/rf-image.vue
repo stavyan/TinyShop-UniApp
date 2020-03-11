@@ -22,10 +22,12 @@
 				type: String,
 				default: '/static/errorImage.jpg'
 			},
+			// 是否预览
 			mode: {
 				type: String,
 				default: 'aspectFill'
 			},
+			// 是否预览
 			isPreviewImage: {
 				type: Boolean,
 				default: true
@@ -39,9 +41,9 @@
 			// 图片预览
 			previewImage(urls){
 		    if (!this.isPreviewImage) return;
-		    if (!this.urls) return;
+		    if (!urls) return;
 				uni.previewImage({
-					urls
+					urls: urls.split('#$#'),
 				});
 			}
 		},

@@ -12,10 +12,6 @@
 			<text class="cell-tit">授权管理</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-<!--		<view class="list-cell b-b" @tap="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">-->
-<!--			<text class="cell-tit">收货地址</text>-->
-<!--			<text class="cell-more yticon icon-you"></text>-->
-<!--		</view>-->
 		<view class="list-cell b-b m-t" @tap="navTo('/pages/invoice/invoice')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">发票管理</text>
 			<text class="cell-more yticon icon-you"></text>
@@ -44,7 +40,7 @@
 		</view>
 		<view class="list-cell b-b">
 			<text class="cell-tit">当前版本</text>
-			<text class="cell-tip">当前版本 beta 1.0</text>
+			<text class="cell-tip">当前版本 1.0.0</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell m-t" @tap="navTo('/pages/feedback/list')">
@@ -61,7 +57,7 @@
 	import {
 		mapMutations, mapState
 	} from 'vuex';
-	import {logout} from "../../api/login";
+	import {logout} from "@/api/login";
 	export default {
 		data() {
 			return {

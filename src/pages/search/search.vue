@@ -6,15 +6,6 @@
 							 :placeholder="defaultKeyword"
 							 @search="doSearch(false)" @confirm="doSearch(false)"
 							 v-model="keyword"></mSearch>
-			<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
-			<!--
-			<view class="input-box">
-				<input type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
-				 placeholder-class="placeholder-class" confirm-type="search">
-			</view>
-			<view class="search-btn" @tap="doSearch(false)">搜索</view>
-			-->
-			<!-- 原样式 end -->
 		</view>
 		<view class="search-keyword" @touchstart="blur">
 			<scroll-view class="keyword-list-box" v-show="isShowKeywordList" scroll-y>
@@ -39,8 +30,7 @@
 						<view v-for="(keyword,index) in oldKeywordList" @tap="doSearch(keyword)" :key="index">{{keyword}}</view>
 					</view>
 				</view>
-				{{ hotKeywordList.length }}
-				<view class="keyword-block" v-if="hotKeywordList.length > 0">
+				<view class="keyword-block">
 					<view class="keyword-list-header">
 						<view>热门搜索</view>
 						<view>
@@ -100,33 +90,6 @@
 						this.oldKeywordList = OldKeys;
 					}
 				});
-			},
-			//高亮关键字
-			drawCorrelativeKeyword(keywords, keyword) {
-				var len = keywords.length,
-					keywordArr = [];
-				for (var i = 0; i < len; i++) {
-					var row = keywords[i];
-					//定义高亮#9f9f9f
-					var html = row[0].replace(keyword, "<span style='color: #9f9f9f;'>" + keyword + "</span>");
-					html = '<div>' + html + '</div>';
-					var tmpObj = {
-						keyword: row[0],
-						htmlStr: html
-					};
-					keywordArr.push(tmpObj)
-				}
-				return keywordArr;
-			},
-			inputChange(event) {
-				// //兼容引入组件时传入参数情况
-				// var keyword = event.detail ? event.detail.value : event;
-				// if (!keyword) {
-				// 	this.keywordList = [];
-				// 	this.isShowKeywordList = false;
-				// 	return;
-				// }
-				// this.isShowKeywordList = true;
 			},
 			//顶置关键字
 			setkeyword(data) {
@@ -199,13 +162,9 @@
 	view{display:block;}
 	.search-box {width:100%;background-color:rgb(242,242,242);padding:15upx 2.5%;display:flex;justify-content:space-between;}
 	.search-box .mSearch-input-box{width: 100%;}
-	.search-box .input-box {width:85%;flex-shrink:1;display:flex;justify-content:center;align-items:center;}
-	.search-box .search-btn {width:15%;margin:0 0 0 2%;display:flex;justify-content:center;align-items:center;flex-shrink:0;font-size:28upx;color:#fff;background:linear-gradient(to right,#ff9801,#ff570a);border-radius:60upx;}
 	.search-box .input-box>input {width:100%;height:60upx;font-size:32upx;border:0;border-radius:60upx;-webkit-appearance:none;-moz-appearance:none;appearance:none;padding:0 3%;margin:0;background-color:#ffffff;}
-	.placeholder-class {color:#9e9e9e;}
 	.search-keyword {width:100%;background-color:rgb(242,242,242);}
 	.keyword-list-box {height:calc(100vh - 110upx);padding-top:10upx;border-radius:20upx 20upx 0 0;background-color:#fff;}
-	.keyword-entry-tap {background-color:#eee;}
 	.keyword-entry {width:94%;height:80upx;margin:0 3%;font-size:30upx;color:#333;display:flex;justify-content:space-between;align-items:center;border-bottom:solid 1upx #e7e7e7;}
 	.keyword-entry image {width:60upx;height:60upx;}
 	.keyword-entry .keyword-text,.keyword-entry .keyword-img {height:80upx;display:flex;align-items:center;}

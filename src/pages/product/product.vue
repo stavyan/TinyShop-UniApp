@@ -39,14 +39,14 @@
 			<!--  分享 -->
 			<view class="share-section">
 				<view class="share-icon">
-					<text class="yticon icon-xingxing"></text>
+					<text class="iconfont iconxingxing"></text>
 					 返
 				</view>
 				<text open-type="contact" class="tit">分享该商品给你的朋友们</text>
-				<text class="yticon icon-bangzhu1"></text>
+				<i class="iconfont iconbangzhu1"></i>
 				<button class="share-btn" open-type="share">
 					立即分享
-					<text class="yticon icon-you"></text>
+					<i class="iconfont iconyou"></i>
 				</button>
 			</view>
 
@@ -72,12 +72,12 @@
 							基础款 * {{ cartCount }}
 						</text>
 					</view>
-					<text class="yticon icon-you"></text>
+					<i class="iconfont iconyou"></i>
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">优惠券</text>
 					<text class="con t-r red" @tap="toggleMask('show')">领取优惠券</text>
-					<text class="yticon icon-you"></text>
+					<i class="iconfont iconyou"></i>
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">限购说明</text>
@@ -104,7 +104,7 @@
 					<view class="con-list" v-else>
 						暂无服务
 					</view>
-					<text class="yticon icon-you" v-if="productDetail.tags && productDetail.tags.length >= 1"></text>
+					<i class="iconfont iconyou" v-if="productDetail.tags && productDetail.tags.length >= 1"></i>
 				</view>
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
@@ -118,7 +118,7 @@
 					<view class="con-list" v-else>
 						暂无服务
 					</view>
-					<text class="yticon icon-you" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1"></text>
+					<i class="iconfont iconyou" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1"></i>
 				</view>
 				<view class="c-row b-b" v-if="productDetail.attributeValue" @tap="showAttributeValue">
 					<text class="tit">参数</text>
@@ -130,7 +130,7 @@
 					<view class="con-list" v-else>
 						暂无商品基本信息
 					</view>
-					<text class="yticon icon-you" v-if="productDetail.attributeValue && productDetail.attributeValue.length >= 1"></text>
+					<i class="iconfont iconyou" v-if="productDetail.attributeValue && productDetail.attributeValue.length >= 1"></i>
 				</view>
 			</view>
 
@@ -141,7 +141,7 @@
 					<text>({{ productDetail.comment_num }})</text>
 					<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
 					<text class="tip" v-else>暂无评价信息</text>
-					<text class="yticon icon-you"></text>
+					<i class="iconfont iconyou"></i>
 				</view>
 				<!--again_addtime: "0"-->
 				<!--again_content: ""-->
@@ -192,15 +192,15 @@
 			<!-- 底部操作菜单 -->
 			<view class="page-bottom">
 				<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
-					<text class="yticon icon-xiatubiao--copy"></text>
+					<i class="iconfont iconxiatubiao--copy"></i>
 					<text>首页</text>
 				</navigator>
 				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
-					<text class="yticon icon-gouwuche"></text>
+					<i class="iconfont icongouwuche"></i>
 					<text>购物车</text>
 				</navigator>
 				<view class="p-b-btn" :class="{active: favorite}" @tap="toFavorite">
-					<text class="yticon icon-shoucang"></text>
+					<i class="iconfont iconshoucang"></i>
 					<text>收藏</text>
 				</view>
 
@@ -910,7 +910,7 @@
 		background: $page-color-base;
 		padding-bottom: 160upx;
 	}
-	.icon-you{
+	.iconyou{
 		font-size: $font-base + 2upx;
 		color: #888;
 	}
@@ -1049,7 +1049,7 @@
     .share-btn:after {
       border: none;
     }
-		.icon-you{
+		.iconyou{
 			font-size: $font-sm;
 			margin-left: 4upx;
 			color: $uni-color-primary;
@@ -1118,11 +1118,14 @@
 				color: $font-color-dark;
 				margin-right: 4upx;
 			}
+			.con {
+				padding: 0;
+			}
 			.tip{
 				flex: 1;
 				text-align: right;
 			}
-			.icon-you{
+			.iconyou{
 				margin-left: 10upx;
 			}
 		}
@@ -1146,7 +1149,6 @@
 			.con{
 				font-size: $font-base;
 				color: $font-color-dark;
-				padding: 20upx 0;
 			}
 			.bot{
 				display: flex;
@@ -1414,12 +1416,12 @@
 			color: $font-color-base;
 			width: 96upx;
 			height: 80upx;
-			.yticon{
+			.iconfont{
 				font-size: 40upx;
 				line-height: 48upx;
 				color: $font-color-light;
 			}
-			&.active, &.active .yticon{
+			&.active, &.active .iconfont{
 				color: $uni-color-primary;
 			}
 			.icon-fenxiang2{

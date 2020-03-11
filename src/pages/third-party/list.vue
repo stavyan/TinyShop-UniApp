@@ -19,7 +19,7 @@
 </template>
 
 <script>
-	import {thirdPartyAuthDelete, thirdPartyAuthList} from "../../api/userInfo";
+	import {thirdPartyAuthDelete, thirdPartyAuthList} from "@/api/userInfo";
 	import moment from 'moment';
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import empty from "@/components/empty";

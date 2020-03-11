@@ -46,9 +46,9 @@
 	 * @copyright 2019
 	 */
 	import uniRate from "@/components/rf-rate/rf-rate.vue"
-	import {orderRefundApply} from "../../api/userInfo";
+	import {orderRefundApply} from "@/api/userInfo";
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
-	const graceChecker = require("../../common/graceChecker.js");
+	const graceChecker = require("@/common/graceChecker.js");
 	export default{
 		components: { uniRate, uniIcons },
 		data(){

@@ -9,7 +9,7 @@
 			    class="uni-list-cell"
 			    :key="index"
 			    v-for="(item, index) in collectionList">
-						<view class="uni-media-list" @tap="goProduct(item.product.id)">
+						<view class="uni-media-list" @tap="navTo(`/pages/product/product?id=${id}`)">
 							<image class="uni-media-list-logo"
 										 mode="aspectFill"
 										 @error="onImageError(index)"
@@ -38,10 +38,10 @@
  * @date 2019-11-22 10:47
  * @copyright 2019
  */
-import {collectList} from "../../api/userInfo";
+import {collectList} from "@/api/userInfo";
 import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-import errorImg from './../../static/errorImage.jpg';
-import {collectDel} from "../../api/basic";
+import errorImg from '@/static/errorImage.jpg';
+import {collectDel} from "@/api/basic";
 import empty from "@/components/empty";
 import moment from 'moment';
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
@@ -100,6 +100,7 @@ export default {
 				})
 			}
 		},
+		// 数据初始化
 		initData () {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
@@ -108,6 +109,7 @@ export default {
 
 			}
 		},
+		// 获取收藏列表
 		async getCollectionList(type) {
 			uni.showLoading({title: '加载中...'});
 			await this.$get(`${collectList}`, {
@@ -123,11 +125,7 @@ export default {
 		onImageError (index) {
 			this.collectionList[index].product.picture = this.errorImg;
 		},
-		goProduct(id) {
-			let url = `/pages/product/product?id=${id}`;
-			if (!this.token) {
-				url = '/pages/public/login';
-			}
+		navTo(url) {
 			uni.navigateTo({
 				url
 			})

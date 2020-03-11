@@ -30,8 +30,12 @@
 							<view class="term" v-else>
 								使用时间：{{ row.use_time | timeFull }}
 							</view>
-							<view class="icon shixiao" v-show="state === 3" />
-							<view class="used" v-show="state === 2">已使用</view>
+							<view class="overdue" v-show="state === 3">
+								<i class="iconfont iconyiguoqi2 "></i>
+							</view>
+							<view class="overdue" v-show="state === 2">
+								<i class="iconfont iconyishiyong"></i>
+							</view>
 							<view class="usage">
 								{{parseInt(row.couponType.max_fetch, 10) === 0 ? '不限' : `每人限领${row.couponType.max_fetch}` }}
 								已领{{ row.couponType.get_count }}
@@ -376,6 +380,7 @@ export default {
 				flex-wrap: nowrap;
 				.left{
 					width: 100%;
+					position: relative;
 					.title{
 						padding-top: 3vw;
 						width: 90%;
@@ -415,7 +420,6 @@ export default {
 						font-size: 26upx;
 						color: $font-color-light;
 					}
-					position: relative;
 					.gap-top,.gap-bottom{
 						position: absolute;
 						width: 20upx;
@@ -430,20 +434,18 @@ export default {
 					.gap-bottom{
 						bottom: -10upx;
 					}
-					.used {
+					.overdue {
 						position: absolute;
 						right: 10upx;
-						bottom: 5upx;
-						font-size: $font-sm;
-						color: $base-color;
-					}
-					.shixiao{
-						position: absolute;
-						right: 0;
-						top: -20upx;
-						font-size: 150upx;
-						z-index: 6;
-						color: rgba(153,153,153,0.2)
+						top: 0;
+						.iconyiguoqi2 {
+							font-size: $font-lg + 40upx;
+							color: $base-color;
+						}
+						.iconyishiyong {
+							font-size: $font-lg + 40upx;
+							color: $font-color-base;
+						}
 					}
 				}
 				.right{

@@ -4,7 +4,7 @@
 		<rf-search-bar
 			@link="toIndex"
 			@search="handleSearchProductList"
-			:icon="'icon-xiatubiao--copy'"
+			:icon="'iconxiatubiao--copy'"
 			:title="'主页'"
 			:inputDisabled="true"
 			:headerShow="headerShow"
@@ -17,8 +17,8 @@
 			<view class="nav-item" :class="{current: filterIndex === 1}" @tap="tabClick(1)">
 				<text>销量</text>
 				<view class="p-box">
-					<text :class="{active: salesOrder === 1 && filterIndex === 1}" class="yticon icon-shang"></text>
-					<text :class="{active: salesOrder === 2 && filterIndex === 1}" class="yticon icon-shang xia"></text>
+					<i :class="{active: salesOrder === 1 && filterIndex === 1}" class="iconfont iconshang"></i>
+					<i :class="{active: salesOrder === 2 && filterIndex === 1}" class="iconfont iconshang xia"></i>
 				</view>
 			</view>
 			<view class="nav-item" :class="{current: filterIndex === 2}" @tap="tabClick(2)">
@@ -30,11 +30,11 @@
 			<view class="nav-item" :class="{current: filterIndex === 4}" @tap="tabClick(4)">
 				<text>价格</text>
 				<view class="p-box">
-					<text :class="{active: priceOrder === 1 && filterIndex === 4}" class="yticon icon-shang"></text>
-					<text :class="{active: priceOrder === 2 && filterIndex === 4}" class="yticon icon-shang xia"></text>
+					<i :class="{active: priceOrder === 1 && filterIndex === 4}" class="iconfont iconshang"></i>
+					<i :class="{active: priceOrder === 2 && filterIndex === 4}" class="iconfont iconshang xia"></i>
 				</view>
 			</view>
-			<text class="cate-item yticon icon-fenlei1" @tap="toggleCateMask('show')"></text>
+			<i class="cate-item iconfont iconfenlei1" @tap="toggleCateMask('show')"></i>
 		</view>
 
 		<!--商品列表-->
@@ -386,7 +386,7 @@
 		.p-box{
 			display: flex;
 			flex-direction: column;
-			.yticon{
+			.iconfont{
 				display: flex;
 				align-items: center;
 				justify-content: center;

@@ -10,6 +10,16 @@
 			...mapMutations(['login'])
 		},
 		onLaunch () {
+      if (!uni.getStorageSync('accessToken')) {
+        uni.removeTabBarBadge({
+          index: 2
+        });
+      } else {
+         uni.setTabBarBadge({
+          index: 2,
+          text: uni.getStorageSync('cartNum').toString()
+        });
+      }
 		},
 		onHide () {
 		},

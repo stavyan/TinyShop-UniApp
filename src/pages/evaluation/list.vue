@@ -35,12 +35,12 @@
 							active-color="#fa436a" />
 					</view>
 					<view class="first">
-						<view class="rat">
+						<view class="rat in10line">
 							{{row.content}}
 						</view>
 						<view class="img-video">
-							<view class="box" v-for="item in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
-								<image mode="aspectFill" :src="item"></image>
+							<view class="box" v-for="(item, index2) in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
+								<image mode="aspectFill" @error="onImageError(index, index2)" :src="item || '/static/errorImage.jpg'"></image>
 							</view>
 						</view>
 					</view>
@@ -53,7 +53,7 @@
 						</view>
 						<view class="img-video">
 							<view class="box" v-for="item in row.again_covers" @tap="showBigImg(item,row.covers)" :key="item">
-								<image mode="aspectFill" :src="item"></image>
+								<image mode="aspectFill" :src="item || '/static/errorImage.jpg'"></image>
 							</view>
 						</view>
 					</view>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-	import {evaluateList} from "../../api/product";
+	import {evaluateList} from "@/api/product";
 	import moment from 'moment';
 	import empty from "@/components/empty";
 	import rfRate from "@/components/rf-rate/rf-rate";
@@ -112,7 +112,7 @@
 		},
 		methods: {
 			onImageError(index, index2) {
-				this.evaluationList[index].covers[index2] = this.errorImg;
+				this.evaluationList[index].covers[index2] = '/static/errorImage.jpg';
 			},
 			// 初始化数据
 			initData (options) {
@@ -241,7 +241,8 @@ page{
 					width: 100%;
 					flex-wrap: wrap;
 					.rat{
-						font-size: 30upx;
+						font-size: $font-base;
+						line-height: 1.5;
 					}
 					.img-video{
 						width: 100%;

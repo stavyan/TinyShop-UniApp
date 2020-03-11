@@ -86,7 +86,6 @@
 				this.invoiceData.type = e.detail.value;
 			},
 			handleDutyParagraphChange (e) {
-				console.log(e.detail)
 				this.invoiceData.duty_paragraph = e.detail.value;
 			},
 			switchChange(e){
@@ -113,7 +112,6 @@
 			},
 			async handleInvoiceUpdate (data) {
 				uni.showLoading({title:'发票修改中...'});
-				console.log(data)
 				await this.$put(`${invoiceUpdate}?id=${data.id}`, {
 					type: data.type,
 					title: data.title,

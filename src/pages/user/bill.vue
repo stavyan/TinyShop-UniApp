@@ -10,7 +10,7 @@
 		<view class="place"></view>
 	  <!--账单明细列表-->
     <view class="wrapper">
-      <view class="list b-b" v-for="(item, index) in integralList" :key="index" @tap="checkAddress(item)">
+      <view class="list b-b" v-for="(item, index) in integralList" :key="index">
         <view class="wrapper">
           <view class="address-box">
             {{item.remark }}
