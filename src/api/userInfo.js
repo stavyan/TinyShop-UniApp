@@ -4,6 +4,7 @@
  *@blog https://stavtop.club
  *@date 2019/11/16 11:04:16
  */
+import hostUrl from './params';
 
 // 个人信息
 const memberInfo = "/tiny-shop/v1/member/member/index";
@@ -101,9 +102,9 @@ const orderCustomerSalesReturn = "/tiny-shop/v1/member/order-customer/sales-retu
 const orderCustomerRefundClose = "/tiny-shop/v1/member/order-customer/refund-close";
 
 // 上传图片
-const uploadImage = "https://www.yllook.com/api/tiny-shop/v1/common/file/images";
+const uploadImage = `${hostUrl}/tiny-shop/v1/common/file/images`;
 // 上传图片
-const uploadBase64Image = "https://www.yllook.com/api/tiny-shop/v1/common/file/base64";
+const uploadBase64Image = `${hostUrl}/tiny-shop/v1/common/file/base64`;
 
 
 

@@ -1,19 +1,19 @@
 {
 	"name" : "Rageframe商城",
-	"appid" : "__UNI__8006C11",
+	"appid" : "__UNI__8006C11", // 自行更换
 	"description" : "Rageframe商城",
 	"versionName" : "1.0.0",
 	"versionCode" : "100",
 	"transformPx" : false,
-	"app-plus" : 
+	"app-plus" :
 	{
-		"compatible" : 
+		"compatible" :
 		{
 			"ignoreVersion" : true
 		},
 		/* 5+App特有相关 */
 		"usingComponents" : true,
-		"splashscreen" : 
+		"splashscreen" :
 		{
 			"alwaysShowBeforeRender" : true,
 			"waiting" : true,
@@ -22,13 +22,13 @@
 		},
 		"modules" : {},
 		/* 模块配置 */
-		"distribute" : 
+		"distribute" :
 		{
 			/* 应用发布信息 */
-			"android" : 
+			"android" :
 			{
 				/* android打包配置 */
-				"permissions" : 
+				"permissions" :
 				[
 					"<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
 					"<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
@@ -56,23 +56,23 @@
 			},
 			"ios" : {},
 			/* ios打包配置 */
-			"sdkConfigs" : 
+			"sdkConfigs" :
 			{
 				"ad" : null
 			},
-			"icons" : 
+			"icons" :
 			{
-				"android" : 
+				"android" :
 				{
 					"hdpi" : "unpackage/res/icons/72x72.png",
 					"xhdpi" : "unpackage/res/icons/96x96.png",
 					"xxhdpi" : "unpackage/res/icons/144x144.png",
 					"xxxhdpi" : "unpackage/res/icons/192x192.png"
 				},
-				"ios" : 
+				"ios" :
 				{
 					"appstore" : "unpackage/res/icons/1024x1024.png",
-					"ipad" : 
+					"ipad" :
 					{
 						"app" : "unpackage/res/icons/76x76.png",
 						"app@2x" : "unpackage/res/icons/152x152.png",
@@ -84,7 +84,7 @@
 						"spotlight" : "unpackage/res/icons/40x40.png",
 						"spotlight@2x" : "unpackage/res/icons/80x80.png"
 					},
-					"iphone" : 
+					"iphone" :
 					{
 						"app@2x" : "unpackage/res/icons/120x120.png",
 						"app@3x" : "unpackage/res/icons/180x180.png",
@@ -97,9 +97,9 @@
 					}
 				}
 			},
-			"splashscreen" : 
+			"splashscreen" :
 			{
-				"android" : 
+				"android" :
 				{
 					"hdpi" : "/Users/stav/Downloads/1577068332615.png",
 					"xhdpi" : "/Users/stav/Downloads/1577068332615.png",
@@ -111,43 +111,43 @@
 	/* SDK配置 */
 	"quickapp" : {},
 	/* 快应用特有相关 */
-	"mp-weixin" : 
+	"mp-weixin" :
 	{
 		/* 小程序特有相关 */
 		"usingComponents" : true,
 		"appid" : "wx3764a6fbc282be0c",
-		"setting" : 
+		"setting" :
 		{
 			"urlCheck" : true,
 			"minified" : true
 		},
 		"permission" : {}
 	},
-	"h5" : 
+	"h5" :
 	{
-		"router" : 
+		"router" :
 		{
 			"mode" : "history"
 		},
-		"async" : 
+		"async" :
 		{
 			//页面js异步加载配置
 			"loading" : "AsyncLoading", //页面js加载时使用的组件（需注册为全局组件）
-			
+
 			"error" : "AsyncError", //页面js加载失败时使用的组件（需注册为全局组件）
-			
+
 			"delay" : 200, //展示 loading 加载组件的延时时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）
-			
+
 			"timeout" : 10000 //页面js加载超时时间（超时后展示 error 对应的组件）
-			
+
 		},
-		"devServer" : 
+		"devServer" :
 		{
 			"port" : 9527,
 			"disableHostCheck" : true,
-			"proxy" : 
+			"proxy" :
 			{
-				"/addons" : 
+				"/addons" :
 				{
 					"target" : "https://www.yllook.com/api",
 					"changeOrigin" : true,
@@ -156,9 +156,9 @@
 			}
 		}
 	},
-	"mp-qq" : 
+	"mp-qq" :
 	{
-		"setting" : 
+		"setting" :
 		{
 			"minified" : true
 		},

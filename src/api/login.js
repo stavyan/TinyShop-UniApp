@@ -6,6 +6,8 @@
  *@param login.js
  */
 
+import hostUrl from './params';
+
 // 密码注册
 const registerByPass = "/tiny-shop/v1/site/register";
 
@@ -37,7 +39,7 @@ const smsCode = "/tiny-shop/v1/site/sms-code";
 const logout = "/tiny-shop/v1/site/logout";
 
 // 退出登录
-const refreshToken = "https://www.yllook.com/api/tiny-shop/v1/site/refresh";
+const refreshToken = `${hostUrl}/tiny-shop/v1/site/refresh`;
 
 export {
     registerByPass,
