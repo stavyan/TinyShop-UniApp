@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "登录",
+  "navigationStyle": "custom",
+  "titleNView": false,
+  "animationType": "slide-in-bottom",
+  "usingComponents": {}
+}

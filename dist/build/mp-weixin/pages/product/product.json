@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "详情展示",
+  "usingComponents": {
+    "share": "/components/share",
+    "rf-rate": "/components/rf-rate/rf-rate",
+    "uni-number-box": "/components/uni-number-box",
+    "empty": "/components/empty"
+  }
+}

@@ -1,0 +1,48 @@
+<template>
+	<div class="content" :style="{height:statusBarHeight+44+'wx'}">
+		<div class="status-bar" :style="{height:statusBarHeight+'wx'}"></div>
+		<div class="nav">
+			<text class="title-text">购物车</text>
+		</div>
+	</div>
+</template>
+<script>
+export default {
+	data() {
+		return {
+			statusBarHeight:20
+		};
+	},
+	mounted() {
+		uni.getSystemInfo({
+			success: (res)=>{
+				this.statusBarHeight = res.statusBarHeight;
+			}
+		});
+	},
+};
+</script>
+<style>
+.icon {
+	font-family: iconfont;
+	font-size: 42px;
+}
+.content {
+	background-color: #ffffff;
+	flex-direction: column;
+}
+.status-bar {
+	flex: 1;
+}
+.nav {
+	width: 690px;
+	margin-left: 30px;
+	height: 88px;
+	flex-direction: row;;
+	justify-content: flex-start;
+	align-items: center;
+}
+.title-text{
+	font-size: 36upx;
+}
+</style>

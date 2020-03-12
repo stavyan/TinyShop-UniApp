@@ -1,0 +1,1 @@
+<block wx:if="{{text}}"><text data-event-opts="{{[['tap',[['onClick']]]]}}" class="{{['uni-badge',inverted?'rf-badge-'+type+' rf-badge--'+size+' rf-badge-inverted':'rf-badge-'+type+' rf-badge--'+size]}}" bindtap="__e">{{text}}</text></block>

@@ -1,0 +1,9 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "我的订单",
+  "usingComponents": {
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "empty": "/components/empty",
+    "rf-count-down": "/components/rf-count-down/rf-count-down"
+  }
+}
