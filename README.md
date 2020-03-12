@@ -30,15 +30,19 @@ H5 预览: http://h5.tinyshop.rageframe.com
 1、安装相关依赖, 默认已拥有node环境
 
 ```
-yarn install || npm i
+// 安装yarn命令
+npm i -g yarn
+// 安装依赖
+yarn 
 ```
 
-2、运行到指定平台
+2. 运行到指定平台
 
 ```
-npm run dev:PLATFORM
-# 例 微信小程序的存放路径
-/dist/dev/mp-weixin
+// 运行到H5
+yarn serve
+// 运行至对应的小程序平台 
+yarn dev:PLATFORM
 ```
 
 值 | 平台
@@ -51,14 +55,12 @@ mp-toutiao | 头条小程序
 mp-qq | qq 小程序
 
 
-3、打包至线上部署
-
+3. 打包至线上部署
 ```
-npm run build:PLATFORM // 平台信息同上
-# 例 微信小程序的存放路径
-/dist/build/mp-weixin
+// H5打包
+yarn build
+yarn build:PLATFORM // 平台信息同上
 ```
-
 使用对应的小程序客户端进行发布。
 
 4、发布uni-app(打包为原生App云端)

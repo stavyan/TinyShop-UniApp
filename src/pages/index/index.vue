@@ -74,19 +74,19 @@
 			{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
 		</view>
 
-		<!--<view class="uni-title uni-common-pl">商户切换</view>-->
-		<!--<view class="uni-list">-->
-      <!--<view class="uni-list-cell">-->
-        <!--<view class="uni-list-cell-left">-->
-            <!--当前选择-->
-        <!--</view>-->
-        <!--<view class="uni-list-cell-db">-->
-            <!--<picker @change="bindPickerChange" range-key="title" :value="index" :range="merchantList">-->
-                <!--<view class="uni-input">{{merchantList[index] && merchantList[index].title}}</view>-->
-            <!--</picker>-->
-        <!--</view>-->
-    <!--</view>-->
-		<!--</view>-->
+		<view class="uni-title uni-common-pl">商户切换</view>
+		<view class="uni-list">
+      <view class="uni-list-cell">
+        <view class="uni-list-cell-left">
+            当前选择
+        </view>
+        <view class="uni-list-cell-db">
+            <picker @change="bindPickerChange" range-key="title" :value="index" :range="merchantList">
+                <view class="uni-input">{{merchantList[index] && merchantList[index].title}}</view>
+            </picker>
+        </view>
+    </view>
+		</view>
 		<!--#endif-->
 	</view>
 </template>
