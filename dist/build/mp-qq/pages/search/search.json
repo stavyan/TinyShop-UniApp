@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "商品搜索",
-  "usingComponents": {
-    "m-search": "/components/rf-search/rf-search"
-  }
-}

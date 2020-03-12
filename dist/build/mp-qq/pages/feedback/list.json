@@ -1,8 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "navigationBarTitleText": "意见反馈",
-  "usingComponents": {
-    "empty": "/components/empty",
-    "rf-load-more": "/components/rf-load-more/rf-load-more"
-  }
-}
