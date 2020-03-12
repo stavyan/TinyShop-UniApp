@@ -1,7 +1,7 @@
 {
   "name": "Rageframe商城",
   "appid": "__UNI__8006C11",
-  // 自行更换 可登陆
+  // 自行更换uniapp appid 可登录查看uniapp提供的用户统计 https://tongji.dcloud.net.cn/
   "description": "Rageframe商城",
   "versionName": "1.0.0",
   "versionCode": "100",
