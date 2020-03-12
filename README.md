@@ -11,7 +11,11 @@
 ### Demo
 
 H5 预览: http://h5.tinyshop.rageframe.com  
-后台预览: http://demo2.rageframe.com/backend    
+
+微信小程序和QQ小程序正处于审核阶段
+
+后台预览: http://demo2.rageframe.com/backend
+
 账号: demo   
 密码: 123456 
 
@@ -94,7 +98,7 @@ npm run build:PLATFORM // 平台信息同上
 
 2、字体图标
 
-字体图标库来源于 https://iconfont.cn，需要的可自行注册账号，然后私信我 QQ：617946852。
+字体图标库来源于 https://iconfont.cn 需要的可自行注册该网站账号，然后加群索要：655084090。
 
 - 下载字体图标库
 - 拷贝至项目存放静态资源处
