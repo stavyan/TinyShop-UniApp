@@ -1,5 +1,3 @@
-// 退出登录
-
 // 主机地址
 const hostUrl = "http://h5.tinyshop.rageframe.com";
 

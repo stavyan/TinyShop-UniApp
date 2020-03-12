@@ -37,6 +37,8 @@ yarn install || npm i
 
 ```
 npm run dev:PLATFORM
+# 例 微信小程序的存放路径
+/dist/dev/mp-weixin
 ```
 
 值 | 平台
@@ -53,9 +55,11 @@ mp-qq | qq 小程序
 
 ```
 npm run build:PLATFORM // 平台信息同上
+# 例 微信小程序的存放路径
+/dist/build/mp-weixin
 ```
 
-使用对应的小程序客户端进项发布
+使用对应的小程序客户端进行发布。
 
 4、发布uni-app(打包为原生App云端)
 
@@ -63,7 +67,7 @@ npm run build:PLATFORM // 平台信息同上
 
 ### 配置文件
 
-1、公共样式
+1、公共样式 `/src/uni.scss`
 
 ```
    /* 页面左右间距 */
@@ -104,7 +108,7 @@ npm run build:PLATFORM // 平台信息同上
 - 拷贝至项目存放静态资源处
 - main.js 或者 App.vue 引入
 
-3、axios api请求封装
+3、axios api请求封装 `/src/utils/http.js`
 
 采用的第三方插件 uni-axios。
 
@@ -140,6 +144,15 @@ export default http;
 
 <!-- 使用说明见main.js封装。 -->
 
+```
+
+4、公共参数 `/src/api/params.js`
+
+```
+// 主机地址
+const hostUrl = "http://h5.tinyshop.rageframe.com";
+// 后台接口请求地址
+const baseUrl = "http://demo.rageframe.com/api";
 ```
 
 ### 官网
