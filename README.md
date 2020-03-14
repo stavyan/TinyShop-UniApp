@@ -4,9 +4,11 @@
 
 基于 [RageFrame2](https://github.com/jianyan74/rageframe2) 的一款免费开源的基础商城销售功能的开源微商城，前端基于 uni-app，一端发布多端通用，目前已经适配 H5、微信小程序、QQ小程序、Ios App、Android App。目前开源的版本功能为 V1 版，更多增强功能(V2、V3)敬请期待。
 
-### 后端项目
+### 项目地址
 
-开源地址: https://github.com/jianyan74/TinyShop
+前端开源地址: https://github.com/stavyan/TinyShop-UniApp
+
+后端开源地址: https://github.com/jianyan74/TinyShop
 
 ### Demo
 
@@ -104,7 +106,7 @@ yarn build:PLATFORM // 平台信息同上
 
 2、字体图标
 
-字体图标库来源于 https://iconfont.cn 需要的可自行注册该网站账号，然后加群索要：655084090。
+字体图标库来源于 http://iconfont.cn 需要的可自行注册该网站账号
 
 - 下载字体图标库
 - 拷贝至项目存放静态资源处
