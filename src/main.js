@@ -3,6 +3,9 @@ import store from './store';
 import App from './App';
 import  http, { get } from '@/utils/http';
 import '@/common/css/iconfont/iconfont.css';
+import '@/common/css/iconfont/iconfont.css';
+import '@/common/css/reset.scss';
+import '@/common/css/uni.scss';
 
 // 封装msg方法
 const msg = (title, duration=1500, mask=false, icon='none')=>{

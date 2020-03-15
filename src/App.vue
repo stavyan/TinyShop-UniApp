@@ -27,6 +27,6 @@
 </script>
 
 <style lang='scss'>
-  @import "@/common/css/reset";
-  @import "@/common/css/uni";
+  /*@import "@/common/css/reset";*/
+  /*@import "@/common/css/uni";*/
 </style>
