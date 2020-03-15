@@ -40,6 +40,6 @@ axios.defaults.transformRequest = [
 
 axios.defaults.adapter = adapter
 
-export * from 'axios'
+export * from './axios'
 
 export { axios }

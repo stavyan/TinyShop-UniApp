@@ -117,7 +117,8 @@
 			// 初始化数据
 			initData (options) {
 				this.evaluateStat = JSON.parse(options.evaluateStat);
-				this.id = this.evaluateStat.product_id;
+				if (!this.evaluateStat) return;
+				this.id =  this.evaluateStat.product_id;
 				this.labelList = [
 					{name:'全部',number: options.comment_num,type: {}},
 					{name:'好评',number: this.evaluateStat.good_num || 0, type: { explain_type: 3 }},

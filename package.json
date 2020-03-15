@@ -24,6 +24,7 @@
     "info": "node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js"
   },
   "dependencies": {
+    "@dcloudio/uni-migration": "^2.0.0-24220191115011",
     "@dcloudio/uni-app-plus": "^2.0.0-24220191115011",
     "@dcloudio/uni-h5": "^2.0.0-24220191115011",
     "@dcloudio/uni-helper-json": "*",
@@ -32,7 +33,13 @@
     "@dcloudio/uni-mp-qq": "^2.0.0-24220191115011",
     "@dcloudio/uni-mp-toutiao": "^2.0.0-24220191115011",
     "@dcloudio/uni-mp-weixin": "^2.0.0-24220191115011",
-    "@dcloudio/uni-stat": "^2.0.0-24220191115011"
+    "@dcloudio/uni-stat": "^2.0.0-24220191115011",
+    "node-sass": "^4.13.0",
+    "regenerator-runtime": "^0.12.1",
+    "sass": "^1.24.0",
+    "sass-loader": "^8.0.0",
+    "vue": "^2.6.11",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "^2.0.0-24220191115011",
@@ -50,13 +57,7 @@
     "mini-types": "0.0.5",
     "miniprogram-api-typings": "^2.9.4",
     "postcss-comment": "^2.0.0",
-    "vue-template-compiler": "^2.6.11",
-    "node-sass": "^4.13.0",
-    "regenerator-runtime": "^0.12.1",
-    "sass": "^1.24.0",
-    "sass-loader": "^8.0.0",
-    "vue": "^2.6.11",
-    "vuex": "^3.0.1"
+    "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
     "Android >= 4",

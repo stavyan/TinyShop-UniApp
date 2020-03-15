@@ -1,11 +1,11 @@
 import {
 	isObject,
 	isString
-} from 'axios/lib/utils'
+} from './axios/lib/utils'
 
-import createError from 'axios/lib/core/createError'
-import buildUrl from 'axios/lib/helpers/buildURL'
-import settle from 'axios/lib/core/settle'
+import createError from './axios/lib/core/createError'
+import buildUrl from './axios/lib/helpers/buildURL'
+import settle from './axios/lib/core/settle'
 import Timeout from './await-timeout'
 
 const timer = new Timeout()
