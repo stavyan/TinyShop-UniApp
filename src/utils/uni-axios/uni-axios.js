@@ -1,7 +1,7 @@
-import axios from 'axios'
-import utils from 'axios/lib/utils'
+import axios from './axios'
+import utils from './axios/lib/utils'
 import { adapter } from './adapter'
-import normalizeHeaderName from 'axios/lib/helpers/normalizeHeaderName'
+import normalizeHeaderName from './axios/lib/helpers/normalizeHeaderName'
 
 function setContentTypeIfUnset(headers, value) {
   if(!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {

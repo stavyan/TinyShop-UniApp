@@ -78,7 +78,7 @@
 <script>
 	import {payCreate, wechatConfig} from "../../api/basic";
 	// #ifdef H5
-	import jweixin from 'jweixin-module';
+	import jweixin from '@/utils/jweixin';
 	// #endif
 	import {isBindingCheck} from "../../api/login";
 	import {rechargeUrl} from "../../api/params";

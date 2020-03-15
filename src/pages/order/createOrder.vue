@@ -240,7 +240,7 @@
 	import {orderCreate, orderFreightFee, orderPreview} from "../../api/product";
 	import empty from "@/components/empty";
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	import rfImage from '@/components/rf-image/rf-image';
 	export default {
 		components: {

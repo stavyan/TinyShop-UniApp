@@ -372,7 +372,7 @@
 	import {cartItemCount, cartItemCreate, orderPreview, productDetail} from "../../api/product";
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
-  import moment from 'moment';
+  import moment from '@/utils/moment';
 	import errorImg from './../../static/errorImage.jpg';
 	import {couponReceive} from "../../api/userInfo";
 	import empty from "@/components/empty";

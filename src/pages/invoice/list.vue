@@ -30,7 +30,7 @@
 
 <script>
 	import {orderInvoiceList} from "@/api/userInfo";
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import empty from "@/components/empty";
 	export default {

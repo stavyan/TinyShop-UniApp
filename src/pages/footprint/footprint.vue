@@ -56,7 +56,7 @@
     import rfCalendar from "@/components/rf-calendar/rf-calendar";
     import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
     import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
-    import moment from 'moment';
+    import moment from '@/utils/moment';
 
     export default {
         components: {

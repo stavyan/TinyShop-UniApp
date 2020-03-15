@@ -43,7 +43,7 @@ import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from '@/static/errorImage.jpg';
 import {collectDel} from "@/api/basic";
 import empty from "@/components/empty";
-import moment from 'moment';
+import moment from '@/utils/moment';
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
 export default {

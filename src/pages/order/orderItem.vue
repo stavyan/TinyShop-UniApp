@@ -53,7 +53,7 @@ import uniTag from '@/components/uni-tag/uni-tag.vue';
 import {closeOrderRefundApply, orderDetail} from "@/api/userInfo";
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item.vue';
-import moment from 'moment';
+import moment from '@/utils/moment';
 export default {
 	components: {
 		rfSwipeAction,

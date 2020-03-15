@@ -78,7 +78,7 @@
 import {creditsLogList} from "../../api/userInfo";
 import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 import empty from "@/components/empty";
-import moment from 'moment';
+import moment from '@/utils/moment';
 export default {
   name: "Integral",
   components: {

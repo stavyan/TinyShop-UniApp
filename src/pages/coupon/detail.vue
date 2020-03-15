@@ -71,7 +71,7 @@
 import {couponClear, couponDetail, couponReceive} from "@/api/userInfo";
 import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 import empty from "@/components/empty";
-import moment from 'moment';
+import moment from '@/utils/moment';
 import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
 import uniList from '@/components/uni-list/uni-list.vue'
 import uniListItem from '@/components/uni-list-item/uni-list-item.vue';

@@ -68,7 +68,7 @@
 
 <script>
 	import {evaluateList} from "@/api/product";
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	import empty from "@/components/empty";
 	import rfRate from "@/components/rf-rate/rf-rate";
 	export default {

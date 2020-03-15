@@ -74,7 +74,7 @@
 <script>
 	import empty from "@/components/empty";
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	import {orderProductExpressDetails} from "@/api/product";
 	export default {
 		components: {

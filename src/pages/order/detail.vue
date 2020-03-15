@@ -144,7 +144,7 @@
 	import empty from "@/components/empty";
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
 	import rfImage from '@/components/rf-image/rf-image';
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	import {orderDetail} from "@/api/userInfo";
 	export default {
 		components: {
