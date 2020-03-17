@@ -137,7 +137,7 @@ export default{
                                       });
                                   } else {
                                     await _this.login(r.data.user_info);
-                                    this.$api.msg('已为您授权登录');
+                                    _this.$api.msg('已为您授权登录');
                                     const url = `/pages/user/user`;
                                     uni.reLaunch({
                                         url
