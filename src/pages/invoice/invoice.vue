@@ -67,6 +67,8 @@
                         success: (e) => {
                             if (e.confirm) {
                                 this.$del(`${invoiceDel}?id=${id}`).then(r => {
+                                    this.page = 1;
+                                    this.invoiceList.length = 0;
                                     this.getInvoiceList();
                                 })
                             }
@@ -87,6 +89,8 @@
             },
             // 初始化数据
             initData() {
+                this.page = 1;
+                this.invoiceList.length = 0;
                 this.getInvoiceList();
             },
             // 获取收货地址列表
