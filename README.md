@@ -8,7 +8,7 @@
 
 前端开源地址: https://github.com/stavyan/TinyShop-UniApp
 
-后端开源地址: https://github.com/jianyan74/TinyShop.
+后端开源地址: https://github.com/jianyan74/TinyShop
 
 ### Demo
 
