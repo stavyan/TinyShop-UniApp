@@ -190,7 +190,6 @@
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
 		      if (uni.getStorageSync('cartNum')) {
-		      	console.log(uni.getStorageSync('cartNum'))
 		      	if (uni.getStorageSync('cartNum') != 0) {
 					    uni.setTabBarBadge({
 						    index: 2,
@@ -213,13 +212,6 @@
 				      }
 				    });
 		      }
-					const orderSynthesizeNumArr = [];
-					for (let item in this.userInfo.order_synthesize_num) {
-						orderSynthesizeNumArr.push(this.userInfo.order_synthesize_num[item])
-					}
-					for (let i = 0; i < this.orderSectionList.length; i++) {
-						this.orderSectionList[i].num = orderSynthesizeNumArr[i].toString();
-					}
 					await this.getMemberInfo();
 				} else {
 			    uni.removeTabBarBadge({index: 2})
@@ -235,6 +227,13 @@
           this.amountList[0].value = r.data.account.user_money || 0;
           this.amountList[1].value = r.data.coupon_num || 0;
           this.amountList[2].value = r.data.account.user_integral || 0;
+					const orderSynthesizeNumArr = [];
+					for (let item in r.data.order_synthesize_num) {
+						orderSynthesizeNumArr.push(r.data.order_synthesize_num[item])
+					}
+					for (let i = 0; i < this.orderSectionList.length; i++) {
+						this.orderSectionList[i].num = orderSynthesizeNumArr[i].toString();
+					}
 					this.getFootPrintList();
           uni.setStorage({
               key: 'userInfo',

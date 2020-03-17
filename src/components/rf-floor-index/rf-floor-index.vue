@@ -14,7 +14,7 @@
 				<text class="tit">{{ header.title }}</text>
 				<text class="tit2">{{ header.desc }}</text>
 			</view>
-			<text class="yticon icon-you"></text>
+			<i class="iconfont iconyou"></i>
 		</view>
 		<view class="guess-section">
 			<view
