@@ -81,7 +81,7 @@ export default {
 			return data[parseInt(val, 10)]
 		},
 		filterProductStatus(item) {
-			console.log(item)
+			// console.log(item)
 			let status = null;
 			if (parseInt(item.refund_status, 10) !== 0) {
 				const refundStatusList = [
@@ -176,7 +176,7 @@ export default {
 						default:
 							break;
 					}
-					console.log(refundStatus)
+					console.log()
 					switch (refundStatus) {
 						case '0':
 							options.push({ text: '退款/退货'})
@@ -211,12 +211,12 @@ export default {
 					this.$api.msg('您已经提交了退货申请');
 					return;
 				}
-				if (e.data.refund_status == 2) {
-					this.goRefund(e.data, 2)
-				} else {
-					this.goRefund(e.data, 3)
+				if (e.data.order_status == 2) {
+					this.goRefund(e.data, 2);
+				} else if (e.data.order_status == 4) {
+					this.goRefund(e.data, 3);
 				}
-			} else if (e.content.text === '取消' || e.content.text === '取消') {
+			} else if (e.content.text === '取消') {
 				this.handleCloseOrderRefundApply(e.data.id)
 			} else if (e.content.text === '评价') {
 				this.goEvaluation(e.data)
