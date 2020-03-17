@@ -62,6 +62,13 @@
 
 			<!--发货地址-->
 			<view class="c-list">
+				<!--库存-->
+				<view class="c-row b-b" v-if="productDetail.stock">
+					<text class="tit">商品库存</text>
+					<view class="con-list">
+						{{ productDetail.stock }} 个
+					</view>
+				</view>
 				<!--发货地址-->
 				<view class="c-row b-b" v-if="productDetail.address_name">
 					<text class="tit">发货地址</text>

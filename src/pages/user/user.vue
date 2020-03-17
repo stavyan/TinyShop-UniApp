@@ -200,7 +200,6 @@
 			      }
 			    } else {
 		      	await this.$get(`${cartItemCount}`).then(r => {
-		      		console.log('data', r.data)
 				      if (r.data == 0) {
 				        uni.removeTabBarBadge({index: 2});
 					    } else {

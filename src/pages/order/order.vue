@@ -35,11 +35,12 @@
 							</view>
 						</view>
 
-						<scroll-view @tap="toOrderDetail(item.id)" v-if="item && item.product && item.product.length > 1"
+						<scroll-view  v-if="item && item.product && item.product.length > 1"
 												 class="goods-box" scroll-x>
 							<view
 								v-for="(goodsItem, goodsIndex) in item.product"
 								:key="goodsIndex"
+								@tap="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"
 								class="goods-item"
 							>
 								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
@@ -49,7 +50,7 @@
 						<view
 							v-if="item.product && item.product.length === 1"
 							class="goods-box-single"
-              @tap="toOrderDetail(item.id)"
+              @tap.stop="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"
 							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
 						>
 							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
@@ -67,16 +68,16 @@
 							<text class="price">{{ item.pay_money }}</text>
 						</view>
 						<view class="action-box b-t">
-							<button class="action-btn" v-show="item.order_status == 0" @tap="handleOrderOperation(item, 'close')">取消订单</button>
+							<button class="action-btn" v-if="item.order_status == 0" @tap="handleOrderOperation(item, 'close')">取消订单</button>
               <button class="action-btn" @tap="handleOrderOperation(item, 'detail')">订单详情</button>
-							<button class="action-btn recom" v-show="item.order_status == 0" @tap="handlePayment(item)">立即支付</button>
-						  <button class="action-btn recom" v-show="item.order_status == 1" @tap="handleOrderOperation(item, 'refund', 1)">申请退款</button>
-						  <button class="action-btn" v-show="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'refund', 3)">订单售后</button>
-							<button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
-              <button class="action-btn recom" v-show="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
-						  <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
-						  <button class="action-btn recom" v-show="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
+							<button class="action-btn recom" v-if="item.order_status == 0" @tap="handlePayment(item)">立即支付</button>
+						  <button class="action-btn recom" v-if="item.order_status == 1" @tap="handleOrderOperation(item, 'refund', 1)">申请退款</button>
+						  <button class="action-btn" v-if="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
+              <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'refund', 3)">订单售后</button>
+							<button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
+              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer == 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
+						  <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
+						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
 					<rf-load-more :status="loadingType"></rf-load-more>
