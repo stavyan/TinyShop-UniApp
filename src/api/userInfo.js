@@ -4,7 +4,7 @@
  *@blog https://stavtop.club
  *@date 2019/11/16 11:04:16
  */
-import baseUrl from './params';
+import { baseUrl } from './params';
 
 // 个人信息
 const memberInfo = "/tiny-shop/v1/member/member/index";
