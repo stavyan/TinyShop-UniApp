@@ -85,7 +85,7 @@
         this.search = uni.getStorageSync('search');
         this.hotSearchDefault = '请输入关键字 ' + (this.search.hot_search_default ? ('如: ' + this.search.hot_search_default) : '');
         this.getProductCate();
-				if (uni.getStorageSync('cartNum')) {
+				if (uni.getStorageSync('accessToken') && uni.getStorageSync('cartNum')) {
 					if (uni.getStorageSync('cartNum') == 0) {
 		        uni.removeTabBarBadge({index: 2});
 		        return;

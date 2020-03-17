@@ -163,7 +163,7 @@
 			this.initData();
 		},
 		onShow() {
-			if (uni.getStorageSync('cartNum')) {
+			if (uni.getStorageSync('accessToken') && uni.getStorageSync('cartNum')) {
 				if (uni.getStorageSync('cartNum') == 0) {
 	        uni.removeTabBarBadge({index: 2});
 		    } else {
