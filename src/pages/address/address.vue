@@ -97,6 +97,7 @@
             // 数据初始化
             initData() {
                 this.page = 1;
+                this.addressList.length = 0;
                 this.getAddressList();
             },
             // 获取收货地址列表
