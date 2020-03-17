@@ -87,7 +87,7 @@ http.interceptors.request.use(async config => {
                      success: (confirmRes) => {
                          if (confirmRes.confirm) {
                             uni.reLaunch({
-                                url: '/pages/public/login'
+                                url: '/pages/public/logintype'
                             });
                          }
                      }
@@ -100,7 +100,7 @@ http.interceptors.request.use(async config => {
                      success: (confirmRes) => {
                          if (confirmRes.confirm) {
                             uni.reLaunch({
-                                url: '/pages/public/login'
+                                url: '/pages/public/logintype'
                             });
                          }
                      }
@@ -129,7 +129,7 @@ http.interceptors.response.use(response => {
                  success: (confirmRes) => {
                      if (confirmRes.confirm) {
                         uni.reLaunch({
-                            url: '/pages/public/login'
+                            url: '/pages/public/logintype'
                         });
                      }
                  }

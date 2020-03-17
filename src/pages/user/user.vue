@@ -149,22 +149,6 @@
       }
 		},
     async onShow() {
-	    if (!uni.getStorageSync('accessToken')) {
-		    uni.removeTabBarBadge({index: 2})
-	    }
-	    if (uni.getStorageSync('cartNum')) {
-		    await this.$get(`${cartItemCount}`).then(r => {
-		    	if (r.data == 0) {
-		        uni.removeTabBarBadge({index: 2});
-	          return;
-			    }
-			    uni.setStorageSync('cartNum', r.data);
-			    uni.setTabBarBadge({
-				    index: 2,
-				    text: r.data,
-			    });
-		    });
-	    }
 	    this.initData();
     },
 		async onLoad(){
@@ -205,6 +189,30 @@
 				this.userInfo = uni.getStorageSync('userInfo') || {};
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
+		      if (uni.getStorageSync('cartNum')) {
+		      	console.log(uni.getStorageSync('cartNum'))
+		      	if (uni.getStorageSync('cartNum') != 0) {
+					    uni.setTabBarBadge({
+						    index: 2,
+						    text: uni.getStorageSync('cartNum').toString(),
+					    });
+			      } else {
+			        uni.removeTabBarBadge({index: 2});
+			      }
+			    } else {
+		      	await this.$get(`${cartItemCount}`).then(r => {
+		      		console.log('data', r.data)
+				      if (r.data == 0) {
+				        uni.removeTabBarBadge({index: 2});
+					    } else {
+						    uni.setStorageSync('cartNum', r.data);
+						    uni.setTabBarBadge({
+							    index: 2,
+							    text: r.data,
+						    });
+				      }
+				    });
+		      }
 					const orderSynthesizeNumArr = [];
 					for (let item in this.userInfo.order_synthesize_num) {
 						orderSynthesizeNumArr.push(this.userInfo.order_synthesize_num[item])
@@ -214,6 +222,7 @@
 					}
 					await this.getMemberInfo();
 				} else {
+			    uni.removeTabBarBadge({index: 2})
           this.amountList[0].value = 0;
           this.amountList[1].value = 0;
           this.amountList[2].value = 0;
