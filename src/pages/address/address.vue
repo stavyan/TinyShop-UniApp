@@ -76,6 +76,8 @@
                         success: (e) => {
                             if (e.confirm) {
                                 this.$del(`${addressDelete}?id=${id}`).then(() => {
+                                    this.page = 1;
+                                    this.addressList.length = 0;
                                     this.getAddressList();
                                 })
                             }
