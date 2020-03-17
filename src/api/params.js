@@ -8,7 +8,7 @@ const rechargeUrl = `${hostUrl}/pages/user/recharge`;
 const baseUrl = "http://demo.rageframe.com/api";
 
 // 微信公众号appid
-const weixinAppId = "wxc052ebc5038f31c0";
+const weixinAppId = "";
 
 export {
     rechargeUrl,
