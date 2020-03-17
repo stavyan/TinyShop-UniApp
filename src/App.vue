@@ -19,11 +19,12 @@
             uni.removeTabBarBadge({
               index: 2
             });
+          } else {
+             uni.setTabBarBadge({
+              index: 2,
+              text: uni.getStorageSync('cartNum').toString()
+            });
           }
-         uni.setTabBarBadge({
-          index: 2,
-          text: uni.getStorageSync('cartNum').toString()
-        });
       }
 		},
 		onHide () {
