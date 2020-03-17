@@ -50,7 +50,7 @@
 import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import errorImg from './../../static/errorImage.jpg';
 import uniTag from '@/components/uni-tag/uni-tag.vue';
-import {closeOrderRefundApply, orderDetail} from "@/api/userInfo";
+import {closeOrderRefundApply, orderCustomerRefundClose, orderDetail} from "@/api/userInfo";
 import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
 import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item.vue';
 import moment from '@/utils/moment';
@@ -81,7 +81,6 @@ export default {
 			return data[parseInt(val, 10)]
 		},
 		filterProductStatus(item) {
-			console.log(item)
 			let status = null;
 			if (parseInt(item.refund_status, 10) !== 0) {
 				const refundStatusList = [
@@ -137,7 +136,6 @@ export default {
 			return function (isEvaluate, refundStatus) {
 				const options = [];
 				const status = this.orderStatus;
-				console.log(status);
 				if (parseInt(status, 10) === 1) {
 					switch (refundStatus) {
 						case '0':
@@ -209,17 +207,17 @@ export default {
 				}
 				this.goRefund(e.data, 1)
 			} else if (e.content.text === '退款/退货') {
-				if (parseInt(e.data.refund_status, 10) !== 0) {
-					this.$api.msg('您已经提交了退货申请');
-					return;
-				}
-				if (e.data.refund_status == 2) {
+				// if (parseInt(e.data.refund_status, 10) !== 0) {
+				// 	this.$api.msg('您已经提交了退货申请');
+				// 	return;
+				// }
+				if (e.data.order_status == 2) {
 					this.goRefund(e.data, 2)
-				} else {
+				} else if (e.data.order_status == 4) {
 					this.goRefund(e.data, 3)
 				}
 			} else if (e.content.text === '取消' || e.content.text === '取消') {
-				this.handleCloseOrderRefundApply(e.data.id)
+				this.handleCloseOrderRefundApply(e.data.order_status, e.data.id)
 			} else if (e.content.text === '评价') {
 				this.goEvaluation(e.data)
 			} else if (e.content.text === '追加评价') {
@@ -235,9 +233,13 @@ export default {
 		 *@date 2019/12/03 17:48:39
 		 *@param arguments
 		 */
-		async handleCloseOrderRefundApply(id) {
+		async handleCloseOrderRefundApply(status, id) {
 			uni.showLoading({title: '加载中...'});
-			await this.$post(`${closeOrderRefundApply}`, {
+			let closeOrderApi = closeOrderRefundApply;
+			if (status == 4) {
+				closeOrderApi = orderCustomerRefundClose;
+			}
+			await this.$post(`${closeOrderApi}`, {
 				id,
 			}).then(r => {
 				uni.navigateBack({

@@ -47,7 +47,7 @@
 	 * @copyright 2019
 	 */
 	import uniIcons from '@/components/uni-icons/uni-icons'
-	import {orderProductSalesReturn} from "@/api/userInfo";
+	import {orderProductSalesReturn, orderCustomerSalesReturn} from "@/api/userInfo";
 	export default{
 		components: { uniIcons },
 		data(){
@@ -79,7 +79,6 @@
 			// 提交评价
 			async handleSalesReturn() {
 				this.salesReturn.id = this.productInfo.id;
-				console.log(this.salesReturn)
 				if (!this.salesReturn.refund_shipping_company) {
 					this.$api.msg('请输入物流公司');
 					return;
@@ -89,7 +88,11 @@
 					return;
 				}
 				uni.showLoading({title: '加载中...'});
-				await this.$post(`${orderProductSalesReturn}`, {
+				let salesReturnApi = orderProductSalesReturn;
+				if (this.productInfo.order_status == 4) {
+					salesReturnApi = orderCustomerSalesReturn;
+				}
+				await this.$post(`${salesReturnApi}`, {
 					...this.salesReturn
 				}).then(() => {
 					uni.navigateBack({
