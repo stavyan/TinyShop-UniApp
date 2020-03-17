@@ -1,0 +1,56 @@
+
+.uni-numbox {
+	position:absolute;
+	left: 30rpx;
+	bottom: 0;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: start;
+	-webkit-justify-content: flex-start;
+	        justify-content: flex-start;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	width:230rpx;
+	height: 70rpx;
+	background:#f5f5f5;
+}
+.uni-numbox-minus,
+.uni-numbox-plus {
+	margin: 0;
+	background-color: #f5f5f5;
+	width: 70rpx;
+	height: 100%;
+	line-height: 70rpx;
+	text-align: center;
+	position: relative;
+}
+.uni-numbox-minus .yticon,
+.uni-numbox-plus .yticon{
+	font-size: 36rpx;
+	color: #555;
+}
+.uni-numbox-minus {
+	border-right: none;
+	border-top-left-radius: 6rpx;
+	border-bottom-left-radius: 6rpx;
+}
+.uni-numbox-plus {
+	border-left: none;
+	border-top-right-radius: 6rpx;
+	border-bottom-right-radius: 6rpx;
+}
+.uni-numbox-value {
+	position: relative;
+	background-color: #f5f5f5;
+	width: 90rpx;
+	height: 50rpx;
+	text-align: center;
+	padding: 0;
+	font-size: 30rpx;
+}
+.uni-numbox-disabled.yticon {
+	color: #d6d6d6;
+}
+
