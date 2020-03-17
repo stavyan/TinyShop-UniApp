@@ -176,9 +176,11 @@ export default {
 						default:
 							break;
 					}
-					console.log(refundStatus)
 					switch (refundStatus) {
 						case '0':
+							options.push({ text: '退款/退货'})
+							break;
+						case '-3':
 							options.push({ text: '退款/退货'})
 							break;
 						case '1':

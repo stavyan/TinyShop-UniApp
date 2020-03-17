@@ -190,7 +190,6 @@
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
 		      if (uni.getStorageSync('cartNum')) {
-		      	console.log(uni.getStorageSync('cartNum'))
 		      	if (uni.getStorageSync('cartNum') != 0) {
 					    uni.setTabBarBadge({
 						    index: 2,
@@ -201,7 +200,6 @@
 			      }
 			    } else {
 		      	await this.$get(`${cartItemCount}`).then(r => {
-		      		console.log('data', r.data)
 				      if (r.data == 0) {
 				        uni.removeTabBarBadge({index: 2});
 					    } else {
