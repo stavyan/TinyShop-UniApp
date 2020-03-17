@@ -7,13 +7,12 @@ const rechargeUrl = `${hostUrl}/pages/user/recharge`;
 // 后台接口请求地址
 const baseUrl = "http://demo.rageframe.com/api";
 
-const weixinAppId = "";
-const qqAppId = "";
+// 微信公众号appid
+const weixinAppId = "wxc052ebc5038f31c0";
 
 export {
     rechargeUrl,
     baseUrl,
     hostUrl,
-    weixinAppId,
-    qqAppId
+    weixinAppId
 }
