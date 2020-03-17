@@ -1,7 +1,7 @@
 .DS_Store
 node_modules/
 unpackage/
-src/api/params.js
+#src/api/params.js
 dist/dev
 dist/resources
 
