@@ -101,7 +101,7 @@
   "mp-weixin": {
     /* 小程序特有相关 */
     "usingComponents": true,
-    "appid": "wx3764a6fbc282be0c",
+    "appid": "",
     // 这里添加微信小程序appid
     "setting": {
       "urlCheck": true,
@@ -133,7 +133,7 @@
     "setting": {
       "minified": true
     },
-    "appid": "1110144710"
+    "appid": ""
     // 这里添加QQ小程序 appid
   }
 }
