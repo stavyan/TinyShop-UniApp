@@ -386,7 +386,8 @@
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					this.cartList = r.data
+					this.cartList = r.data;
+					uni.setStorageSync('cartNum', r.data.length)
 					if (r.data.length == 0) {
 		        uni.removeTabBarBadge({index: 2});
 	          return;
@@ -395,7 +396,6 @@
 						index: 2,
 						text: r.data.length.toString()
 					});
-					uni.setStorageSync('cartNum', r.data.length)
 				}).catch(err => {
 					console.log(err)
 				})
