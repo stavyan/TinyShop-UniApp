@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "意见反馈详情",
-  "usingComponents": {}
+  "usingComponents": {
+    "rf-image": "/components/rf-image/rf-image"
+  }
 }

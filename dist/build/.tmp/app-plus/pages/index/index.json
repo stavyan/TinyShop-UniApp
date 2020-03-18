@@ -15,6 +15,7 @@
     "uni-grid-item": "/components/uni-grid-item/uni-grid-item",
     "rf-floor-index": "/components/rf-floor-index/rf-floor-index",
     "rf-swipe-dot": "/components/rf-swipe-dot/rf-swipe-dot",
-    "rf-search-bar": "/components/rf-search-bar/rf-search-bar"
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar",
+    "rf-swiper-slide": "/components/rf-swiper-slide/rf-swiper-slide"
   }
 }
