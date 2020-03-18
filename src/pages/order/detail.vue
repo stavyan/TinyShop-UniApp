@@ -70,13 +70,21 @@
 				</text>
 				<text class="cell-more wanjia wanjia-gengduo-d"></text>
 			</view>
-			<view class="yt-list-cell b-b">
+			<view class="yt-list-cell b-b" v-if="orderDetail.payment_explain != '积分兑换'">
 				<view class="cell-icon hb">
 					减
 				</view>
 				<text class="cell-tit clamp">积分抵扣</text>
 				<text class="cell-tip disabled"></text>
 				<text class="cell-tip disabled">已用{{ orderDetail.point || 0 }}积分抵用{{ orderDetail.point_money || 0 }}元</text>
+			</view>
+			<view class="yt-list-cell b-b" v-else>
+				<view class="cell-icon hb">
+					减
+				</view>
+				<text class="cell-tit clamp">积分下单</text>
+				<text class="cell-tip disabled"></text>
+				<text class="cell-tip disabled">消耗了{{ orderDetail.point || 0 }}积分</text>
 			</view>
 		</view>
 		<!-- 金额明细 -->

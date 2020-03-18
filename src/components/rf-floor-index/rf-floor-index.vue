@@ -14,7 +14,7 @@
 				<text class="tit">{{ header.title }}</text>
 				<text class="tit2">{{ header.desc }}</text>
 			</view>
-			<text class="yticon icon-you"></text>
+			<i class="iconfont iconyou"></i>
 		</view>
 		<view class="guess-section">
 			<view
@@ -130,8 +130,8 @@ export default {
 			font-size: $font-sm;
 			color: $font-color-light;
 		}
-		.icon-you{
-			font-size: $font-lg +2upx;
+		.iconyou{
+			font-size: $font-lg +4upx;
 			color: $font-color-light;
 		}
 	}

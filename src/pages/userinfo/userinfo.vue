@@ -66,7 +66,7 @@
 				<view class="input-item">
 					<text class="tit">生　日</text>
 					<picker mode="date" :value="date" @change="bindDateChange">
-						<view class="date" style="background: none;">{{ date }}</view>
+						<view class="date" style="background: none;">{{ date || '请选择日期' }}</view>
 					</picker>
 				</view>
 				<view class="input-item">
@@ -103,12 +103,10 @@
 	import {memberInfo, memberUpdate, uploadImage} from '@/api/userInfo';
 	const graceChecker = require('@/common/graceChecker.js');
 	import avatar from '@/components/rf-avatar/rf-avatar';
+	import moment from 'moment';
 	export default {
 		components: { avatar },
 		data() {
-			const currentDate = this.getDate({
-					format: true
-			})
 			return {
 				profileInfo: {},
 				avatar: null,
@@ -125,11 +123,12 @@
 						value: '2',
 						name: '女'
 					}],
-				date: currentDate,
+				date: moment().format('YYYY-MM-DD'),
 				token: null
 			};
 		},
 		onLoad () {
+			console.log(this.date)
 			this.initData()
 		},
 		methods: {
@@ -177,22 +176,6 @@
 			// 监听日期更改
 			bindDateChange(e) {
 				this.date = e.target.value
-			},
-			// 格式化日期
-			getDate(type) {
-				const date = new Date();
-				let year = date.getFullYear();
-				let month = date.getMonth() + 1;
-				let day = date.getDate();
-
-				if (type === 'start') {
-						year = year - 60;
-				} else if (type === 'end') {
-						year = year + 2;
-				}
-				month = month > 9 ? month : '0' + month;;
-				day = day > 9 ? day : '0' + day;
-				return `${year}-${month}-${day}`;
 			},
 			// 数据初始化
 			initData(){
