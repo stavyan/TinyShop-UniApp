@@ -130,8 +130,8 @@ export default {
 			font-size: $font-sm;
 			color: $font-color-light;
 		}
-		.icon-you{
-			font-size: $font-lg +2upx;
+		.iconyou{
+			font-size: $font-lg +4upx;
 			color: $font-color-light;
 		}
 	}
