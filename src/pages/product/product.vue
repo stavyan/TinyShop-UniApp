@@ -724,7 +724,7 @@
 							this.$api.msg('请先选择规格');
 							return;
 						} else {
-							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}`
 						}
 					} else if (this.productDetail.base_attribute_format.length === 3) {
 						if (this.specSelected.length < 3) {
@@ -1272,11 +1272,11 @@
 			flex-direction: column;
 			font-size: $font-base + 2upx;
 			color: $font-color-base;
-			padding-top: 30upx;
+			padding-top: 15upx;
 			padding-left: 10upx;
 		}
 		.item-list{
-			padding: 20upx 0 0;
+			padding: 10upx 0 0;
 			display: flex;
 			flex-wrap: wrap;
 			.tit{

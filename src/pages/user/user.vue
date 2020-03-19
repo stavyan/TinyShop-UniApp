@@ -89,7 +89,7 @@
 				<list-cell icon="iconiconfontweixin" iconColor="#e07472" @eventClick="directTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
 				<list-cell icon="icondizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
 				<list-cell icon="iconshoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
-				<button class="share-btn" open-type="share">
+				<button class="share-btn" open-type="share" @tap="shareToH5">
 					<list-cell icon="iconshare" iconColor="#9789f7" title="分享" tips="将RageFrame分享给你的好友">
 					</list-cell>
 				</button>
@@ -174,6 +174,11 @@
 		},
 		// #endif
 		methods: {
+			shareToH5() {
+				// #ifdef H5
+				this.$api.msg('请复制连接进行分享');
+				// #endif
+			},
 			...mapMutations(['login']),
 			/**
 			 *@des 分享

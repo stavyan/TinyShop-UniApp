@@ -99,7 +99,6 @@
 				let province_name = null;
 				let city_name = null;
 				let area_name = null;
-				uni.showLoading({title:'加载中...'});
 				await this.$get(`${provinceList}`).then(async r => {
 						this.multiArray[0] = r.data;
 						if (this.addressData.province_id) {
@@ -114,7 +113,6 @@
 							province_id = this.multiArray[0][0].id
 							province_name = this.multiArray[0][0].title
 						}
-						uni.showLoading({title:'加载中...'});
 						await this.$get(`${provinceList}`, {
 							pid: province_id
 						}).then(async r => {
@@ -131,7 +129,6 @@
 									city_id = this.multiArray[1][0].id
 									city_name = this.multiArray[1][0].title
 								}
-								uni.showLoading({title:'加载中...'});
 								await this.$get(`${provinceList}`, {
 									pid: city_id
 								}).then(r => {
