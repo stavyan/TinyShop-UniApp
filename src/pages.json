@@ -17,6 +17,18 @@
 				}
 			}
 		},
+	    {
+            "path" : "pages/notice/notice",
+            "style" : {
+				"navigationBarTitleText": "公告"
+			}
+        },
+	    {
+            "path" : "pages/notice/detail",
+            "style" : {
+				"navigationBarTitleText": "公告详情"
+			}
+        },
 		{
             "path" : "pages/category/category",
             "style" : {
@@ -200,14 +212,21 @@
 					"bounce": "none",
 					"titleNView": {
 						"type": "transparent",
-						"buttons": [
-							{
+						"buttons": [{
 								"fontSrc": "/static/yticon.ttf",
 								"text": "\ue60f",
 								"fontSize": "24",
 								"color": "#303133",
 								"width": "46px",
 								"background": "rgba(0,0,0,0)"
+							},
+							{
+								"fontSrc": "/static/yticon.ttf",
+								"text": "\ue744",
+								"fontSize": "28",
+								"color": "#303133",
+								"background": "rgba(0,0,0,0)",
+								"redDot": true
 							}
 						]
 					}
@@ -277,7 +296,7 @@
 		},{
 			"path": "pages/order/orderItem",
 			"style": {
-				"navigationBarTitleText": "选择商品评价"
+				"navigationBarTitleText": "商品列表"
 			}
 		},{
 			"path": "pages/footprint/footprint",

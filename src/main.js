@@ -6,6 +6,7 @@ import '@/common/css/iconfont/iconfont.css';
 import '@/common/css/iconfont/iconfont.css';
 import '@/common/css/reset.scss';
 import '@/common/css/uni.scss';
+import rfImage from '@/components/rf-image/rf-image';
 
 // 封装msg方法
 const msg = (title, duration=1500, mask=false, icon='none')=>{
@@ -39,6 +40,8 @@ Vue.prototype.$get = get;
 Vue.prototype.$post = http.post;
 Vue.prototype.$put = http.put;
 Vue.prototype.$del = http.delete;
+
+Vue.component('rfImage', rfImage)
 
 App.mpType = 'app';
 

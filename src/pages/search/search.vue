@@ -3,7 +3,7 @@
 		<view class="search-box">
 			<!-- mSearch组件 如果使用原样式，删除组件元素-->
 			<mSearch class="mSearch-input-box" :mode="2" button="inside"
-							 :placeholder="defaultKeyword"
+							 :placeholder="defaultKeyword || '请输入关键字'"
 							 @search="doSearch(false)" @confirm="doSearch(false)"
 							 v-model="keyword"></mSearch>
 		</view>

@@ -63,10 +63,13 @@
 			<!--发货地址-->
 			<view class="c-list">
 				<!--库存-->
-				<view class="c-row b-b" v-if="productDetail.stock">
+				<view class="c-row b-b" v-if="productDetail.stock && productDetail.is_stock_visible == 1">
 					<text class="tit">商品库存</text>
-					<view class="con-list">
+					<view class="con-list" v-if="productDetail.stock > 0">
 						{{ productDetail.stock }} 个
+					</view>
+					<view class="con-list red" v-else>
+						库存不足
 					</view>
 				</view>
 				<!--发货地址-->
@@ -222,9 +225,9 @@
 				</view>
 
 				<view class="action-btn-group">
-					<button type="primary" class=" action-btn no-border buy-now-btn" @tap="addCart('buy')">立即购买</button>
+					<button type="primary" class="action-btn no-border buy-now-btn" :disabled="(currentStock || productDetail.stock) == 0" @tap="addCart('buy')">立即购买</button>
 					<button type="primary"
-									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4"
+									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4 || (currentStock || productDetail.stock) == 0"
 									class=" action-btn no-border add-cart-btn"
 									@tap="addCart('cart')">加入购物车</button>
 				</view>

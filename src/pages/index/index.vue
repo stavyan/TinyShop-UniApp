@@ -39,7 +39,7 @@
 		</view>
 
 		<!--新闻通知-->
-		<rf-swiper-slide :list="roll">
+		<rf-swiper-slide :list="announceList">
 			<view slot="header" class="swiper-slide-header">
 				<image class="swiper-slide-image" src="/static/news.png"></image>
 			</view>
@@ -77,10 +77,11 @@
 				:bannerShow="false"/>
 		<!--网站备案号-->
 		<!--#ifdef H5-->
-		<!--<view class="copyright" v-show="config.web_site_icp">-->
-			<!--{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>-->
-		<!--</view>-->
+		<view class="copyright" v-show="config.web_site_icp">
+			{{ config.copyright_desc }} <a href='http://www.beian.miit.gov.cn'>{{ config.web_site_icp }}</a>
+		</view>
 
+		<!--商户切换-->
 		<!--<view class="uni-title uni-common-pl">商户切换</view>-->
 		<!--<view class="uni-list">-->
       <!--<view class="uni-list-cell">-->
@@ -115,6 +116,7 @@
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	import rfSwiperSlide from '@/components/rf-swiper-slide/rf-swiper-slide';
+	import {notifyAnnounceIndex} from "../../api/basic";
 	export default {
 		components: {
 			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar, rfSwiperSlide
@@ -135,28 +137,7 @@
 				config: {},
 				index: 0,
 				merchantList: [],
-      	roll: [
-						{
-							id: 0,
-							pic: "https://i.loli.net/2019/10/18/DqOUgNf7wjuFpPT.png",
-							title: "RF微商城基础功能上线啦！",
-							url: "",
-							info: "RF微商城基础功能上线啦！！",
-							show: '是'
-						},
-						{
-							id: 1,
-							url: "",
-							info: "新闻通知功能上线啦！",
-							show: '是'
-						},
-						{
-							id: 3,
-							url: "",
-							info: "这些公告都是假数据哦！",
-							show: '是'
-						}
-				],
+      	announceList: [],
 			};
 		},
 		onLoad() {
@@ -260,10 +241,10 @@
 			async getIndexList(type) {
 				uni.showLoading({title: '加载中...'});
 				await this.$get(`${indexList}`, {}).then(async r => {
-            await this.$get(`${merchantIndex}`, {}).then(r => {
-                this.merchantList = r.data
-		            this.index = uni.getStorageSync('merchantIndex') || r.data.length - 1;
-            })
+						// 获取商户列表
+						this.getMerchantIndex();
+						// 获取公告列表
+						this.getNotifyAnnounceIndex();
             if (type === 'refresh') {
                 uni.stopPullDownRefresh();
             }
@@ -282,6 +263,19 @@
             this.newProductList = r.data.product_new;
             this.config = r.data.config;
         })
+			},
+			// 获取商户列表
+			async getMerchantIndex() {
+				await this.$get(`${merchantIndex}`, {}).then(r => {
+					this.merchantList = r.data
+					this.index = uni.getStorageSync('merchantIndex') || r.data.length - 1;
+				})
+			},
+			// 获取通知列表
+			async getNotifyAnnounceIndex() {
+				await this.$get(`${notifyAnnounceIndex}`, {}).then(r => {
+					this.announceList = r.data
+				})
 			},
 			// 跳转至商品详情页
 			navToDetailPage(data) {

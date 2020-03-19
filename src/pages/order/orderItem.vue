@@ -207,6 +207,17 @@ export default {
 				}
 				this.goRefund(e.data, 1)
 			} else if (e.content.text === '退款/退货') {
+				if (parseInt(e.data.refund_status, 10) !== 0) {
+					this.$api.msg('您已经提交了退货申请');
+					return;
+				}
+				if (e.data.order_status == 2) {
+					this.goRefund(e.data, 2);
+				} else if (e.data.order_status == 4) {
+					this.goRefund(e.data, 3);
+				}
+			} else if (e.content.text === '取消') {
+				this.handleCloseOrderRefundApply(e.data.id)
 				// if (parseInt(e.data.refund_status, 10) !== 0) {
 				// 	this.$api.msg('您已经提交了退货申请');
 				// 	return;

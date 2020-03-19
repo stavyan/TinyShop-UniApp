@@ -22,7 +22,7 @@
 				type: String,
 				default: '/static/errorImage.jpg'
 			},
-			// 是否预览
+			// 显示模式
 			mode: {
 				type: String,
 				default: 'aspectFill'

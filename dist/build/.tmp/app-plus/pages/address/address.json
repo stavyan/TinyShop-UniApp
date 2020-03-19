@@ -6,5 +6,8 @@
     "color": "#fa436a",
     "style": "default"
   },
-  "usingComponents": {}
+  "usingComponents": {
+    "empty": "/components/empty",
+    "rf-load-more": "/components/rf-load-more/rf-load-more"
+  }
 }
