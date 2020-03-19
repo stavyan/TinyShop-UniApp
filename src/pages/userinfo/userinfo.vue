@@ -216,7 +216,10 @@
 					...formData,
 					birthday: this.date
 				}).then(() =>{
-				    this.$api.msg('恭喜您, 资料修改成功!')
+				    this.$api.msg('恭喜您, 资料修改成功!');
+				    uni.switchTab({
+					    url: '/pages/user/user'
+				    })
 				});
 			}
 		}

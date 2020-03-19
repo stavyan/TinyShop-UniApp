@@ -9,7 +9,7 @@
 			    class="uni-list-cell"
 			    :key="index"
 			    v-for="(item, index) in collectionList">
-						<view class="uni-media-list" @tap="navTo(`/pages/product/product?id=${id}`)">
+						<view class="uni-media-list" @tap="navTo(`/pages/product/product?id=${item.product.id}`)">
 							<image class="uni-media-list-logo"
 										 mode="aspectFill"
 										 @error="onImageError(index)"
