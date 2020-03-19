@@ -5,11 +5,11 @@
 		<swiper class="rf-swiper" :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration" vertical="true">
         <swiper-item
 		        class="rf-swiper-item"
-		        @tap.stop="navTo()"
-					v-for="(item, index) in list"
-					:key="index">
+		        @tap.stop="navTo(`/pages/notice/notice`)"
+						v-for="(item, index) in list"
+						:key="index">
           <view class="text in1line">
-						<text class="newsTitle">{{ item.info || `${item.member_nickname} 拼团成功` }}</text>
+						<text class="newsTitle">{{ item.title || `${item.member_nickname} 拼团成功` }}</text>
 					</view>
 			    <uni-icons class="right" size="18" type="forward"></uni-icons>
         </swiper-item>
@@ -41,8 +41,10 @@
 	    }
     },
 	  methods: {
-    	navTo() {
-    		this.$api.msg('新闻列表页暂未开发');
+    	navTo(url) {
+    		uni.navigateTo({
+			    url
+		    })
 	    },
 	  },
   }

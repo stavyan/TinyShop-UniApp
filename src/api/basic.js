@@ -27,6 +27,12 @@ const payCreate = "/tiny-shop/v1/common/pay/create";
 // 充值
 const wechatConfig = "/tiny-shop/v1/third-party/wechat-js-sdk";
 
+// 公告
+// 公告列表
+const notifyAnnounceIndex = "/tiny-shop/v1/common/notify-announce/index";
+// 公告详情
+const notifyAnnounceView = "/tiny-shop/v1/common/notify-announce/view";
+
 export {
     provinceList,
     collectCreate,
@@ -35,5 +41,7 @@ export {
     advList,
     payCreate,
     configList,
-    wechatConfig
+    wechatConfig,
+    notifyAnnounceIndex,
+    notifyAnnounceView
 };

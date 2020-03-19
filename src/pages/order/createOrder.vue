@@ -170,7 +170,7 @@
 			<view class="price-content in1line">
 				<text>实付款</text>
 				<text class="price-tip">￥</text>
-				<text class="price">{{ `${realAmount} ${ maxUsePoint > 0 && isUsePoint ? ` + ${maxUsePoint}积分` : '' }` }}</text>
+				<text class="price">{{ `${realAmount} ${ maxUsePoint > 0 && (isUsePoint ? ` + ${maxUsePoint} 积分` : '') || (` + ${orderDetail.preview && orderDetail.preview.point} 积分`) }` }}</text>
 			</view>
 <!--			orderDetail.preview.point-->
 			<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
