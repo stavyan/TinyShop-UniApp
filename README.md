@@ -177,7 +177,7 @@ Vuejs： https://github.com/vuejs/vue
 
 uni-app： https://uniapp.dcloud.io/
 
-mix-mall: https://ext.dcloud.net.cn/plugin?id=200#detail
+mix-mall: https://ext.dcloud.net.cn/plugin?id=200
 
 ...
 
