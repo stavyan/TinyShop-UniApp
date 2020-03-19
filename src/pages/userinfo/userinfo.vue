@@ -103,7 +103,7 @@
 	import {memberInfo, memberUpdate, uploadImage} from '@/api/userInfo';
 	const graceChecker = require('@/common/graceChecker.js');
 	import avatar from '@/components/rf-avatar/rf-avatar';
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	export default {
 		components: { avatar },
 		data() {

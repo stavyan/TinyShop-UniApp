@@ -20,7 +20,7 @@
 
 <script>
 	import {notifyAnnounceView} from "../../api/basic";
-	import moment from 'moment'
+	import moment from '@/utils/moment';
 
 	export default {
 		data() {
