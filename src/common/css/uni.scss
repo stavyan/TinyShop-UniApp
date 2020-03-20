@@ -1035,7 +1035,7 @@ radio-group label, checkbox-group label{
 
 	/* 自定义节点颜色 */
 	.uni-timeline-last-item .uni-timeline-item-divider{
-		background-color: #fa436a;
+		background-color: #1AAD19;
 	}
 
 
@@ -1437,32 +1437,4 @@ radio-group label, checkbox-group label{
     top: 50%;
     left: 0;
     transform: translateY(50%);
-}
-
-
-.in1line {
-  display: -webkit-box !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 1;
-}
-
-.in2line {
-  display: -webkit-box !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2;
-}
-
-.in10line {
-  display: -webkit-box !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 10;
 }

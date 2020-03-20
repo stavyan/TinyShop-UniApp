@@ -21,7 +21,7 @@
 				<text class="name red">{{ orderDetail.order_status | orderStatusFilter  }}</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in orderDetail.product"  @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
+			<view class="g-item" v-for="(item, index) in orderDetail.product" :key="index"  @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
 				<rf-image :src="item.product_picture"></rf-image>
 				<view class="right">
 					<text class="title clamp in2line">{{ item.product_name }}</text>

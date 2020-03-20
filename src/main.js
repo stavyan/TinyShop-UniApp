@@ -1,17 +1,24 @@
 import Vue from 'vue';
 import store from './store';
 import App from './App';
-import  http, { get } from '@/utils/http';
-import '@/common/css/iconfont/iconfont.css';
+import http, {get} from '@/utils/http';
+
+import "@/common/colorui/main.css";
+import "@/common/colorui/icon.css";
+import "@/common/colorui/animation.css";
+
+// 导入阿里巴巴矢量图标库
 import '@/common/css/iconfont/iconfont.css';
 import '@/common/css/reset.scss';
 import '@/common/css/uni.scss';
+
+// 全局组件
 import rfImage from '@/components/rf-image/rf-image';
 
 // 封装msg方法
-const msg = (title, duration=1500, mask=false, icon='none')=>{
+const msg = (title, duration = 1500, mask = false, icon = 'none') => {
 	//统一提示方便全局修改
-	if(Boolean(title) === false){
+	if (Boolean(title) === false) {
 		return;
 	}
 	uni.showToast({
@@ -22,7 +29,7 @@ const msg = (title, duration=1500, mask=false, icon='none')=>{
 	});
 };
 
-const prePage = ()=>{
+const prePage = () => {
 	let pages = getCurrentPages();
 	let prePage = pages[pages.length - 2];
 	// #ifdef H5
@@ -32,7 +39,6 @@ const prePage = ()=>{
 };
 
 Vue.config.productionTip = false;
-Vue.prototype.$fire = new Vue();
 Vue.prototype.$store = store;
 Vue.prototype.$api = {msg, prePage};
 
@@ -46,6 +52,6 @@ Vue.component('rfImage', rfImage)
 App.mpType = 'app';
 
 const app = new Vue({
-    ...App
+	...App
 });
 app.$mount();

@@ -24,7 +24,7 @@
 				<text class="name">商品列表</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in orderDetail.products" @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
+			<view class="g-item" v-for="(item, index) in orderDetail.products" :key="index" @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
 				<rf-image :src="item.product_picture"></rf-image>
 				<view class="right">
 					<text class="title clamp in2line">{{ item.product_name }}</text>

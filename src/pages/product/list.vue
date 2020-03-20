@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="product-list">
 		<!--顶部搜索导航栏-->
 		<rf-search-bar
 			@link="toIndex"
@@ -36,28 +36,27 @@
 			</view>
 			<i class="cate-item iconfont iconfenlei1" @tap="toggleCateMask('show')"></i>
 		</view>
-
 		<!--商品列表-->
-		<view class="goods-list" :style="{marginTop: contentTop}">
+		<view class="rf-product-list" :style="{marginTop: contentTop}">
 			<view
 				v-for="(item, index) in goodsList" :key="index"
-				class="goods-item"
-				@tap="navToDetailPage(item)"
+				class="product-item"
+				@tap="navTo(`/pages/product/product?id=${item.id}`)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
 				</view>
 				<text class="title clamp in2line">{{item.name}}</text>
-				<view class="price-box">
-					<text class="price">{{item.price}}
+				<view class="last-line">
+					<text class="price in1line">{{item.price}}
 						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
 					</text>
-					<text>{{item.sales}}人付款</text>
+					<text class="sales in1line"><text class="red">{{ item.sales }}</text>付款</text>
 				</view>
 			</view>
 		</view>
-		<rf-load-more :status="loadingType"></rf-load-more>
-		<empty :info="'赶紧通知老板进货'" v-if="goodsList.length === 0"></empty>
+		<rf-load-more :status="loadingType" v-if="goodsList.length > 0"></rf-load-more>
+		<empty :info="'赶紧通知老板进货'" v-else></empty>
 		<!--分类遮盖层-->
 		<view class="cate-mask"
 					:class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
@@ -89,6 +88,7 @@
 
 <script>
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
+	import rfRecommend from '@/components/rf-recommend/rf-recommend';
 	import empty from '@/components/empty';
 	import uniIcons from '@/components/uni-icons/uni-icons.vue';
 	import {guessYouLikeList, productCate, productList} from "@/api/product";
@@ -98,7 +98,8 @@
 			rfLoadMore,
 			rfSearchBar,
 			empty,
-			uniIcons
+			uniIcons,
+			rfRecommend
 		},
 		data() {
 			return {
@@ -163,13 +164,7 @@
 					url: `/pages/index/index`
 				})
 			},
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 15:34:23
-			 *@param arguments
-			 */
+			// 初始化数据
 			initData (options) {
 				if (navigator) {
 					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight+'px';
@@ -212,19 +207,12 @@
 				this.filterParams = {};
 				this.getProductList();
 			},
-			discard() {},
 			toHome () {
 				uni.reLaunch({
 					url: `/pages/index/index`
 				})
 			},
-			/**
-			 *@des 获取商品列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/21 14:26:16
-			 *@param type [refresh -> 刷新]
-			 */
+			// 获取商品列表
 			async getProductList (type) {
 				let params = {}
 				if (this.keyword) {
@@ -335,10 +323,10 @@
 				this.filterParams = {}
 				this.getProductList('refresh');
 			},
-			//详情
-			navToDetailPage(item){
+			//跳转详情
+			navTo(url){
 				uni.navigateTo({
-					url: `/pages/product/product?id=${item.id}`
+					url
 				})
 			},
 			stopPrevent(){}
@@ -348,200 +336,142 @@
 
 <style lang="scss">
 	page {
-		background: $page-color-base;
+		background: $page-color-bg;
 	}
-	.navbar{
-		position: fixed;
-		left: 0;
-		/*top: var(--window-top);*/
-		display: flex;
-		width: 100%;
-		height: 80upx;
-		background: #fff;
-		box-shadow: 0 2upx 10upx rgba(0,0,0,.06);
-		z-index: 10;
-		.nav-item{
-			flex: 1;
+	.product-list {
+		.navbar {
+			position: fixed;
+			left: 0;
+			/*top: var(--window-top);*/
 			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			font-size: 30upx;
-			color: $font-color-dark;
-			position: relative;
-			&.current{
-				color: $base-color;
+			width: 100%;
+			height: 80upx;
+			background: #fff;
+			box-shadow: 0 2upx 10upx rgba(0,0,0,.06);
+			z-index: 10;
+			.nav-item{
+				flex: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+				font-size: 30upx;
+				color: $font-color-dark;
+				position: relative;
+				&.current{
+					color: $base-color;
+					&:after{
+						content: '';
+						position: absolute;
+						left: 50%;
+						bottom: 0;
+						transform: translateX(-50%);
+						width: 120upx;
+						height: 0;
+						border-bottom: 4upx solid $base-color;
+					}
+				}
+			}
+			.p-box{
+				display: flex;
+				flex-direction: column;
+				.iconfont{
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 30upx;
+					height: 14upx;
+					line-height: 1;
+					margin-left: 4upx;
+					font-size: 26upx;
+					color: #888;
+					&.active{
+						color: $base-color;
+					}
+				}
+				.xia{
+					transform: scaleY(-1);
+				}
+			}
+			.cate-item {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+				width: 80upx;
+				position: relative;
+				font-size: 44upx;
 				&:after{
 					content: '';
 					position: absolute;
-					left: 50%;
-					bottom: 0;
-					transform: translateX(-50%);
-					width: 120upx;
-					height: 0;
-					border-bottom: 4upx solid $base-color;
+					left: 0;
+					top: 50%;
+					transform: translateY(-50%);
+					border-left: 1px solid #ddd;
+					width: 0;
+					height: 36upx;
 				}
 			}
 		}
-		.p-box{
+		/* 分类 */
+		.cate-mask{
+			position: fixed;
+			left: 0;
+			top: 40px;
+			bottom: 0;
+			width: 100%;
+			background: rgba(0,0,0,0);
+			z-index: 95;
+			transition: .3s;
+			.cate-content{
+				width: 630upx;
+				height: 100%;
+				background: #fff;
+				float:right;
+				transform: translateX(100%);
+				transition: .3s;
+			}
+			&.none{
+				display: none;
+			}
+			&.show{
+				background: rgba(0,0,0,.4);
+
+				.cate-content{
+					transform: translateX(0);
+				}
+			}
+		.cate-list{
 			display: flex;
 			flex-direction: column;
-			.iconfont{
+			height: 100%;
+			.cate-item{
 				display: flex;
 				align-items: center;
-				justify-content: center;
-				width: 30upx;
-				height: 14upx;
-				line-height: 1;
-				margin-left: 4upx;
+				height: 70upx;
+				padding-left: 30upx;
+	      font-size: 30upx;
+				position: relative;
+				color: $font-color-dark;
+			}
+			.one {
+				background: #eee;
+			}
+			.two{
+				background: #f8f8f8;
+				color: $font-color-base;
+				height: 60upx;
+				font-size: 28upx;
+				padding-left: 50upx;
+			}
+			.three {
 				font-size: 26upx;
-				color: #888;
-				&.active{
-					color: $base-color;
-				}
+				color: $font-color-base;
 			}
-			.xia{
-				transform: scaleY(-1);
+			.active{
+				color: $base-color;
 			}
 		}
-		.cate-item {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			width: 80upx;
-			position: relative;
-			font-size: 44upx;
-			&:after{
-				content: '';
-				position: absolute;
-				left: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				border-left: 1px solid #ddd;
-				width: 0;
-				height: 36upx;
-			}
-		}
-	}
-	/* 分类 */
-	.cate-mask{
-		position: fixed;
-		left: 0;
-		top: 40px;
-		bottom: 0;
-		width: 100%;
-		background: rgba(0,0,0,0);
-		z-index: 95;
-		transition: .3s;
-
-		.cate-content{
-			width: 630upx;
-			height: 100%;
-			background: #fff;
-			float:right;
-			transform: translateX(100%);
-			transition: .3s;
-		}
-		&.none{
-			display: none;
-		}
-		&.show{
-			background: rgba(0,0,0,.4);
-
-			.cate-content{
-				transform: translateX(0);
-			}
-		}
-	}
-	.cate-list{
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		.cate-item{
-			display: flex;
-			align-items: center;
-			height: 70upx;
-			padding-left: 30upx;
- 			font-size: 30upx;
-			position: relative;
-			color: $font-color-dark;
-		}
-		.one {
-			background: #eee;
-		}
-		.two{
-			background: #f8f8f8;
-			color: $font-color-base;
-			height: 60upx;
-			font-size: 28upx;
-			padding-left: 50upx;
-		}
-		.three {
-			font-size: 26upx;
-			color: $font-color-base;
-		}
-		.active{
-			color: $base-color;
-		}
-	}
-	/* 商品列表 */
-	.goods-list{
-		/*  #ifndef APP-PLUS  */
-		margin-top: 88upx;
-		/*  #endif  */
-		display:flex;
-		flex-wrap:wrap;
-		padding: 0 30upx;
-		background: #fff;
-		.goods-item{
-			display:flex;
-			flex-direction: column;
-			width: 48%;
-			padding-bottom: 40upx;
-			&:nth-child(2n+1){
-				margin-right: 4%;
-			}
-		}
-		.image-wrapper{
-			width: 100%;
-			height: 330upx;
-			border-radius: 3px;
-			margin-top: 15upx;
-			overflow: hidden;
-			image{
-				width: 100%;
-				height: 100%;
-				opacity: 1;
-			}
-		}
-		.title{
-			font-size: $font-base;
-			color: $font-color-dark;
-			line-height: 40upx;
-		}
-		.price-box{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding-right: 10upx;
-			font-size: 24upx;
-			color: $font-color-light;
-		}
-		.price{
-			font-size: $font-base;
-			color: $uni-color-primary;
-			line-height: 1;
-			&:before{
-				content: '￥';
-				font-size: 26upx;
-			}
-			.m-price{
-				margin-left: 8upx;
-				color: $font-color-light;
-				font-size: $font-base - 4upx;
-				text-decoration: line-through;
-			}
 		}
 	}
 </style>

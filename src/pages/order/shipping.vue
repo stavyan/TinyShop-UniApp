@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<!-- 优惠明细 -->
-		<view v-for="item in shippingDetail.data">
+		<view v-for="(item, index) in shippingDetail.data" :key="index">
 			<!-- 商品信息 -->
 			<view class="goods-section">
 				<view class="g-header b-b">

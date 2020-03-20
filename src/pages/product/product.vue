@@ -129,7 +129,7 @@
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
 					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
-						<text v-for="(item, index) in productDetail.ladderPreferential">
+						<text v-for="(item, index) in productDetail.ladderPreferential" :key="index">
 							满{{ item.quantity }}件
 								<text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
 								<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
@@ -215,9 +215,10 @@
 					<i class="iconfont iconxiatubiao--copy"></i>
 					<text>首页</text>
 				</navigator>
-				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
+				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn cart">
 					<i class="iconfont icongouwuche"></i>
 					<text>购物车</text>
+					<rf-badge v-if="cartNum && cartNum > 0" type="error" size="small" class="badge" :text="cartNum"></rf-badge>
 				</navigator>
 				<view class="p-b-btn" :class="{active: favorite}" @tap="toFavorite">
 					<i class="iconfont iconshoucang"></i>
@@ -393,12 +394,13 @@
 	import uniNumberBox from '@/components/uni-number-box.vue';
   import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
   import moment from '@/utils/moment';
-	import errorImg from './../../static/errorImage.jpg';
-	import {couponReceive} from "../../api/userInfo";
+	import {couponReceive} from "@/api/userInfo";
 	import empty from "@/components/empty";
 	import rfRate from "@/components/rf-rate/rf-rate";
+	import rfBadge from '@/components/rf-badge/rf-badge'
 	export default{
 		components: {
+			rfBadge,
 			share,
 			rfRate,
 			uniNumberBox,
@@ -455,7 +457,6 @@
 		},
 		data() {
 			return {
-				errorImg: errorImg,
 				serviceClass: 'none',//服务弹窗css类，控制开关动画
 				ladderPreferentialClass: 'none',//服务弹窗css类，控制开关动画
 				attributeValueClass: 'none',//服务弹窗css类，控制开关动画
@@ -477,6 +478,7 @@
 				isShowProduct: true,
 				evaluateList: [],
 				token: null,
+				cartNum: null,
 			};
 		},
 		async onLoad(options){
@@ -606,6 +608,7 @@
 			 */
 			async initData(id) {
 				this.token = uni.getStorageSync('accessToken');
+				this.cartNum = uni.getStorageSync('cartNum');
 				await this.getProductDetail(id);
 			},
 			/**
@@ -748,6 +751,7 @@
 				}).then(async r => {
 					await this.$get(`${cartItemCount}`).then(r => {
 						uni.setStorageSync('cartNum', r.data);
+						this.cartNum = r.data;
 					});
 					this.$api.msg('添加成功，在购物车等');
 				}).catch(err => {
@@ -931,7 +935,7 @@
 	}
 </script>
 
-<style lang='scss'>
+<style scoped lang='scss'>
 	page{
 		background: $page-color-base;
 		padding-bottom: 160upx;
@@ -1022,7 +1026,7 @@
 		display:flex;
 		align-items:center;
 		color: $font-color-base;
-		background: linear-gradient(left, #fdf5f6, #fbebf6);
+		background: linear-gradient(to left, #fdf5f6, #fbebf6);
 		padding: 12upx 30upx;
 		.share-icon{
 			display:flex;
@@ -1432,7 +1436,14 @@
 		background: rgba(255,255,255,.9);
 		box-shadow: 0 0 20upx 0 rgba(0,0,0,.5);
 		border-radius: 16upx;
-
+		.cart {
+			position: relative;
+			.badge {
+				position: absolute;
+				top: -8upx;
+				right: 0upx;
+			}
+		}
 		.p-b-btn{
 			display:flex;
 			flex-direction: column;
@@ -1456,6 +1467,9 @@
 			}
 			.icon-shoucang{
 				font-size: 46upx;
+			}
+			.red {
+				color: $base-color;
 			}
 		}
 		.action-btn-group{

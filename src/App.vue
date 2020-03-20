@@ -35,4 +35,7 @@
 <style lang='scss'>
   /*@import "@/common/css/reset";*/
   /*@import "@/common/css/uni";*/
+  page {
+    background-color: $page-color-bg;;
+  }
 </style>

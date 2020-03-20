@@ -8,7 +8,7 @@
 			:icon="'iconfenlei1'"
 			:headerShow="headerShow"
 			:placeholder="hotSearchDefault" />
-		<!-- 轮播图 -->
+		<!-- 轮播图1 -->
 		<view class="swiper">
 			<view class="swiper-box">
 				<rf-swipe-dot :info="carouselList.index_top" mode="nav" :current="current" field="title">
@@ -25,6 +25,18 @@
 				</rf-swipe-dot>
 			</view>
 		</view>
+
+		<!--轮播图2-->
+		<!--<swiper class="card-swiper" :circular="true"-->
+		 <!--:autoplay="true" interval="5000" duration="500" @change="handleDotChange">-->
+			<!--<swiper-item v-for="(item,index) in carouselList.index_top" :key="index">-->
+				<!--<view class="swiper-item">-->
+					<!--<image :src="item.cover" mode="aspectFill"></image>-->
+				<!--</view>-->
+				<!--<text class="swiper-item-text">{{ `${index + 1}/${carouselList.index_top.length} ${item.title}` }}</text>-->
+			<!--</swiper-item>-->
+		<!--</swiper>-->
+
 		<!-- 分类列表 -->
 		<view class="category-list">
 			<view
@@ -109,14 +121,14 @@
 	 */
 	import {indexList} from "@/api/product";
   import {merchantIndex} from "@/api/merchant";
-	import uniGrid from "@/components/uni-grid/uni-grid.vue";
-	import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
-	import uniIcons from '@/components/uni-icons/uni-icons.vue';
+	import uniGrid from "@/components/uni-grid/uni-grid";
+	import uniGridItem from "@/components/uni-grid-item/uni-grid-item";
+	import uniIcons from '@/components/uni-icons/uni-icons';
 	import rfSwipeDot from '@/components/rf-swipe-dot/rf-swipe-dot';
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	import rfSwiperSlide from '@/components/rf-swiper-slide/rf-swiper-slide';
-	import {notifyAnnounceIndex} from "../../api/basic";
+	import {notifyAnnounceIndex} from "@/api/basic";
 	export default {
 		components: {
 			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar, rfSwiperSlide
@@ -127,7 +139,7 @@
 				headerShow:true,
 				carouselList: {},
 				search: {},
-				hotSearchDefault: '输入关键字搜索',
+				hotSearchDefault: '请输入关键字',
 				hotProductList: [],
 				recommendProductList: [],
 				guessYouLikeProductList: [],
@@ -266,6 +278,7 @@
 			},
 			// 获取商户列表
 			async getMerchantIndex() {
+				uni.showLoading({title: '加载中...'});
 				await this.$get(`${merchantIndex}`, {}).then(r => {
 					this.merchantList = r.data
 					this.index = uni.getStorageSync('merchantIndex') || r.data.length - 1;
@@ -273,6 +286,7 @@
 			},
 			// 获取通知列表
 			async getNotifyAnnounceIndex() {
+				uni.showLoading({title: '加载中...'});
 				await this.$get(`${notifyAnnounceIndex}`, {}).then(r => {
 					this.announceList = r.data
 				})
@@ -302,6 +316,7 @@
 </script>
 <style lang="scss" scoped>
 .index {
+	background-color: $page-color-bg;
 	/*轮播图*/
 	.swiper {
 		width: 100%;
@@ -337,6 +352,18 @@
 			width: 100%;
 			height: 30upx;
 		}
+	}
+	.swiper-item-text {
+		position: absolute;
+		bottom: 16upx;
+		left: 30upx;
+		height: 48upx;
+		line-height: 48upx;
+		background: rgba(0, 0, 0, 0.2);
+		width: 90%;
+		color: $page-color-bg;
+		border-bottom-left-radius: 12upx;
+		padding-left: 20upx;
 	}
 	/*分类列表*/
 	.category-list {
