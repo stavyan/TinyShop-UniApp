@@ -103,7 +103,7 @@
 	import {memberInfo, memberUpdate, uploadImage} from '@/api/userInfo';
 	const graceChecker = require('@/common/graceChecker.js');
 	import avatar from '@/components/rf-avatar/rf-avatar';
-	import moment from 'moment';
+	import moment from '@/utils/moment';
 	export default {
 		components: { avatar },
 		data() {
@@ -190,7 +190,7 @@
 			},
 			// 获取用户信息
 			async getMemberInfo () {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$get(memberInfo).then(r => {
 					this.profileInfo = r.data;
 					this.date = this.profileInfo.birthday;
@@ -211,7 +211,6 @@
 			},
 			// 更新用户信息
 			async handleUpdateInfo (formData) {
-				uni.showLoading({title:'资料修改中...'});
 				await this.$put(`${memberUpdate}?id=${this.profileInfo.id}`, {
 					...formData,
 					birthday: this.date

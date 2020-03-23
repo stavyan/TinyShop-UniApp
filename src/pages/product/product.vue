@@ -1,39 +1,41 @@
 <template>
 	<view class="product">
-		<view v-if="isShowProduct">
 			<!--顶部商品轮播图-->
 			<view class="carousel">
 				<swiper indicator-dots circular=true duration="400">
 				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
 					<view class="image-wrapper">
-						<image
+						<rf-image
 							:src="item"
 							class="loaded"
 							mode="aspectFill"
-						></image>
+						></rf-image>
 					</view>
 				</swiper-item>
 			</swiper>
 			</view>
 			<!--商品信息-->
 			<view class="introduce-section">
-				<text class="title">{{ productDetail.name }}</text>
+				<text class="title">{{ productDetail.name || (' 暂无商品详情' + (!!errorInfo ? '[' + errorInfo + ']' : '')) }}</text>
 				<text class="sketch">{{ productDetail.sketch }}</text>
-				<view class="price-box">
+				<view class="price-box point-box" v-if="productDetail.point_exchange_type == 4">
+					该商品仅需 <text class="price">{{ productDetail.point_exchange }} 积分</text>
+				</view>
+				<view class="price-box" v-else>
 					<text class="price-tip">¥</text>
-					<text class="price">{{ productDetail.minSkuPrice }}</text>
-					<text class="m-price" v-show="productDetail.price < productDetail.minSkuPrice">{{ productDetail.price }}</text>
-					<!--<text class="coupon-tip">7折</text>-->
+					<text class="price">{{ currentSkuPrice || productDetail.price }}</text>
+					<text class="m-price" v-if="parseFloat(productDetail.market_price) > parseFloat(productDetail.price)">{{ productDetail.market_price }}</text>
+					<text class="coupon-tip" v-if="parseFloat(productDetail.market_price) > parseFloat(productDetail.price)">{{ (currentSkuPrice || productDetail.price) / productDetail.market_price | discountFilter }}折</text>
 				</view>
 				<view class="bot-row">
-					<text>销量: {{ productDetail.sales }}</text>
-					<text>收藏量: {{ productDetail.collect_num }}</text>
-					<text>浏览量: {{ productDetail.view }}</text>
+					<text>销量: {{ productDetail.sales || 0 }}</text>
+					<text>收藏量: {{ productDetail.collect_num || 0 }}</text>
+					<text>浏览量: {{ productDetail.view || 0 }}</text>
 				</view>
 				<view class="bot-row">
 					<text>评分: {{ productDetail.match_point || 0 }}</text>
-					<text>评价量: {{ productDetail.comment_num }}</text>
-					<text>分享量: {{ productDetail.transmit_num }}</text>
+					<text>评价量: {{ productDetail.comment_num || 0 }}</text>
+					<text>分享量: {{ productDetail.transmit_num || 0 }}</text>
 				</view>
 			</view>
 			<!--  分享 -->
@@ -46,14 +48,14 @@
 				<i class="iconfont iconbangzhu1"></i>
 
 				<!--#ifndef H5-->
-				<button class="share-btn" open-type="share">
+				<button :disabled="!!productDetail" class="share-btn" open-type="share">
 					立即分享
 					<i class="iconfont iconyou"></i>
 				</button>
 				<!--#endif-->
 
 				<!--#ifdef H5-->
-				<button class="share-btn" @tap.stop="shareToH5">
+				<button :disabled="!!productDetail" class="share-btn" @tap.stop="shareToH5">
 					立即分享
 					<i class="iconfont iconyou"></i>
 				</button>
@@ -86,34 +88,39 @@
 						<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
 							{{sItem.title}}
 						</text>
-						<text v-show="specSelected.length > 0"> * {{ cartCount }}</text>
-						<text class="selected-text" v-show="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
+						<text v-if="specSelected.length > 0"> * {{ cartCount }}</text>
+						<text class="selected-text" v-if="productDetail.base_attribute_format && productDetail.base_attribute_format.length === 0">
 							<!--{{ productDetail.name }} * 1-->
 							基础款 * {{ cartCount }}
 						</text>
+            <text class="selected-text" v-if="specSelected.length === 0">暂无购买类型</text>
 					</view>
-					<i class="iconfont iconyou"></i>
+					<i class="iconfont iconyou" v-if="!productDetail"></i>
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">优惠券</text>
 					<text class="con t-r red" @tap="toggleMask('show')">领取优惠券</text>
-					<i class="iconfont iconyou"></i>
+					<i class="iconfont iconyou" v-if="!productDetail"></i>
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">限购说明</text>
 					<view class="con-list">
-						<text v-show="productDetail.point_exchange_type">{{ productDetail.max_buy | maxBuyFilter }}</text>
-					</view>
+						<text v-if="productDetail.point_exchange_type">{{ productDetail.max_buy | maxBuyFilter }}</text>
+            <text v-else>暂无限购说明</text>
+          </view>
 				</view>
 				<view class="c-row b-b">
 					<text class="tit">积分活动</text>
-					<view class="con-list">
-						<text v-show="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
+					<view class="con-list" v-if="productDetail.point_exchange_type">
+						<text v-if="productDetail.point_exchange_type">积分兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
 						<text>积分赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
 						<text>最少可获得: {{ productDetail | givePointFilter }} </text>
-						<text v-show="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
-						<text v-show="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
-						<text class="buy-now" @tap="addCart('buy')" v-show="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
+						<text v-if="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
+						<text v-if="productDetail.max_use_point != 0">最大可使用积分: {{ productDetail.max_use_point }} </text>
+						<text class="buy-now" @tap="addCart('buy')" v-if="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
+					</view>
+					<view class="con-list" v-else>
+						暂无积分活动
 					</view>
 				</view>
 				<view class="c-row b-b" @tap="showService">
@@ -129,14 +136,14 @@
 				<view class="c-row b-b" @tap="showLadderPreferential">
 					<text class="tit">阶梯优惠</text>
 					<view class="con-list" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length > 0">
-						<text v-for="(item, index) in productDetail.ladderPreferential">
+						<text v-for="(item, index) in productDetail.ladderPreferential" :key="index">
 							满{{ item.quantity }}件
 								<text v-if="parseInt(item.type, 10) === 1">每件减{{ item.price }}元</text>
 								<text v-if="parseInt(item.type, 10) === 2">每件{{ parseInt(item.price, 10) }}折</text>
 						</text>
 					</view>
 					<view class="con-list" v-else>
-						暂无服务
+						暂无阶梯优惠
 					</view>
 					<i class="iconfont iconyou" v-if="productDetail.ladderPreferential && productDetail.ladderPreferential.length >= 1"></i>
 				</view>
@@ -158,7 +165,7 @@
 			<view class="eva-section" @tap="toEvaluateList">
 				<view class="e-header">
 					<text class="tit">评价</text>
-					<text>({{ productDetail.comment_num }})</text>
+					<text>({{ productDetail.comment_num || 0 }})</text>
 					<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
 					<text class="tip" v-else>暂无评价信息</text>
 					<i class="iconfont iconyou"></i>
@@ -178,7 +185,7 @@
 				<!--member_nickname: "stavyan"-->
 				<!--product_id: "43"-->
 				<!--scores: "3"-->
-				<view class="eva-box" v-show="productDetail.evaluate && productDetail.evaluate.length > 0">
+				<view class="eva-box" v-if="productDetail.evaluate && productDetail.evaluate.length > 0">
 					<image class="portrait"
 								 :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
 					<view class="right">
@@ -215,9 +222,10 @@
 					<i class="iconfont iconxiatubiao--copy"></i>
 					<text>首页</text>
 				</navigator>
-				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
+				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn cart">
 					<i class="iconfont icongouwuche"></i>
 					<text>购物车</text>
+					<rf-badge v-if="cartNum && cartNum > 0" type="error" size="small" class="badge" :text="cartNum"></rf-badge>
 				</navigator>
 				<view class="p-b-btn" :class="{active: favorite}" @tap="toFavorite">
 					<i class="iconfont iconshoucang"></i>
@@ -295,14 +303,14 @@
 						<image :src="showTypeImage || productDetail.picture"></image>
 						<view class="right">
 							<text class="title">{{ productDetail.name }}</text>
-							<text class="price">¥{{ productDetail.minSkuPrice }}</text>
+							<text class="price">¥{{ currentSkuPrice || productDetail.minSkuPrice }}</text>
 							<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
 							<view class="selected" v-if="specSelected.length > 0">
 								已选：
 								<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
 									{{sItem.title}}
 								</text>
-								<text v-show="specSelected.length > 0">
+								<text v-if="specSelected.length > 0">
 									 * {{ cartCount }}
 								</text>
 							</view>
@@ -319,13 +327,13 @@
 								:style="childItem.selected && parseInt(item.show_type) === 2 ? styleObject: ''"
 								@tap="selectSpec(childIndex, childItem.base_spec_id, item.show_type)"
 							>
-								<text v-show="parseInt(item.show_type) === 1">
+								<text v-if="parseInt(item.show_type) === 1">
 									{{childItem.title }}
 								</text>
-								<text v-show="parseInt(item.show_type) === 2">
+								<text v-if="parseInt(item.show_type) === 2">
 									{{childItem.title }}
 								</text>
-								<view v-show="parseInt(item.show_type) === 3">
+								<view v-if="parseInt(item.show_type) === 3">
 									<image
 										class="img"
 										:src="childItem.data || productDetail.picture"
@@ -375,30 +383,38 @@
 							<view class="circle r"></view>
 						</view>
 						<view class="tips">
-							<text v-show="item.range_type">
+							<text v-if="item.range_type">
 								{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
 							</text>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
-		<empty :info="'该商品不存在'" v-else></empty>
+      <!--页面加载动画-->
+      <rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
 <script>
+	/**
+	 * @des 商品详情
+	 *
+	 * @author stav stavyan@qq.com
+	 * @date 2020-03-23 15:04
+	 * @copyright 2019
+	 */
 	import share from '@/components/share';
-	import {cartItemCount, cartItemCreate, orderPreview, productDetail} from "../../api/product";
-	import uniNumberBox from '@/components/uni-number-box.vue';
-  import {collectCreate, collectDel, transmitCreate} from "../../api/basic";
+	import {cartItemCount, cartItemCreate, orderPreview, productDetail} from "@/api/product";
+	import uniNumberBox from '@/components/uni-number-box';
+  import {collectCreate, collectDel, transmitCreate} from "@/api/basic";
   import moment from '@/utils/moment';
-	import errorImg from './../../static/errorImage.jpg';
-	import {couponReceive} from "../../api/userInfo";
+	import {couponReceive} from "@/api/userInfo";
 	import empty from "@/components/empty";
 	import rfRate from "@/components/rf-rate/rf-rate";
+	import rfBadge from '@/components/rf-badge/rf-badge'
 	export default{
 		components: {
+			rfBadge,
 			share,
 			rfRate,
 			uniNumberBox,
@@ -436,6 +452,9 @@
 			time(val) {
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			},
+			discountFilter (val) {
+			    return val.toFixed(2) * 10;
+			},
 			maxBuyFilter(val) {
 				return parseInt(val, 10) === 0 ? '不限购' : `限购：${val}`;
 			},
@@ -455,7 +474,6 @@
 		},
 		data() {
 			return {
-				errorImg: errorImg,
 				serviceClass: 'none',//服务弹窗css类，控制开关动画
 				ladderPreferentialClass: 'none',//服务弹窗css类，控制开关动画
 				attributeValueClass: 'none',//服务弹窗css类，控制开关动画
@@ -470,13 +488,16 @@
 				favorite: false,
 				shareList: [],
 				currentStock: null,
+				currentSkuPrice: null,
 				specList: [],
 				specChildList: [],
 				cartCount: 1,
 				product_id: null,
-				isShowProduct: true,
 				evaluateList: [],
 				token: null,
+				cartNum: null,
+				loading: true,
+        errorInfo: ''
 			};
 		},
 		async onLoad(options){
@@ -515,7 +536,7 @@
 		methods:{
 			//服务弹窗
 			showService() {
-				if(this.productDetail.tags.length === 0) return;
+				if(this.productDetail.tags && this.productDetail.tags.length === 0) return;
 				this.serviceClass = 'show';
 			},
 			showLadderPreferential() {
@@ -563,7 +584,6 @@
            });
 					return;
 				}
-				uni.showLoading({title: '领取中...'});
 				await this.$post(`${couponReceive}`, {
 					id: item.id
 				}).then(() => {
@@ -591,6 +611,7 @@
 			},
 			//显示优惠券面板
 			toggleMask(type){
+				if (!this.productDetail.id) return;
 				let timer = type === 'show' ? 10 : 300;
 				let	state = type === 'show' ? 1 : 0;
 				this.maskState = 2;
@@ -606,6 +627,7 @@
 			 */
 			async initData(id) {
 				this.token = uni.getStorageSync('accessToken');
+				this.cartNum = uni.getStorageSync('cartNum');
 				await this.getProductDetail(id);
 			},
 			/**
@@ -615,11 +637,10 @@
 			 *@date 2019/11/18 15:48:34
 			 */
 			async getProductDetail (id) {
-				uni.showLoading({title:'加载中...'});
 				await this.$get(`${productDetail}`, {
 					id,
 				}).then(async r => {
-          this.isShowProduct = true;
+					this.loading = false;
           this.productDetail = r.data;
           this.evaluateList = await r.data.evaluate;
           this.favorite = this.productDetail.myCollect ? true : false;
@@ -644,16 +665,18 @@
           this.productDetail.sku.forEach(item => {
               if (item.data === skuStr.join('-')) {
                   this.currentStock = item.stock;
+                  this.currentSkuPrice = item.price;
                   return;
               }
           })
         }).catch(err => {
-					this.isShowProduct = false;
-					console.log(err)
+					this.loading = false;
+					this.errorInfo = err;
 				})
 			},
 			//规格弹窗开关
 			toggleSpec() {
+				if (!this.productDetail.id) return;
 				if(this.specClass === 'show'){
 					if (!this.token) {
 						this.specClass = 'none';
@@ -741,13 +764,13 @@
 						}
 					})
 				}
-				uni.showLoading({title:'正在将商品添加至购物车...'});
 				await this.$post(`${cartItemCreate}`, {
 					sku_id,
 					num: this.cartCount
 				}).then(async r => {
 					await this.$get(`${cartItemCount}`).then(r => {
 						uni.setStorageSync('cartNum', r.data);
+						this.cartNum = r.data;
 					});
 					this.$api.msg('添加成功，在购物车等');
 				}).catch(err => {
@@ -791,6 +814,7 @@
 				this.productDetail.sku.forEach(item => {
 						if (item.data === skuStr.join('-')) {
 							this.currentStock = item.stock;
+              this.currentSkuPrice = item.price;
 							return;
 						}
 					})
@@ -813,6 +837,7 @@
 			 *@date 2019/11/21 17:00:45
 			 */
 			async toFavorite() {
+				if (!this.productDetail.id) return;
 				if (!this.token) {
 					this.specClass = 'none';
           uni.showModal({
@@ -821,19 +846,14 @@
                  if (confirmRes.confirm) {
                     uni.clearStorage();
                     uni.reLaunch({
-                        url: '/pages/public/login'
+                        url: '/pages/public/logintype'
                     });
                  }
              }
            });
-					return;
-				}
-				if (this.favorite) {
-					this.handleCollectDel()
 				} else {
-					this.handleCollectCreate()
-				}
-
+          this.favorite ? this.handleCollectDel() : this.handleCollectCreate();
+        }
 			},
 			/**
 			 *@des 收藏商品
@@ -842,7 +862,6 @@
 			 *@date 2019/11/21 17:09:02
 			 */
 			async handleCollectCreate() {
-				uni.showLoading({title: '正在收藏...'});
 				await this.$post(`${collectCreate}`, {
 					topic_id: this.product_id,
 					topic_type: 'product'
@@ -860,7 +879,6 @@
 			 *@date 2019/11/21 17:09:32
 			 */
 			async handleCollectDel() {
-				uni.showLoading({title: '加载中'});
 				await this.$del(`${collectDel}?id=${this.productDetail.myCollect.id}`).then(r => {
 					this.favorite = !this.favorite;
 					this.$api.msg('取消收藏成功');
@@ -888,8 +906,8 @@
 							this.$api.msg('请先选择规格');
 							return;
 						} else {
-							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[2].base_spec_value_id}`
-							sku_str = `${this.specSelected[0].title} ${this.specSelected[2].title}`
+							skuStr = `${this.specSelected[0].base_spec_value_id}-${this.specSelected[1].base_spec_value_id}`
+							sku_str = `${this.specSelected[0].title} ${this.specSelected[1].title}`
 						}
 					} else if (this.productDetail.base_attribute_format.length === 3) {
 						if (this.specSelected.length < 3) {
@@ -922,6 +940,7 @@
 				});
 			},
 			addCart(type){
+				if (!this.productDetail.id) return;
 				this.specClass = 'show';
 				this.cartType = type
 			},
@@ -931,7 +950,7 @@
 	}
 </script>
 
-<style lang='scss'>
+<style scoped lang='scss'>
 	page{
 		background: $page-color-base;
 		padding-bottom: 160upx;
@@ -986,7 +1005,14 @@
 			height: 64upx;
 			padding: 10upx 0;
 			font-size: 26upx;
-			color:$uni-color-primary;
+			color:$base-color;
+		}
+		.point-box {
+			color: $font-color-base;
+			.price {
+				color:$base-color;
+				margin-left: 10upx;
+			}
 		}
 		.price{
 			font-size: $font-lg + 2upx;
@@ -1022,7 +1048,7 @@
 		display:flex;
 		align-items:center;
 		color: $font-color-base;
-		background: linear-gradient(left, #fdf5f6, #fbebf6);
+		background: linear-gradient(to left, #fdf5f6, #fbebf6);
 		padding: 12upx 30upx;
 		.share-icon{
 			display:flex;
@@ -1432,7 +1458,14 @@
 		background: rgba(255,255,255,.9);
 		box-shadow: 0 0 20upx 0 rgba(0,0,0,.5);
 		border-radius: 16upx;
-
+		.cart {
+			position: relative;
+			.badge {
+				position: absolute;
+				top: -8upx;
+				right: 0upx;
+			}
+		}
 		.p-b-btn{
 			display:flex;
 			flex-direction: column;
@@ -1456,6 +1489,9 @@
 			}
 			.icon-shoucang{
 				font-size: 46upx;
+			}
+			.red {
+				color: $base-color;
 			}
 		}
 		.action-btn-group{

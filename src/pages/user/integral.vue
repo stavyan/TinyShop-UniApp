@@ -131,7 +131,7 @@ export default {
       }
     },
     async getIntegralListList () {
-        uni.showLoading({title:'加载中...'});
+        
         const params = {};
         params.page = this.page;
         await this.$get(`${creditsLogList}`, {

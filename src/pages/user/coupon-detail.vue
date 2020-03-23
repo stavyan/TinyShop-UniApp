@@ -165,7 +165,6 @@ export default {
 		},
 		//删除商品
 		async emptyInvalidCoupon() {
-			uni.showLoading({title: '正在清空购物车...'});
 			await this.$get(`${couponClear}`).then(r => {
 				this.getMyCouponList();
 			}).catch(err => {
@@ -217,7 +216,7 @@ export default {
 		 *@date 2019/11/20 18:16:58
 		 */
 		async getMyCouponList (type) {
-			uni.showLoading({title:'加载中...'});
+			
 			await this.$get(`${myCouponList}`, {
 				page: this.page,
 				state: this.state

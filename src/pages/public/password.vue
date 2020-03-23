@@ -125,7 +125,6 @@
 			},
 			getSmsCode () {
 				if (!this.checkPhoneIsValid(this.mobile)) return;
-				uni.showLoading({title:'获取中...'});
 				this.$post(smsCode, {
 					mobile: this.mobile,
 					usage: 'up-pwd'
@@ -204,7 +203,6 @@
 			    this.$api.msg(graceChecker.error);
 					return;
 				}
-				uni.showLoading({title:'请稍等...'});
 				let params = {}
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'

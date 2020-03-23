@@ -131,7 +131,6 @@
 			 */
 			getSmsCode () {
 				if (!this.checkPhoneIsValid(this.mobile)) return;
-				uni.showLoading({title:'获取中...'});
 				this.$post(smsCode, {
 					mobile: this.mobile,
 					usage: 'register'
@@ -191,7 +190,6 @@
 			    this.$api.msg(graceChecker.error);
 					return;
 				}
-				uni.showLoading({title:'注册中...'});
 				let params = {}
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'

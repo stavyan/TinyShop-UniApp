@@ -245,7 +245,7 @@ export default {
 		 *@param arguments
 		 */
 		async handleCloseOrderRefundApply(status, id) {
-			uni.showLoading({title: '加载中...'});
+			
 			let closeOrderApi = closeOrderRefundApply;
 			if (status == 4) {
 				closeOrderApi = orderCustomerRefundClose;
@@ -262,7 +262,7 @@ export default {
 		},
 		async initData(options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
-			uni.showLoading({title: '加载中...'});
+			
 			await this.$get(`${orderDetail}`, {
 				id: options.id
 			}).then(r => {

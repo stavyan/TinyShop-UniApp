@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1388132",
+      "name": "nodata-search",
+      "font_class": "nodata-search",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "11556758",
+      "name": "nodata",
+      "font_class": "nodata",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "1115013",
+      "name": "404",
+      "font_class": "404",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
       "icon_id": "1069170",
       "name": "已过期",
       "font_class": "yiguoqi2",

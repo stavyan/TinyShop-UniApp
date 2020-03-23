@@ -87,7 +87,7 @@
 					this.$api.msg('请输入物流单号');
 					return;
 				}
-				uni.showLoading({title: '加载中...'});
+				
 				let salesReturnApi = orderProductSalesReturn;
 				if (this.productInfo.order_status == 4) {
 					salesReturnApi = orderCustomerSalesReturn;

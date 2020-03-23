@@ -120,7 +120,6 @@
 			    this.$api.msg('暂时只提供余额支付~');
 					return
 				}
-				uni.showLoading({title: '正在支付...'});
 				const params = {};
 				params.data = JSON.stringify(this.orderInfo);
 				params.order_group = 'order';
@@ -166,6 +165,9 @@
 </script>
 
 <style lang='scss'>
+	page {
+		background-color: $page-color-bg;
+	}
 	.app {
 		width: 100%;
 	}

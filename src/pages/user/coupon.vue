@@ -2,21 +2,28 @@
 	<view>
 		<!--顶部导航栏-->
 		<view class="tabr" :style="{top:headerTop}">
-			<view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">可用 <text v-show="state === 1">({{couponList.length}})</text></view>
-			<view :class="{on:typeClass=='used'}"  @tap="switchType('used', 2)">已使用<text v-show="state === 2">({{couponList.length}})</text></view>
-			<view :class="{on:typeClass=='invalid'}"  @tap="switchType('invalid', 3)">已失效<text v-show="state === 3">({{couponList.length}})</text></view>
+			<view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">可用
+				<text v-show="state === 1">({{couponList.length}})</text>
+			</view>
+			<view :class="{on:typeClass=='used'}" @tap="switchType('used', 2)">已使用
+				<text v-show="state === 2">({{couponList.length}})</text>
+			</view>
+			<view :class="{on:typeClass=='invalid'}" @tap="switchType('invalid', 3)">已失效
+				<text v-show="state === 3">({{couponList.length}})</text>
+			</view>
 			<view class="border" :class="typeClass"></view>
 		</view>
 		<!--占位符-->
-		<view class="place" ></view>
+		<view class="place"></view>
 		<!--优惠券列表-->
 		<view class="list">
 			<view v-show="state === 3" class="empty-invalid" @tap="emptyInvalidCoupon">
-				<view class="icon shanchu"></view>清空失效优惠券
+				<view class="icon shanchu"></view>
+				清空失效优惠券
 			</view>
 			<!-- 优惠券列表 -->
 			<view class="sub-list valid" :style="{marginTop: state === 3 ? '40upx' : 0}">
-				<view class="row" v-for="(row,index) in couponList" :key="index" >
+				<view class="row" v-for="(row,index) in couponList" :key="index">
 					<!-- content -->
 					<view class="carrier">
 						<view class="left">
@@ -69,285 +76,321 @@
 		</view>
 		<!--显示部分商品的抽屉-->
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
-				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-					<uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
-				</uni-list>
-				<view class="close">
-					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
-				</view>
+			<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
+				<uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]"
+				               @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
+			</uni-list>
+			<view class="close">
+				<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
+			</view>
 		</uni-drawer>
 	</view>
 </template>
 
 <script>
-	/**
- * @des 优惠券管理
- *
- * @author stav stavyan@qq.com
- * @date 2019-12-09 10:13
- * @copyright 2019
- */
-import {couponClear, myCouponList} from "../../api/userInfo";
-import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
-import empty from "@/components/empty";
-import moment from '@/utils/moment';
-import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
-import uniList from '@/components/uni-list/uni-list.vue'
-import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
-export default {
-	components: {
-		rfLoadMore,
-		empty,
-		uniDrawer,
-		uniList,
-		uniListItem
-	},
-	data() {
-		return {
-			headerTop:0,
-			//控制滑动效果
-			typeClass:'valid',
-			theIndex: null,
-			oldIndex: null,
-			state: 1,
-			isStop:false,
-			couponList: [],
-			loadingType: 'more',
-			token: null,
-			page: 1,
-			showRight: false,
-			currentCoupon: {}
-		}
-	},
-	filters: {
-    // 格式化时间
-		time(val) {
-			return moment(val * 1000).format('YYYY-MM-DD')
-		},
-    // 格式化时间
-		timeFull(val) {
-			return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
-		}
-	},
-	//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
-	onPullDownRefresh(){
-		this.page = 1;
-		this.couponList = [];
-		this.getMyCouponList('refresh');
-	},
-	//加载更多
-	onReachBottom(){
-		this.page ++;
-		this.getMyCouponList();
-	},
-	onLoad() {
-    // 数据初始化
-		this.initData();
-		//兼容H5下排序栏位置
-		// #ifdef H5
-		//定时器方式循环获取高度为止，这么写的原因是onLoad中head未必已经渲染出来。
-		let Timer = setInterval(()=>{
-			let uniHead = document.getElementsByTagName('uni-page-head');
-			if(uniHead.length>0){
-				this.headerTop = uniHead[0].offsetHeight+'px';
-				clearInterval(Timer);//清除定时器
-			}
-		},1);
-		// #endif
-	},
-	methods: {
-    // 显示抽屉(可使用商品)
-		show(item) {
-			if (item.usableProduct.length === 0) return;
-			this.currentCoupon = item;
-			this.showRight = true
-		},
-		// 隐藏抽屉
-		hide() {
-			this.showRight = false
-		},
-		// 关闭抽屉
-		closeDrawer() {
-			this.showRight = false
-		},
-		// 切换顶部优惠券类型
-		switchType(type, state){
-			if(this.typeClass==type){
-				return ;
-			}
-			uni.pageScrollTo({
-				scrollTop:0,
-				duration:0
-			})
-			this.typeClass = type;
-			this.state = state;
-			this.page = 1;
-			this.couponList = [];
-			this.getMyCouponList();
-		},
-		// 清空失效优惠券
-		async emptyInvalidCoupon() {
-			uni.showLoading({title: '正在清空购物车...'});
-			await this.$get(`${couponClear}`).then(() => {
-				this.getMyCouponList();
-			})
-		},
-		// 占位方法
-		discard() {
-			//丢弃
-		},
-		// 初始化数据
-		initData () {
-			this.token = uni.getStorageSync('accessToken') || undefined;
-			if (this.token) {
-				this.page = 1;
-				this.couponList = [];
-				this.getMyCouponList();
-			}
-		},
-		// 统一跳转接口
-		navTo(url, type){
-			if(!this.token){
-				url = '/pages/public/login';
-			}
-			if (type) {
-				uni.switchTab({url});
-				return;
-			}
-			if (url === 'login') {
-				 return
-			} else {
-				uni.navigateTo({
-					url
-				})
-			}
-		},
-		// 获取我的优惠券列表
-		async getMyCouponList (type) {
-			uni.showLoading({title:'加载中...'});
-			await this.$get(`${myCouponList}`, {
-				page: this.page,
-				state: this.state
-			}).then(r=>{
-				if (type === 'refresh') {
-					uni.stopPullDownRefresh();
-				}
-				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-				this.couponList = [ ...this.couponList, ...r.data ]
-			});
-		},
-	}
-}
+    /**
+     * @des 优惠券管理
+     *
+     * @author stav stavyan@qq.com
+     * @date 2019-12-09 10:13
+     * @copyright 2019
+     */
+    import {couponClear, myCouponList} from "../../api/userInfo";
+    import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
+    import empty from "@/components/empty";
+    import moment from '@/utils/moment';
+    import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
+    import uniList from '@/components/uni-list/uni-list.vue'
+    import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
+
+    export default {
+        components: {
+            rfLoadMore,
+            empty,
+            uniDrawer,
+            uniList,
+            uniListItem
+        },
+        data() {
+            return {
+                headerTop: 0,
+                //控制滑动效果
+                typeClass: 'valid',
+                theIndex: null,
+                oldIndex: null,
+                state: 1,
+                isStop: false,
+                couponList: [],
+                loadingType: 'more',
+                token: null,
+                page: 1,
+                showRight: false,
+                currentCoupon: {}
+            }
+        },
+        filters: {
+            // 格式化时间
+            time(val) {
+                return moment(val * 1000).format('YYYY-MM-DD')
+            },
+            // 格式化时间
+            timeFull(val) {
+                return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
+            }
+        },
+        //下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
+        onPullDownRefresh() {
+            this.page = 1;
+            this.couponList = [];
+            this.getMyCouponList('refresh');
+        },
+        //加载更多
+        onReachBottom() {
+            this.page++;
+            this.getMyCouponList();
+        },
+        onLoad() {
+            // 数据初始化
+            this.initData();
+            //兼容H5下排序栏位置
+            // #ifdef H5
+            //定时器方式循环获取高度为止，这么写的原因是onLoad中head未必已经渲染出来。
+            let Timer = setInterval(() => {
+                let uniHead = document.getElementsByTagName('uni-page-head');
+                if (uniHead.length > 0) {
+                    this.headerTop = uniHead[0].offsetHeight + 'px';
+                    clearInterval(Timer);//清除定时器
+                }
+            }, 1);
+            // #endif
+        },
+        methods: {
+            // 显示抽屉(可使用商品)
+            show(item) {
+                if (item.usableProduct.length === 0) return;
+                this.currentCoupon = item;
+                this.showRight = true
+            },
+            // 隐藏抽屉
+            hide() {
+                this.showRight = false
+            },
+            // 关闭抽屉
+            closeDrawer() {
+                this.showRight = false
+            },
+            // 切换顶部优惠券类型
+            switchType(type, state) {
+                if (this.typeClass == type) {
+                    return;
+                }
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 0
+                })
+                this.typeClass = type;
+                this.state = state;
+                this.page = 1;
+                this.couponList = [];
+                this.getMyCouponList();
+            },
+            // 清空失效优惠券
+            async emptyInvalidCoupon() {
+                await this.$get(`${couponClear}`).then(() => {
+                    this.getMyCouponList();
+                })
+            },
+            // 占位方法
+            discard() {
+                //丢弃
+            },
+            // 初始化数据
+            initData() {
+                this.token = uni.getStorageSync('accessToken') || undefined;
+                if (this.token) {
+                    this.page = 1;
+                    this.couponList = [];
+                    this.getMyCouponList();
+                }
+            },
+            // 统一跳转接口
+            navTo(url, type) {
+                if (!this.token) {
+                    url = '/pages/public/login';
+                }
+                if (type) {
+                    uni.switchTab({url});
+                    return;
+                }
+                if (url === 'login') {
+                    return
+                } else {
+                    uni.navigateTo({
+                        url
+                    })
+                }
+            },
+            // 获取我的优惠券列表
+            async getMyCouponList(type) {
+                
+                await this.$get(`${myCouponList}`, {
+                    page: this.page,
+                    state: this.state
+                }).then(r => {
+                    if (type === 'refresh') {
+                        uni.stopPullDownRefresh();
+                    }
+                    this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+                    this.couponList = [...this.couponList, ...r.data]
+                });
+            },
+        }
+    }
 </script>
 <style lang="scss">
-	view{
+	view {
 		display: flex;
 		flex-wrap: wrap;
 	}
-	page{position: relative;background-color: #f5f5f5;}
-	.hidden{
+	
+	page {
+		position: relative;
+		background-color: #f5f5f5;
+	}
+	
+	.hidden {
 		display: none !important;
 	}
-	.place{
+	
+	.place {
 		width: 100%;
-		height: 95upx;
+		height: 95 upx;
 	}
-	.tabr{
+	
+	.tabr {
 		background-color: #fff;
 		width: 100%;
-		height: 95upx;
+		height: 95 upx;
 		padding: 0 3%;
-		border-bottom: solid 1upx #dedede;
+		border-bottom: solid 1 upx #dedede;
 		position: fixed;
 		top: 0;
 		z-index: 10;
-		view{
+		
+		view {
 			width: 33.3%;
-			height: 90upx;
+			height: 90 upx;
 			justify-content: center;
 			align-items: center;
-			font-size: 32upx;
+			font-size: 32 upx;
 			color: #999;
 		}
-		.on{
+		
+		.on {
 			color: $base-color;
 		}
-		.border{
-			height: 4upx;
+		
+		.border {
+			height: 4 upx;
 			background-color: $base-color;
 			transition: all .3s ease-out;
-			&.used{
-				transform: translate3d(100%,0,0);
+			
+			&.used {
+				transform: translate3d(100%, 0, 0);
 			}
-			&.invalid{
-				transform: translate3d(200%,0,0);
+			
+			&.invalid {
+				transform: translate3d(200%, 0, 0);
 			}
 		}
-
+		
 	}
-	.list{
+	
+	.list {
 		width: 100%;
 		display: block;
 		position: relative;
+		
 		.empty-invalid {
 			position: absolute;
-			right: 20upx;
-			top: 10upx;
+			right: 20 upx;
+			top: 10 upx;
 			font-size: $font-base;
 			color: $base-color;
+			
 			.icon {
 				font-size: $font-base;
 				color: $base-color;
-				margin-right: 8upx;
+				margin-right: 8 upx;
 			}
 		}
 	}
+	
 	@keyframes showValid {
-		0% {transform: translateX(-100%);}100% {transform: translateX(0);}
+		0% {
+			transform: translateX(-100%);
+		}
+		100% {
+			transform: translateX(0);
+		}
 	}
+	
 	@keyframes showInvalid {
-		0% {transform: translateX(0);}100% {transform: translateX(-100%);}
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-100%);
+		}
 	}
-	.sub-list{
-		&.invalid{
+	
+	.sub-list {
+		&.invalid {
 			position: absolute;
 			top: 0;
-			left:100%;
+			left: 100%;
 			display: none;
 		}
-		&.showvalid{
+		
+		&.showvalid {
 			display: flex;
 			animation: showValid 0.20s linear both;
 		}
-		&.showinvalid{
+		
+		&.showinvalid {
 			display: flex;
 			animation: showInvalid 0.20s linear both;
 		}
+		
 		width: 100%;
-		padding-top: 10upx;
-		.tis{
+		padding-top: 10 upx;
+		
+		.tis {
 			width: 100%;
-			height: 60upx;
+			height: 60 upx;
 			justify-content: center;
 			align-items: center;
-			font-size: 32upx;
+			font-size: 32 upx;
 		}
-		.row{
+		
+		.row {
 			width: 92%;
 			height: 24vw;
-			margin: 20upx auto 10upx auto;
-			border-radius: 8upx;
+			margin: 20 upx auto 10 upx auto;
+			border-radius: 8 upx;
 			// box-shadow: 0upx 0 10upx rgba(0,0,0,0.1);
 			align-items: center;
 			position: relative;
 			overflow: hidden;
 			z-index: 4;
 			border: 0;
-			.menu{
-				.icon{
+			
+			.menu {
+				.icon {
 					color: #fff;
-					font-size:50upx;
+					font-size: 50 upx;
 				}
+				
 				position: absolute;
 				width: 28%;
 				height: 100%;
@@ -358,19 +401,33 @@ export default {
 				color: #fff;
 				z-index: 2;
 			}
-			.carrier{
+			
+			.carrier {
 				@keyframes showMenu {
-					0% {transform: translateX(0);}100% {transform: translateX(-28%);}
+					0% {
+						transform: translateX(0);
+					}
+					100% {
+						transform: translateX(-28%);
+					}
 				}
 				@keyframes closeMenu {
-					0% {transform: translateX(-28%);}100% {transform: translateX(0);}
+					0% {
+						transform: translateX(-28%);
+					}
+					100% {
+						transform: translateX(0);
+					}
 				}
-				&.open{
+				
+				&.open {
 					animation: showMenu 0.25s linear both;
 				}
-				&.close{
+				
+				&.close {
 					animation: closeMenu 0.15s linear both;
 				}
+				
 				background-color: #fff;
 				position: absolute;
 				width: 100%;
@@ -378,139 +435,165 @@ export default {
 				height: 100%;
 				z-index: 3;
 				flex-wrap: nowrap;
-				.left{
+				
+				.left {
 					width: 100%;
 					position: relative;
-					.title{
+					
+					.title {
 						padding-top: 3vw;
 						width: 90%;
 						margin: 0 5%;
-						font-size: 36upx;
+						font-size: 36 upx;
+						
 						.cell-icon {
 							display: inline-block;
-							height: 32upx;
-							margin-top: 15upx;
-							width: 32upx;
-							font-size: 22upx;
+							height: 32 upx;
+							margin-top: 15 upx;
+							width: 32 upx;
+							font-size: 22 upx;
 							color: #fff;
 							text-align: center;
-							line-height: 32upx;
+							line-height: 32 upx;
 							background: #f85e52;
-							border-radius: 4upx;
-							margin-right: 12upx;
+							border-radius: 4 upx;
+							margin-right: 12 upx;
+							
 							&.hb {
 								background: #ffaa0e;
 							}
-
+							
 							&.lpk {
 								background: #3ab54a;
 							}
-
+							
 						}
 					}
-					.term{
+					
+					.term {
 						width: 90%;
 						margin: 0 5%;
-						font-size: 26upx;
+						font-size: 26 upx;
 						color: #999;
 					}
+					
 					.usage {
 						width: 90%;
 						margin: 0 5%;
-						font-size: 26upx;
+						font-size: 26 upx;
 						color: $font-color-light;
 					}
-					.gap-top,.gap-bottom{
+					
+					.gap-top, .gap-bottom {
 						position: absolute;
-						width: 20upx;
-						height: 20upx;
+						width: 20 upx;
+						height: 20 upx;
 						right: -10upx;
 						border-radius: 100%;
 						background-color: #f5f5f5;
 					}
-					.gap-top{
+					
+					.gap-top {
 						top: -10upx;
 					}
-					.gap-bottom{
+					
+					.gap-bottom {
 						bottom: -10upx;
 					}
+					
 					.overdue {
 						position: absolute;
-						right: 10upx;
+						right: 10 upx;
 						top: 0;
+						
 						.iconyiguoqi2 {
 							font-size: $font-lg + 40upx;
 							color: $base-color;
 						}
+						
 						.iconyishiyong {
 							font-size: $font-lg + 40upx;
 							color: $font-color-base;
 						}
 					}
 				}
-				.right{
+				
+				.right {
 					flex-shrink: 0;
 					width: 28%;
 					color: #fff;
-					background:linear-gradient(to right, rgba(250,67,106, 0.72), rgba(250,67,106, 0.64));
-					&.invalid{
-						background:linear-gradient(to right,#aaa,#999);
-						.use{
+					background: linear-gradient(to right, rgba(250, 67, 106, 0.72), rgba(250, 67, 106, 0.64));
+					
+					&.invalid {
+						background: linear-gradient(to right, #aaa, #999);
+						
+						.use {
 							color: #aaa;
 						}
 					}
+					
 					justify-content: center;
-					.ticket,.criteria{width: 100%;}
-					.ticket{
+					
+					.ticket, .criteria {
+						width: 100%;
+					}
+					
+					.ticket {
 						padding-top: 1vw;
 						justify-content: center;
 						align-items: baseline;
 						height: 6vw;
-						.num{
-							font-size: 42upx;
+						
+						.num {
+							font-size: 42 upx;
 							font-weight: 600;
 						}
-						.unit{
-							font-size: 24upx;
+						
+						.unit {
+							font-size: 24 upx;
 						}
 					}
-					.criteria{
+					
+					.criteria {
 						justify-content: center;
-
-						font-size: 28upx;
+						
+						font-size: 28 upx;
 					}
-					.use{
+					
+					.use {
 						width: 45%;
 						margin: 0 2.5%;
-						height: 40upx;
+						height: 40 upx;
 						justify-content: center;
 						align-items: center;
-						font-size: 24upx;
+						font-size: 24 upx;
 						background-color: #fff;
 						color: $base-color;
-						border-radius: 40upx;
-						padding: 0 4upx;
+						border-radius: 40 upx;
+						padding: 0 4 upx;
 					}
 				}
 			}
 		}
 	}
+	
 	.drawer {
 		.close {
-			.btn{
-	      width: 360upx;
-	      height: 76upx;
-	      line-height: 76upx;
-	      border-radius: 50px;
-	      margin-top: 70upx;
-	      background: $uni-color-primary;
-	      color: #fff;
-	      font-size: $font-lg;
-	      border: none;
-	      &:after{
-	        border-radius: 100px;
-	      }
-	    }
+			.btn {
+				width: 360 upx;
+				height: 76 upx;
+				line-height: 76 upx;
+				border-radius: 50px;
+				margin-top: 70 upx;
+				background: $uni-color-primary;
+				color: #fff;
+				font-size: $font-lg;
+				border: none;
+				
+				&:after {
+					border-radius: 100px;
+				}
+			}
 		}
 	}
 </style>

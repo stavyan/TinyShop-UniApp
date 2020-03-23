@@ -209,7 +209,7 @@
 			 },
 			// 充值成功后更新用户信息
       async getMemberInfo() {
-				 uni.showLoading({title: '加载中...'});
+				 
          this.$get(memberInfo).then(r => {
           uni.setStorage({
               key: 'userInfo',

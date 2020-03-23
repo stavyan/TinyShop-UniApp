@@ -150,7 +150,6 @@ export default {
 				this.$api.msg('该优惠券暂不可领取！');
 				return;
 			}
-			uni.showLoading({title: '领取中...'});
 			await this.$post(`${couponReceive}`, {
 				id: item.id
 			}).then(r => {
@@ -190,7 +189,7 @@ export default {
 		 *@date 2019/11/20 18:16:58
 		 */
 		async getMyCouponDetail (id) {
-			uni.showLoading({title:'加载中...'});
+			
 			await this.$get(`${couponDetail}`, {
 				id,
 			}).then(r=>{

@@ -119,7 +119,7 @@ export default {
 		},
 	  // 获取积分
     async getIntegralListList (type) {
-			uni.showLoading({title:'加载中...'});
+			
 			const params = {};
       params.credit_type = 1
 			if (this.state === 2) {

@@ -71,7 +71,7 @@ export default {
 		async getConfigList() {
 	    const userInfo = uni.getStorageSync('userInfo');
 	    if (!userInfo) return;
-			uni.showLoading({title: '加载中...'});
+			
 			await this.$get(`${merchantView}`, {
 				id: userInfo.merchant_id,
 				field: 'web_qrcode'

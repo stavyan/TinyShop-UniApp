@@ -24,7 +24,7 @@
 				<text class="name">商品列表</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in orderDetail.products" @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
+			<view class="g-item" v-for="(item, index) in orderDetail.products" :key="index" @tap="navTo(`/pages/product/product?id=${item.product_id}`)">
 				<rf-image :src="item.product_picture"></rf-image>
 				<view class="right">
 					<text class="title clamp in2line">{{ item.product_name }}</text>
@@ -412,7 +412,7 @@
 				if (this.currentCompany) {
 					params.company_id = this.currentCompany.value;
 				}
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderFreightFee}`, {
 					...params,
 					...this.data
@@ -435,7 +435,7 @@
 				// this.getOrderFreightFee();
 			},
 			async getOrderDetail(data) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderPreview}`, {
 					...data
 				}).then(r => {
@@ -490,7 +490,7 @@
 				this.payType = type;
 			},
 			async submit() {
-				uni.showLoading({title: '加载中...'});
+				
 				const params = {};
 				if (this.addressData && this.addressData.id) {
 					params.address_id = this.addressData.id;
@@ -663,6 +663,7 @@
 				font-size: $font-base;
 				color: $font-color-dark;
 				line-height: 40upx;
+				height: 80upx;
 			}
 
 			.spec {

@@ -65,7 +65,7 @@ export default {
 		},
 		async getConfigList(field) {
 	    if (field.indexOf('protocol') !== -1) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${configList}`, {
 					field,
 				}).then(r => {
@@ -76,7 +76,7 @@ export default {
 	    } else {
 			  const userInfo = uni.getStorageSync('userInfo');
 		    if (!userInfo) return;
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${merchantView}`, {
 					id: userInfo.merchant_id,
 					field,

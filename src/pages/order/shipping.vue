@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<!-- 优惠明细 -->
-		<view v-for="item in shippingDetail.data">
+		<view v-for="(item, index) in shippingDetail.data" :key="index">
 			<!-- 商品信息 -->
 			<view class="goods-section">
 				<view class="g-header b-b">
@@ -186,7 +186,7 @@
 			},
 			// 获取物流信息
 			async getOrderDetail(order_id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderProductExpressDetails}`, {
 					order_id
 				}).then(r => {

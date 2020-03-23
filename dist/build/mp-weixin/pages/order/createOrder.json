@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "创建订单",
-  "usingComponents": {
-    "mpvue-picker": "/components/mpvue-picker/mpvuePicker",
-    "empty": "/components/empty"
-  }
-}

@@ -104,7 +104,6 @@
              *@blog https://stavtop.club
              *@date 2019/12/23 18:33:27
              */ async getFeedbackDetail(id) {
-                uni.showLoading({title: '反馈中...'});
                 await this.$get(`${opinionDetail}`, {
                     id
                 }).then(r => {

@@ -89,7 +89,6 @@ export default {
 	methods:{
 		async bindClick(e) {
 			if (e.content.text === '取消收藏') {
-				uni.showLoading({title: '取消收藏中...'});
 				await this.$del(`${collectDel}?id=${e.data.id}`, {
 					page: this.page
 				}).then(() => {
@@ -111,7 +110,7 @@ export default {
 		},
 		// 获取收藏列表
 		async getCollectionList(type) {
-			uni.showLoading({title: '加载中...'});
+			
 			await this.$get(`${collectList}`, {
 				page: this.page
 			}).then(r => {

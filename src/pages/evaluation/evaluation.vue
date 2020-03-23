@@ -190,7 +190,6 @@
 				this.evaluate.order_product_id = this.productInfo.id;
 				this.evaluate.covers = this.imageList;
 				const params = {};
-				uni.showLoading({title: '评价中...'});
 				if (this.evaluationType !== 'add') {
 					const data = [];
 					data.push(this.evaluate)
@@ -204,7 +203,7 @@
 			},
 			// 发表评价
 			async handleEvaluateCreate(params) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$post(`${evaluateCreate}`, {
 					...params
 				}).then(() => {
@@ -215,7 +214,7 @@
 			},
 			// 追加评价
 			async handleEvaluateAgain(params) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$post(`${evaluateAgain}?order_product_id=${this.productInfo.id}`, {
 					...params
 				}).then(() => {

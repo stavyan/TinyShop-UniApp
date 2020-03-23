@@ -1,6 +1,6 @@
 <template>
 	<view class="rf-load-more">
-		<view class="rf-load-more__img" v-show="status === 'loading' && showIcon">
+		<view class="rf-load-more__img" v-if="status === 'loading' && showIcon">
 			<view class="load1">
 				<view :style="{background:color}"></view>
 				<view :style="{background:color}"></view>
@@ -20,7 +20,8 @@
 				<view :style="{background:color}"></view>
 			</view>
 		</view>
-		<text class="rf-load-more__text" :style="{color:color}">{{status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore)}}</text>
+		<view class="cu-load" :class="status === 'more'?'loading':'over'"></view>
+		<!--<text class="rf-load-more__text" :style="{color:color}">{{status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore)}}</text>-->
 	</view>
 </template>
 
@@ -45,9 +46,9 @@
 				type: Object,
 				default () {
 					return {
-						contentdown: "上拉显示更多",
-						contentrefresh: "正在加载...",
-						contentnomore: "—— 全部都被你看完了 ——"
+						// contentdown: "上拉显示更多",
+						// contentrefresh: "正在加载...",
+						// contentnomore: "—— 全部都被你看完了 ——"
 					};
 				}
 			}
@@ -59,8 +60,6 @@
 </script>
 
 <style>
-	@charset "UTF-8";
-
 	.rf-load-more {
 		display: flex;
 		flex-direction: row;

@@ -213,7 +213,7 @@
       },
 			// 取消订单
 			async handleOrderClose(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderClose}`, {
 					id,
 				}).then(() => {
@@ -224,7 +224,7 @@
 			},
       // 删除已关闭订单
 			async handleOrderDelete(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$del(`${orderDelete}?id=${id}`, {}).then(() => {
 					this.$api.msg('订单删除成功');
 					setTimeout(() => {
@@ -236,7 +236,7 @@
 			},
       // 确认收货
 			async handleOrderTakeDelivery(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
 				}).then(() => {
@@ -262,7 +262,7 @@
 		    const params = {};
 				params.page = this.page;
 				params.synthesize_status = -1;
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderList}`, {
 					...params
 				}).then(r => {

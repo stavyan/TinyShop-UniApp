@@ -137,7 +137,7 @@
 					this.page = 1;
 					this.evaluationList = [];
 				}
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${evaluateList}`, {
 					product_id: this.id,
 					page: this.page,

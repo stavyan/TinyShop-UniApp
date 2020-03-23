@@ -94,7 +94,7 @@
 			 *@date 2019/11/18 09:58:15
 			 */
 			async getThirdPartyAuthList (type) {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$get(`${thirdPartyAuthList}`).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
@@ -112,7 +112,7 @@
 			 *@date 2019/12/31 16:47:33
 			 */
 			async unBind (id) {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$del(`${thirdPartyAuthDelete}?id=${id}`).then(r=>{
 						this.page = 1;
 						this.thirdPartyAuthList = [];

@@ -95,7 +95,7 @@
             },
             // 获取收货地址列表
             async getInvoiceList() {
-                uni.showLoading({title: '加载中...'});
+                
                 await this.$get(`${invoiceList}`, {page: this.page}).then(r => {
                     this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
                     this.invoiceList = [...this.invoiceList, ...r.data];

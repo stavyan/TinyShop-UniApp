@@ -70,7 +70,7 @@
 				})
 			},
 			async getInvoiceDetail(id) {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$get(`${invoiceDetail}`, {
 					id
 				}).then(async r => {
@@ -111,7 +111,6 @@
 				}
 			},
 			async handleInvoiceUpdate (data) {
-				uni.showLoading({title:'发票修改中...'});
 				await this.$put(`${invoiceUpdate}?id=${data.id}`, {
 					type: data.type,
 					title: data.title,
@@ -127,7 +126,6 @@
 				})
 			},
 			async handleInvoiceCreate (data) {
-				uni.showLoading({title:'创建中...'});
 				await this.$post(`${invoiceCreate}`, {
 					...data
 				}).then(r=>{

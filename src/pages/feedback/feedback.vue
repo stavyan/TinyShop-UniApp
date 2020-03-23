@@ -147,7 +147,6 @@
             },
             async send() { //发送反馈
                 this.sendDate.covers = JSON.stringify(this.imageList);
-                uni.showLoading({title: '反馈中...'});
                 await this.$post(`${opinionCreate}`, {
                     ...this.sendDate
                 }).then(() => {

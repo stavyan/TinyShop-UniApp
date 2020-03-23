@@ -20,7 +20,7 @@
 					@scrolltolower="getMoreOrderList"
 				>
 					<!-- 空白页 -->
-					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
+<!--					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>-->
 					<!-- 订单列表 -->
 					<view
 						v-for="(item,index) in orderList" :key="index"
@@ -35,20 +35,20 @@
 							</view>
 						</view>
 
-						<scroll-view  v-if="item && item.product && item.product.length > 1"
-												 class="goods-box" scroll-x>
-							<view
-								v-for="(goodsItem, goodsIndex) in item.product"
-								:key="goodsIndex"
-								@tap="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"
-								class="goods-item"
-							>
-								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
-								<text class="goods-title in2line">{{goodsItem.product_name}}</text>
-							</view>
-						</scroll-view>
+<!--						<scroll-view  v-if="item && item.product && item.product.length > 1"-->
+<!--												 class="goods-box" scroll-x>-->
+<!--							<view-->
+<!--								v-for="(goodsItem, goodsIndex) in item.product"-->
+<!--								:key="goodsIndex"-->
+<!--								@tap="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"-->
+<!--								class="goods-item"-->
+<!--							>-->
+<!--								<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>-->
+<!--								<text class="goods-title in2line">{{goodsItem.product_name}}</text>-->
+<!--							</view>-->
+<!--						</scroll-view>-->
+<!--							v-if="item.product && item.product.length === 1"-->
 						<view
-							v-if="item.product && item.product.length === 1"
 							class="goods-box-single"
               @tap.stop="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"
 							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
@@ -57,7 +57,14 @@
 							<view class="right">
 								<text class="title in2line">{{goodsItem.product_name}}</text>
 								<text class="attr-box">{{goodsItem.sku_name || '基础版'}}</text>
-								<text class="price">{{goodsItem.price}}  x {{goodsItem.num}}</text>
+								<text v-if="goodsItem.point_exchange_type == 2 ||goodsItem.point_exchange_type == 4">
+									<text class="point">{{item.point}}积分 </text>
+									* {{goodsItem.num}}
+								</text>
+								<text class="price" v-else>
+									<text class="red">{{goodsItem.product_money}} <text v-if="goodsItem.gift_flag === 0"> + {{ (item.point + '积分') || '' }}</text></text>
+									* {{goodsItem.num}}
+								</text>
 							</view>
 						</view>
 
@@ -255,7 +262,7 @@
       },
 			// 取消订单
 			async handleOrderClose(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderClose}`, {
 					id,
 				}).then(() => {
@@ -266,7 +273,7 @@
 			},
       // 删除已关闭订单
 			async handleOrderDelete(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$del(`${orderDelete}?id=${id}`, {}).then(() => {
 					this.$api.msg('订单删除成功');
 					setTimeout(() => {
@@ -278,7 +285,7 @@
 			},
       // 确认收货
 			async handleOrderTakeDelivery(id) {
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
 				}).then(() => {
@@ -306,7 +313,7 @@
 					params.synthesize_status = navItem.state;
 				}
 				params.page = this.page;
-				uni.showLoading({title: '加载中...'});
+				
 				await this.$get(`${orderList}`, {
 					...params
 				}).then(r => {
@@ -391,7 +398,7 @@
 	.order-item{
 		display: flex;
 		flex-direction: column;
-		padding-left: 30upx;
+		padding: 0 30upx;
 		background: #fff;
 		margin-top: 16upx;
 		.i-top{
@@ -449,11 +456,28 @@
 		/* 单条商品 */
 		.goods-box-single{
 			display: flex;
-			padding: 10upx 0;
+			margin: 10upx 0;
+			border-bottom: 1px solid rgba(0, 0, 0, .05);
+			box-shadow: 0 1px 5px rgba(0, 0, 0, .02);
 			.goods-img{
 				display: block;
 				width: 180upx;
 				height: 140upx;
+			}
+			.red {
+				color: $base-color;
+				margin: 0 10upx 0 0;
+				font-size: $font-sm;
+				&:before{
+					content: '￥';
+					font-size: $font-sm + 2upx;
+					margin: 0 0 0 2upx;
+				}
+			}
+			.point {
+				color: $base-color;
+				margin: 0 10upx 0 0;
+				font-size: $font-sm + 2upx;
 			}
 			.right{
 				flex: 1;
@@ -464,6 +488,7 @@
 				.title{
 					font-size: $font-sm;
 					line-height: 32upx;
+					height: 60upx;
 					color: $font-color-dark;
 				}
 				.attr-box{
@@ -471,12 +496,8 @@
 					color: $font-color-light;
 				}
 				.price{
-					font-size: $font-sm + 2upx;
+					font-size: $font-sm;
 					color: $font-color-dark;
-					&:before{
-						content: '￥';
-						font-size: $font-sm;
-					}
 				}
 			}
 		}

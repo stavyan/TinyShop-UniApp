@@ -104,7 +104,7 @@
             },
             // 获取收货地址列表
             async getAddressList(type) {
-                uni.showLoading({title: '加载中...'});
+                
                 await this.$get(`${addressList}`, {
                     page: this.page
                 }).then(r => {

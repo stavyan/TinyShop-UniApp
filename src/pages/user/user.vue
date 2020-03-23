@@ -97,6 +97,9 @@
 				<list-cell icon="iconshezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 			</view>
 		</view>
+		
+    <!--页面加载动画-->
+    <rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 <script>
@@ -139,7 +142,8 @@
 					{ title: '余额', value: 0, url: '/pages/user/account' },
 					{ title: '优惠券', value: 0, url: '/pages/user/coupon?type=1' },
 					{ title: '积分', value: 0, url: '/pages/user/integral' }
-				]
+				],
+				loading: true,
 			}
 		},
 		onShareAppMessage() {
@@ -194,6 +198,7 @@
 				this.userInfo = uni.getStorageSync('userInfo') || {};
 				this.token = uni.getStorageSync('accessToken') || undefined;
 				if (this.token) {
+					await this.getMemberInfo();
 		      if (uni.getStorageSync('cartNum')) {
 		      	if (uni.getStorageSync('cartNum') != 0) {
 					    uni.setTabBarBadge({
@@ -216,8 +221,8 @@
 				      }
 				    });
 		      }
-					await this.getMemberInfo();
 				} else {
+			    this.loading = false;
 			    uni.removeTabBarBadge({index: 2})
           this.amountList[0].value = 0;
           this.amountList[1].value = 0;
@@ -226,8 +231,8 @@
 			},
 			// 获取用户信息
       async getMemberInfo() {
-				 uni.showLoading({title: '加载中...'});
-         this.$get(memberInfo).then(r => {
+			 this.$get(memberInfo).then(r => {
+				  this.loading = false;
           this.amountList[0].value = r.data.account.user_money || 0;
           this.amountList[1].value = r.data.coupon_num || 0;
           this.amountList[2].value = r.data.account.user_integral || 0;
@@ -244,11 +249,12 @@
               data: r.data
           })
           this.userInfo = r.data || undefined;
-        })
+        }).catch(() => {
+				  this.loading = false;
+			 });
       },
 			// 获取足迹列表
 			async getFootPrintList() {
-				uni.showLoading({title: '加载中...'});
 				await this.$get(`${footPrintList}`).then(r => {
 					this.footList = r.data
 				});
@@ -378,7 +384,7 @@
 				flex-direction: column;
 				color: #f7d680;
 				height: 240upx;
-				background: linear-gradient(left, rgba(0,0,0,.7), rgba(0,0,0,.8));
+				background: linear-gradient(to left, rgba(0,0,0,.7), rgba(0,0,0,.8));
 				border-radius: 16upx 16upx 0 0;
 				overflow: hidden;
 				position: relative;
@@ -401,7 +407,7 @@
 					font-size: 22upx;
 					color: #36343c;
 					border-radius: 20px;
-					background: linear-gradient(left, #f9e6af, #ffd465);
+					background: linear-gradient(to left, #f9e6af, #ffd465);
 					z-index: 1;
 				}
 				.tit{

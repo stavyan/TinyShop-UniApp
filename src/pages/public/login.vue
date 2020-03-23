@@ -103,7 +103,6 @@
 			// 发送验证码并进入倒计时
 			getSmsCode () {
 				if (!this.checkPhoneIsValid(this.mobile)) return;
-				uni.showLoading({title:'获取中...'});
 				this.$post(smsCode, {
 					mobile: this.mobile,
 					usage: 'login'
@@ -167,7 +166,6 @@
 					this.$api.msg(graceChecker.error);
 					return;
 				}
-				uni.showLoading({title:'登录中...'});
 				/*  #ifdef  APP-PLUS  */
 				params.group = 'tinyShopApp'
 				/*  #endif  */

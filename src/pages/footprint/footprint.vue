@@ -105,7 +105,6 @@
             },
             // 删除足迹
             async bindClick(e) {
-                uni.showLoading({title: '删除足迹中...'});
                 await this.$del(`${footPrintDel}?id=${e.data.id}`, {
                     page: this.page
                 }).then(() => {
@@ -124,7 +123,7 @@
             },
             // 获取我的足迹列表
             async getFootPrintList() {
-                uni.showLoading({title: '加载中...'});
+                
                 const params = {};
                 params.page = this.page;
                 if (this.startTime && this.endTime) {

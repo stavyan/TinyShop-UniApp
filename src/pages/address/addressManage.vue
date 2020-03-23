@@ -80,7 +80,7 @@
 			},
 	    // 获取收货地址
 			async getAddressDetail(id) {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$get(`${addressDetail}`, {
 					id
 				}).then(async r => {
@@ -177,7 +177,7 @@
 							case this.multiIndex[0]:
 								province_id = this.multiArray[0][e.detail.value].id;
 								province_name = this.multiArray[0][e.detail.value].title;
-								uni.showLoading({title:'加载中...'});
+								
 								await this.$get(`${provinceList}`, {
 									pid: this.multiArray[0][e.detail.value].id
 								}).then(async r => {
@@ -186,7 +186,7 @@
 										city_name = this.multiArray[1][0].title;
 										provinceIndex = e.detail.value;
 										this.multiIndex = [provinceIndex, 0, 0];
-										uni.showLoading({title:'加载中...'});
+										
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.column].id
 										}).then(r => {
@@ -213,7 +213,7 @@
 										city_name = this.multiArray[1][e.detail.value].title;
 										cityIndex = e.detail.value;
 										this.multiIndex = [this.multiIndex[0], cityIndex, 0];
-										uni.showLoading({title:'加载中...'});
+										
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.value].id
 										}).then(r => {
@@ -304,7 +304,6 @@
 				// }, 800)
 			},
 			async handleAddressUpdate (data) {
-				uni.showLoading({title:'收货地址修改中...'});
 				await this.$put(`${addressUpdate}?id=${data.id}`, {
 					realname: data.realname,
 					mobile: data.mobile,
@@ -321,7 +320,6 @@
 				})
 			},
 			async handleAddressCreate (data) {
-				uni.showLoading({title:'创建中...'});
 				await this.$post(`${addressCreate}`, {
 					realname: data.realname,
 					mobile: data.mobile,

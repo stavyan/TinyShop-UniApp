@@ -43,6 +43,6 @@ export default {
 	align-items: center;
 }
 .title-text{
-	font-size: 36upx;
+	font-size: 28upx;
 }
 </style>

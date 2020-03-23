@@ -77,7 +77,7 @@
 			 *@date 2019/11/18 09:58:15
 			 */
 			async getFeedbackList (type) {
-				uni.showLoading({title:'加载中...'});
+				
 				await this.$get(`${opinionList}`, {page: this.page}).then(r=>{
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();

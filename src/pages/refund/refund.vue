@@ -131,7 +131,7 @@
 					this.$api.msg(graceChecker.error);
 					return;
 				}
-				uni.showLoading({title: '加载中...'});
+				
 				console.log(this.refundType)
 				if (this.refundType == 3) {
 					this.handleOrderCustomerRefundApply(this.productInfo.id, formData);
