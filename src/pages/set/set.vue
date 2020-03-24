@@ -86,7 +86,11 @@
 				    content: '确定要清除缓存吗',
 				    success: (e)=>{
 				    	if(e.confirm){
+                this.$api.msg('清除缓存成功')
 				    		this.currentStorageSize = 0;
+				    		const userInfo = uni.getStorageSync('userInfo');
+				    		uni.clearStorageSync();
+                this.login(userInfo);
 				    	}
 				    }
 					});

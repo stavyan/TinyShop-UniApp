@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "物流详情",
+  "usingComponents": {
+    "mpvue-picker": "/components/mpvue-picker/mpvuePicker",
+    "empty": "/components/empty"
+  }
+}

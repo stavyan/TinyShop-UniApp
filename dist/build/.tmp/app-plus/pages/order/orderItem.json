@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商品列表",
+  "usingComponents": {
+    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",
+    "rf-swipe-action-item": "/components/rf-swipe-action-item/rf-swipe-action-item",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "uni-tag": "/components/uni-tag/uni-tag"
+  }
+}

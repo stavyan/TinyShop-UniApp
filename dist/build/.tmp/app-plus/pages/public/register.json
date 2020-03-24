@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "注册",
+  "navigationStyle": "custom",
+  "titleNView": false,
+  "animationType": "slide-in-bottom",
+  "usingComponents": {}
+}

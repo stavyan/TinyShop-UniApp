@@ -1,0 +1,20 @@
+
+view{display:block;}
+.search-box {width:100%;background-color:rgb(242,242,242);padding:15rpx 2.5%;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;}
+.search-box .mSearch-input-box{width: 100%;}
+.search-box .input-box>input {width:100%;height:60rpx;font-size:32rpx;border:0;border-radius:60rpx;-webkit-appearance:none;appearance:none;padding:0 3%;margin:0;background-color:#ffffff;}
+.search-keyword {width:100%;background-color:rgb(242,242,242);}
+.keyword-list-box {height:calc(100vh - 110rpx);padding-top:10rpx;border-radius:20rpx 20rpx 0 0;background-color:#fff;}
+.keyword-entry {width:94%;height:80rpx;margin:0 3%;font-size:30rpx;color:#333;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;-webkit-box-align:center;-webkit-align-items:center;align-items:center;border-bottom:solid 1rpx #e7e7e7;}
+.keyword-entry image {width:60rpx;height:60rpx;}
+.keyword-entry .keyword-text,.keyword-entry .keyword-img {height:80rpx;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;}
+.keyword-entry .keyword-text {width:90%;}
+.keyword-entry .keyword-img {width:10%;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;}
+.keyword-box {border-radius:20rpx 20rpx 0 0;background-color:#fff;}
+.keyword-box .keyword-block {padding:10rpx 0;}
+.keyword-box .keyword-block .keyword-list-header { width:100vw;padding:10rpx 3%;font-size:27rpx;color:#333;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;}
+.keyword-box .keyword-block .keyword-list-header image {width:40rpx;height:40rpx;}
+.keyword-box .keyword-block .keyword {width:100vw;padding:3px 3%;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-flow:wrap;flex-flow:wrap;-webkit-box-pack:start;-webkit-justify-content:flex-start;justify-content:flex-start;}
+.keyword-box .keyword-block .hide-hot-tis {display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;font-size:28rpx;color:#6b6b6b;}
+.keyword-box .keyword-block .keyword>view {display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;align-items:center;border-radius:60rpx;padding:0 20rpx;margin:10rpx 20rpx 10rpx 0;height:60rpx;font-size:28rpx;background-color:rgb(242,242,242);color:#6b6b6b;}
+
