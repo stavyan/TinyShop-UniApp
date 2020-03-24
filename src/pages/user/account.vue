@@ -114,10 +114,9 @@
 </script>
 <style scoped lang="scss">
   page {
-    width: 100vw;
+    background-color: $page-color-bg;
   }
   .my-account {
-    background-color: #fff;
     padding: 32upx 20upx;
     width: 100%;
     .header {

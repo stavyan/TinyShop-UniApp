@@ -87,10 +87,12 @@
 						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
-					<rf-load-more :status="loadingType"></rf-load-more>
+					<rf-load-more :status="loadingType" v-if="orderList.length > 0"></rf-load-more>
+          <empty :info="'暂无工单'" v-if="orderList.length === 0 && !loading"></empty>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -141,7 +143,8 @@
 					}
 				],
 				orderList: [],
-				page: 1
+				page: 1,
+				loading: true,
 			};
 		},
 		computed: {
@@ -262,7 +265,7 @@
       },
 			// 取消订单
 			async handleOrderClose(id) {
-				
+
 				await this.$get(`${orderClose}`, {
 					id,
 				}).then(() => {
@@ -273,7 +276,7 @@
 			},
       // 删除已关闭订单
 			async handleOrderDelete(id) {
-				
+
 				await this.$del(`${orderDelete}?id=${id}`, {}).then(() => {
 					this.$api.msg('订单删除成功');
 					setTimeout(() => {
@@ -285,7 +288,7 @@
 			},
       // 确认收货
 			async handleOrderTakeDelivery(id) {
-				
+
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
 				}).then(() => {
@@ -313,15 +316,20 @@
 					params.synthesize_status = navItem.state;
 				}
 				params.page = this.page;
-				
 				await this.$get(`${orderList}`, {
 					...params
 				}).then(r => {
+					this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
 					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 					this.orderList = [ ...this.orderList, ...r.data ]
+				}).catch(() => {
+					this.loading = false;
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 				});
 			},
 			// 监听swiper切换
@@ -329,12 +337,14 @@
 				this.page = 1;
 				this.orderList.length = 0;
 				this.tabCurrentIndex = e.target.current;
+				this.loading = true;
 				this.getOrderList();
 			},
 			//顶部tab点击
 			tabClick(index){
 				this.page = 1;
 				this.orderList.length = 0;
+				this.loading = true;
 				this.tabCurrentIndex = index;
 			},
 			//顶部tab点击
