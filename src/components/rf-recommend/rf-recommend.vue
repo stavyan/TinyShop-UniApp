@@ -9,7 +9,7 @@
 			<view
 				v-for="(item, index) in (guessYouLikeList.length > 0 ? guessYouLikeList : [0, 0, 0, 0])" :key="index"
 				class="product-item"
-				@tap="navTo(`/pages/product/product?id=${item.id}`, item.id)"
+				@tap="navTo(item === 0 ? '' : item.id)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
@@ -69,10 +69,10 @@ export default {
         console.log(err);
       });
     },
-    navTo (url, id) {
+    navTo (id) {
 	  	if (!id) return;
 	  	uni.navigateTo({
-			  url
+			  url: `/pages/product/product?id=${id} `
 		  })
     },
 	}

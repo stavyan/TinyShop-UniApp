@@ -18,7 +18,7 @@
 			<view
 					v-for="(item, index) in list.length > 0 ? list : [0, 0]" :key="index"
 					class="product-item"
-					@tap="detail(item.id)"
+					@tap.stop="detail(item === 0 ? '' : item.id)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
@@ -82,7 +82,7 @@
         methods: {
             // 跳转详情页
             detail(id) {
-                if (!id) return;
+            	if (!id) return;
                 this.$emit('detail', {
                     id
                 });
@@ -107,7 +107,7 @@
 		.banner {
 			width: 92%;
 			margin: 20upx 4% 0;
-			
+
 			image {
 				width: 100%;
 				height: 25vw;
@@ -115,7 +115,7 @@
 				box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.05);
 			}
 		}
-		
+
 		.f-header {
 			display: flex;
 			align-items: center;
@@ -124,30 +124,30 @@
 			margin: 0 0 20upx;
 			background: #fff;
 			border-bottom: 1upx solid rgba(0, 0, 0, 0.05);
-			
+
 			.iconfont {
 				color: $base-color;
 				font-size: $font-lg + 30upx;
 				margin-right: 20upx;
 			}
-			
+
 			.tit-box {
 				flex: 1;
 				display: flex;
 				flex-direction: column;
 			}
-			
+
 			.tit {
 				font-size: $font-lg +2upx;
 				color: #font-color-dark;
 				line-height: 1.3;
 			}
-			
+
 			.tit2 {
 				font-size: $font-sm;
 				color: $font-color-light;
 			}
-			
+
 			.iconyou {
 				font-size: $font-lg +4upx;
 				color: $font-color-light;

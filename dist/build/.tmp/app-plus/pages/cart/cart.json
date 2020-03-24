@@ -1,5 +1,8 @@
 {
+<<<<<<< HEAD
   "navigationBarTitleText": "购物车",
+=======
+>>>>>>> master
   "enablePullDownRefresh": true,
   "navigationBarTextStyle": "black",
   "titleNView": false,
@@ -9,6 +12,7 @@
     "color": "#fa436a",
     "style": "default"
   },
+<<<<<<< HEAD
   "subNVues": [
     {
       "id": "cartTitleNvue",
@@ -16,6 +20,8 @@
       "type": "navigationBar"
     }
   ],
+=======
+>>>>>>> master
   "usingComponents": {
     "rf-loading": "/components/rf-loading/rf-loading"
   }
