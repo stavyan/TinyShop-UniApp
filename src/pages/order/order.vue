@@ -369,39 +369,6 @@
 		height: 100%;
 	}
 
-	.navbar{
-		display: flex;
-		height: 40px;
-		padding: 0 5px;
-		background: #fff;
-		box-shadow: 0 1px 5px rgba(0,0,0,.06);
-		position: relative;
-		z-index: 10;
-		.nav-item{
-			flex: 1;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			font-size: 15px;
-			color: $font-color-dark;
-			position: relative;
-			&.current{
-				color: $base-color;
-				&:after{
-					content: '';
-					position: absolute;
-					left: 50%;
-					bottom: 0;
-					transform: translateX(-50%);
-					width: 44px;
-					height: 0;
-					border-bottom: 2px solid $base-color;
-				}
-			}
-		}
-	}
-
 	.uni-swiper-item{
 		height: auto;
 	}

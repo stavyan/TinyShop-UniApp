@@ -19,6 +19,8 @@
     <empty :info="`暂无收货地址，请添加地址`" v-else></empty>
     <rf-load-more v-if="invoiceList.length > 0" :status="loadingType"/>
     <button class="add-btn" @tap="addInvoice('add')">新增发票</button>
+    <!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
 
@@ -37,7 +39,8 @@
                 source: 0,
                 invoiceList: [],
                 page: 1,
-                loadingType: 'more'
+                loadingType: 'more',
+                loading: true,
             }
         },
         onShow() {
@@ -95,12 +98,12 @@
             },
             // 获取收货地址列表
             async getInvoiceList() {
-                
                 await this.$get(`${invoiceList}`, {page: this.page}).then(r => {
+                  this.loading = false;
                     this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
                     this.invoiceList = [...this.invoiceList, ...r.data];
-                }).catch(err => {
-                    console.log(err)
+                }).catch(() => {
+                  this.loading = false;
                 })
             },
             //选择地址

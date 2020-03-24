@@ -1,4 +1,4 @@
-// 主机地址
+// H5地址(前端运行地址)
 const hostUrl = "http://html5.tinyshop.yllook.com";
 
 // 充值页面地址 用作微信H5获取code

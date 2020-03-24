@@ -30,6 +30,9 @@
 			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @tap="confirm">提交</button>
+		
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -59,7 +62,8 @@
 				},
 				multiArray: [[], [], []],
 				multiIndex: [0, 0, 0],
-		}
+				loading: true
+			}
 		},
 		onLoad(options){
 			this.initData(options);
@@ -80,13 +84,13 @@
 			},
 	    // 获取收货地址
 			async getAddressDetail(id) {
-				
 				await this.$get(`${addressDetail}`, {
 					id
 				}).then(async r => {
+			    this.loading = false;
 					this.addressData = r.data;
-				}).catch(err => {
-					console.log(err)
+				}).catch(() => {
+			    this.loading = false;
 				})
 			},
 			async getProvinceList() {

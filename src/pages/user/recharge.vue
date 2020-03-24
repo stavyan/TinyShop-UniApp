@@ -72,6 +72,9 @@
 				</view>
 			</view>
 		</view>
+		
+		<!--加载动画-->
+		<rf-loading v-if="pageLoading"></rf-loading>
 	</view>
 </template>
 
@@ -94,6 +97,7 @@
 				loading: false,
 				providerList: [],
 				code: null,
+				pageLoading: true,
 			};
 		},
 		onLoad(options) {
@@ -231,11 +235,12 @@
 				this.code = options.code;
 				this.userInfo = uni.getStorageSync('userInfo') || undefined;
 				await this.$get(`${rechargeConfigIndex}`).then(r => {
+			    this.pageLoading = false;
 					this.amountList = r.data;
 					this.inputAmount =  r.data[0] && r.data[0].price || 0.01;
 					this.inputAmountGive =  r.data[0] && r.data[0].give_price || 0;
-				}).catch(err => {
-					console.log(err)
+				}).catch(() => {
+			    this.pageLoading = false;
 				});
 				// #ifdef H5
 				if (this.isWechat() && !this.code) {
@@ -312,6 +317,9 @@
 </script>
 
 <style lang="scss">
+	page {
+		background-color: $page-color-bg;
+	}
 	.block{
 		width: 100%;
 		padding: 20upx;

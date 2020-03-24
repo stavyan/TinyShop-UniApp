@@ -12,9 +12,11 @@
 		<view class="article-content">
 			<rich-text :nodes="announceDetail.content"></rich-text>
 		</view>
-		<!-- #ifdef MP-WEIXIN || MP-QQ -->
-		<ad v-if="htmlNodes.length > 0" unit-id="adunit-01b7a010bf53d74e"></ad>
-		<!-- #endif -->
+		
+		<empty :info="'暂无公告信息'" v-if="!announceDetail && !loading"></empty>
+		
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -27,6 +29,7 @@
 			return {
 				announceDetail: {},
 				id: undefined,
+				loading: true,
 			}
 		},
 		filters: {
@@ -49,10 +52,13 @@
 			// 获取通知列表
 			async getNotifyAnnounceView(id) {
 				await this.$get(`${notifyAnnounceView}`, { id }).then(r => {
+					this.loading = false;
 					this.announceDetail = r.data;
 					uni.setNavigationBarTitle({
 						title: r.data.title
 					});
+				}).catch(() => {
+					this.loading = false;
 				})
 			},
 		}

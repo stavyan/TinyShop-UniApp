@@ -13,21 +13,21 @@
           </text>
           <text class="title">累计积分</text>
         </view>
-        <div class="item">
+        <view class="item">
           <text class="num">
             {{ -(userInfo && userInfo.account && userInfo.account.consume_integral) || '0' }}
           </text>
           <text class="title">累计消费</text>
-        </div>
-        <div class="item">
+        </view>
+        <view class="item">
           <text class="num">
             {{ userInfo && userInfo.frozen_integral && userInfo.account.frozen_integral || '0' }}
           </text>
           <text class="title">冻结积分</text>
-        </div>
+        </view>
       </view>
-      <div class="tab">
-        <div
+      <view class="tab">
+        <view
             class="item"
             :class="current === index ? 'on' : ''"
             v-for="(item, index) in navList"
@@ -35,14 +35,14 @@
             @tap="nav(index)"
         >
           {{ item.name }}
-        </div>
-      </div>
+        </view>
+      </view>
     </view>
     <view class="wrapper">
       <view class="list1" :hidden="current !== 0">
         <view class="tip acea-row row-middle">
           <span class="iconfont icon-shuoming"></span
-          >提示：积分数值的高低会直接影响您的会员等级
+          >提示：积分可用来兑换指定商品
         </view>
          <view class="list b-b" v-for="(item, index) in integralList" :key="index">
           <view class="wrapper">
@@ -65,6 +65,8 @@
         </view>
       </view>
     </view>
+    <!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
 <script>
@@ -95,7 +97,8 @@ export default {
       integralList: [],
       loadingType: 'more',
       page: 1,
-      userInfo: {}
+      userInfo: {},
+      loading: true
     };
   },
   onLoad () {
@@ -121,8 +124,12 @@ export default {
       })
     },
     nav (index) {
-          this.current = index;
-      },
+      this.loading = true;
+      this.current = index;
+      this.page = 1;
+      this.integralList.length = 0;
+      this.getIntegralListList();
+    },
     initData () {
       this.token = uni.getStorageSync('accessToken') || undefined;
       this.userInfo = uni.getStorageSync('userInfo') || undefined;
@@ -131,14 +138,16 @@ export default {
       }
     },
     async getIntegralListList () {
-
         const params = {};
         params.page = this.page;
         await this.$get(`${creditsLogList}`, {
           ...params
         }).then(r=>{
+          this.loading = false;
           this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
           this.integralList = [ ...this.integralList, ...r.data ]
+        }).catch(() => {
+          this.loading = false;
         });
       },
   }
