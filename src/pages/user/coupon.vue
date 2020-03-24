@@ -232,7 +232,7 @@
             },
             // 获取我的优惠券列表
             async getMyCouponList(type) {
-                
+
                 await this.$get(`${myCouponList}`, {
                     page: this.page,
                     state: this.state
@@ -252,80 +252,80 @@
 		display: flex;
 		flex-wrap: wrap;
 	}
-	
+
 	page {
 		position: relative;
 		background-color: #f5f5f5;
 	}
-	
+
 	.hidden {
 		display: none !important;
 	}
-	
+
 	.place {
 		width: 100%;
-		height: 95 upx;
+		height: 95upx;
 	}
-	
+
 	.tabr {
 		background-color: #fff;
 		width: 100%;
-		height: 95 upx;
+		height: 95upx;
 		padding: 0 3%;
-		border-bottom: solid 1 upx #dedede;
+		border-bottom: solid 1upx #dedede;
 		position: fixed;
 		top: 0;
 		z-index: 10;
-		
+
 		view {
 			width: 33.3%;
-			height: 90 upx;
+			height: 90upx;
 			justify-content: center;
 			align-items: center;
-			font-size: 32 upx;
+			font-size: 32upx;
 			color: #999;
 		}
-		
+
 		.on {
 			color: $base-color;
 		}
-		
+
 		.border {
-			height: 4 upx;
+			height: 4upx;
 			background-color: $base-color;
 			transition: all .3s ease-out;
-			
+
 			&.used {
 				transform: translate3d(100%, 0, 0);
 			}
-			
+
 			&.invalid {
 				transform: translate3d(200%, 0, 0);
 			}
 		}
-		
+
 	}
-	
+
 	.list {
 		width: 100%;
 		display: block;
 		position: relative;
-		
+
 		.empty-invalid {
 			position: absolute;
-			right: 20 upx;
-			top: 10 upx;
+			right: 20upx;
+			top: 10upx;
 			font-size: $font-base;
 			color: $base-color;
-			
+
 			.icon {
 				font-size: $font-base;
 				color: $base-color;
-				margin-right: 8 upx;
+				margin-right: 8upx;
 			}
 		}
 	}
-	
+
 	@keyframes showValid {
 		0% {
 			transform: translateX(-100%);
@@ -334,7 +334,7 @@
 			transform: translateX(0);
 		}
 	}
-	
+
 	@keyframes showInvalid {
 		0% {
 			transform: translateX(0);
@@ -343,7 +343,7 @@
 			transform: translateX(-100%);
 		}
 	}
-	
+
 	.sub-list {
 		&.invalid {
 			position: absolute;
@@ -351,46 +351,46 @@
 			left: 100%;
 			display: none;
 		}
-		
+
 		&.showvalid {
 			display: flex;
 			animation: showValid 0.20s linear both;
 		}
-		
+
 		&.showinvalid {
 			display: flex;
 			animation: showInvalid 0.20s linear both;
 		}
-		
+
 		width: 100%;
-		padding-top: 10 upx;
-		
+		padding-top: 10upx;
+
 		.tis {
 			width: 100%;
-			height: 60 upx;
+			height: 60upx;
 			justify-content: center;
 			align-items: center;
-			font-size: 32 upx;
+			font-size: 32upx;
 		}
-		
+
 		.row {
 			width: 92%;
 			height: 24vw;
-			margin: 20 upx auto 10 upx auto;
-			border-radius: 8 upx;
+			margin: 20upx auto 10upx auto;
+			border-radius: 8upx;
 			// box-shadow: 0upx 0 10upx rgba(0,0,0,0.1);
 			align-items: center;
 			position: relative;
 			overflow: hidden;
 			z-index: 4;
 			border: 0;
-			
+
 			.menu {
 				.icon {
 					color: #fff;
-					font-size: 50 upx;
+					font-size: 50upx;
 				}
-				
+
 				position: absolute;
 				width: 28%;
 				height: 100%;
@@ -401,7 +401,7 @@
 				color: #fff;
 				z-index: 2;
 			}
-			
+
 			.carrier {
 				@keyframes showMenu {
 					0% {
@@ -419,15 +419,15 @@
 						transform: translateX(0);
 					}
 				}
-				
+
 				&.open {
 					animation: showMenu 0.25s linear both;
 				}
-				
+
 				&.close {
 					animation: closeMenu 0.15s linear both;
 				}
-				
+
 				background-color: #fff;
 				position: absolute;
 				width: 100%;
@@ -435,161 +435,161 @@
 				height: 100%;
 				z-index: 3;
 				flex-wrap: nowrap;
-				
+
 				.left {
 					width: 100%;
 					position: relative;
-					
+
 					.title {
 						padding-top: 3vw;
 						width: 90%;
 						margin: 0 5%;
-						font-size: 36 upx;
-						
+						font-size: 36upx;
+
 						.cell-icon {
 							display: inline-block;
-							height: 32 upx;
-							margin-top: 15 upx;
-							width: 32 upx;
-							font-size: 22 upx;
+							height: 32upx;
+							margin-top: 15upx;
+							width: 32upx;
+							font-size: 22upx;
 							color: #fff;
 							text-align: center;
-							line-height: 32 upx;
+							line-height: 32upx;
 							background: #f85e52;
-							border-radius: 4 upx;
-							margin-right: 12 upx;
-							
+							border-radius: 4upx;
+							margin-right: 12upx;
+
 							&.hb {
 								background: #ffaa0e;
 							}
-							
+
 							&.lpk {
 								background: #3ab54a;
 							}
-							
+
 						}
 					}
-					
+
 					.term {
 						width: 90%;
 						margin: 0 5%;
-						font-size: 26 upx;
+						font-size: 26upx;
 						color: #999;
 					}
-					
+
 					.usage {
 						width: 90%;
 						margin: 0 5%;
-						font-size: 26 upx;
+						font-size: 26upx;
 						color: $font-color-light;
 					}
-					
+
 					.gap-top, .gap-bottom {
 						position: absolute;
-						width: 20 upx;
-						height: 20 upx;
+						width: 20upx;
+						height: 20upx;
 						right: -10upx;
 						border-radius: 100%;
 						background-color: #f5f5f5;
 					}
-					
+
 					.gap-top {
 						top: -10upx;
 					}
-					
+
 					.gap-bottom {
 						bottom: -10upx;
 					}
-					
+
 					.overdue {
 						position: absolute;
-						right: 10 upx;
+						right: 10upx;
 						top: 0;
-						
+
 						.iconyiguoqi2 {
 							font-size: $font-lg + 40upx;
 							color: $base-color;
 						}
-						
+
 						.iconyishiyong {
 							font-size: $font-lg + 40upx;
 							color: $font-color-base;
 						}
 					}
 				}
-				
+
 				.right {
 					flex-shrink: 0;
 					width: 28%;
 					color: #fff;
 					background: linear-gradient(to right, rgba(250, 67, 106, 0.72), rgba(250, 67, 106, 0.64));
-					
+
 					&.invalid {
 						background: linear-gradient(to right, #aaa, #999);
-						
+
 						.use {
 							color: #aaa;
 						}
 					}
-					
+
 					justify-content: center;
-					
+
 					.ticket, .criteria {
 						width: 100%;
 					}
-					
+
 					.ticket {
 						padding-top: 1vw;
 						justify-content: center;
 						align-items: baseline;
 						height: 6vw;
-						
+
 						.num {
-							font-size: 42 upx;
+							font-size: 42upx;
 							font-weight: 600;
 						}
-						
+
 						.unit {
-							font-size: 24 upx;
+							font-size: 24upx;
 						}
 					}
-					
+
 					.criteria {
 						justify-content: center;
-						
-						font-size: 28 upx;
+
+						font-size: 28upx;
 					}
-					
+
 					.use {
 						width: 45%;
 						margin: 0 2.5%;
-						height: 40 upx;
+						height: 40upx;
 						justify-content: center;
 						align-items: center;
-						font-size: 24 upx;
+						font-size: 24upx;
 						background-color: #fff;
 						color: $base-color;
-						border-radius: 40 upx;
-						padding: 0 4 upx;
+						border-radius: 40upx;
+						padding: 0 4upx;
 					}
 				}
 			}
 		}
 	}
-	
+
 	.drawer {
 		.close {
 			.btn {
-				width: 360 upx;
-				height: 76 upx;
-				line-height: 76 upx;
+				width: 360upx;
+				height: 76upx;
+				line-height: 76upx;
 				border-radius: 50px;
-				margin-top: 70 upx;
+				margin-top: 70upx;
 				background: $uni-color-primary;
 				color: #fff;
 				font-size: $font-lg;
 				border: none;
-				
+
 				&:after {
 					border-radius: 100px;
 				}
