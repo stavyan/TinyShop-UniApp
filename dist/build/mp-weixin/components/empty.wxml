@@ -1,0 +1,1 @@
+<view class="empty"><view class="{{['empty-content',(!isRecommendShow)?'emptyOnly':'']}}"><view class="iconfont iconnodata-search _i"></view><text class="empty-content-info">{{info}}</text></view><block wx:if="{{isRecommendShow}}"><rf-recommend class="recommend" vue-id="1" list="{{list}}" bind:__l="__l"></rf-recommend></block></view>

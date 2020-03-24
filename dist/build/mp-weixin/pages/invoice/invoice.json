@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发票管理",
+  "usingComponents": {
+    "empty": "/components/empty",
+    "rf-load-more": "/components/rf-load-more/rf-load-more"
+  }
+}

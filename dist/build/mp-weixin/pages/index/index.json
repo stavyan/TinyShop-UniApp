@@ -1,0 +1,14 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "RF微商城",
+  "onReachBottomDistance": 50,
+  "usingComponents": {
+    "uni-grid": "/components/uni-grid/uni-grid",
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "uni-grid-item": "/components/uni-grid-item/uni-grid-item",
+    "rf-floor-index": "/components/rf-floor-index/rf-floor-index",
+    "rf-swipe-dot": "/components/rf-swipe-dot/rf-swipe-dot",
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar",
+    "rf-swiper-slide": "/components/rf-swiper-slide/rf-swiper-slide"
+  }
+}
