@@ -61,7 +61,8 @@
 	export default {
 		data() {
 			return {
-				currentStorageSize: 0
+				currentStorageSize: 0,
+				user: {},
 			};
 		},
 		onLoad () {
@@ -69,10 +70,11 @@
 		},
 		computed: {
 			...mapState(['userInfo']),
-			...mapMutations(['login']),
 		},
 		methods:{
+			...mapMutations(['login', 'logout']),
 			initData () {
+        this.user = uni.getStorageSync('user');
 				const _this = this;
 				uni.getStorageInfo({
 					success (res) {
@@ -80,18 +82,21 @@
 					}
 				})
 			},
-			...mapMutations(['logout']),
 			navTo(url){
 				if (url === '清除缓存') {
 					uni.showModal({
 				    content: '确定要清除缓存吗',
 				    success: (e)=>{
 				    	if(e.confirm){
-                this.$api.msg('清除缓存成功')
 				    		this.currentStorageSize = 0;
-				    		const userInfo = uni.getStorageSync('userInfo');
 				    		uni.clearStorageSync();
-                this.login(userInfo);
+                this.$api.msg('清除缓存成功');
+                setTimeout(() => {
+                  this.login(this.user);
+                  uni.reLaunch({
+                      url: '/pages/user/user'
+                  });
+                }, 1.5 * 1000);
 				    	}
 				    }
 					});
