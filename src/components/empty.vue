@@ -48,6 +48,7 @@
 	.empty {
 		background-color: $page-color-bg;
 		.empty-content {
+			width: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
