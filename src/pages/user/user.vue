@@ -97,7 +97,7 @@
 				<list-cell icon="iconshezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
 			</view>
 		</view>
-		
+
     <!--页面加载动画-->
     <rf-loading v-if="loading"></rf-loading>
 	</view>
@@ -209,17 +209,7 @@
 			        uni.removeTabBarBadge({index: 2});
 			      }
 			    } else {
-		      	await this.$get(`${cartItemCount}`).then(r => {
-				      if (r.data == 0) {
-				        uni.removeTabBarBadge({index: 2});
-					    } else {
-						    uni.setStorageSync('cartNum', r.data);
-						    uni.setTabBarBadge({
-							    index: 2,
-							    text: r.data,
-						    });
-				      }
-				    });
+		        uni.removeTabBarBadge({index: 2});
 		      }
 				} else {
 			    this.loading = false;
@@ -244,6 +234,17 @@
 						this.orderSectionList[i].num = orderSynthesizeNumArr[i].toString();
 					}
 					this.getFootPrintList();
+	        this.$get(`${cartItemCount}`).then(r => {
+				      if (r.data == 0) {
+				        uni.removeTabBarBadge({index: 2});
+					    } else {
+						    uni.setStorageSync('cartNum', r.data);
+						    uni.setTabBarBadge({
+							    index: 2,
+							    text: r.data,
+						    });
+				      }
+				    });
           uni.setStorage({
               key: 'userInfo',
               data: r.data
@@ -441,8 +442,10 @@
 			}
 			.tj-sction{
 				@extend %section;
+				display: flex;
 				.tj-item{
 					@extend %flex-center;
+					flex: 1;
 					flex-direction: column;
 					height: 140upx;
 					font-size: $font-sm;

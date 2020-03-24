@@ -131,7 +131,7 @@ export default {
       }
     },
     async getIntegralListList () {
-        
+
         const params = {};
         params.page = this.page;
         await this.$get(`${creditsLogList}`, {
@@ -145,6 +145,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+  page {
+    background-color: $page-color-bg;
+  }
   .integral {
     .header {
       background-image: url('../../static/integralbg.jpg');
