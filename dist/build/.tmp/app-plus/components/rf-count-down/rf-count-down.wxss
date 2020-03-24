@@ -1,0 +1,35 @@
+
+@charset "UTF-8";
+.uni-countdown {
+	padding: 2rpx 0;
+	display: -webkit-inline-box;
+	display: -webkit-inline-flex;
+	display: inline-flex;
+	-webkit-flex-wrap: nowrap;
+	        flex-wrap: nowrap;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center
+}
+.uni-countdown__splitor {
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	line-height: 44rpx;
+	padding: 0 5rpx;
+	font-size: 28rpx
+}
+.uni-countdown__number {
+	line-height: 44rpx;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	height: 44rpx;
+	border-radius: 6rpx;
+	margin: 0 5rpx;
+	font-size: 28rpx;
+	border: 1px solid #000;
+	font-size: 24rpx;
+	padding: 0 10rpx
+}
+

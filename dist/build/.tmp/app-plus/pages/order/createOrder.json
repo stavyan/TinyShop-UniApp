@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "创建订单",
+  "usingComponents": {
+    "rf-image": "/components/rf-image/rf-image",
+    "mpvue-picker": "/components/mpvue-picker/mpvuePicker",
+    "empty": "/components/empty"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "black",
+  "titleNView": false,
+  "softinputNavBar": "none",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading"
+  }
+}

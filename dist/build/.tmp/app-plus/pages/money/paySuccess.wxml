@@ -1,0 +1,1 @@
+<view class="content"><view class="iconfont success-icon iconxuanzhong2 _i"></view><text class="tit">支付成功</text><view class="btn-group"><navigator class="mix-btn" url="/pages/order/order?state=1" open-type="redirect">查看订单</navigator><navigator class="mix-btn hollow" url="/pages/index/index" open-type="switchTab">返回首页</navigator></view></view>

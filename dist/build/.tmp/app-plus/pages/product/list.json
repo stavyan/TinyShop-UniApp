@@ -1,0 +1,20 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "商品列表",
+  "onReachBottomDistance": 50,
+  "bounce": "none",
+  "titleNView": false,
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar",
+    "empty": "/components/empty",
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "rf-recommend": "/components/rf-recommend/rf-recommend"
+  }
+}
