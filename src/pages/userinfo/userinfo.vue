@@ -89,6 +89,12 @@
 				<button class="confirm-btn" formType="submit">修改资料</button>
 			</form>
 		</view>
+		
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
+		
+    <!--进度条加载-->
+		<rf-load-progress :height="CustomBar" :progress="loadProgress"></rf-load-progress>
 	</view>
 </template>
 
@@ -108,6 +114,8 @@
 		components: { avatar },
 		data() {
 			return {
+				loadProgress: 0,
+				CustomBar: this.CustomBar,
 				profileInfo: {},
 				avatar: null,
 				genders: [
@@ -124,11 +132,11 @@
 						name: '女'
 					}],
 				date: moment().format('YYYY-MM-DD'),
-				token: null
+				token: null,
+				loading: true
 			};
 		},
 		onLoad () {
-			console.log(this.date)
 			this.initData()
 		},
 		methods: {
@@ -190,10 +198,12 @@
 			},
 			// 获取用户信息
 			async getMemberInfo () {
-				
 				await this.$get(memberInfo).then(r => {
+			    this.loading = false;
 					this.profileInfo = r.data;
 					this.date = this.profileInfo.birthday;
+				}).catch(() => {
+			    this.loading = false;
 				})
 			},
 			// 更新用户信息
@@ -211,23 +221,33 @@
 			},
 			// 更新用户信息
 			async handleUpdateInfo (formData) {
+				this.loadProgress = this.loadProgress + 6;
+		    const timer = setInterval(() => {
+					this.loadProgress = this.loadProgress + 6;
+		    }, 50);
 				await this.$put(`${memberUpdate}?id=${this.profileInfo.id}`, {
 					...formData,
 					birthday: this.date
 				}).then(() =>{
+				    clearInterval(timer);
+						this.loadProgress = 0;
 				    this.$api.msg('恭喜您, 资料修改成功!');
-				    uni.switchTab({
-					    url: '/pages/user/user'
-				    })
+				    setTimeout(() => {
+					    uni.switchTab({
+						    url: '/pages/user/user'
+					    })
+				    }, 1 * 1000);
 				});
 			}
 		}
 	}
 </script>
 
-<style lang="scss" scop>
+<style lang="scss" scoped>
+	page {
+		background-color: $page-color-bg;
+	}
 	.userinfo{
-		background: #fff;
 		.user-section{
 			display:flex;
 			align-items:center;

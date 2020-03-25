@@ -74,7 +74,7 @@
 										 :src="item.product.picture"
 										 mode="aspectFill">
 							</image>
-							<text class="h-item-text">{{ item.product.name }}</text>
+							<text class="in1line">{{ item.product.name }}</text>
 						</view>
 					</scroll-view>
 					<view class="no-foot-print" v-else-if="footList.length === 0" @tap="navTo('/pages/product/list')">
@@ -519,14 +519,6 @@
 						.h-item-img {
 							width: 100%;
 							height: 100%;
-						}
-						.h-item-text {
-							display: -webkit-box !important;
-							overflow: hidden;
-							text-overflow: ellipsis;
-							word-break: break-all;
-							-webkit-box-orient: vertical !important;
-							-webkit-line-clamp: 1;
 						}
 					}
 					image{

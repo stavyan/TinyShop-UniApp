@@ -16,6 +16,7 @@ import '@/common/css/uni.scss';
 // 全局组件
 import rfImage from '@/components/rf-image/rf-image';
 import rfLoading from '@/components/rf-loading/rf-loading';
+import rfLoadProgress from '@/components/rf-load-progress/rf-load-progress';
 
 // 封装msg方法
 const msg = (title, duration = 1500, mask = false, icon = 'none') => {
@@ -51,6 +52,7 @@ Vue.prototype.$del = http.delete;
 
 Vue.component('rfImage', rfImage);
 Vue.component('rfLoading', rfLoading);
+Vue.component('rfLoadProgress', rfLoadProgress);
 
 App.mpType = 'app';
 

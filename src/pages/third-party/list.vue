@@ -1,6 +1,6 @@
 <template>
 	<view class="content b-t">
-		<view v-if="thirdPartyAuthList.length !== 0">
+		<view>
 			<view class="list b-b" v-for="(item, index) in thirdPartyAuthList" :key="index">
 				<view class="wrapper">
 					<view class="address-box">
@@ -12,9 +12,11 @@
 				</view>
 				<text class="unbind" @tap.stop="unBind(item.id)">解除绑定</text>
 			</view>
-			<rf-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" v-if="thirdPartyAuthList.length > 0" />
 		</view>
-		<empty :info="'您暂未授权第三方平台~'" v-else></empty>
+		<empty :info="'您暂未授权第三方平台~'" v-if="thirdPartyAuthList.length === 0 && !loading"></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -34,7 +36,8 @@
 				source: 0,
 				page: 1,
 				loadingType: 'more',
-				thirdPartyAuthList: []
+				thirdPartyAuthList: [],
+				loading: true
 			}
 		},
 		filters: {
@@ -64,6 +67,7 @@
 		onPullDownRefresh(){
 			this.page = 1;
 			this.thirdPartyAuthList = [];
+			this.loading = true;
 			this.getThirdPartyAuthList('refresh');
 		},
 		//加载更多
@@ -94,15 +98,18 @@
 			 *@date 2019/11/18 09:58:15
 			 */
 			async getThirdPartyAuthList (type) {
-				
 				await this.$get(`${thirdPartyAuthList}`).then(r=>{
+					this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-						this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
-						this.thirdPartyAuthList = [ ...this.thirdPartyAuthList, ...r.data ];
-				}).catch(err => {
-					console.log(err)
+					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
+					this.thirdPartyAuthList = [ ...this.thirdPartyAuthList, ...r.data ];
+				}).catch(() => {
+					this.loading = false;
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 				})
 			},
 			/**
@@ -127,7 +134,7 @@
 
 <style lang='scss'>
 	page{
-		padding-bottom: 120upx;
+		background-color: $page-color-bg;
 	}
 	.content{
 		position: relative;

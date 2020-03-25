@@ -50,6 +50,9 @@
 		<view class="list-cell log-out-btn" @tap="toLogout">
 			<text class="cell-tit">退出登录</text>
 		</view>
+
+    <!--进度条加载-->
+		<rf-load-progress :height="CustomBar" :progress="loadProgress"></rf-load-progress>
 	</view>
 </template>
 
@@ -61,6 +64,8 @@
 	export default {
 		data() {
 			return {
+				loadProgress: 0,
+				CustomBar: this.CustomBar,
 				currentStorageSize: 0,
 				user: {},
 			};
@@ -97,6 +102,7 @@
                       url: '/pages/user/user'
                   });
                 }, 1.5 * 1000);
+				    		this.LoadProgress();
 				    	}
 				    }
 					});
@@ -106,6 +112,18 @@
 					uni.navigateTo({
 						url,
 					})
+				}
+			},
+			LoadProgress() {
+				this.loadProgress = this.loadProgress + 6;
+				if (this.loadProgress < 100) {
+					setTimeout(() => {
+						this.LoadProgress();
+					}, 100)
+				} else {
+					this.loadProgress = 0;
+          this.login(this.user);
+          this.$api.msg('清除缓存成功')
 				}
 			},
 			//退出登录

@@ -7,7 +7,7 @@
     </view>
 		<view class="rf-product-list">
 			<view
-				v-for="(item, index) in (guessYouLikeList.length > 0 ? guessYouLikeList : [0, 0, 0, 0])" :key="index"
+				v-for="(item, index) in (guessYouLikeList.length > 0 ? guessYouLikeList : [0, 0, 0, 0, 0, 0])" :key="index"
 				class="product-item"
 				@tap="navTo(item === 0 ? '' : item.id)"
 			>

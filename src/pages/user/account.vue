@@ -70,8 +70,12 @@
           <div class="pictrue"><image src="/static/money.png" /></div>
         </view>
       </view>
+    
 	  <!--引导跳转组件-->
     <!--<Home></Home>-->
+    
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
 
@@ -88,21 +92,18 @@
     components: {Home},
     data() {
       return {
-        userInfo: {}
+        userInfo: {},
+        loading: true
       }
     },
     onLoad() {
       this.initData();
     },
     methods: {
-      /**
-       *@des 初始化数据
-       *@author stav stavyan@qq.com
-       *@blog https://stavtop.club
-       *@date 2019/11/18 09:57:30
-       */
+      // 初始化数据
       initData() {
-         this.userInfo = uni.getStorageSync('userInfo') || undefined;
+        this.userInfo = uni.getStorageSync('userInfo') || undefined;
+        this.loading = false;
       },
       navTo(url){
         uni.navigateTo({

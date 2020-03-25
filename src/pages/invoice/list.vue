@@ -22,9 +22,11 @@
 
 				</view>
 			</view>
-			<rf-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" v-if="invoiceList.length > 0" />
 		</view>
-		<empty :info="'您还未购买任何商品~'" v-else></empty>
+		<empty :info="'您还未购买任何商品~'" v-if="invoiceList.length === 0 && !loading" ></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -44,7 +46,8 @@
 				source: 0,
 				page: 1,
 				loadingType: 'more',
-				invoiceList: []
+				invoiceList: [],
+				loading: true,
 			}
 		},
 		filters: {
@@ -84,17 +87,20 @@
 			 *@date 2019/11/18 09:58:15
 			 */
 			async getInvoiceList (type) {
-				
 				await this.$get(`${orderInvoiceList}`,{
 					page: this.page
 				}).then(r=>{
+			    this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
 					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
 					this.invoiceList = [...this.invoiceList, ...r.data];
-				}).catch(err => {
-					console.log(err)
+				}).catch(() => {
+			    this.loading = false;
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 				})
 			},
 			navTo(id){
@@ -107,9 +113,6 @@
 </script>
 
 <style lang='scss'>
-	page{
-		padding-bottom: 20upx;
-	}
 	.content{
 		position: relative;
 	}

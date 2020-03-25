@@ -1137,7 +1137,7 @@ button.cuIcon.lg {
 	height: 24upx;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	border: solid 4upx transparent;
+	border: solid 4upx #fa436a;
 	border-top-color: inherit;
 	border-left-color: inherit;
 	border-radius: 50%;

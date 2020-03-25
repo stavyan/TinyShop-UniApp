@@ -1,13 +1,16 @@
 <template>
   <view>
 	  <!--顶部账单类型 全部/充值/消费-->
-		<view class="tab" :style="{top:headerTop}">
-			<view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">全部</view>
-			<view :class="{on:typeClass=='used'}"  @tap="switchType('used', 2)">充值</view>
-			<view :class="{on:typeClass=='invalid'}"  @tap="switchType('invalid', 3)">消费</view>
-			<view class="border" :class="typeClass"></view>
+		<view class="navbar">
+			<view
+				v-for="(item, index) in billTypeList" :key="index"
+				class="nav-item"
+				:class="{current: tabCurrentIndex === index}"
+				@tap="tabClick(index, item.state)"
+			>
+				{{item.text}}
+			</view>
 		</view>
-		<view class="place"></view>
 	  <!--账单明细列表-->
     <view class="wrapper">
       <view class="list b-b" v-for="(item, index) in integralList" :key="index">
@@ -21,9 +24,11 @@
         </view>
         <text class="change-num" :class="parseFloat(item.num) >= 0 ? 'change-num-add' : 'change-num-reduce'">{{item.num | numFilter }}</text>
       </view>
-      <rf-load-more class="load-more" :status="loadingType"></rf-load-more>
+      <rf-load-more class="load-more" :status="loadingType" v-if="integralList.length > 0"></rf-load-more>
     </view>
-		<empty :info="'暂无账单记录'" v-if="integralList.length === 0"></empty>
+		<empty :info="'暂无账单记录'" v-if="integralList.length === 0 && !loading"></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
 <script>
@@ -45,9 +50,25 @@ export default {
   },
   data () {
     return {
+      loading: true,
       headerTop: 0,
 			typeClass:'valid',
 			state: 1,
+			tabCurrentIndex: 0,
+	    billTypeList: [
+					{
+						state: 1,
+						text: '全部'
+					},
+					{
+						state: 2,
+						text: '充值'
+					},
+					{
+						state: 3,
+						text: '消费'
+					},
+	    ],
       integralList: [],
       loadingType: 'more',
       page: 1,
@@ -87,30 +108,24 @@ export default {
 		// #endif
 	},
   methods: {
-    // 顶部账单类型切换
-		switchType(type, state){
-			if(this.typeClass==type){
-				return ;
-			}
-			uni.pageScrollTo({
-				scrollTop:0,
-				duration:0
-			})
-			this.typeClass = type;
-			this.state = state;
-			this.page = 1;
-			this.integralList = [];
-			this.getIntegralListList();
-		},
+			//顶部tab点击
+			tabClick(index, state){
+				this.page = 1;
+				this.integralList.length = 0;
+				this.loading = true;
+				this.tabCurrentIndex = index;
+				this.state = state;
+				this.getIntegralListList();
+			},
 	  // 数据初始化
 		initData (options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			this.state = parseInt(options.state, 10);
       if (this.state === 2) {
-        this.switchType('used', 2);
+        this.tabClick(1, 2);
         return;
       } else if (this.state === 3) {
-        this.switchType('invalid', 3);
+        this.tabClick(2, 3);
         return;
       }
 			if (this.token) {
@@ -119,7 +134,6 @@ export default {
 		},
 	  // 获取积分
     async getIntegralListList (type) {
-			
 			const params = {};
       params.credit_type = 1
 			if (this.state === 2) {
@@ -131,58 +145,29 @@ export default {
 			await this.$get(`${creditsLogList}`, {
 				...params
 			}).then(r=>{
+			  this.loading = false;
 				if (type === 'refresh') {
 					uni.stopPullDownRefresh();
 				}
 				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 				this.integralList = [ ...this.integralList, ...r.data ]
+			}).catch(() => {
+			  this.loading = false;
+				if (type === 'refresh') {
+					uni.stopPullDownRefresh();
+				}
 			});
 		},
   }
 };
 </script>
 <style scoped lang="scss">
-	view{
-		display: flex;
-		flex-wrap: wrap;
-	}
-	page{position: relative;background-color: #f5f5f5;}
-	.tab{
-		background-color: #fff;
-		width: 100%;
-		height: 95upx;
-		padding: 0 3%;
-		border-bottom: solid 1upx #dedede;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		view{
-			width: 33.3%;
-			height: 90upx;
-			justify-content: center;
-			align-items: center;
-			font-size: 32upx;
-			color: #999;
-		}
-		.on{
-			color: $base-color;
-		}
-		.border{
-			height: 4upx;
-			background-color: $base-color;
-			transition: all .3s ease-out;
-			&.used{
-				transform: translate3d(100%,0,0);
-			}
-			&.invalid{
-				transform: translate3d(200%,0,0);
-			}
-		}
-
-	}
-	.place{
-		width: 100%;
-		height: 95upx;
+	/*view{*/
+	/*	display: flex;*/
+	/*	flex-wrap: wrap;*/
+	/*}*/
+	page{
+		background-color: $page-color-bg;
 	}
   .wrapper {
     width: 100%;

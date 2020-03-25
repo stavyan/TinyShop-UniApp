@@ -74,6 +74,12 @@
       }
     },
     {
+      "path": "pages/product/chat",
+      "style": {
+        "navigationBarTitleText": "客服"
+      }
+    },
+    {
       "path": "pages/about/about",
       "style": {
         "navigationBarTitleText": "关于RF商城"

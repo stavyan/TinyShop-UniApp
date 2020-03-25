@@ -1,5 +1,5 @@
 <template>
-	<view class="coupon-detail">
+	<view class="coupon-detail" :style="{backgroundColor: couponList.length === 0 ? '#fff' : '' }">
 		<view class="list">
 			<!-- 优惠券列表 -->
 			<view class="sub-list valid" :style="{marginTop: state === 3 ? '40upx' : 0}">
@@ -34,20 +34,21 @@
 							<view class="criteria">
 								满{{row.at_least}}使用
 							</view>
-							<view class="use view" @tap="show(row)" v-show="parseInt(row.range_type, 10) === 2">
-								商品
-							</view>
-							<view class="use" @tap="getCoupon(row)">
-								领取
-							</view>
+							<view class="btn-group">
+								<view class="use view" @tap="show(row)" v-show="parseInt(row.range_type, 10) === 2">
+									商品
+								</view>
+								<view class="use" @tap="getCoupon(row)">
+									领取
+								</view>
 <!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @tap="show(row)">-->
 <!--								去查看-->
 <!--							</view>-->
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<empty :info="'暂无优惠券'" v-if="couponList.length === 0"></empty>
 		</view>
 		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
 				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
@@ -57,24 +58,28 @@
 					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
 				</view>
 		</uni-drawer>
+		
+		<empty :info="'暂无优惠券'" v-if="couponList.length === 0 && !loading"></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
 <script>
 	/**
- * @des 优惠券管理
+ * @des 优惠券详情
  *
  * @author stav stavyan@qq.com
  * @date 2019-12-09 10:13
  * @copyright 2019
  */
-import {couponClear, couponDetail, couponReceive} from "@/api/userInfo";
-import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
+import { couponDetail, couponReceive} from "@/api/userInfo";
+import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 import empty from "@/components/empty";
 import moment from '@/utils/moment';
-import uniDrawer from '@/components/uni-drawer/uni-drawer.vue'
+import uniDrawer from '@/components/uni-drawer/uni-drawer'
 import uniList from '@/components/uni-list/uni-list.vue'
-import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
+import uniListItem from '@/components/uni-list-item/uni-list-item';
 export default {
 	components: {
 		rfLoadMore,
@@ -97,7 +102,8 @@ export default {
 			token: null,
 			page: 1,
 			showRight: false,
-			currentCoupon: {}
+			currentCoupon: {},
+			loading: true
 		}
 	},
 	filters: {
@@ -123,12 +129,7 @@ export default {
 		closeDrawer() {
 			this.showRight = false
 		},
-		/**
-		 *@des 初始化数据
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/18 09:57:30
-		 */
+		// 初始化数据
 		initData (options) {
 			this.token = uni.getStorageSync('accessToken') || undefined;
 			if (this.token) {
@@ -162,13 +163,7 @@ export default {
 				console.log(err)
 			})
 		},
-		/**
-		 *@des 统一跳转接口
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/21 15:41:30
-		 *@param url 跳转地址
-		 */
+		// 统一跳转接口
 		navTo(url, type){
 			if (type) {
 				uni.switchTab({url});
@@ -182,70 +177,27 @@ export default {
 				})
 			}
 		},
-		/**
-		 *@des 获取我的收货地址列表
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/20 18:16:58
-		 */
+		// 获取我的收货地址列表
 		async getMyCouponDetail (id) {
-			
 			await this.$get(`${couponDetail}`, {
 				id,
 			}).then(r=>{
+		    this.loading = false;
 				this.couponList.push(r.data);
-			}).catch(err => {
-				console.log(err)
+			}).catch(() => {
+		    this.loading = false;
 			})
 		},
 	}
 }
 </script>
 <style lang="scss">
-	view{
-		display: flex;
-		flex-wrap: wrap;
-
-	}
-	page{position: relative;background-color: #f5f5f5;}
 	.list{
+		display: flex;
 		width: 100%;
-		display: block;
 		position: relative;
-		.empty-invalid {
-			position: absolute;
-			right: 20upx;
-			top: 10upx;
-			font-size: $font-base;
-			color: $base-color;
-			.icon {
-				font-size: $font-base;
-				color: $base-color;
-				margin-right: 8upx;
-			}
-		}
-	}
-	@keyframes showValid {
-		0% {transform: translateX(-100%);}100% {transform: translateX(0);}
-	}
-	@keyframes showInvalid {
-		0% {transform: translateX(0);}100% {transform: translateX(-100%);}
 	}
 	.sub-list{
-		&.invalid{
-			position: absolute;
-			top: 0;
-			left:100%;
-			display: none;
-		}
-		&.showvalid{
-			display: flex;
-			animation: showValid 0.20s linear both;
-		}
-		&.showinvalid{
-			display: flex;
-			animation: showInvalid 0.20s linear both;
-		}
 		width: 100%;
 		padding-top: 10upx;
 		.tis{
@@ -258,7 +210,7 @@ export default {
 		.row{
 			width: 92%;
 			height: 24vw;
-			margin: 20upx auto 10upx auto;
+			margin: 10upx auto;
 			border-radius: 8upx;
 			// box-shadow: 0upx 0 10upx rgba(0,0,0,0.1);
 			align-items: center;
@@ -282,27 +234,15 @@ export default {
 				z-index: 2;
 			}
 			.carrier{
-				@keyframes showMenu {
-					0% {transform: translateX(0);}100% {transform: translateX(-28%);}
-				}
-				@keyframes closeMenu {
-					0% {transform: translateX(-28%);}100% {transform: translateX(0);}
-				}
-				&.open{
-					animation: showMenu 0.25s linear both;
-				}
-				&.close{
-					animation: closeMenu 0.15s linear both;
-				}
 				background-color: #fff;
 				position: absolute;
 				width: 100%;
 				padding: 0 0;
 				height: 100%;
 				z-index: 3;
-				flex-wrap: nowrap;
+				display: flex;
 				.left{
-					width: 100%;
+					flex: 1;
 					.title{
 						padding-top: 3vw;
 						width: 90%;
@@ -374,47 +314,41 @@ export default {
 					}
 				}
 				.right{
-					flex-shrink: 0;
 					width: 28%;
 					color: #fff;
+					text-align: center;
 					background:linear-gradient(to right, rgba(250,67,106, 0.72), rgba(250,67,106, 0.64));
-					&.invalid{
-						background:linear-gradient(to right,#aaa,#999);
-						.use{
-							color: #aaa;
-						}
-					}
-					justify-content: center;
 					.ticket,.criteria{width: 100%;}
 					.ticket{
-						padding-top: 1vw;
-						justify-content: center;
-						align-items: baseline;
-						height: 6vw;
+						padding-top: 20upx;
 						.num{
-							font-size: 42upx;
+							font-size: $font-lg + 12upx;
 							font-weight: 600;
+							line-height: 1.2;
 						}
 						.unit{
 							font-size: 24upx;
 						}
 					}
 					.criteria{
-						justify-content: center;
-
-						font-size: 28upx;
+						font-size: $font-base;
 					}
-					.use{
-						width: 45%;
-						margin: 0 2.5%;
-						height: 40upx;
-						justify-content: center;
+					.btn-group {
+						display: flex;
+						justify-content: space-between;
 						align-items: center;
-						font-size: 24upx;
-						background-color: #fff;
-						color: $base-color;
-						border-radius: 40upx;
-						padding: 0 4upx;
+						.use{
+							flex: 1;
+							margin: 0 6upx;
+							height: 40upx;
+							justify-content: center;
+							align-items: center;
+							font-size: 24upx;
+							background-color: #fff;
+							color: $base-color;
+							border-radius: 40upx;
+							padding: 0 4upx;
+						}
 					}
 				}
 			}

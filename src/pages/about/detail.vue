@@ -1,26 +1,30 @@
 <template>
 	<view class="about">
-		<view class="shop-info" v-if="title === '商城介绍'">
-			<rf-image :src="detail.cover || detail.web_logo"></rf-image>
-			<view v-if="detail.title"><text>商城名称: </text><text>{{ detail.title }}</text></view>
-			<view v-if="detail.address_name"><text>联系地址: </text><text>{{ detail.address_name }}</text></view>
-			<view v-if="detail.address_details"><text>详细地址: </text><text>{{ detail.address_details }}</text></view>
-			<view v-if="detail.mobile"><text>手机号码: </text><text>{{ detail.mobile }}</text></view>
-			<view v-if="detail.qq"><text>QQ: </text><text>{{ detail.qq }}</text></view>
+		<view>
+			<view class="shop-info" v-if="title === '商城介绍'">
+				<rf-image :src="detail.cover || detail.web_logo"></rf-image>
+				<view v-if="detail.title"><text>商城名称: </text><text>{{ detail.title }}</text></view>
+				<view v-if="detail.address_name"><text>联系地址: </text><text>{{ detail.address_name }}</text></view>
+				<view v-if="detail.address_details"><text>详细地址: </text><text>{{ detail.address_details }}</text></view>
+				<view v-if="detail.mobile"><text>手机号码: </text><text>{{ detail.mobile }}</text></view>
+				<view v-if="detail.qq"><text>QQ: </text><text>{{ detail.qq }}</text></view>
+			</view>
+			<view class="shop-info" v-if="title === '注册协议'">
+				<view v-if="detail.protocol_register"><text v-html="detail.protocol_register"></text></view>
+				<empty :info="`暂无${title}`" v-if="!detail.protocol_register"></empty>
+			</view>
+			<view class="shop-info" v-if="title === '隐私协议'">
+				<view v-if="detail.protocol_privacy"><text v-html="detail.protocol_privacy"></text></view>
+				<empty :info="`暂无${title}`" v-if="!detail.protocol_privacy"></empty>
+			</view>
+			<view class="shop-info" v-if="title === '充值协议'">
+				<view v-if="detail.protocol_recharge"><text v-html="detail.protocol_recharge"></text></view>
+				<empty :info="`暂无${title}`" v-if="!detail.protocol_recharge"></empty>
+			</view>
 		</view>
-		<view class="shop-info" v-if="title === '注册协议'">
-			<view v-if="detail.protocol_register"><text v-html="detail.protocol_register"></text></view>
-			<empty :info="`暂无${title}`" v-if="!detail.protocol_register"></empty>
-		</view>
-		<view class="shop-info" v-if="title === '隐私协议'">
-			<view v-if="detail.protocol_privacy"><text v-html="detail.protocol_privacy"></text></view>
-			<empty :info="`暂无${title}`" v-if="!detail.protocol_privacy"></empty>
-		</view>
-		<view class="shop-info" v-if="title === '充值协议'">
-			<view v-if="detail.protocol_recharge"><text v-html="detail.protocol_recharge"></text></view>
-			<empty :info="`暂无${title}`" v-if="!detail.protocol_recharge"></empty>
-		</view>
-		<empty :info="`暂无${title}`" v-if="detail.length === 0"></empty>
+		<empty :info="`暂无${title}`" v-if="!detail && !loading"></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -43,7 +47,8 @@ export default {
 	data() {
 		return {
 			detail: {},
-			title: null
+			title: null,
+			loading: true
 		}
 	},
 	onLoad(options) {
@@ -65,12 +70,13 @@ export default {
 		},
 		async getConfigList(field) {
 	    if (field.indexOf('protocol') !== -1) {
-				
 				await this.$get(`${configList}`, {
 					field,
 				}).then(r => {
+			    this.loading = false;
 					this.detail = r.data
 				}).catch(err => {
+			    this.loading = false;
 					console.log(err)
 				});
 	    } else {
@@ -81,8 +87,10 @@ export default {
 					id: userInfo.merchant_id,
 					field,
 				}).then(r => {
+			    this.loading = false;
 					this.detail = r.data
 				}).catch(err => {
+			    this.loading = false;
 					console.log(err)
 				});
 	    }
@@ -96,9 +104,9 @@ export default {
 		background-color: #f5f5f5;
 		.about {
 			.shop-info {
-				margin: 100upx 0;
 				text-align: center;
 				image {
+					margin-top: 100upx;
 					width: 240upx;
 					height: 240upx;
 					border-radius: 50%;

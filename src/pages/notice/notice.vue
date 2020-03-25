@@ -16,17 +16,27 @@
 				</view>
 			</view>
 		</view>
+		
+		<empty :info="'暂无公告信息'" v-if="announceList.length === 0 && !loading"></empty>
+
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
 <script>
 	import {notifyAnnounceIndex} from "@/api/basic";
 	import moment from '@/utils/moment';
-
+	import empty from "@/components/empty";
+	
 	export default {
+		components: {
+			empty,
+		},
 		data() {
 			return {
       	announceList: [],
+				loading: true
 			}
 		},
 		filters: {
@@ -46,8 +56,11 @@
 			// 获取通知列表
 			async getNotifyAnnounceIndex() {
 				await this.$get(`${notifyAnnounceIndex}`, {}).then(r => {
+			    this.loading = false;
 					this.announceList = r.data
-				})
+				}).catch(() => {
+			    this.loading = false;
+				});
 			},
 			navTo (url) {
 				uni.navigateTo({

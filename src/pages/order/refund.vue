@@ -1,13 +1,11 @@
 <template>
-	<view class="content">
+	<view class="refund" :style="{backgroundColor: orderList.length === 0 ? '#fff' : '' }">
 		<!--订单列表-->
 		<scroll-view
 			class="list-scroll-content"
 			scroll-y
 			@scrolltolower="getMoreOrderList"
 		>
-			<!-- 空白页 -->
-			<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>
 			<!-- 订单列表 -->
 			<view
 				v-for="(item,index) in orderList" :key="index"
@@ -61,8 +59,12 @@
 				  <button class="action-btn recom" v-show="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
         </view>
 			</view>
-			<rf-load-more :status="loadingType"></rf-load-more>
+			<rf-load-more :status="loadingType" v-if="orderList.length > 0"></rf-load-more>
 		</scroll-view>
+		
+		<empty :info="'快去商城逛逛吧'" v-if="orderList.length === 0 && !loading"></empty>
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -90,7 +92,8 @@
 			return {
 				loadingType: 'more',
 				orderList: [],
-				page: 1
+				page: 1,
+				loading: true
 			};
 		},
 		computed: {
@@ -266,11 +269,17 @@
 				await this.$get(`${orderList}`, {
 					...params
 				}).then(r => {
+			    this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
 					this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 					this.orderList = [ ...this.orderList, ...r.data ]
+				}).catch(() => {
+			    this.loading = false;
+					if (type === 'refresh') {
+						uni.stopPullDownRefresh();
+					}
 				});
 			},
 			//顶部tab点击
@@ -283,58 +292,16 @@
 </script>
 
 <style lang="scss">
-	page, .content{
-		background: $page-color-base;
-		height: 100%;
-	}
-
-	.swiper-box{
-		height: calc(100% - 40px);
-	}
 	.list-scroll-content{
 		height: 100%;
 	}
-
-	.navbar{
-		display: flex;
-		height: 40px;
-		padding: 0 5px;
-		background: #fff;
-		box-shadow: 0 1px 5px rgba(0,0,0,.06);
-		position: relative;
-		z-index: 10;
-		.nav-item{
-			flex: 1;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			font-size: 15px;
-			color: $font-color-dark;
-			position: relative;
-			&.current{
-				color: $base-color;
-				&:after{
-					content: '';
-					position: absolute;
-					left: 50%;
-					bottom: 0;
-					transform: translateX(-50%);
-					width: 44px;
-					height: 0;
-					border-bottom: 2px solid $base-color;
-				}
-			}
-		}
-	}
-
 	.uni-swiper-item{
 		height: auto;
 	}
 	.order-item{
 		display: flex;
 		flex-direction: column;
-		padding-left: 30upx;
+		padding: 0 30upx;
 		background: #fff;
 		margin-top: 16upx;
 		.i-top{

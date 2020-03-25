@@ -1,6 +1,6 @@
 <template>
 	<view class="collection">
-		<view v-if="collectionList.length > 0">
+		<view>
 			<rf-swipe-action>
 		    <rf-swipe-action-item
 			    :options="options"
@@ -24,9 +24,12 @@
 						</view>
 		    </rf-swipe-action-item>
 			</rf-swipe-action>
-			<rf-load-more :status="loadingType" />
+			<rf-load-more :status="loadingType" v-if="collectionList.length > 0" />
 		</view>
-		<empty :info="'快去收藏一些商品吧~'" v-else></empty>
+		<empty :info="'快去收藏一些商品吧~'"  v-if="collectionList.length === 0 && !loading"></empty>
+	
+		<!--加载动画-->
+		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
@@ -62,7 +65,8 @@ export default {
 			token: null,
 			options: [
 				{ text: '取消收藏', style: { backgroundColor: '#fa436a'}}
-			]
+			],
+			loading: true
 		};
 	},
 	filters: {
@@ -79,6 +83,7 @@ export default {
 	onPullDownRefresh(){
 		this.page = 1;
 		this.collectionList = [];
+		this.loading = true;
 		this.getCollectionList('refresh');
 	},
 	//加载更多
@@ -114,12 +119,18 @@ export default {
 			await this.$get(`${collectList}`, {
 				page: this.page
 			}).then(r => {
+		    this.loading = false;
 				if (type === 'refresh') {
 					uni.stopPullDownRefresh();
 				}
 				this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
 				this.collectionList = [ ...this.collectionList, ...r.data ];
-			})
+			}).catch(() => {
+		    this.loading = false;
+				if (type === 'refresh') {
+					uni.stopPullDownRefresh();
+				}
+			});
 		},
 		onImageError (index) {
 			this.collectionList[index].product.picture = this.errorImg;
@@ -134,6 +145,9 @@ export default {
 </script>
 
 <style lang='scss'>
+page {
+	background-color: $page-color-bg;
+}
 .uni-media-list-logo {
 	width: 240upx;
 	height: 180upx;
