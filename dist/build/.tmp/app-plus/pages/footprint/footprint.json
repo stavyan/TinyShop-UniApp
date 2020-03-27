@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "我的足迹",
   "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading",
     "rf-load-more": "/components/rf-load-more/rf-load-more",
     "rf-calendar": "/components/rf-calendar/rf-calendar",
     "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",

@@ -30,7 +30,7 @@
 			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @tap="confirm">提交</button>
-		
+
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
 	</view>
@@ -104,6 +104,7 @@
 				let city_name = null;
 				let area_name = null;
 				await this.$get(`${provinceList}`).then(async r => {
+            this.loading = false;
 						this.multiArray[0] = r.data;
 						if (this.addressData.province_id) {
 							r.data.forEach((item, index) => {
@@ -161,6 +162,7 @@
 							console.log(err)
 						})
 				}).catch(err => {
+          this.loading = false;
 					console.log(err)
 				})
 			},
@@ -181,7 +183,7 @@
 							case this.multiIndex[0]:
 								province_id = this.multiArray[0][e.detail.value].id;
 								province_name = this.multiArray[0][e.detail.value].title;
-								
+
 								await this.$get(`${provinceList}`, {
 									pid: this.multiArray[0][e.detail.value].id
 								}).then(async r => {
@@ -190,7 +192,7 @@
 										city_name = this.multiArray[1][0].title;
 										provinceIndex = e.detail.value;
 										this.multiIndex = [provinceIndex, 0, 0];
-										
+
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.column].id
 										}).then(r => {
@@ -217,7 +219,7 @@
 										city_name = this.multiArray[1][e.detail.value].title;
 										cityIndex = e.detail.value;
 										this.multiIndex = [this.multiIndex[0], cityIndex, 0];
-										
+
 										await this.$get(`${provinceList}`, {
 											pid: this.multiArray[1][e.detail.value].id
 										}).then(r => {

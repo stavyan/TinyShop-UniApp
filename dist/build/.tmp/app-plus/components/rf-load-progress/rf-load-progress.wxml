@@ -1,0 +1,1 @@
+<view class="{{['load-progress data-v-b4cdb16a',progress!=0?'show':'hide']}}" style="{{'top:'+(height+'px')+';'}}"><view class="load-progress-bar bg-base-color data-v-b4cdb16a" style="{{'transform:'+('translate3d(-'+(100-progress)+'%, 0px, 0px)')+';'}}"></view><view class="load-progress-spinner text-base-color data-v-b4cdb16a"></view></view>

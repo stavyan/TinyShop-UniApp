@@ -4,7 +4,6 @@
     "type": "transparent"
   },
   "usingComponents": {
-    "rf-image": "/components/rf-image/rf-image",
     "rf-loading": "/components/rf-loading/rf-loading",
     "rf-badge": "/components/rf-badge/rf-badge",
     "share": "/components/share",

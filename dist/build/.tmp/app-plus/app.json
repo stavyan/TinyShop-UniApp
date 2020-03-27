@@ -6,6 +6,7 @@
     "pages/category/category",
     "pages/product/list",
     "pages/product/product",
+    "pages/product/chat",
     "pages/about/about",
     "pages/about/detail",
     "pages/set/set",
@@ -96,6 +97,7 @@
   "compilerVersion": "2.4.2",
   "usingComponents": {
     "rf-image": "/components/rf-image/rf-image",
-    "rf-loading": "/components/rf-loading/rf-loading"
+    "rf-loading": "/components/rf-loading/rf-loading",
+    "rf-load-progress": "/components/rf-load-progress/rf-load-progress"
   }
 }

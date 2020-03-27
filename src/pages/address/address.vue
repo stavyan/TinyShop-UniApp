@@ -13,11 +13,11 @@
 			</view>
 			<i class="iconfont iconbianji" @tap.stop="addAddress('edit', item)"></i>
 		</view>
+		<rf-load-more v-if="addressList.length > 0" :status="loadingType"/>
 		<text v-if="addressList.length > 0"
 		      style="display:block;padding: 16upx 30upx 10upx;lihe-height: 1.6;color: #fa436a;font-size: 24upx;">
 			提示：长按可删除当前收货地址。最多只能存在一个默认地址。
 		</text>
-		<rf-load-more v-if="addressList.length > 0" :status="loadingType"/>
 		<button class="add-btn" @tap="addAddress('add')">新增地址</button>
 		<empty :info="`暂无收货地址，请添加地址`" v-if="addressList.length === 0 && !loading"></empty>
 		<!--加载动画-->
@@ -146,11 +146,11 @@
 	page {
 		padding-bottom: 120upx;
 	}
-	
+
 	.content {
 		position: relative;
 	}
-	
+
 	.list {
 		display: flex;
 		align-items: center;
@@ -158,17 +158,17 @@
 		background: #fff;
 		position: relative;
 	}
-	
+
 	.wrapper {
 		display: flex;
 		flex-direction: column;
 		flex: 1;
 	}
-	
+
 	.address-box {
 		display: flex;
 		align-items: center;
-		
+
 		.tag {
 			font-size: 24upx;
 			color: $base-color;
@@ -179,23 +179,23 @@
 			padding: 4upx 10upx;
 			line-height: 1;
 		}
-		
+
 		.address {
 			font-size: 30upx;
 			color: $font-color-dark;
 		}
 	}
-	
+
 	.u-box {
 		font-size: 28upx;
 		color: $font-color-light;
 		margin-top: 16upx;
-		
+
 		.name {
 			margin-right: 30upx;
 		}
 	}
-	
+
 	.iconfont {
 		display: flex;
 		align-items: center;
@@ -204,7 +204,7 @@
 		color: $font-color-light;
 		padding-left: 30upx;
 	}
-	
+
 	.add-btn {
 		position: fixed;
 		left: 30upx;

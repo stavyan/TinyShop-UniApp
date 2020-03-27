@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "修改资料",
   "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading",
+    "rf-load-progress": "/components/rf-load-progress/rf-load-progress",
     "avatar": "/components/rf-avatar/rf-avatar"
   }
 }

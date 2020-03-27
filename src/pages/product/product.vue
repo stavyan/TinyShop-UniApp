@@ -5,11 +5,11 @@
 				<swiper indicator-dots circular=true duration="400">
 				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
 					<view class="image-wrapper">
-						<rf-image
+						<image
 							:src="item"
 							class="loaded"
 							mode="aspectFill"
-						></rf-image>
+						></image>
 					</view>
 				</swiper-item>
 			</swiper>

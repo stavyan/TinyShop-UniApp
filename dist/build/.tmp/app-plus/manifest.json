@@ -83,15 +83,9 @@
       },
       "splashscreen": {
         "android": {
-<<<<<<< HEAD
           "hdpi": "/Users/stav/Downloads/WX20200318-112452.png",
           "xhdpi": "/Users/stav/Downloads/WX20200318-112452.png",
           "xxhdpi": "/Users/stav/Downloads/WX20200318-112452.png"
-=======
-          "hdpi": "/Users/stav/Downloads/1577068332615.png",
-          "xhdpi": "/Users/stav/Downloads/1577068332615.png",
-          "xxhdpi": "/Users/stav/Downloads/1577068332615.png"
->>>>>>> master
         }
       },
       "google": {

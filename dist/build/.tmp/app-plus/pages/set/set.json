@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "设置",
-  "usingComponents": {}
+  "usingComponents": {
+    "rf-load-progress": "/components/rf-load-progress/rf-load-progress"
+  }
 }

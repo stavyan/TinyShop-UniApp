@@ -2,6 +2,7 @@
   "navigationBarTitleText": "关于RF商城",
   "usingComponents": {
     "rf-image": "/components/rf-image/rf-image",
+    "rf-loading": "/components/rf-loading/rf-loading",
     "empty": "/components/empty"
   }
 }

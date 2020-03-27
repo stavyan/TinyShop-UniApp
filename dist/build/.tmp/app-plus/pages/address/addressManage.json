@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "",
-  "usingComponents": {}
+  "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading"
+  }
 }

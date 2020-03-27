@@ -48,7 +48,7 @@ http.interceptors.request.use(async config => {
 		config1.headers = await {'Content-Type': 'application/json', ...commonHeader, ...headers11};
 		return config1
 	} else {
-		await handleRefreshToken(commonHeader, config1);
+		await handleRefreshToken(commonHeader, config1, user);
 	}
 }, (error) => {
 	// 对请求错误做些什么
@@ -107,7 +107,7 @@ http.interceptors.response.use(response => {
 	return Promise.reject(error.message)
 });
 
-const handleRefreshToken = async (header, config) => {
+const handleRefreshToken = async (header, config, user) => {
 	//刷新token
 	let params = {}
 	/*  #ifdef APP-PLUS  */
