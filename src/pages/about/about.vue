@@ -71,7 +71,7 @@ export default {
 		async getConfigList() {
 	    const userInfo = uni.getStorageSync('userInfo');
 	    if (!userInfo) return;
-			
+
 			await this.$get(`${merchantView}`, {
 				id: userInfo.merchant_id,
 				field: 'web_qrcode'
@@ -127,6 +127,10 @@ export default {
 					.qrcode {
 						width: 280upx;
 						height: 280upx;
+						image {
+							width: 280upx;
+							height: 280upx;
+						}
 					}
 					.info {
 						display: block;

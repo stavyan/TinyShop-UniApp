@@ -104,7 +104,6 @@
 				let city_name = null;
 				let area_name = null;
 				await this.$get(`${provinceList}`).then(async r => {
-            this.loading = false;
 						this.multiArray[0] = r.data;
 						if (this.addressData.province_id) {
 							r.data.forEach((item, index) => {
@@ -155,7 +154,9 @@
 										this.addressData.city_id = city_id
 										this.addressData.area_id = area_id
 										this.addressData.address_name = `${province_name}, ${city_name}, ${area_name}`
+                    this.loading = false;
 								}).catch(err => {
+                  this.loading = false;
 									console.log(err)
 								})
 						}).catch(err => {
