@@ -158,7 +158,7 @@
 				settingList: [
 					{icon: 'iconiconfontweixin', url: '/pages/user/coupon/list', title: '去领券中心', color: '#e07472'},
 					{icon: 'icondizhi', url: '', title: '地址管理', color: '#5fcda2'},
-					{icon: 'iconshoucang_xuanzhongzhuangtai', url: '/pages/user/address/address', title: '地址管理', color: '#5fcda2'},
+					{icon: 'iconshoucang_xuanzhongzhuangtai', url: '/pages/user/address/address', title: '我的收藏', color: '#5fcda2'},
 					{icon: 'iconshare', url: '', title: '分享', color: '#9789f7'},
 					{icon: 'iconshezhi1', url: '/pages/set/set', title: '设置', color: '#e07472'},
 				],
