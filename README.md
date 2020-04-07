@@ -22,6 +22,8 @@
 
 [H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com  
 
+Android App体验版 [下载](docs/RageFrameTinyShop.apk) 
+
 微信小程序和QQ小程序正处于审核阶段, 可自行clone至本地运行。
 
 [uni-app发布页](https://m3w.cn/rageframewsc): https://m3w.cn/rageframewsc
