@@ -49,6 +49,18 @@ const evaluateList = "/tiny-shop/v1/product/evaluate/index";
 // 商品评价列表
 const orderProductExpressDetails = "/tiny-shop/v1/member/order-product-express/details";
 
+// 拼团
+// 拼团产品
+const wholesaleProductIndex = "/tiny-shop/v1/marketing/wholesale-product/index";
+// 开团列表
+const wholesaleIndex = "/tiny-shop/v1/marketing/wholesale/index";
+// 开团详情
+const wholesaleView = "/tiny-shop/v1/marketing/wholesale/view";
+
+// 开团详情
+const wholesaleGroupState = "/tiny-shop/v1/marketing/wholesale/group-state";
+
+
 export {
     indexList,
     productCate,
@@ -69,5 +81,9 @@ export {
     orderPreview,
     orderProductExpressDetails,
     cartItemUpdateSku,
-    cartItemCount
+    cartItemCount,
+    wholesaleProductIndex,
+    wholesaleIndex,
+    wholesaleView,
+    wholesaleGroupState
 };

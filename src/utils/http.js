@@ -16,7 +16,8 @@ const http = axios.create({
 
 // 拦截器 在请求之前拦截
 http.interceptors.request.use(async config => {
-	const token = uni.getStorageSync('accessToken');
+	const token = uni.getStorageSync('accessToken')
+	const user = uni.getStorageSync('user') || {};
 	const userInfo = uni.getStorageSync('userInfo');
 	const merchantId = uni.getStorageSync('merchantId') || 1;
 	let commonHeader = {};
@@ -36,19 +37,74 @@ http.interceptors.request.use(async config => {
 		};
 	}
 	config.headers = {...config.headers, ...commonHeader,};
-	const user = uni.getStorageSync('user');
 	const loginTime = uni.getStorageSync('loginTime');
 	const currentTime = new Date().getTime() / 1000;
 	const config1 = config;
-	if (!token || currentTime + 500 - loginTime < user.expiration_time) {
+	if (!token || (currentTime + 50 - loginTime < user.expiration_time)) {
 		commonHeader = {
 			"x-api-key": token,
 			"merchant-id": merchantId,
 		};
 		config1.headers = await {'Content-Type': 'application/json', ...commonHeader, ...headers11};
-		return config1
-	} else {
-		await handleRefreshToken(commonHeader, config1, user);
+		return config1;
+	} else { //刷新token
+		let params = {}
+		/*  #ifdef APP-PLUS  */
+		params.group = 'tinyShopApp'
+		/*  #endif  */
+		/*  #ifdef H5  */
+		params.group = 'tinyShopH5'
+		/*  #endif  */
+		/*  #ifdef  MP-WEIXIN  */
+		params.group = 'tinyShopWechatMq'
+		/*  #endif  */
+		/*  #ifdef  MP-QQ  */
+		params.group = 'tinyShopQqMq'
+		/*  #endif  */
+		params.refresh_token = user.refresh_token;
+		await axios.post(refreshToken, {
+			...params,
+		}).then(async r => {
+			const data = r.data;
+			if (data.code === 200) {
+				uni.setStorageSync('accessToken', data.data.access_token);
+				uni.setStorageSync('user', data.data);
+				uni.setStorageSync('userInfo', data.data.member)
+				uni.setStorageSync('loginTime', new Date().getTime() / 1000);
+				uni.setStorageSync('refreshToken', data.data.refresh_token);
+				const header = {
+					"x-api-key": data.data.access_token,
+					"merchant-id": merchantId,
+				};
+				config.headers = {'Content-Type': 'application/json', ...header};
+				return config;
+			} else {
+				uni.clearStorageSync();
+				uni.showModal({
+					content: '会话已过期，是否跳转登录页面？',
+					success: (confirmRes) => {
+						if (confirmRes.confirm) {
+							uni.reLaunch({
+								url: '/pages/public/logintype'
+							});
+						}
+					}
+				});
+			}
+		}).catch(() => {
+			uni.clearStorage();
+			uni.showModal({
+				content: '会话已过期，是否跳转登录页面？',
+				success: (confirmRes) => {
+					if (confirmRes.confirm) {
+						uni.reLaunch({
+							url: '/pages/public/logintype'
+						});
+					}
+				}
+			});
+		});
+		return config1;
 	}
 }, (error) => {
 	// 对请求错误做些什么
@@ -106,67 +162,6 @@ http.interceptors.response.use(response => {
 	// uni.hideLoading();
 	return Promise.reject(error.message)
 });
-
-const handleRefreshToken = async (header, config, user) => {
-	//刷新token
-	let params = {}
-	/*  #ifdef APP-PLUS  */
-	params.group = 'tinyShopApp'
-	/*  #endif  */
-	/*  #ifdef H5  */
-	params.group = 'tinyShopH5'
-	/*  #endif  */
-	/*  #ifdef  MP-WEIXIN  */
-	params.group = 'tinyShopWechatMq'
-	/*  #endif  */
-	/*  #ifdef  MP-QQ  */
-	params.group = 'tinyShopQqMq'
-	/*  #endif  */
-	params.refresh_token = user.refresh_token;
-	await axios.post(refreshToken, {
-		...params,
-	}).then(async r => {
-		const data = r.data;
-		if (data.code === 200) {
-			uni.setStorageSync('accessToken', data.data.access_token);
-			uni.setStorageSync('user', data.data);
-			uni.setStorageSync('userInfo', data.data.member)
-			uni.setStorageSync('loginTime', new Date().getTime() / 1000);
-			uni.setStorageSync('refreshToken', data.data.refresh_token);
-			header = await {
-				"x-api-key": data.data.access_token,
-				// "merchant-id": data.data.member.merchant_id
-				"merchant-id": merchantId,
-			};
-			config.headers = await {'Content-Type': 'application/json', ...header};
-		} else {
-			uni.clearStorage();
-			uni.showModal({
-				content: '会话已过期，是否跳转登录页面？',
-				success: (confirmRes) => {
-					if (confirmRes.confirm) {
-						uni.reLaunch({
-							url: '/pages/public/logintype'
-						});
-					}
-				}
-			});
-		}
-	}).catch(() => {
-		uni.clearStorage();
-		uni.showModal({
-			content: '会话已过期，是否跳转登录页面？',
-			success: (confirmRes) => {
-				if (confirmRes.confirm) {
-					uni.reLaunch({
-						url: '/pages/public/logintype'
-					});
-				}
-			}
-		});
-	})
-	return config;
-}
 
 export default http;
 

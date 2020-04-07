@@ -5,25 +5,21 @@
 		<swiper class="rf-swiper" :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration" vertical="true">
         <swiper-item
 		        class="rf-swiper-item"
-		        @tap.stop="navTo(`/pages/notice/notice`)"
+		        @tap.stop="navTo(`/pages/index/notice/notice`)"
 						v-for="(item, index) in list"
 						:key="index">
           <view class="text in1line">
 						<text class="newsTitle">{{ item.title || `${item.member_nickname} 拼团成功` }}</text>
 					</view>
-			    <uni-icons class="right" size="18" type="forward"></uni-icons>
+	        <text class="iconfont iconyou right"></text>
         </swiper-item>
     </swiper>
 	</view>
 </template>
 
 <script>
-	import uniIcons from '@/components/uni-icons/uni-icons.vue';
   export default {
     name: 'rf-swiper-slide',
-		  components: {
-    	uniIcons
-		},
 	  data () {
       return {
         indicatorDots: false,

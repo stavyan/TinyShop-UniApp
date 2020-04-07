@@ -2,7 +2,6 @@
   "navigationBarTitleText": "订单详情",
   "usingComponents": {
     "mpvue-picker": "/components/mpvue-picker/mpvuePicker",
-    "rf-image": "/components/rf-image/rf-image",
-    "empty": "/components/empty"
+    "rf-image": "/components/rf-image/rf-image"
   }
 }

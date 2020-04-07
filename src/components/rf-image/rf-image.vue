@@ -1,10 +1,10 @@
 <template>
-	<image
-		class="rf-image"
-		mode="mode"
-		@tap.stop="previewImage(src)"
-		@error="onImageError"
-		:src="src || '/static/errorImage.jpg'"></image>
+		<image
+			class="rf-image"
+			mode="mode"
+			@tap.stop="previewImage(src)"
+			@error="onImageError"
+			:src="src || '/static/errorImage.jpg'"></image>
 </template>
 
 <script>
@@ -55,5 +55,4 @@
 	width: 100%;
 	height: 100%;
 }
-
 </style>

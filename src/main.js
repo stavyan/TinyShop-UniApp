@@ -15,6 +15,7 @@ import '@/common/css/uni.scss';
 
 // 全局组件
 import rfImage from '@/components/rf-image/rf-image';
+import rfEmpty from '@/components/rf-empty';
 import rfLoading from '@/components/rf-loading/rf-loading';
 import rfLoadProgress from '@/components/rf-load-progress/rf-load-progress';
 
@@ -32,9 +33,9 @@ const msg = (title, duration = 1500, mask = false, icon = 'none') => {
 	});
 };
 
-const prePage = () => {
+const prePage = (index) => {
 	let pages = getCurrentPages();
-	let prePage = pages[pages.length - 2];
+	let prePage = pages[pages.length - (index || 2)];
 	// #ifdef H5
 	return prePage;
 	// #endif
@@ -51,6 +52,7 @@ Vue.prototype.$put = http.put;
 Vue.prototype.$del = http.delete;
 
 Vue.component('rfImage', rfImage);
+Vue.component('rfEmpty', rfEmpty);
 Vue.component('rfLoading', rfLoading);
 Vue.component('rfLoadProgress', rfLoadProgress);
 

@@ -1,0 +1,13 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "订单售后",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "bounce": "none",
+  "usingComponents": {
+    "uni-rate": "/components/rf-rate/rf-rate"
+  }
+}

@@ -9,7 +9,7 @@
 		</view>
 		<view class="footer">
 			登录表示同意
-			<text class="protocol" @tap="navTo(`/pages/about/detail?field=protocol_privacy&title=隐私协议`)">RangeFrame使用协议 / 隐私协议</text>
+			<text class="protocol" @tap="navTo(`/pages/set/about/detail?field=protocol_privacy&title=隐私协议`)">RangeFrame使用协议 / 隐私协议</text>
 		</view>
 	</view>
 </template>

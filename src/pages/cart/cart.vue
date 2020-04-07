@@ -7,7 +7,7 @@
     <view class="place"></view>
     <!-- 购物车为空 -->
     <view v-if="cartList.length === 0" class="empty">
-      <image src="/static/emptyCart.jpg" mode="aspectFit"></image>
+      <text class="iconfont iconempty"></text>
       <view v-if="token" class="empty-tips">
         空空如也
         <navigator class="navigator" v-if="token" url="../category/category" open-type="switchTab">随便逛逛></navigator>
@@ -388,6 +388,7 @@
 			},
 			// 获取购物车列表
 			async getCartItemList(type) {
+			  this.loading = true;
 				await this.$get(`${cartItemList}`, {}, {}, this).then(r => {
 				  this.loading = false;
 					if (type === 'refresh') {
@@ -553,7 +554,7 @@
 				this.selectedList.length = 0;
 				this.isAllselected = false;
 				this.sumPrice = 0;
-				this.navTo(`/pages/order/createOrder?data=${JSON.stringify(data)}`);
+				this.navTo(`/pages/order/create/order?data=${JSON.stringify(data)}`);
 			},
 			// 合计
 			sum() {
@@ -909,11 +910,9 @@
     flex-direction: column;
     align-items: center;
     background: #fff;
-
-    image {
-      width: 240upx;
-      height: 160upx;
-      margin-bottom: 30upx;
+    .iconempty {
+      font-size: $font-lg + 100upx;
+      color: $base-color;
     }
 
     .empty-tips {

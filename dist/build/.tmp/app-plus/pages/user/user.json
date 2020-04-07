@@ -24,7 +24,7 @@
   },
   "usingComponents": {
     "rf-loading": "/components/rf-loading/rf-loading",
-    "list-cell": "/components/mix-list-cell",
+    "list-cell": "/components/rf-list-cell/index",
     "rf-badge": "/components/rf-badge/rf-badge"
   }
 }

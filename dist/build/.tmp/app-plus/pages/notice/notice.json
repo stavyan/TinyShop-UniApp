@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "公告",
-  "usingComponents": {
-    "rf-image": "/components/rf-image/rf-image",
-    "rf-loading": "/components/rf-loading/rf-loading",
-    "empty": "/components/empty"
-  }
-}

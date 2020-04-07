@@ -164,6 +164,16 @@ button[type=default] {
   -webkit-line-clamp: 10;
 }
 
+
+.in100line {
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 100;
+}
+
 .rf-product-list {
   display: flex;
   flex-wrap: wrap;

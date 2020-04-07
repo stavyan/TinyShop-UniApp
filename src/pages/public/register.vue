@@ -63,6 +63,15 @@
 							placeholder="请输入您的姓名"
 						/>
 					</view>
+					<view class="input-item">
+						<text class="tit">邀请码</text>
+						<input
+							type="text"
+							name="promo_code"
+							v-model="promoCode"
+							placeholder="请输入您的邀请码"
+						/>
+					</view>
 					<button class="confirm-btn" formType="submit" :disabled="logining">注册</button>
 				</form>
 			</view>
@@ -76,7 +85,7 @@
 		</view>
 		<view class="footer">
 			注册表示同意
-			<text class="protocol" @tap="navTo(`/pages/about/detail?field=protocol_register&title=注册协议`)">RangeFrame使用协议 / 注册协议</text>
+			<text class="protocol" @tap="navTo(`/pages/set/about/detail?field=protocol_register&title=注册协议`)">RangeFrame使用协议 / 注册协议</text>
 		</view>
 	</view>
 </template>
@@ -94,11 +103,13 @@
 				password: '',
 				logining: false,
 				smsCodeBtnDisabled: false,
-				codeSeconds: 60
+				codeSeconds: 60,
+				promoCode: ''
 			}
 		},
-		onLoad(){
-
+		onLoad(options){
+			uni.clearStorageSync();
+			this.promoCode = options.promo_code;
 		},
 		methods: {
 			...mapMutations(['login']),

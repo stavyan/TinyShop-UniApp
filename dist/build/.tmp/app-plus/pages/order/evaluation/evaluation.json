@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "发表评价",
+  "usingComponents": {
+    "rf-rate": "/components/rf-rate/rf-rate"
+  }
+}

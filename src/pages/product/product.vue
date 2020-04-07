@@ -68,7 +68,7 @@
 				<view class="c-row b-b" v-if="productDetail.stock && productDetail.is_stock_visible == 1">
 					<text class="tit">商品库存</text>
 					<view class="con-list" v-if="productDetail.stock > 0">
-						{{ productDetail.stock }} 个
+						{{ currentStock || productDetail.stock }} 个
 					</view>
 					<view class="con-list red" v-else>
 						库存不足
@@ -225,22 +225,27 @@
 				<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn cart">
 					<i class="iconfont icongouwuche"></i>
 					<text>购物车</text>
-					<rf-badge v-if="cartNum && cartNum > 0" type="error" size="small" class="badge" :text="cartNum"></rf-badge>
+					<rf-badge v-if="token && cartNum && cartNum > 0" type="error" size="small" class="badge" :text="cartNum"></rf-badge>
 				</navigator>
 				<view class="p-b-btn" :class="{active: favorite}" @tap="toFavorite">
 					<i class="iconfont iconshoucang"></i>
 					<text>收藏</text>
 				</view>
-
+				<!--<view @tap="navTo(`/pages/product/service/index`)" class="p-b-btn">-->
+					<!--<i class="iconfont icondanseshixintubiao-"></i>-->
+					<!--<text>客服</text>-->
+				<!--</view>-->
 				<view class="action-btn-group">
-					<button type="primary" class="action-btn no-border buy-now-btn" :disabled="(currentStock || productDetail.stock) == 0" @tap="addCart('buy')">立即购买</button>
 					<button type="primary"
-									:disabled="productDetail.point_exchange_type == 2 || productDetail.point_exchange_type == 4 || (currentStock || productDetail.stock) == 0"
+					        class="action-btn no-border buy-now-btn"
+					        :disabled="buyBtnDisabled"
+					        @tap="addCart('buy')">立即购买</button>
+					<button type="primary"
+									:disabled="addCartBtnDisabled"
 									class=" action-btn no-border add-cart-btn"
 									@tap="addCart('cart')">加入购物车</button>
 				</view>
 			</view>
-
 
 			<!-- 服务-模态层弹窗 -->
 			<view class="popup service" :class="serviceClass" @tap="hideService">
@@ -346,23 +351,23 @@
 					</view>
 					<view class="select-count">
 						<text>购买数量</text>
-						<uni-number-box
+						<rf-number-box
 							class="step"
 							:min="1"
 							:max="parseInt(currentStock || productDetail.stock, 10)"
 							:value="cartCount"
 							@eventChange="numberChange"
-						></uni-number-box>
+						></rf-number-box>
 					</view>
 					<button class="btn" @tap="toggleSpec">完成</button>
 				</view>
 			</view>
-			<!-- 分享 -->
-			<share
-				ref="share"
-				:contentHeight="580"
-				:shareList="shareList"
-			></share>
+			<!--&lt;!&ndash; 分享 &ndash;&gt;-->
+			<!--<share-->
+				<!--ref="share"-->
+				<!--:contentHeight="580"-->
+				<!--:shareList="shareList"-->
+			<!--&gt;</share>-->
 			<!-- 优惠券面板 -->
 			<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @tap="toggleMask">
 				<view class="mask-content" @tap.stop.prevent="stopPrevent">
@@ -403,22 +408,19 @@
 	 * @date 2020-03-23 15:04
 	 * @copyright 2019
 	 */
-	import share from '@/components/share';
 	import {cartItemCount, cartItemCreate, orderPreview, productDetail} from "@/api/product";
-	import uniNumberBox from '@/components/uni-number-box';
+	import rfNumberBox from '@/components/rf-number-box';
   import {collectCreate, collectDel, transmitCreate} from "@/api/basic";
   import moment from '@/utils/moment';
 	import {couponReceive} from "@/api/userInfo";
-	import empty from "@/components/empty";
+
 	import rfRate from "@/components/rf-rate/rf-rate";
 	import rfBadge from '@/components/rf-badge/rf-badge'
 	export default{
 		components: {
 			rfBadge,
-			share,
 			rfRate,
-			uniNumberBox,
-			empty
+			rfNumberBox,
 		},
 		filters: {
 		    /**
@@ -500,6 +502,17 @@
         errorInfo: ''
 			};
 		},
+		computed: {
+			buyBtnDisabled () {
+			    return (this.currentStock || this.productDetail.stock) == 0;
+			},
+			addCartBtnDisabled () {
+			    return this.productDetail.point_exchange_type == 2 ||
+					    this.productDetail.point_exchange_type == 4 ||
+					    (this.currentStock || this.productDetail.stock) == 0 ||
+					    this.productDetail.is_virtual == 1;
+			},
+		},
 		async onLoad(options){
 			this.initData(options.id);
 			//规格 默认选中第一条
@@ -534,6 +547,22 @@
 		  // #endif
 		},
 		methods:{
+			navTo (url) {
+				if (!this.token) {
+					uni.showModal({
+						content: '会话已过期，是否跳转登录页面？',
+						success: (confirmRes) => {
+							if (confirmRes.confirm) {
+								uni.reLaunch({
+									url: '/pages/public/logintype'
+								});
+							}
+						}
+					});
+				} else {
+					uni.navigateTo({url});
+				}
+			},
 			//服务弹窗
 			showService() {
 				if(this.productDetail.tags && this.productDetail.tags.length === 0) return;
@@ -603,7 +632,7 @@
 			 */
 			toEvaluateList () {
 				uni.navigateTo({
-					url: `/pages/evaluation/list?comment_num=${this.productDetail.comment_num}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`
+					url: `/pages/order/evaluation/list?comment_num=${this.productDetail.comment_num}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`
 				})
 			},
 			numberChange(data){
@@ -630,12 +659,7 @@
 				this.cartNum = uni.getStorageSync('cartNum');
 				await this.getProductDetail(id);
 			},
-			/**
-			 *@des 获取产品详情
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 15:48:34
-			 */
+			// 获取产品详情
 			async getProductDetail (id) {
 				await this.$get(`${productDetail}`, {
 					id,
@@ -699,9 +723,17 @@
           }
 					if (this.cartType === 'cart') {
 						this.cartType = null;
+						if (this.currentStock == 0) {
+						    this.$api.msg('库存不足');
+						    return;
+						}
 						this.handleCartItemCreate();
 					} else if (this.cartType === 'buy') {
 						this.cartType = null;
+						if (this.currentStock == 0) {
+						    this.$api.msg('库存不足');
+						    return;
+						}
 						this.buy();
 					}
 					this.specClass = 'hide';
@@ -718,12 +750,7 @@
 					this.specClass = 'none';
 				}, 250);
 			},
-			/**
-			 *@des 添加商品至购物车
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 17:45:54
-			 */
+			// 添加商品至购物车
 			async handleCartItemCreate () {
 				// const type = parseInt(this.productDetail.point_exchange_type , 10)
 				// if ( type === 2 || type === 4) {
@@ -817,7 +844,7 @@
               this.currentSkuPrice = item.price;
 							return;
 						}
-					})
+					});
 			},
 			//分享
 			share(res){
@@ -936,7 +963,7 @@
 				}
 				list.data = JSON.stringify(data);
 				uni.navigateTo({
-					url: `/pages/order/createOrder?data=${JSON.stringify(list)}`
+					url: `/pages/order/create/order?data=${JSON.stringify(list)}`
 				});
 			},
 			addCart(type){
@@ -1476,18 +1503,21 @@
 			width: 96upx;
 			height: 80upx;
 			.iconfont{
-				font-size: 40upx;
+				font-size: 36upx;
 				line-height: 48upx;
 				color: $font-color-light;
 			}
 			&.active, &.active .iconfont{
 				color: $uni-color-primary;
 			}
-			.icon-fenxiang2{
+			.icon-fenxiang2 {
 				font-size: 42upx;
 				transform: translateY(-2upx);
 			}
-			.icon-shoucang{
+			.iconshoucang {
+				font-size: 40upx;
+			}
+			.icondanseshixintubiao- {
 				font-size: 46upx;
 			}
 			.red {

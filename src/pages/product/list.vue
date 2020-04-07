@@ -59,7 +59,7 @@
       </view>
     </view>
     <rf-load-more :status="loadingType" v-if="goodsList.length > 0"></rf-load-more>
-    <empty :info="errorInfo || '该分类暂无商品'" v-if="goodsList.length === 0 && !loading"></empty>
+    <rf-empty :info="errorInfo || '该分类暂无商品'" v-if="goodsList.length === 0 && !loading"></rf-empty>
     <!--分类遮盖层-->
     <view class="cate-mask"
           :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
@@ -95,16 +95,12 @@
 	import {guessYouLikeList, productCate, productList} from "@/api/product";
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 	import rfRecommend from '@/components/rf-recommend/rf-recommend';
-	import empty from '@/components/empty';
-	import uniIcons from '@/components/uni-icons/uni-icons';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 
 	export default {
 		components: {
 			rfLoadMore,
 			rfSearchBar,
-			empty,
-			uniIcons,
 			rfRecommend,
 		},
 		data() {
@@ -341,7 +337,7 @@
 
 <style lang="scss">
   page {
-    background: $page-color-bg;
+    background: $page-color-white;
   }
 
   .product-list {

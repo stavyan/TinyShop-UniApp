@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "我的账户",
+  "usingComponents": {
+    "rf-loading": "/components/rf-loading/rf-loading"
+  }
+}

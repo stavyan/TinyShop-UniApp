@@ -9,7 +9,7 @@
     "style": "default"
   },
   "usingComponents": {
-    "rf-search-bar": "/components/rf-search-bar/rf-search-bar",
-    "empty": "/components/empty"
+    "rf-empty": "/components/rf-empty/index",
+    "rf-search-bar": "/components/rf-search-bar/rf-search-bar"
   }
 }

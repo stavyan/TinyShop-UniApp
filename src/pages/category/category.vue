@@ -7,11 +7,11 @@
         :icon="'iconxiatubiao--copy'"
         :title="'主页'"
         :placeholder="hotSearchDefault"/>
-    <empty :info="'暂无产品分类~'" v-if="categoryList.length === 0 && !loading"></empty>
+    <rf-empty :info="'暂无产品分类~'" v-if="categoryList.length === 0 && !loading"></rf-empty>
     <view class="category-list" v-else>
       <!-- 左侧分类导航 -->
       <scroll-view scroll-y="true" class="left">
-        <view class="row" v-if="m.child.length > 0" v-for="(m, index) in categoryList" :key="m.id"
+        <view class="row" v-for="(m, index) in categoryList" :key="m.id"
               :class="[index==showCategoryIndex?'on':'']" @tap="showCategory(index)">
           <view class="text">
             <view class="block"></view>
@@ -26,10 +26,10 @@
           <view class="banner" @tap="indexTopToDetailPage(cateTop.jump_type, cateTop.jump_link)">
             <image :src="cateTop && cateTop.cover" mode="aspectFill"/>
           </view>
-          <view class="box" v-for="(o,i) in n.child" :key="i" @tap="navToList(o.id)">
+          <view class="box" v-for="(o,i) in n.child" :key="o.id" @tap="navToList(o.id)">
             <view class="text">{{o.title}}</view>
-            <view class="list" v-if="o.child.length > 0">
-              <view class="box" v-for="(p,i) in o.child" :key="i" @tap.stop="navToList(p.id)">
+            <view class="list" v-if="o.child && o.child.length > 0">
+              <view class="box" v-for="(p,i) in o.child" :key="p.id" @tap.stop="navToList(p.id)">
                 <image :src="p.cover"></image>
                 <view class="text">{{p.title}}</view>
               </view>
@@ -61,12 +61,10 @@
 	import {productCate} from "@/api/product";
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	import {advList} from "@/api/basic";
-	import empty from "@/components/empty";
 
 	export default {
 		components: {
-			rfSearchBar,
-			empty
+			rfSearchBar
 		},
 		data() {
 			return {
@@ -84,6 +82,8 @@
 		},
 		// 每次页面显示 执行该方法
 		onShow() {
+      this.loading = true;
+			this.categoryList.length = 0;
 			this.initData();
 		},
 		methods: {
@@ -118,20 +118,18 @@
 				this.fList = [];
 				this.sList = [];
 				this.tList = [];
+				this.loading = true;
 				await this.$get(`${productCate}`).then(r => {
 					this.loading = false;
 					this.cateTop = uni.getStorageSync('cateTop');
 					if (!this.cateTop) {
 						this.getAdvList();
 					}
-					this.categoryList = r.data;
-					// 查询第一个拥有二级菜单的子菜单
-					for (let i = 0; i < r.data.length; i++) {
-						if (r.data[i].child.length > 0) {
-							this.showCategoryIndex = i;
-							break;
-						}
-					}
+					r.data.forEach(item => {
+            if (item.child) {
+            	this.categoryList.push(item)
+            }
+          });
 				}).catch(() => {
           this.loading = false;
         });
@@ -156,7 +154,7 @@
 			// 跳转至搜索详情页
 			toSearch() {
 				uni.navigateTo({
-					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+					url: `/pages/index/search/search?search=${JSON.stringify(this.search)}`
 				})
 			},
 			// 跳转至分类页
@@ -176,7 +174,7 @@
 						this.$api.msg('article_view');
 						break;
 					case 'coupon_view':
-						url = `/pages/coupon/detail?id=${url}`;
+						url = `/pages/user/coupon/detail?id=${url}`;
 						break;
 					case 'helper_view':
 						this.$api.msg('helper_view');
@@ -196,7 +194,7 @@
 </script>
 <style scoped lang="scss">
   page {
-	  background-color: $page-color-bg;
+	  background-color: $page-color-white;
   }
   .category {
     /*模块分类*/

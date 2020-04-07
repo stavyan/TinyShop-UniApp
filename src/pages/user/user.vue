@@ -2,11 +2,11 @@
 	<view class="user">
 		<!--头部-->
 		<view class="user-section">
-			<image class="bg" src="/static/user-bg2.jpg"></image>
+			<image class="bg" src="/static/user-bg.jpg"></image>
 			<!--用户信息-->
 			<view
           class="user-info-box"
-          @tap="navTo(userInfo ? '/pages/userinfo/userinfo' : 'login')">
+          @tap="navTo(userInfo ? '/pages/user/userinfo/userinfo' : 'login')">
 				<view class="portrait-box">
 					<image class="portrait" :src="(userInfo && userInfo.head_portrait	) || user_info.headimgurl || '/static/missing-face.png'"></image>
 					<text class="username">
@@ -39,34 +39,38 @@
 		>
 			<image class="arc" src="/static/arc.png"></image>
 			<!--余额 优惠券 积分信息-->
-			<view class="tj-sction">
-				<view class="tj-item" v-for="item in amountList" :key="item.title" @tap="navTo(item.url)">
-					<text class="num" :class="item.value > 0 ? 'red' : ''">
-						{{ item.value }}
-					</text>
-					<text>{{ item.title }}</text>
+			<view class="promotion-center">
+				<list-cell icon="iconwallett" iconColor="#e07472" @eventClick="directTo('/pages/user/account/account')" title="我的账户"></list-cell>
+				<view class="tj-sction">
+					<view class="tj-item" v-for="item in amountList" :key="item.title" @tap="navTo(item.url)">
+						<text class="num" :class="item.value > 0 ? 'red' : ''">
+							{{ item.value }}
+						</text>
+						<text>{{ item.title }}</text>
+					</view>
 				</view>
 			</view>
 			<!-- 订单类型 -->
-			<view class="order-section">
-				<view
-					class="order-item"
-					v-for="item in orderSectionList"
-					:key="item.title"
-					@tap="navTo(item.url)"
-					hover-class="common-hover"
-					:hover-stay-time="50">
-					<i class="iconfont" :class="item.icon" />
-					<text>{{ item.title }}</text>
-					<rf-badge type="error" size="small" class="badge" :text="item.num"></rf-badge>
+			<view class="promotion-center">
+				<list-cell icon="iconfapiaoguanli" iconColor="#e07472" @eventClick="directTo(`/pages/order/order?state=-1`)" title="我的订单"></list-cell>
+				<view class="order-section">
+					<view
+						class="order-item"
+						v-for="item in orderSectionList"
+						:key="item.title"
+						@tap="navTo(item.url)"
+						hover-class="common-hover"
+						:hover-stay-time="50">
+						<i class="iconfont" :class="item.icon" />
+						<text>{{ item.title }}</text>
+						<rf-badge type="error" size="small" class="badge" :text="item.num"></rf-badge>
+					</view>
 				</view>
 			</view>
+
 			<!-- 浏览历史 -->
-			<view class="history-section icon">
-				<view class="sec-header" @tap="navTo('/pages/footprint/footprint')">
-					<i class="iconfont iconlishijilu"></i>
-					<text>我的足迹</text>
-				</view>
+			<view class="history-section">
+				<list-cell icon="iconlishijilu" iconColor="#5eba8f" @eventClick="directTo('/pages/user/footprint/footprint')" title="我的足迹"></list-cell>
 				<view v-if="token">
 					<scroll-view scroll-x class="h-list" v-if="footList.length > 0">
 						<view class="h-item" v-for="item in footList" :key="item.id">
@@ -82,22 +86,50 @@
 						先去浏览一些吧~
 					</view>
 				</view>
-				<view class="no-foot-print" v-else @tap="navTo('/pages/footprint/footprint')">
+				<view class="no-foot-print" v-else @tap="navTo('/pages/user/footprint/footprint')">
 					<i class="iconfont iconmima no-foot-print-icon" />
 					登陆后查看
 				</view>
-				<list-cell icon="iconiconfontweixin" iconColor="#e07472" @eventClick="directTo('/pages/user/coupon-center')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>
-				<list-cell icon="icondizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/address/address')" tips="管理你的收货地址"></list-cell>
-				<list-cell icon="iconshoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>
-				<button class="share-btn" open-type="share" @tap="shareToH5">
-					<list-cell icon="iconshare" iconColor="#9789f7" title="分享" tips="将RageFrame分享给你的好友">
-					</list-cell>
-				</button>
-				<!--<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>-->
-				<list-cell icon="iconshezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>
+				</view>
+
+			<!--设置中心-->
+			<view class="promotion-center">
+				<list-cell icon="iconshezhi1" iconColor="#e07472" @eventClick="directTo('/pages/set/set')" title="设置中心"></list-cell>
+				<view class="tj-sction">
+				<!--<list-cell icon="iconiconfontweixin" iconColor="" @eventClick="directTo('')" title="去领券中心" tips="速来领取大额优惠券"></list-cell>-->
+				<!--<list-cell icon="icondizhi" iconColor="#5fcda2" title="地址管理" @eventClick="navTo('/pages/user/address/address')" tips="管理你的收货地址"></list-cell>-->
+				<!--<list-cell icon="iconshoucang_xuanzhongzhuangtai" iconColor="#54b4ef" @eventClick="navTo('/pages/user/collection/collection')" title="我的收藏" tips="查看已收藏的宝贝"></list-cell>-->
+				<!--<button class="share-btn" open-type="share" @tap="shareToH5">-->
+					<!--<list-cell icon="iconshare" iconColor="#9789f7" title="分享" tips="将RageFrame分享给你的好友">-->
+					<!--</list-cell>-->
+				<!--</button>-->
+				<!--&lt;!&ndash;<list-cell icon="icon-pinglun-copy" iconColor="#ee883b" @eventClick="navTo()" title="晒单" tips="晒单抢红包"></list-cell>&ndash;&gt;-->
+				<!--<list-cell icon="iconshezhi1" iconColor="#e07472" title="设置" border="" @eventClick="navTo('/pages/set/set')"></list-cell>-->
+					 <!-- 分类列表 -->
+			    <view class="category-list">
+			      <view
+			          class="category"
+			          v-for="(item, index) in settingList"
+			          :key="index"
+			          @tap.stop="navTo(item.url)"
+			      >
+				      <view v-if="item.title!=='分享'">
+				        <view class="img">
+					        <text class="iconfont" :style="{color: item.color}" :class="item.icon"></text>
+				        </view>
+				        <view class="text">{{ item.title }}</view>
+				      </view>
+				      <button class="share-btn" open-type="share" @tap.tap="shareToH5" v-else>
+				        <view class="img">
+					        <text class="iconfont" :style="{color: item.color}" :class="item.icon"></text>
+				        </view>
+				        <view class="text">{{ item.title }}</view>
+				      </button>
+			      </view>
+			    </view>
+				</view>
 			</view>
 		</view>
-
     <!--页面加载动画-->
     <rf-loading v-if="loading"></rf-loading>
 	</view>
@@ -110,12 +142,11 @@
 	 * @date 2020-01-10 11:41
 	 * @copyright 2019
 	 */
-	import listCell from '@/components/mix-list-cell';
   import {footPrintList, memberInfo} from '@/api/userInfo';
-	import {wechatH5Login} from '@/api/login';
+	import {cartItemCount} from "@/api/product";
+	import listCell from '@/components/rf-list-cell';
 	import {mapMutations} from 'vuex';
 	import rfBadge from '@/components/rf-badge/rf-badge'
-	import {cartItemCount} from "@/api/product";
 	let startY = 0, moveY = 0, pageAtTop = true;
   export default {
 		components: {
@@ -124,10 +155,19 @@
 		},
 		data(){
 			return {
+				settingList: [
+					{icon: 'iconiconfontweixin', url: '/pages/user/coupon/list', title: '去领券中心', color: '#e07472'},
+					{icon: 'icondizhi', url: '', title: '地址管理', color: '#5fcda2'},
+					{icon: 'iconshoucang_xuanzhongzhuangtai', url: '/pages/user/address/address', title: '地址管理', color: '#5fcda2'},
+					{icon: 'iconshare', url: '', title: '分享', color: '#9789f7'},
+					{icon: 'iconshezhi1', url: '/pages/set/set', title: '设置', color: '#e07472'},
+				],
 				coverTransform: 'translateY(0px)',
 				coverTransition: '0s',
 				moving: false,
-				userInfo: {},
+				userInfo: {
+					promoter: null,
+				},
 				token: null,
 				footList: [],
 				user_info: {},
@@ -139,9 +179,9 @@
 					{ title: '退款/售后', icon: 'iconfont iconshouhoutuikuan', url: '/pages/order/refund' },
 				],
 				amountList: [
-					{ title: '余额', value: 0, url: '/pages/user/account' },
-					{ title: '优惠券', value: 0, url: '/pages/user/coupon?type=1' },
-					{ title: '积分', value: 0, url: '/pages/user/integral' }
+					{ title: '余额', value: 0, url: '/pages/user/account/account' },
+					{ title: '优惠券', value: 0, url: '/pages/user/coupon/coupon?type=1' },
+					{ title: '积分', value: 0, url: '/pages/user/account/integral' }
 				],
 				loading: true,
 			}
@@ -172,7 +212,7 @@
 				});
 				// #endif
 				uni.navigateTo({
-					url: '/pages/notice/notice'
+					url: '/pages/index/notice/notice'
 				})
 			}
 		},
@@ -213,7 +253,7 @@
 		      }
 				} else {
 			    this.loading = false;
-			    uni.removeTabBarBadge({index: 2})
+			    uni.removeTabBarBadge({index: 2});
           this.amountList[0].value = 0;
           this.amountList[1].value = 0;
           this.amountList[2].value = 0;
@@ -221,18 +261,20 @@
 			},
 			// 获取用户信息
       async getMemberInfo() {
+		   this.loading = true;
 			 this.$get(memberInfo).then(r => {
 				  this.loading = false;
-          this.amountList[0].value = r.data.account.user_money || 0;
-          this.amountList[1].value = r.data.coupon_num || 0;
-          this.amountList[2].value = r.data.account.user_integral || 0;
-					const orderSynthesizeNumArr = [];
+          this.userInfo = r.data || undefined;
+				  const orderSynthesizeNumArr = [];
 					for (let item in r.data.order_synthesize_num) {
 						orderSynthesizeNumArr.push(r.data.order_synthesize_num[item])
 					}
 					for (let i = 0; i < this.orderSectionList.length; i++) {
 						this.orderSectionList[i].num = orderSynthesizeNumArr[i].toString();
 					}
+          this.amountList[0].value = r.data.account.user_money || 0;
+          this.amountList[1].value = r.data.coupon_num || 0;
+          this.amountList[2].value = r.data.account.user_integral || 0;
 					this.getFootPrintList();
 	        this.$get(`${cartItemCount}`).then(r => {
 				      if (r.data == 0) {
@@ -249,7 +291,6 @@
               key: 'userInfo',
               data: r.data
           })
-          this.userInfo = r.data || undefined;
         }).catch(() => {
 				  this.loading = false;
 			 });
@@ -263,7 +304,6 @@
 			// 统一跳转接口,拦截未登录路由
 			navTo(url){
 				if (!url) {
-          this.$api.msg('我还没写');
 					return;
 				}
 				if(!this.token){
@@ -440,6 +480,52 @@
 				width: 100%;
 				height: 36upx;
 			}
+			.promotion-center {
+	      background: #fff;
+				margin: 20upx 0;
+		    /*分类列表*/
+		    .category-list {
+		      width: 100%;
+		      padding: 0 0 30upx 0;
+		      border-bottom: solid 2upx #f6f6f6;
+		      display: flex;
+		      flex-wrap: wrap;
+		      .category {
+		        width: 33.3%;
+		        margin-top: 50upx;
+		        display: flex;
+			      justify-content: center;
+		        flex-wrap: wrap;
+		        .img {
+		          width: 100%;
+		          display: flex;
+		          justify-content: center;
+		          .iconfont {
+			          font-size: $font-lg + 24upx;
+		          }
+		        }
+
+		        .text {
+		          width: 100%;
+		          display: flex;
+		          justify-content: center;
+		          font-size: 24upx;
+		          color: #3c3c3c;
+		        }
+						.share-btn{
+							height: 142upx;
+							text-align: left;
+							background: none;
+							padding: 0;
+							margin: 0;
+						}
+				    .share-btn:after {
+				      border: none;
+					    border-radius: none;
+				    }
+		      }
+		    }
+			}
 			.tj-sction{
 				@extend %section;
 				display: flex;
@@ -447,12 +533,16 @@
 					@extend %flex-center;
 					flex: 1;
 					flex-direction: column;
-					height: 140upx;
+					margin: 30upx 0;
 					font-size: $font-sm;
 					color: #75787d;
+					/*border-right: 2upx solid rgba(0, 0, 0, 0.2);*/
 				}
+				/*.tj-item:last-child {*/
+					/*border-right: none;*/
+				/*}*/
 				.num{
-					font-size: $font-lg;
+					font-size: $font-base;
 					color: $font-color-dark;
 				}
 				.red {
@@ -462,7 +552,6 @@
 			.order-section{
 				@extend %section;
 				padding: 28upx 0;
-				margin-top: 20upx;
 				.order-item{
 					@extend %flex-center;
 					width: 120upx;
@@ -486,8 +575,6 @@
 				}
 			}
 			.history-section{
-				padding: 30upx 0 0;
-				margin-top: 20upx;
 				background: #fff;
 				border-radius:10upx;
 				.sec-header{
@@ -496,12 +583,19 @@
 					font-size: $font-base;
 					color: $font-color-dark;
 					line-height: 40upx;
-					margin-left: 30upx;
 					.iconfont{
 						font-size: 44upx;
 						color: #5eba8f;
 						margin-right: 16upx;
 						line-height: 40upx;
+					}
+					.content {
+						flex: 1;
+					}
+					.iconyou {
+						font-size: $font-base + 2upx;
+						color:$font-color-base;
+						margin-left:$uni-spacing-row-sm;
 					}
 				}
 				.h-list{
@@ -554,8 +648,8 @@
 	 align-items: center;
 	}
 	%section {
-	  display:flex;
 	  justify-content: space-around;
+		display: flex;
 	  align-content: center;
 	  background: #fff;
 	  border-radius: 10upx;

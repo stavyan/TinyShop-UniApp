@@ -20,7 +20,7 @@
 					@scrolltolower="getMoreOrderList"
 				>
 					<!-- 空白页 -->
-<!--					<empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></empty>-->
+<!--					<rf-empty v-if="orderList.length === 0" :info="'快去商城逛逛吧'"></rf-empty>-->
 					<!-- 订单列表 -->
 					<view
 						v-for="(item,index) in orderList" :key="index"
@@ -62,7 +62,7 @@
 									* {{goodsItem.num}}
 								</text>
 								<text class="price" v-else>
-									<text class="red">{{goodsItem.product_money}} <text v-if="goodsItem.gift_flag === 0"> + {{ (item.point + '积分') || '' }}</text></text>
+									<text class="red">{{goodsItem.product_money}} <text v-if="goodsItem.pngt_flag === 0"> + {{ (item.point + '积分') || '' }}</text></text>
 									* {{goodsItem.num}}
 								</text>
 							</view>
@@ -82,13 +82,13 @@
 						  <button class="action-btn" v-if="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
               <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'refund', 3)">订单售后</button>
 							<button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
-              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer != 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
+              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer == 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
 						  <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
 						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
 					<rf-load-more :status="loadingType" v-if="orderList.length > 0"></rf-load-more>
-          <empty :info="'暂无工单'" v-if="orderList.length === 0 && !loading"></empty>
+          <rf-empty :info="'暂无工单'" v-if="orderList.length === 0 && !loading"></rf-empty>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -105,7 +105,7 @@
 	 * @copyright 2019
 	 */
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
-	import empty from "@/components/empty";
+
 	import moment from '@/utils/moment';
   import {orderDelete, orderList, orderTakeDelivery} from "@/api/userInfo";
 	import rfCountDown from '@/components/rf-count-down/rf-count-down.vue'
@@ -113,7 +113,6 @@
 	export default {
 		components: {
 			rfLoadMore,
-			empty,
 			rfCountDown
 		},
 		data() {
@@ -230,7 +229,7 @@
               this.handleOrderDelete(item.id);
             break;
           case 'shipping': // 查看物流
-						this.navTo(`/pages/order/shipping?id=${item.id}`);
+						this.navTo(`/pages/order/shipping/shipping?id=${item.id}`);
             break;
           case 'refund': // 退货/退款
 						this.handleOrderEvaluation(item, 'refund', refund_type);
@@ -243,16 +242,16 @@
       handleOrderEvaluation(item, type, refund_type) {
         // if(item.product.length > 1) {
           uni.navigateTo({
-            url: `/pages/order/orderItem?id=${item.id}`
+            url: `/pages/order/item?id=${item.id}`
           })
         // } else {
         // 	if (type === 'refund') {
 				// 		uni.navigateTo({
-				// 			url: `/pages/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
+				// 			url: `/pages/order/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
 				// 		})
 				// 	} else {
 				// 		uni.navigateTo({
-				// 			url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
+				// 			url: `/pages/order/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
 				// 		})
 				// 	}
         // }
@@ -288,22 +287,19 @@
 			},
       // 确认收货
 			async handleOrderTakeDelivery(id) {
-		    this.loading = true;
+
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
 				}).then(() => {
-		      this.loading = false;
           this.page = 1;
           this.orderList.length = 0;
 					this.getOrderList();
-				}).catch(() => {
-		      this.loading = false;
 				})
 			},
 			// 订单支付
 			async handlePayment(item) {
 				uni.navigateTo({
-					url: `/pages/money/pay?id=${item.id}`
+					url: `/pages/user/money/pay?id=${item.id}`
 				})
 			},
 			// 数据初始化

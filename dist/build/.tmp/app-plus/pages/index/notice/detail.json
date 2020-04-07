@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "公告详情",
+  "usingComponents": {
+    "rf-image": "/components/rf-image/rf-image",
+    "rf-empty": "/components/rf-empty/index",
+    "rf-loading": "/components/rf-loading/rf-loading"
+  }
+}

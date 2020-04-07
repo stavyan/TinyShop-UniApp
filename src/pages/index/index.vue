@@ -12,7 +12,7 @@
     <view class="swiper">
       <view class="swiper-box">
         <rf-swipe-dot :info="carouselList.index_top" mode="nav" :current="current" field="title">
-          <swiper class="swiper-box" @change="handleDotChange" autoplay="true">
+          <swiper @change="handleDotChange" autoplay="true">
             <swiper-item
                 v-for="(item, index) in carouselList.index_top"
                 @tap="indexTopToDetailPage(item.jump_type, item.jump_link)"
@@ -115,7 +115,6 @@
     <rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
-
 <script>
 	/**
 	 * @des 微商城首页
@@ -124,20 +123,15 @@
 	 * @date 2020-01-08 14:14
 	 * @copyright 2019
 	 */
-	import {indexList} from "@/api/product";
+	import {indexList, wholesaleProductIndex} from "@/api/product";
 	import {merchantIndex} from "@/api/merchant";
-	import uniGrid from "@/components/uni-grid/uni-grid";
-	import uniGridItem from "@/components/uni-grid-item/uni-grid-item";
-	import uniIcons from '@/components/uni-icons/uni-icons';
 	import rfSwipeDot from '@/components/rf-swipe-dot/rf-swipe-dot';
 	import rfFloorIndex from '@/components/rf-floor-index/rf-floor-index';
 	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
 	import rfSwiperSlide from '@/components/rf-swiper-slide/rf-swiper-slide';
 	import {notifyAnnounceIndex} from "@/api/basic";
 	export default {
-		components: {
-			uniGrid, uniIcons, uniGridItem, rfFloorIndex, rfSwipeDot, rfSearchBar, rfSwiperSlide
-		},
+		components: { rfFloorIndex, rfSwipeDot, rfSearchBar, rfSwiperSlide },
 		data() {
 			return {
 				current: 0,
@@ -171,6 +165,7 @@
 					});
 				}
 			}
+			this.loading = true;
 			this.initData();
 		},
 		onShareAppMessage() {
@@ -212,6 +207,12 @@
 					url: `/pages/product/list?cate_id=${id}`
 				})
 			},
+			// 跳转
+			navTo(url) {
+				uni.navigateTo({
+					url
+				})
+			},
 			// 跳至广告图指定页面
 			indexTopToDetailPage(data, link) {
 				let url;
@@ -232,7 +233,7 @@
 						this.$api.msg('article_view');
 						break;
 					case 'coupon_view':
-						url = `/pages/coupon/detail?id=${id}`;
+						url = `/pages/user/coupon/detail?id=${id}`;
 						break;
 					case 'helper_view':
 						this.$api.msg('helper_view');
@@ -258,9 +259,9 @@
 			// 获取主页数据
 			async getIndexList(type) {
 				await this.$get(`${indexList}`, {}).then(async r => {
-					this.loading = false;
-					// 获取商户列表
-					this.getMerchantIndex();
+          this.loading = false;
+					// // 获取商户列表
+					// this.getMerchantIndex();
 					// 获取公告列表
 					this.getNotifyAnnounceIndex();
 					if (type === 'refresh') {
@@ -280,9 +281,11 @@
 					this.guessYouLikeProductList = r.data.guess_you_like;
 					this.newProductList = r.data.product_new;
 					this.config = r.data.config;
-				}).catch(() => {
+				}).catch(err => {
 					this.loading = false;
+				  console.log(err);
 				})
+
 			},
 			// 获取商户列表
 			async getMerchantIndex() {
@@ -308,7 +311,7 @@
 			// 跳转至搜索详情页
 			toSearch() {
 				uni.navigateTo({
-					url: `/pages/search/search?search=${JSON.stringify(this.search)}`
+					url: `/pages/index/search/search?search=${JSON.stringify(this.search)}`
 				})
 			},
 			// 跳转至分类页
@@ -322,14 +325,13 @@
 </script>
 <style lang="scss" scoped>
   .index {
-    background-color: $page-color-bg;
+    background-color: $page-color-white;
     /*轮播图*/
     .swiper {
       width: 100%;
       margin-top: 10upx;
       display: flex;
       justify-content: center;
-
       .swiper-box {
         width: 92%;
         height: 40vw;
@@ -339,11 +341,9 @@
         //兼容ios，微信小程序
         position: relative;
         z-index: 1;
-
         swiper {
           width: 100%;
           height: 40vw;
-
           swiper-item {
             image {
               width: 100%;
@@ -353,7 +353,20 @@
         }
       }
     }
-
+    /*轮播图2*/
+    .swiper-item-text {
+      position: absolute;
+      bottom: 16upx;
+      left: 30upx;
+      height: 48upx;
+      line-height: 48upx;
+      background: rgba(0, 0, 0, 0.2);
+      width: 90%;
+      color: $page-color-white;
+      border-bottom-left-radius: 12upx;
+      padding-left: 20upx;
+    }
+    /*新闻通知*/
     .swiper-slide-header {
       width: 120upx;
       height: 80upx;
@@ -364,40 +377,22 @@
         height: 30upx;
       }
     }
-
-    .swiper-item-text {
-      position: absolute;
-      bottom: 16upx;
-      left: 30upx;
-      height: 48upx;
-      line-height: 48upx;
-      background: rgba(0, 0, 0, 0.2);
-      width: 90%;
-      color: $page-color-bg;
-      border-bottom-left-radius: 12upx;
-      padding-left: 20upx;
-    }
-
     /*分类列表*/
     .category-list {
       width: 100%;
       padding: 0 0 30upx 0;
       border-bottom: solid 2upx #f6f6f6;
       display: flex;
-      justify-content: space-between;
       flex-wrap: wrap;
-
       .category {
         width: 20%;
         margin-top: 50upx;
         display: flex;
         flex-wrap: wrap;
-
         .img {
           width: 100%;
           display: flex;
           justify-content: center;
-
           image {
             width: 9vw;
             height: 9vw;
@@ -414,7 +409,6 @@
         }
       }
     }
-
     /*版权显示*/
     .copyright {
       margin: 10upx 0;
@@ -430,7 +424,7 @@
     }
     /*商户切换*/
     .uni-list {
-      padding: 20upx 0;
+      padding: $spacing-base 0;
       .uni-list-cell {
         .uni-input {
           padding: 0;

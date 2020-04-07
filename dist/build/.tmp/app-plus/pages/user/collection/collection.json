@@ -1,0 +1,16 @@
+{
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "我的收藏",
+  "pullToRefresh": {
+    "support": true,
+    "color": "#fa436a",
+    "style": "default"
+  },
+  "usingComponents": {
+    "rf-empty": "/components/rf-empty/index",
+    "rf-loading": "/components/rf-loading/rf-loading",
+    "rf-load-more": "/components/rf-load-more/rf-load-more",
+    "rf-swipe-action": "/components/rf-swipe-action/rf-swipe-action",
+    "rf-swipe-action-item": "/components/rf-swipe-action-item/rf-swipe-action-item"
+  }
+}

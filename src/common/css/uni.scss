@@ -1438,3 +1438,100 @@ radio-group label, checkbox-group label{
     left: 0;
     transform: translateY(50%);
 }
+
+.list-cell{
+	display:flex;
+	align-items:baseline;
+	padding: 20upx $page-row-spacing;
+	line-height: 60upx;
+	position:relative;
+	background: #fff;
+	justify-content: center;
+	&.log-out-btn{
+		margin-top: 40upx;
+		.cell-tit{
+			color: $uni-color-primary;
+			text-align: center;
+			margin-right: 0;
+		}
+	}
+	&.cell-hover{
+		background:#fafafa;
+	}
+	&.b-b:after{
+		left: 30upx;
+	}
+	&.m-t{
+		margin-top: 16upx;
+	}
+	.cell-more{
+		align-self: baseline;
+		font-size:$font-lg;
+		color:$font-color-light;
+		margin-left:10upx;
+	}
+	.cell-tit{
+		flex: 1;
+		font-size: $font-base + 2upx;
+		color: $font-color-dark;
+		margin-right:10upx;
+	}
+	.cell-tip{
+		font-size: $font-base;
+		color: $font-color-light;
+	}
+	switch{
+		transform: translateX(16upx) scale(.84);
+	}
+}
+
+.add-btn{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 690upx;
+	height: 80upx;
+	margin: 60upx auto;
+	font-size: $font-lg;
+	color: #fff;
+	background-color: $base-color;
+	border-radius: 10upx;
+	box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
+}
+
+.base-color {
+	color: $base-color;
+}
+
+.base-bg {
+	background-color: $base-color;
+}
+
+.rf-card {
+	background-color: $page-color-white;
+	margin: 0 30upx;
+	padding: 20upx 0;
+	border-radius: 12upx;
+	box-shadow: 0 30upx 20upx rgba(0, 0, 0, 0.05)
+}
+
+
+.rf-btn {
+  width: 90%;
+  height: 76upx;
+  line-height: 76upx;
+  border-radius: 50px;
+  margin-top: 70upx;
+  background: $uni-color-primary;
+  color: #fff;
+  font-size: $font-lg;
+  &:after{
+	border-radius: 100px;
+  }
+}
+
+.rf-space-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}

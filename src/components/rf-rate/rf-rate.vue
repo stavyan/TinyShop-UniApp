@@ -1,15 +1,15 @@
 <template>
 	<view class="uni-rate">
 		<view :key="index" :style="{ marginLeft: margin + 'px' }" @tap="_onClick(index)" class="uni-rate__icon" v-for="(star, index) in stars">
-			<uni-icons :color="color" :size="size" :type="isFill ? 'star-filled' : 'star'" />
+			<text class="iconfont iconstar" :style="{color: isFill ? '#eee': '#ececec'}"></text>
 			<!-- #ifdef APP-NVUE -->
 			<view :style="{ width: star.activeWitch.replace('%','')*size/100+'px'}" class="uni-rate__icon-on">
-				<uni-icons style="text-align: left;" :color="activeColor" :size="size" type="star-filled" />
+				<text class="iconfont iconstar" :style="{color: activeColor}"></text>
 			</view>
 			<!-- #endif -->
 			<!-- #ifndef APP-NVUE -->
-			<view :style="{ width: star.activeWitch,top:-size/2+'px' }" class="uni-rate__icon-on">
-				<uni-icons :color="activeColor" :size="size" type="star-filled" />
+			<view :style="{ width: star.activeWitch,top:-size/2 - 1+'px' }" class="uni-rate__icon-on">
+				<text class="iconfont iconstar" :style="{color: activeColor}"></text>
 			</view>
 			<!-- #endif -->
 		</view>
@@ -17,12 +17,8 @@
 </template>
 
 <script>
-	import uniIcons from "@/components/uni-icons/uni-icons-rate";
 	export default {
-		name: "UniRate",
-		components: {
-			uniIcons
-		},
+		name: "rfRate",
 		props: {
 			isFill: {
 				// 星星的类型，是否镂空
@@ -121,6 +117,9 @@
 		line-height: 0;
 		font-size: 0;
 		flex-direction: row;
+	}
+	.iconfont {
+		font-size: 44upx;
 	}
 
 	.uni-rate__icon {

@@ -1,5 +1,6 @@
 
 .rf-load-more {
+	width: 100%;
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -13,7 +14,10 @@
 	        align-items: center;
 	-webkit-box-pack: center;
 	-webkit-justify-content: center;
-	        justify-content: center
+	        justify-content: center;
+	/*position: fixed;*/
+	/*bottom: 5upx;*/
+	/*text-align: center;*/
 }
 .rf-load-more__text {
 	font-size: 28rpx;

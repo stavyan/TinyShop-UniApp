@@ -31,7 +31,7 @@
 							<text class="price">￥ {{item.price}}</text>
 							<text class="number"> * {{ item.num }}</text>
 						</text>
-						<text class="status" @tap.stop="navTo(`/pages/order/shipping?id=${item.order_id}`)" v-if="item.shipping_status == '1'">查看物流</text>
+						<text class="status" @tap.stop="navTo(`/pages/order/shipping/shipping?id=${item.order_id}`)" v-if="item.shipping_status == '1'">查看物流</text>
 						<text class="status"> {{ item | filterProductStatus }}</text>
 					</view>
 				</view>
@@ -149,7 +149,7 @@
 </template>
 
 <script>
-	import empty from "@/components/empty";
+
 	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
 	import rfImage from '@/components/rf-image/rf-image';
 	import moment from '@/utils/moment';
@@ -158,7 +158,6 @@
 		components: {
 			mpvuePicker,
 			rfImage,
-			empty
 		},
 		data() {
 			return {
@@ -290,7 +289,7 @@
 			 *@date 2019/12/02 10:43:11
 			 */
 			async getOrderFreightFee() {
-				
+
 				const params = {};
 				if (this.cartIds) {
 					params.type = 'cart';
@@ -325,7 +324,7 @@
 			 *@date 2019/12/04 10:41:51
 			 */
 			async getOrderDetail(id) {
-				
+
 				await this.$get(`${orderDetail}`, {
 					id
 				}).then(r => {

@@ -61,8 +61,8 @@
 			</view>
 			<rf-load-more :status="loadingType" v-if="orderList.length > 0"></rf-load-more>
 		</scroll-view>
-		
-		<empty :info="'快去商城逛逛吧'" v-if="orderList.length === 0 && !loading"></empty>
+
+		<rf-empty :info="'快去商城逛逛吧'" v-if="orderList.length === 0 && !loading"></rf-empty>
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
 	</view>
@@ -70,14 +70,14 @@
 
 <script>
 	/**
-	 * @des 订单管理
+	 * @des 售后订单管理
 	 *
 	 * @author stav stavyan@qq.com
 	 * @date 2020-01-15 11:54
 	 * @copyright 2019
 	 */
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
-	import empty from "@/components/empty";
+
 	import moment from '@/utils/moment';
   import {orderDelete, orderList, orderTakeDelivery} from "@/api/userInfo";
 	import rfCountDown from '@/components/rf-count-down/rf-count-down.vue'
@@ -85,7 +85,6 @@
 	export default {
 		components: {
 			rfLoadMore,
-			empty,
 			rfCountDown
 		},
 		data() {
@@ -175,7 +174,7 @@
               this.handleOrderDelete(item.id);
             break;
           case 'shipping': // 查看物流
-						this.navTo(`/pages/order/shipping?id=${item.id}`);
+						this.navTo(`/pages/order/shipping/shipping?id=${item.id}`);
             break;
           case 'refund': // 退货/退款
 						this.handleOrderEvaluation(item, 'refund', refund_type);
@@ -194,16 +193,16 @@
       handleOrderEvaluation(item, type, refund_type) {
         // if(item.product.length > 1) {
           uni.navigateTo({
-            url: `/pages/order/orderItem?id=${item.id}`
+            url: `/pages/order/item?id=${item.id}`
           })
         // } else {
         // 	if (type === 'refund') {
 				// 		uni.navigateTo({
-				// 			url: `/pages/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
+				// 			url: `/pages/order/refund/refund?data=${JSON.stringify(item.product[0])}&refundType=${refund_type}`
 				// 		})
 				// 	} else {
 				// 		uni.navigateTo({
-				// 			url: `/pages/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
+				// 			url: `/pages/order/evaluation/evaluation?data=${JSON.stringify(item.product[0])}`
 				// 		})
 				// 	}
         // }
@@ -216,7 +215,7 @@
       },
 			// 取消订单
 			async handleOrderClose(id) {
-				
+
 				await this.$get(`${orderClose}`, {
 					id,
 				}).then(() => {
@@ -227,7 +226,7 @@
 			},
       // 删除已关闭订单
 			async handleOrderDelete(id) {
-				
+
 				await this.$del(`${orderDelete}?id=${id}`, {}).then(() => {
 					this.$api.msg('订单删除成功');
 					setTimeout(() => {
@@ -239,7 +238,7 @@
 			},
       // 确认收货
 			async handleOrderTakeDelivery(id) {
-				
+
 				await this.$get(`${orderTakeDelivery}`, {
 					id,
 				}).then(() => {
@@ -251,7 +250,7 @@
 			// 订单支付
 			async handlePayment(item) {
 				uni.navigateTo({
-					url: `/pages/money/pay?id=${item.id}`
+					url: `/pages/user/money/pay?id=${item.id}`
 				})
 			},
 			// 数据初始化
@@ -265,7 +264,7 @@
 		    const params = {};
 				params.page = this.page;
 				params.synthesize_status = -1;
-				
+
 				await this.$get(`${orderList}`, {
 					...params
 				}).then(r => {

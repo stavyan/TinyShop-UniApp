@@ -11,6 +11,12 @@
 				欢迎回来！
 			</view>
 			<view class="input-content">
+				<!--快速登录（调试用）-->
+				<view class="btn-group">
+					<!--<button type="primary" @tap="loginTest('18888888888', '123456')">小明</button>-->
+					<!--<button type="primary" @tap="loginTest('18888888888', '123456')">小赵</button>-->
+					<!--<button type="primary" @tap="loginTest('18888888888', '123456')">测试</button>-->
+				</view>
 				<form @submit="toLogin">
 					<view class="input-item">
 						<text class="tit">手机号码</text>
@@ -70,6 +76,7 @@
 <script>
 	import {mapMutations} from 'vuex';
 	import {authLogin, loginByPass, loginBySmsCode, smsCode} from "@/api/login";
+	import {websocketUrl} from "../../api/params";
 	const graceChecker = require("@/common/graceChecker.js");
 	export default{
 		data(){
@@ -89,6 +96,10 @@
       // uni.clearStorageSync();
 		},
 		methods: {
+	    loginTest(mobile, password) {
+	        this.mobile = mobile;
+	        this.password = password;
+	    },
 			...mapMutations(['login']),
 			// 验证手机号是否有效
 			checkPhoneIsValid (mobile) {
@@ -203,6 +214,7 @@
 				}).then(r=>{
 					this.$api.msg('恭喜您，登录成功！');
 					this.login(r.data);
+					this.initWebsocket();
 					if (this.userInfo) {
 						const oauthClientParams = {}
 						/*  #ifdef MP-WEIXIN */
@@ -242,13 +254,34 @@
 				this.$post(loginBySmsCode, {
 					...params
 				}).then(r=>{
+					this.initWebsocket();
 			    this.$api.msg('恭喜您，登录成功！')
 					this.login(r.data);
 					uni.switchTab({
 						url: '/pages/user/user'
 					})
 				})
-			}
+			},
+			initWebsocket() {
+				let websocketTimer = null;
+        uni.connectSocket({url: websocketUrl});
+        uni.onSocketOpen(() => {
+          uni.setStorageSync('socketOpen', true);
+				  this.websocketSend(JSON.stringify({"route": "site.login", "token": uni.getStorageSync('accessToken')}));
+				  websocketTimer = setInterval(() => {
+					  this.websocketSend(JSON.stringify({"route": "site.ping"}));
+          }, 60 * 1000);
+          console.log('websocket 连接成功')
+        });
+        uni.onSocketError(function (res) {
+        	clearInterval(websocketTimer);
+          uni.connectSocket({url: websocketUrl});
+          console.log('WebSocket连接打开失败，请检查！', res);
+        });
+      },
+			websocketSend(data) {
+				uni.sendSocketMessage({data});
+			},
 		}
 	}
 </script>
@@ -407,5 +440,9 @@
 		text:first-child {
 			margin-right: 10upx;
 		}
+	}
+	.btn-group {
+		display: flex;
+		margin-bottom: 20upx;
 	}
 </style>

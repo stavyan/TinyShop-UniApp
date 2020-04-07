@@ -6,9 +6,7 @@
   "usingComponents": {
     "rf-loading": "/components/rf-loading/rf-loading",
     "rf-badge": "/components/rf-badge/rf-badge",
-    "share": "/components/share",
     "rf-rate": "/components/rf-rate/rf-rate",
-    "uni-number-box": "/components/uni-number-box",
-    "empty": "/components/empty"
+    "rf-number-box": "/components/rf-number-box/index"
   }
 }

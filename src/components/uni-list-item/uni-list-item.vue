@@ -5,7 +5,7 @@
 				<image :src="thumb" class="uni-list-item__icon-img" />
 			</view>
 			<view v-else-if="showExtraIcon" class="uni-list-item__icon">
-				<uni-icons :color="extraIcon.color" :size="extraIcon.size" :type="extraIcon.type" class="uni-icon-wrapper" />
+<!--				<uni-icons :color="extraIcon.color" :size="extraIcon.size" :type="extraIcon.type" class="uni-icon-wrapper" />-->
 			</view>
 			<view class="uni-list-item__content">
 				<view class="uni-list-item__content-title">{{ title }}</view>
@@ -21,12 +21,10 @@
 </template>
 
 <script>
-	import uniIcons from '../uni-icons/uni-icons.vue'
-	import rfBadge from '../rf-badge/rf-badge'
+	import rfBadge from '@/components/rf-badge/rf-badge'
 	export default {
 		name: 'UniListItem',
 		components: {
-			uniIcons,
 			rfBadge
 		},
 		props: {
