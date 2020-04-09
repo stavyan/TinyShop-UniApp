@@ -82,7 +82,7 @@
 						  <button class="action-btn" v-if="item.order_status == 4 || item.order_status == 2" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
               <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'refund', 3)">订单售后</button>
 							<button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'refund', 2)">申请退货</button>
-              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer == 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
+              <button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
 						  <button class="action-btn recom" v-if="item.order_status == 4" @tap="handleOrderOperation(item, 'evaluation')">我要评价</button>
 						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
