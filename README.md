@@ -4,8 +4,33 @@
 
 基于 [RageFrame2](https://github.com/jianyan74/rageframe2) 的一款免费开源的基础商城销售功能的开源微商城，前端基于 uni-app，一端发布多端通用，目前已经适配 H5、微信小程序、QQ小程序、Ios App、Android App。目前开源的版本功能为 V1 版，更多增强功能(V2、V3)敬请期待。
 
-### 更新记录
 
+### 项目地址
+
+[前端开源地址](https://github.com/stavyan/TinyShop-UniApp): https://github.com/stavyan/TinyShop-UniApp
+
+[Uni-App插件地址](https://ext.dcloud.net.cn/plugin?id=1427): https://ext.dcloud.net.cn/plugin?id=1427
+
+[后端开源地址](https://github.com/jianyan74/TinyShop): https://github.com/jianyan74/TinyShop
+
+### Demo
+
+[H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com  
+
+Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk) 
+
+微信小程序和QQ小程序正处于审核阶段, 可自行clone至本地运行。
+
+[uni-app发布页](https://m3w.cn/rageframewsc): https://m3w.cn/rageframewsc
+
+[后台预览](http://demo2.rageframe.com/backend): http://demo2.rageframe.com/backend
+
+账号: demo   
+密码: 123456 
+
+![image](docs/images/h5-qrcode.png) 
+
+### 更新记录
 
 #### v1.1.0
 
