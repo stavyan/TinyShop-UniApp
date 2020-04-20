@@ -4,10 +4,9 @@
     <rf-search-bar
         @link="navToIndex"
         @search="handleSearchProductList"
-        :icon="'iconxiatubiao--copy'"
-        :title="'主页'"
+        icon="iconxiatubiao--copy"
+        title="主页"
         :inputDisabled="true"
-        :headerShow="headerShow"
         :placeholder="hotSearchDefault"/>
     <!--分类栏目-->
     <view v-if="isShowNavBar" class="navbar" :style="{top: navBarTop}">
@@ -36,6 +35,9 @@
       </view>
       <i class="cate-item iconfont iconfenlei1" @tap="toggleCateMask('show')"></i>
     </view>
+    <view v-else class="navbar" :style="{top: navBarTop}">
+      猜你喜欢
+    </view>
     <!--商品列表-->
     <view class="rf-product-list" :style="{marginTop: contentTop}" v-if="goodsList.length > 0">
       <view
@@ -52,13 +54,12 @@
             <text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
           </text>
           <text class="sales in1line">
-            <text class="red">{{ item.sales }}</text>
-            付款
+            <text class="red">{{ item.sales }}</text>付款
           </text>
         </view>
       </view>
+      <rf-load-more :status="loadingType" v-if="goodsList.length > 0"></rf-load-more>
     </view>
-    <rf-load-more :status="loadingType" v-if="goodsList.length > 0"></rf-load-more>
     <rf-empty :info="errorInfo || '该分类暂无商品'" v-if="goodsList.length === 0 && !loading"></rf-empty>
     <!--分类遮盖层-->
     <view class="cate-mask"
@@ -94,23 +95,18 @@
 <script>
 	import {guessYouLikeList, productCate, productList} from "@/api/product";
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-	import rfRecommend from '@/components/rf-recommend/rf-recommend';
-	import rfSearchBar from '@/components/rf-search-bar/rf-search-bar';
+	import rfSearchBar from '@/components/rf-search-bar';
 
 	export default {
 		components: {
 			rfLoadMore,
-			rfSearchBar,
-			rfRecommend,
+			rfSearchBar
 		},
 		data() {
 			return {
 				loading: true,  // 加载动画
-				headerShow: true,
-				navBarTop: "0px",
+				navBarTop: "0",
 				cateMaskState: 0, //分类面板展开状态
-				headerPosition: "fixed",
-				headerTop: "0px",
 				loadingType: 'more', //加载更多状态
 				filterIndex: 0,
 				cateId: 0, //已选三级分类id
@@ -125,30 +121,17 @@
 				isShowNavBar: true,
 				hotSearchDefault: '请输入关键字',
 				contentTop: '88upx',
-        errorInfo: undefined, // 接口请求出错信息
+        errorInfo: undefined // 接口请求出错信息
 			};
 		},
 		onLoad(options) {
 			this.initData(options);
 		},
-		onShow() {
-			if (navigator) {
-				this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight + 'px';
-			}
-		},
-		onPageScroll(e) {
-			//兼容iOS端下拉时顶部漂移
-			if (e.scrollTop >= 0) {
-				this.headerPosition = "fixed";
-			} else {
-				this.headerPosition = "absolute";
-			}
-		},
 		//下拉刷新
 		onPullDownRefresh() {
 			this.filterParams = {};
 			this.page = 1;
-			this.goodsList = [];
+			this.goodsList.length = 0;
 			this.getProductList('refresh');
 		},
 		//加载更多
@@ -159,9 +142,6 @@
 		methods: {
 			// 初始化数据
 			initData(options) {
-				if (navigator) {
-					this.headerTop = document.getElementsByTagName('uni-page-head')[0] && document.getElementsByTagName('uni-page-head')[0].offsetHeight + 'px';
-				}
 				/*  #ifdef APP-PLUS  */
 				switch (uni.getSystemInfoSync().platform) {
 					case 'android':
@@ -175,36 +155,34 @@
 				/*  #ifndef APP-PLUS  */
 				this.navBarTop = '88upx';
 				/*  #endif  */
+				/*  #ifdef MP  */
+        this.contentTop = '98upx';
+				/*  #endif  */
 				this.cateId = options.cate_id;
 				if (options.params) {
 					this.cateParams = JSON.parse(options.params);
 					if (this.cateParams.guessYouLike === 1) {
 						this.isShowNavBar = false;
-						this.contentTop = '18upx';
 						this.getGuessYouLikeList();
 						return;
 					}
 				}
 				this.keyword = options.keyword;
-				this.hotSearchDefault = options.keyword;
-				if (!this.keyword) {
-					this.hotSearchDefault = uni.getStorageSync('hotSearchDefault')
-				}
+				this.hotSearchDefault = options.keyword || '';
 				this.getProductList();
+				this.getProductCate();
 			},
       // 搜索商品列表
 			handleSearchProductList(e) {
 				this.keyword = e.searchValue;
 				this.page = 1;
-				this.goodsList = [];
+				this.goodsList.length = 0;
 				this.filterParams = {};
 				this.getProductList();
 			},
       // 跳转至主页
 			navToIndex() {
-				uni.reLaunch({
-					url: `/pages/index/index`
-				})
+			  this.$mRouter.reLaunch({route: '/pages/index/index'});
 			},
 			// 获取商品列表
 			async getProductList(type) {
@@ -217,12 +195,11 @@
 					params = {...this.cateParams}
 				}
 				params.page = this.page;
-				await this.$get(`${productList}`, {
+				await this.$http.get(`${productList}`, {
 					...params,
 					...this.filterParams
-				}).then(r => {
+				}).then(async r => {
           this.loading = false;
-					this.getProductCate();
 					if (type === 'refresh'){
             uni.stopPullDownRefresh();
 					}
@@ -230,7 +207,7 @@
 					this.goodsList = [...this.goodsList, ...r.data];
 				}).catch(err => {
 					this.errorInfo = err;
-					this.goodsList = [];
+					this.goodsList.length = 0;
           this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
@@ -238,16 +215,17 @@
 				});
 			},
 			async getGuessYouLikeList() {
-				await this.$get(`${guessYouLikeList}`, {}).then(r => {
+				await this.$http.get(`${guessYouLikeList}`, {}).then(r => {
+				  this.loading = false;
 					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
 					this.goodsList = [...this.goodsList, ...r.data];
-				}).catch((err) => {
-					console.log(err)
+				}).catch(() => {
+				  this.loading = false;
 				});
 			},
 			// 获取商品分类
 			async getProductCate() {
-				await this.$get(`${productCate}`).then(r => {
+				await this.$http.get(`${productCate}`).then(r => {
 					this.cateList = r.data
 					this.cateList.unshift({
 						title: '全部商品',
@@ -324,22 +302,19 @@
 				this.getProductList('refresh');
 			},
 			//跳转详情
-			navTo(url) {
-				uni.navigateTo({
-					url
-				})
+			navTo(route) {
+        this.$mRouter.push({route});
 			},
 			stopPrevent() {
 			}
-		},
+		}
 	}
 </script>
 
 <style lang="scss">
   page {
-    background: $page-color-white;
+    background: $color-white;
   }
-
   .product-list {
     .navbar {
       position: fixed;
@@ -351,7 +326,6 @@
       background: #fff;
       box-shadow: 0 2upx 10upx rgba(0, 0, 0, .06);
       z-index: 10;
-
       .nav-item {
         flex: 1;
         display: flex;
@@ -424,7 +398,10 @@
         }
       }
     }
-
+    // 商品列表
+    .rf-product-list {
+      margin-top: 98upx;
+    }
     /* 分类 */
     .cate-mask {
       position: fixed;

@@ -1,32 +1,36 @@
 <template>
-  <view class="content b-t">
-    <view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @tap="checkAddress(item)">
-      <view class="wrapper" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
-        <view class="address-box">
-          <text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
-          <text class="address">{{item.title}}</text>
+  <view class="invoice-list">
+    <view class="rf-list" v-if="invoiceList.length > 0">
+      <view class="rf-list-item" v-for="(item, index) in invoiceList" @tap="checkInvoice(item)" :key="index" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
+        <view class="mid">
+          <view class="t-box">
+            <text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
+            <text>发票抬头: {{item.title}}</text>
+          </view>
+          <view class="u-box">
+            [{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}] — {{ item.duty_paragraph || '个人发票无税号' }}
+          </view>
         </view>
-        <view class="u-box">
-          <text class="name">{{ parseInt(item.type, 10) === 1 ? '公司' : '个人' }}</text>
-          <text class="mobile">{{ item.duty_paragraph || '个人发票无税号' }}</text>
+        <view class="right">
+          <text class="iconfont iconbianji" @tap.stop="addInvoice('edit', item.id)"></text>
         </view>
       </view>
-      <i class="iconfont iconbianji" @tap.stop="addInvoice('edit', item)"></i>
+      <text class="tips" v-if="invoiceList.length > 0">
+        提示：长按可删除当前发票。最多只能存在一个默认发票。
+      </text>
+      <rf-load-more v-if="invoiceList.length > 0" :status="loadingType"/>
     </view>
-    <text class="tips" v-if="invoiceList.length > 0">
-      提示：长按可删除当前发票。最多只能存在一个默认发票。
-    </text>
-    <rf-empty :info="`暂无收货地址，请添加地址`" v-if="invoiceList.length === 0 && !loading"></rf-empty>
-    <rf-load-more v-if="invoiceList.length > 0" :status="loadingType"/>
-    <button class="add-btn" @tap="addInvoice('add')">新增发票</button>
+    <view class="add-btn-wrapper">
+      <button class="add-btn" @tap="addInvoice('add')">新增发票</button>
+    </view>
+		<rf-empty info="暂无发票" v-if="invoiceList.length === 0 && !loading" ></rf-empty>
     <!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
   </view>
 </template>
 
 <script>
-    import {invoiceList, invoiceDel} from "@/api/userInfo";
-
+    import {invoiceList, invoiceDel} from '@/api/userInfo';
     import rfLoadMore from '@/components/rf-load-more/rf-load-more';
     export default {
         components: {
@@ -39,7 +43,7 @@
                 invoiceList: [],
                 page: 1,
                 loadingType: 'more',
-                loading: true,
+                loading: true
             }
         },
         onShow() {
@@ -65,18 +69,21 @@
                 this.timeOutEvent = 0;
                 this.timeOutEvent = setTimeout(() => {
                     uni.showModal({
-                        content: '确定要删除该收货地址吗',
-                        success: (e) => {
-                            if (e.confirm) {
-                                this.$del(`${invoiceDel}?id=${id}`).then(r => {
-                                    this.page = 1;
-                                    this.invoiceList.length = 0;
-                                    this.getInvoiceList();
-                                })
-                            }
+                      content: '确定要删除该发票吗',
+                      success: (e) => {
+                        if (e.confirm) {
+                          this.handleInvoiceDel(id);
                         }
+                      }
                     });
                 }, 0.5 * 1000);//这里设置定时
+            },
+            async handleInvoiceDel(id) {
+              await this.$http.delete(`${invoiceDel}?id=${id}`).then(() => {
+                  this.page = 1;
+                  this.invoiceList.length = 0;
+                  this.getInvoiceList();
+              })
             },
             //手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
             goTouchEnd() {
@@ -95,33 +102,33 @@
                 this.invoiceList.length = 0;
                 this.getInvoiceList();
             },
-            // 获取收货地址列表
-            async getInvoiceList() {
-                await this.$get(`${invoiceList}`, {page: this.page}).then(r => {
+            // 获取发票列表
+            async getInvoiceList(type) {
+                await this.$http.get(`${invoiceList}`, {page: this.page}).then(r => {
                   this.loading = false;
+                  if (type === 'refresh') {
+                    uni.stopPullDownRefresh();
+                  }
                   this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
                   this.invoiceList = [...this.invoiceList, ...r.data];
                 }).catch(() => {
+                  if (type === 'refresh') {
+                    uni.stopPullDownRefresh();
+                  }
                   this.loading = false;
                 })
             },
-            //选择地址
-            checkAddress(item) {
-                if (this.source == 1) {
-                    //this.$api.prePage()获取上一页实例，在App.vue定义
-                    this.$api.prePage().invoiceItem = item;
-                    uni.navigateBack()
-                }
+            //选择发票
+            checkInvoice(item) {
+              if (parseInt(this.source, 10) === 1) {
+                  //this.$mHelper.prePage()获取上一页实例，在App.vue定义
+                  this.$mHelper.prePage().invoiceItem = item;
+                  this.$mRouter.back();
+              }
             },
-            addInvoice(type, item) {
-                uni.navigateTo({
-                    url: `/pages/set/invoice/invoiceManage?type=${type}&id=${item && item.id || undefined}`
-                })
-            },
-            //添加或修改成功之后回调
-            refreshList(data, type) {
-                //添加或修改后事件，这里直接在最前面添加了一条数据，实际应用中直接刷新地址列表即可
-                this.invoiceList.unshift(data);
+            // 跳转至新增/编辑发票
+            addInvoice(type, id) {
+              this.$mRouter.push({route: `/pages/set/invoice/manage?type=${type}&id=${id}`});
             }
         }
     }
@@ -129,87 +136,33 @@
 
 <style lang='scss'>
 	page{
-		padding-bottom: 120upx;
+    background-color: $page-color-base;
 	}
-	.content{
+	.invoice-list {
 		position: relative;
-	}
-	.list{
-		display: flex;
-		align-items: center;
-		padding: 20upx 30upx;;
-		background: #fff;
-		position: relative;
-		.iconfont{
-	display: flex;
-	align-items: center;
-	height: 80upx;
-	font-size: 40upx;
-	color: $font-color-light;
-	padding-left: 30upx;
-}
-	}
-	.wrapper{
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-	}
-	.address-box{
-		display: flex;
-		align-items: center;
-		.tag{
-			font-size: 24upx;
-			color: $base-color;
-			margin-right: 10upx;
-			background: #fffafb;
-			border: 1px solid #ffb4c7;
-			border-radius: 4upx;
-			padding: 4upx 10upx;
-			line-height: 1;
-		}
-		.address{
-			font-size: 30upx;
-			color: $font-color-dark;
-		}
-	}
-	.u-box{
-		font-size: 28upx;
-		color: $font-color-light;
-		margin-top: 16upx;
-		.name{
-			margin-right: 30upx;
-		}
-	}
-	.icon-bianji{
-		display: flex;
-		align-items: center;
-		height: 80upx;
-		font-size: 40upx;
-		color: $font-color-light;
-		padding-left: 30upx;
-	}
-
-	.add-btn{
-		position: fixed;
-		left: 30upx;
-		right: 30upx;
-		bottom: 16upx;
-		z-index: 95;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 690upx;
-		height: 80upx;
-		font-size: 32upx;
-		color: #fff;
-		background-color: $base-color;
-		border-radius: 10upx;
-		box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
-	}
-	.tips {
-		display:block;
-		padding: 16upx 30upx 10upx;
-		color: #fa436a;
-		font-size: 24upx;
+    .t-box{
+      display: flex;
+      align-items: center;
+      font-size: 30upx;
+      color: $font-color-dark;
+      .tag {
+        font-size: 24upx;
+        color: $base-color;
+        margin-right: 10upx;
+        background: #fffafb;
+        border: 1px solid #ffb4c7;
+        border-radius: 4upx;
+        padding: 4upx 10upx;
+        line-height: 1;
+      }
+    }
+	  .u-box{
+      font-size: 28upx;
+      color: $font-color-light;
+      margin-top: 16upx;
+      .name{
+        margin-right: 30upx;
+      }
+    }
 	}
 </style>

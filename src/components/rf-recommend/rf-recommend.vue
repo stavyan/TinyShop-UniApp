@@ -13,7 +13,7 @@
 			>
 				<view class="image-wrapper">
 					<image :src="item.picture" mode="aspectFill"></image>
-					 <text class="sketch">{{ item.sketch }}</text>
+					 <text class="sketch in1line">{{ item.sketch }}</text>
 				</view>
 				<text class="title clamp in2line" v-if="item.name">{{item.name}}</text>
 				<view class="last-line" v-if="item.name">
@@ -61,12 +61,8 @@ export default {
       }
     },
     async getGuessYouLikeList() {
-      await this.$get(`${guessYouLikeList}`, {
-        page: this.page
-      }).then(r => {
+      await this.$http.get(`${guessYouLikeList}`).then(r => {
         this.guessYouLikeList = r.data
-      }).catch(err => {
-        console.log(err);
       });
     },
     navTo (id) {
@@ -80,6 +76,9 @@ export default {
 </script>
 <style scoped lang="scss">
 .rf-floor-index {
+	.rf-product-list {
+		margin-top: 0;
+	}
 	.banner {
 		width: 92%;
 		margin: 20upx 4% 0;
@@ -100,7 +99,6 @@ export default {
       width: 120upx;
     }
     .name {
-      margin: 0 20upx;
     }
 	}
 	.hot-floor{

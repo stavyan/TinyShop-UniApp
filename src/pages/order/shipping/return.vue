@@ -46,7 +46,7 @@
 	 * @date 2020-03-16 11:15
 	 * @copyright 2019
 	 */
-	import {orderProductSalesReturn, orderCustomerSalesReturn} from "@/api/userInfo";
+	import {orderProductSalesReturn, orderCustomerSalesReturn} from '@/api/userInfo';
 	export default{
 		data(){
 			return {
@@ -56,7 +56,7 @@
 				salesReturn: {
 					'id': undefined,
 					'refund_shipping_code' : undefined,
-					'refund_shipping_company' : undefined,
+					'refund_shipping_company' : undefined
 				}
 			}
 		},
@@ -67,6 +67,7 @@
 	    // 数据初始化
 	    initData(options) {
 				this.productInfo = JSON.parse(options.data);
+				console.log(this.productInfo)
 	    },
 			handleRefundShippingCompanyChange (e) {
 	    	this.salesReturn.refund_shipping_company = e.detail.value;
@@ -78,11 +79,11 @@
 			async handleSalesReturn() {
 				this.salesReturn.id = this.productInfo.id;
 				if (!this.salesReturn.refund_shipping_company) {
-					this.$api.msg('请输入物流公司');
+					this.$mHelper.toast('请输入物流公司');
 					return;
 				}
 				if (!this.salesReturn.refund_shipping_code === undefined) {
-					this.$api.msg('请输入物流单号');
+					this.$mHelper.toast('请输入物流单号');
 					return;
 				}
 
@@ -90,14 +91,12 @@
 				if (this.productInfo.order_status == 4) {
 					salesReturnApi = orderCustomerSalesReturn;
 				}
-				await this.$post(`${salesReturnApi}`, {
+				await this.$http.post(`${salesReturnApi}`, {
 					...this.salesReturn
 				}).then(() => {
-					uni.navigateBack({
-						delta: 2
-					});
+					this.$mRouter.back();
 				})
-			},
+			}
 		}
 	}
 </script>

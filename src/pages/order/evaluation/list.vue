@@ -12,7 +12,7 @@
 			<view class="row" v-for="(row, index) in evaluationList" :key="index">
 				<view class="left">
 					<view class="face">
-						<image class="avatar" :src="row.member_head_portrait || '/static/missing-face.png'" mode="aspectFill"></image>
+						<image class="avatar" :src="row.member_head_portrait || headImg" mode="aspectFill"></image>
 					</view>
 				</view>
 				<view class="right">
@@ -39,8 +39,8 @@
 							{{row.content}}
 						</view>
 						<view class="img-video">
-							<view class="box" v-for="(item, index2) in row.covers" @tap="showBigImg(item,row.covers)" :key="item">
-								<image mode="aspectFill" @error="onImageError(index, index2)" :src="item || '/static/errorImage.jpg'"></image>
+							<view class="box" v-for="item in row.covers" :key="item">
+								<rf-image class="image" :src="item"></rf-image>
 							</view>
 						</view>
 					</view>
@@ -52,8 +52,8 @@
 							{{row.again_content}}
 						</view>
 						<view class="img-video">
-							<view class="box" v-for="item in row.again_covers" @tap="showBigImg(item,row.covers)" :key="item">
-								<image mode="aspectFill" :src="item || '/static/errorImage.jpg'"></image>
+							<view class="box" v-for="item in row.again_covers" :key="item">
+								<rf-image class="image" :src="item"></rf-image>
 							</view>
 						</view>
 					</view>
@@ -68,7 +68,7 @@
 
 <script>
 	import {evaluateList} from "@/api/product";
-	import moment from '@/utils/moment';
+	import moment from '@/common/moment';
 
 	import rfRate from "@/components/rf-rate/rf-rate";
 	export default {
@@ -81,7 +81,8 @@
 				labelList:[],
 				labelIndex: 0,
 				evaluationList: [],
-				page: 1
+				page: 1,
+				headImg: this.$mAssetsPath.headImg
 			};
 		},
 		filters: {
@@ -100,7 +101,7 @@
 		},
 		//下拉刷新
 		onPullDownRefresh(){
-			this.evaluationList = [];
+			this.evaluationList.length = 0;
 			this.page = 1;
 			this.getEvaluationList('refresh');
 		},
@@ -110,9 +111,6 @@
 			this.getEvaluationList();
 		},
 		methods: {
-			onImageError(index, index2) {
-				this.evaluationList[index].covers[index2] = '/static/errorImage.jpg';
-			},
 			// 初始化数据
 			initData (options) {
 				this.evaluateStat = JSON.parse(options.evaluateStat);
@@ -136,27 +134,20 @@
 					this.page = 1;
 					this.evaluationList = [];
 				}
-
-				await this.$get(`${evaluateList}`, {
+				await this.$http.get(`${evaluateList}`, {
 					product_id: this.id,
 					page: this.page,
 					...params
 				}).then(r => {
+					this.labelIndex = index;
+					this.evaluationList = [...this.evaluationList, ...r.data];
+				}).catch(() => {
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
-					this.labelIndex = index;
-					this.evaluationList = [...this.evaluationList, ...r.data];
-				})
-			},
-			// 图片预览
-			showBigImg(src, srclist){
-				uni.previewImage({
-					current:src,
-					urls: srclist
 				});
 			}
-		},
+		}
 	}
 </script>
 
@@ -254,7 +245,7 @@ page{
 							position: relative;
 							justify-content: center;
 							align-items: center;
-							image{
+							.image {
 								position: absolute;
 								width: 100%;
 								height: 100%;
@@ -296,7 +287,7 @@ page{
 							position: relative;
 							justify-content: center;
 							align-items: center;
-							image{
+							.image{
 								position: absolute;
 								width: 100%;
 								height: 100%;

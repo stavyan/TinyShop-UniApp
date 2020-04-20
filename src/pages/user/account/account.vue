@@ -25,40 +25,16 @@
           </view>
         </view>
       </view>
-      <view class="header-bg">
-        <image src="/static/accountBg.png" mode="aspectFill"></image>
-      </view>
     </view>
 	  <!--余额/积分导航-->
     <view class="nav">
-      <view class="item" @tap="navTo('/pages/user/account/bill')">
-        <text class="iconfont icondaifukuan"></text>
-        <text>账单记录</text>
-      </view>
-      <view class="item" @tap="navTo('/pages/user/account/bill?state=2')">
-        <text class="iconfont iconchongzhijilu"></text>
-        <text>充值记录</text>
-      </view>
-      <view class="item" @tap="navTo('/pages/user/account/bill?state=3')">
-        <text class="iconfont iconzuheduozhongxiaofeifangshizuhexiaofei"></text>
-        <text>消费记录</text>
-      </view>
-      <view class="item" @tap="navTo('/pages/user/account/integral')">
-        <text class="iconfont iconjifenqia-"></text>
-        <text>积分中心</text>
+      <view class="item" v-for="item in navList" :key="item.title" @tap="navTo(item.url)">
+        <text class="iconfont" :class="item.icon"></text>
+        <text>{{ item.title }}</text>
       </view>
     </view>
 	  <!--广告-->
     <view class="advert">
-        <!--<view-->
-          <!--class="item"-->
-        <!--&gt;-->
-          <!--<view class="text">-->
-            <!--<view class="name">签到领积分</view>-->
-            <!--<text class="desc">赚积分抵现金</text>-->
-          <!--</view>-->
-          <!--<image src="/static/gift.png" mode="aspectFill" />-->
-        <!--</view>-->
         <view
           class="item on"
           @tap="navTo('/pages/user/coupon/list')"
@@ -70,10 +46,6 @@
           <text class="iconfont iconwodeyouhuiquan"></text>
         </view>
       </view>
-
-	  <!--引导跳转组件-->
-    <!--<Home></Home>-->
-
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
   </view>
@@ -87,35 +59,37 @@
    * @date 2020-01-10 15:17
    * @copyright 2019
    */
-	// import Home from '@/components/rf-back-home/rf-back-home';
   export default {
-    // components: {Home},
     data() {
       return {
         userInfo: {},
-        loading: true
+        loading: true,
+        navList: [
+          {title: '账单记录', icon: 'icondaifukuan', url: '/pages/user/account/bill'},
+          {title: '充值记录', icon: 'iconchongzhijilu', url: '/pages/user/account/bill?state=2'},
+          {title: '消费记录', icon: 'iconzuheduozhongxiaofeifangshizuhexiaofei', url: '/pages/user/account/bill?state=3'},
+          {title: '积分中心', icon: 'iconjifenqia', url: '/pages/user/account/integral'}
+        ]
       }
     },
     onLoad() {
       this.initData();
     },
     methods: {
-      // 初始化数据
-      initData() {
-        this.userInfo = uni.getStorageSync('userInfo') || undefined;
-        this.loading = false;
-      },
-      navTo(url){
-        uni.navigateTo({
-          url
-        })
-      },
-    }
+		// 初始化数据
+		initData() {
+			this.userInfo = uni.getStorageSync('userInfo') || undefined;
+			this.loading = false;
+		},
+		navTo(route) {
+			this.$mRouter.push({route})
+		}
+	}
   }
 </script>
 <style scoped lang="scss">
   page {
-    background-color: $page-color-white;
+    background-color: $color-white;
   }
   .my-account {
     padding: 32upx 20upx;
@@ -123,7 +97,8 @@
     .header {
       padding: 30upx;
       height: 320upx;
-      background-image: linear-gradient(to right, #f33b2b 0, #f36053 40%);
+      background-color: $base-color;
+      opacity: 0.9;
       border-radius: 20upx;
       color: rgba(255, 255, 255, 0.6);
       font-size: $font-sm;
@@ -203,7 +178,7 @@
         border-radius: 24upx;
         padding: 10upx 0;
         margin: 20upx 10upx;
-        color: #e44609;
+        color: $base-color;
         display: flex;
         justify-content: space-between;
         .iconfont {
@@ -216,7 +191,7 @@
             font-size: $font-base;
             font-weight: bold;
             height: 40upx;
-            color: #f33c2b;
+            color: $base-color;
           }
           .desc {
             font-size: $font-sm - 2upx;

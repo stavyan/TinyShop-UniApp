@@ -73,13 +73,12 @@
 </template>
 
 <script>
-
-	import mpvuePicker from '@/components/mpvue-picker/mpvuePicker';
-	import moment from '@/utils/moment';
+	import rfPicker from '@/components/rf-picker';
+	import moment from '@/common/moment';
 	import {orderProductExpressDetails} from "@/api/product";
 	export default {
 		components: {
-			mpvuePicker
+			rfPicker
 		},
 		data() {
 			return {
@@ -186,7 +185,7 @@
 			// 获取物流信息
 			async getOrderDetail(order_id) {
 
-				await this.$get(`${orderProductExpressDetails}`, {
+				await this.$http.get(`${orderProductExpressDetails}`, {
 					order_id
 				}).then(r => {
 					r.data.data.forEach(row => {

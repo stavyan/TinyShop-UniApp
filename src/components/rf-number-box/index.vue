@@ -3,7 +3,7 @@
 		<view class="uni-numbox-minus"
 			@tap.stop="_calcValue('subtract')"
 		>
-			<i class="iconfont yticon icon-jianhao" :class="minDisabled?'uni-numbox-disabled': ''" ></i>
+			<text class="iconfont yticon icon-jianhao" :class="minDisabled?'uni-numbox-disabled': ''" ></text>
 		</view>
 		<input
 			class="uni-numbox-value"
@@ -16,7 +16,7 @@
 			class="uni-numbox-plus"
 			@tap.stop="_calcValue('add')"
 		>
-			<i class="iconfont yticon iconjia2" :class="maxDisabled?'uni-numbox-disabled': ''" ></i>
+			<text class="iconfont yticon iconjia2" :class="maxDisabled?'uni-numbox-disabled': ''" ></text>
 		</view>
 	</view>
 </template>
@@ -150,12 +150,12 @@
 <style>
 	.uni-numbox {
 		position:absolute;
-		left: 30upx;
+		left: 0;
 		bottom: 0;
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		width:230upx;
+		width: 230upx;
 		height: 70upx;
 		background:#f5f5f5;
 	}

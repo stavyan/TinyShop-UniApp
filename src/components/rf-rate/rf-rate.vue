@@ -45,6 +45,11 @@
 				type: [Number, String],
 				default: 0
 			},
+			index: {
+				// 当前评分
+				type: Number,
+				default: 1
+			},
 			max: {
 				// 最大评分
 				type: [Number, String],
@@ -102,7 +107,8 @@
 				}
 				this.valueSync = index + 1;
 				this.$emit("change", {
-					value: this.valueSync
+					value: this.valueSync,
+					index: this.index
 				});
 			}
 		}
@@ -119,7 +125,7 @@
 		flex-direction: row;
 	}
 	.iconfont {
-		font-size: 44upx;
+		font-size: $font-lg + 4upx
 	}
 
 	.uni-rate__icon {

@@ -46,7 +46,7 @@
 
 <style lang="scss">
 	.empty {
-		background-color: $page-color-white;
+		background-color: $color-white;
 		.empty-content {
 			width: 100%;
 			display: flex;

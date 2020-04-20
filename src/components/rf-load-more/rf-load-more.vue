@@ -61,7 +61,7 @@
 
 <style>
 	.rf-load-more {
-		width: 100%;
+		width: 100vw;
 		display: flex;
 		flex-direction: row;
 		height: 80upx;

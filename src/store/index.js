@@ -1,58 +1,89 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import $mRoutesConfig from '@/config/routes.config'
+import $mRouter from '@/utils/router'
+
 Vue.use(Vuex);
 
+const ACCESSTOKEN = uni.getStorageSync('accessToken') || '';
+const REFERRER = uni.getStorageSync('referrer') || '';
+const USER = uni.getStorageSync('user') || {};
+const REFRESHTOKEN = uni.getStorageSync('refreshToken') || '';
+
 const store = new Vuex.Store({
-	state: {
-		hasLogin: false,
-		userInfo: {},
-	},
-	mutations: {
-		login(state, provider) {
-			// uni.clearStorageSync();
-			uni.removeStorage({
-				key: 'userInfo'
-			})
-			uni.removeStorage({
-				key: 'accessToken'
-			})
-			state.hasLogin = true;
-			state.userInfo = provider.member;
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'user',
-			    data: provider
-			});
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'loginTime',
-			    data: new Date().getTime() / 1000
-			});
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'userInfo',
-			    data: provider.member
-			})
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'accessToken',
-			    data: provider.access_token
-			})
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'refreshToken',
-			    data: provider.refresh_token
-			})
+    state: {
+        //用户token
+        accessToken: ACCESSTOKEN,
+        //用户信息
+        userInfo: USER.member,
+        //推荐人
+        referrer: REFERRER,
+        //小程序openid
+        openId: '',
+        //网络状态，用于下载提醒
+        networkState: 'unknown',
+        refreshToken: REFRESHTOKEN
+    },
+    getters: {
+		// 获取网络状态
+		networkStatus: state => {
+			return state.networkState;
 		},
-		logout(state) {
-			state.hasLogin = false;
-			state.userInfo = {};
-			uni.removeStorage({
-                key: 'userInfo'
-            })
-			uni.removeStorage({
-                key: 'accessToken'
-            })
-		}
-	},
-	actions: {
-	}
+        // 判断用户是否登录
+        hasLogin: state => {
+            if (state.accessToken) {
+                return true;
+            } else {
+                return false
+            }
+        }
+    },
+    mutations: {
+        login(state, provider) {
+			state.accessToken=provider.access_token;
+			state.refreshToken=provider.refresh_token;
+			state.userInfo = provider.member;
+			state.user = provider;
+            uni.setStorageSync('user', provider);
+			uni.setStorageSync('accessToken', provider.access_token);
+			uni.setStorageSync('refreshToken', provider.refresh_token);
+			uni.setStorageSync('userInfo', provider.member);
+        },
+        logout(state) {
+            state.accessToken = '';
+            state.refreshToken = '';
+            state.userInfo = {};
+            uni.removeStorageSync('accessToken');
+            uni.removeStorageSync('refreshToken');
+            uni.removeStorageSync('userInfo');
+        },
+        setReferrer(state, referrer) {
+            state.referrer = referrer;
+            uni.setStorageSync('referrer', referrer);
+        },
+        setOpenId(state, openId) {
+            state.openId = openId;
+            uni.setStorageSync('openId', openId);
+        },
+        setNetworkState(state, provider) {
+            state.networkState = provider;
+        }
+    },
+    actions: {
+        networkStateChange({commit}, info) {
+            commit('setNetworkState', info);
+        },
+        reLogin({commit}, info) {
+            commit('logout', '');
+            $mRouter.redirectTo({
+                route: $mRoutesConfig.login
+            });
+        },
+        logout({commit}, info) {
+            commit('logout');
+        }
+    }
 })
 
 export default store

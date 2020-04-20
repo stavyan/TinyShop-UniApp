@@ -48,6 +48,6 @@
 		width: calc(100vw - 60upx);
 		margin: 0 30upx 20upx;
 		flex-direction: column;
-		background-color: $page-color-white;
+		background-color: $color-white;
 	}
 </style>

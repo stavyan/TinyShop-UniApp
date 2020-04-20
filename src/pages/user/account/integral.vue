@@ -59,7 +59,6 @@
       </view>
       <view class="list2" :hidden="current !== 1">
         <view class="item">
-          <view class="pictrue"><image src="/static/score.png" mode="aspectFill" /></view>
           <text class="name">购买商品可获得积分奖励</text>
           <view class="earn" @tap="toCategory">赚积分</view>
         </view>
@@ -80,7 +79,7 @@
 import {creditsLogList} from "@/api/userInfo";
 import rfLoadMore from '@/components/rf-load-more/rf-load-more.vue';
 
-import moment from '@/utils/moment';
+import moment from '@/common/moment';
 export default {
   name: "Integral",
   components: {
@@ -89,8 +88,8 @@ export default {
   data () {
     return {
       navList: [
-          {name: "分值明细" },
-          {name: "分值提升" }
+        {name: "分值明细" },
+        {name: "分值提升" }
       ],
       current: 0,
       integralList: [],
@@ -118,9 +117,7 @@ export default {
   },
   methods: {
     toCategory () {
-      uni.reLaunch({
-        url: `/pages/category/category`
-      })
+      this.$mRouter.reLaunch({route: '/pages/category/category'});
     },
     nav (index) {
       this.loading = true;
@@ -130,17 +127,12 @@ export default {
       this.getIntegralListList();
     },
     initData () {
-      this.token = uni.getStorageSync('accessToken') || undefined;
       this.userInfo = uni.getStorageSync('userInfo') || undefined;
-      if (this.token) {
-        this.getIntegralListList();
-      }
+      this.getIntegralListList();
     },
     async getIntegralListList () {
-        const params = {};
-        params.page = this.page;
-        await this.$get(`${creditsLogList}`, {
-          ...params
+        await this.$http.get(`${creditsLogList}`, {
+          page: this.page
         }).then(r=>{
           this.loading = false;
           this.loadingType  = r.data.length === 10 ? 'more' : 'nomore';
@@ -148,17 +140,18 @@ export default {
         }).catch(() => {
           this.loading = false;
         });
-      },
+      }
   }
 };
 </script>
 <style scoped lang="scss">
   page {
-    background-color: $page-color-white;
+    background-color: $color-white;
   }
   .integral {
     .header {
-      background-image: url('../../../static/integralbg.jpg');
+      background-color: $base-color;
+      opacity: 0.9;
       background-repeat: no-repeat;
       background-size: 100% 100%;
       width: 100%;
@@ -215,7 +208,7 @@ export default {
         }
         .on {
           background-color: #fff;
-          color: #e93323;
+          color: $base-color;
           font-weight: bold;
           border-radius: 20upx 0 0 0;
         }
@@ -272,7 +265,7 @@ export default {
         color: #16ac57;
       }
       .change-num-reduce {
-        color: #fc4141;
+        color: $base-color;
       }
     }
   }

@@ -1,8 +1,7 @@
 <template>
 	<view class="coupon-detail" :style="{backgroundColor: couponList.length === 0 ? '#fff' : '' }">
-		<view class="list">
-			<!-- 优惠券列表 -->
-			<view class="sub-list valid" :style="{marginTop: state === 3 ? '40upx' : 0}">
+		<!-- 优惠券详情 -->
+		<view class="sub-list valid" :style="{marginTop: state === 3 ? '40upx' : 0}">
 				<view class="row" v-for="(row,index) in couponList" :key="index" >
 					<!-- content -->
 					<view class="carrier">
@@ -17,12 +16,12 @@
 							<view class="term" v-else>
 								使用时间：{{ row.use_time | timeFull }}
 							</view>
-							<view class="icon shixiao" v-show="state === 3" />
-							<view class="used" v-show="state === 2">已使用</view>
+							<view class="icon shixiao" v-if="state === 3" />
+							<view class="used" v-if="state === 2">已使用</view>
 							<view class="usage">
 								{{parseInt(row.max_fetch, 10) === 0 ? '不限' : `每人限领 ${row.max_fetch}` }}
 								总领取 {{ row.get_count }}
-								<text v-show="row.percentage">剩余{{ row.percentage }}%</text>
+								<text v-if="row.percentage">剩余{{ row.percentage }}%</text>
 							</view>
 						</view>
 						<view class="right" :class="{ invalid: state !== 1 }">
@@ -35,25 +34,28 @@
 								满{{row.at_least}}使用
 							</view>
 							<view class="btn-group">
-								<view class="use view" @tap="show(row)" v-show="parseInt(row.range_type, 10) === 2">
+								<view class="use view" @tap="show(row)" v-if="parseInt(row.range_type, 10) === 2">
 									商品
 								</view>
 								<view class="use" @tap="getCoupon(row)">
 									领取
 								</view>
-<!--							<view class="use" v-show="parseInt(row.range_type, 10) === 2" @tap="show(row)">-->
-<!--								去查看-->
-<!--							</view>-->
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
-		<uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
-				<uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-					<uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]" @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
-				</uni-list>
+		<uni-drawer class="rf-drawer" :visible="showRight" mode="right" @close="closeDrawer()">
+				<view class="rf-drawer-title">可用商品列表</view>
+				<view class="rf-drawer-list">
+	        <view class="rf-drawer-item" @tap="navTo(`/pages/product/product?id=${item.id}`)" v-for="item in currentCoupon.usableProduct" :key="item.id">
+		        <view class="left">
+		          <view class="title">{{ item.name.split('】')[0].split('【').join('') }}</view>
+		          <text class="desc in2line">{{item.name.split('】')[1]}}</text>
+		        </view>
+		        <text class="iconfont iconyou"></text>
+	        </view>
+	      </view>
 				<view class="close">
 					<button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
 				</view>
@@ -74,18 +76,11 @@
  * @copyright 2019
  */
 import { couponDetail, couponReceive} from "@/api/userInfo";
-import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-
-import moment from '@/utils/moment';
-import uniDrawer from '@/components/uni-drawer/uni-drawer'
-import uniList from '@/components/uni-list/uni-list.vue'
-import uniListItem from '@/components/uni-list-item/uni-list-item';
+import moment from '@/common/moment';
+import uniDrawer from '@/components/uni-drawer/uni-drawer';
 export default {
 	components: {
-		rfLoadMore,
 		uniDrawer,
-		uniList,
-		uniListItem
 	},
 	data() {
 		return {
@@ -130,63 +125,43 @@ export default {
 		},
 		// 初始化数据
 		initData (options) {
-			this.token = uni.getStorageSync('accessToken') || undefined;
-			if (this.token) {
-			}
 			this.getMyCouponDetail(options.id);
 		},
-		/**
-		 *@des 获取优惠券
-		 *@author stav stavyan@qq.com
-		 *@blog https://stavtop.club
-		 *@date 2019/11/25 13:41:19
-		 */
+		// 获取优惠券
 		async getCoupon(item) {
-			if (!this.token) {
-				this.$api.msg('请您先登录！');
+			if (!this.$mStore.getters.hasLogin) {
+				this.$mHelper.toast('请您先登录！');
 				return;
 			}
-			if (item.is_get == 0) {
-				this.$api.msg('该优惠券暂不可领取！');
+			if (parseInt(item.is_get, 10) === 0) {
+				this.$mHelper.toast('该优惠券暂不可领取！');
 				return;
 			}
-			await this.$post(`${couponReceive}`, {
+			await this.$http.post(`${couponReceive}`, {
 				id: item.id
-			}).then(r => {
-        this.$api.msg('领取成功');
+			}).then(() => {
+        this.$mHelper.toast('领取成功');
 				setTimeout(() => {
 					this.couponList = [];
-					this.getMyCouponDetail(id);
+					this.getMyCouponDetail(item.id);
 				}, 1.5 * 1000)
-			}).catch(err => {
-				console.log(err)
 			})
 		},
 		// 统一跳转接口
-		navTo(url, type){
-			if (type) {
-				uni.switchTab({url});
-				return;
-			}
-			if (url === 'login') {
-				 return
-			} else {
-				uni.navigateTo({
-					url
-				})
-			}
+		navTo(route){
+			this.$mRouter.push({route})
 		},
 		// 获取我的收货地址列表
 		async getMyCouponDetail (id) {
-			await this.$get(`${couponDetail}`, {
-				id,
+			await this.$http.get(`${couponDetail}`, {
+				id
 			}).then(r=>{
 		    this.loading = false;
 				this.couponList.push(r.data);
 			}).catch(() => {
 		    this.loading = false;
 			})
-		},
+		}
 	}
 }
 </script>
@@ -199,39 +174,16 @@ export default {
 	.sub-list{
 		width: 100%;
 		padding-top: 10upx;
-		.tis{
-			width: 100%;
-			height: 60upx;
-			justify-content: center;
-			align-items: center;
-			font-size: 32upx;
-		}
 		.row{
 			width: 92%;
 			height: 24vw;
 			margin: 10upx auto;
 			border-radius: 8upx;
-			// box-shadow: 0upx 0 10upx rgba(0,0,0,0.1);
 			align-items: center;
 			position: relative;
 			overflow: hidden;
 			z-index: 4;
 			border: 0;
-			.menu{
-				.icon{
-					color: #fff;
-					font-size:50upx;
-				}
-				position: absolute;
-				width: 28%;
-				height: 100%;
-				right: 0;
-				justify-content: center;
-				align-items: center;
-				background-color: $base-color;
-				color: #fff;
-				z-index: 2;
-			}
 			.carrier{
 				background-color: #fff;
 				position: absolute;

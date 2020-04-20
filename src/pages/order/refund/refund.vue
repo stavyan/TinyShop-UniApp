@@ -24,10 +24,10 @@
 					 placeholder-style="color:#ccc; font-size: 24upx"
 					 placeholder="宝贝不满足你的期待吗？请填写一下你的退货/退款理由吧"/>
 				<view class="tips">
-					<text v-show="refund_reason.length > 0 && refund_reason.length < 40">
+					<text v-if="refund_reason.length > 0 && refund_reason.length < 40">
 						您已输入<text class="f"> {{ refund_reason.length }} </text>字
 					</text>
-					<text v-show="refund_reason.length >= 40">
+					<text v-if="refund_reason.length >= 40">
 							还可输入 <text class="s"> {{ wordLimit }} </text> 字
 					</text>
 				</view>
@@ -45,10 +45,10 @@
 	 * @date 2019-11-27 14:32
 	 * @copyright 2019
 	 */
-	import uniRate from "@/components/rf-rate/rf-rate.vue"
-	import {orderRefundApply} from "@/api/userInfo";
-	import {orderCustomerRefundApply} from "@/api/userInfo";
-	const graceChecker = require("@/common/graceChecker.js");
+	import uniRate from '@/components/rf-rate/rf-rate.vue'
+	import {orderRefundApply} from '@/api/userInfo';
+	import {orderCustomerRefundApply} from '@/api/userInfo';
+	const graceChecker = require('@/common/graceChecker.js');
 	export default{
 		components: { uniRate },
 		data(){
@@ -65,7 +65,7 @@
 					{
 						value: '2',
 						name: '退货退款'
-					}],
+					}]
 			}
 		},
 		computed: {
@@ -123,15 +123,13 @@
 					formData.refund_type = this.refundType;
 				}
 				let rule = [
-					{name:"refund_reason", checkType : "notnull", checkRule:"",  errorMsg:"请输入退款/退货理由"}
+					{name:'refund_reason', checkType : 'notnull', checkRule:'',  errorMsg:'请输入退款/退货理由'}
 				];
 				const checkRes = graceChecker.check(formData, rule);
 				if(!checkRes){
-					this.$api.msg(graceChecker.error);
+					this.$mHelper.toast(graceChecker.error);
 					return;
 				}
-
-				console.log(this.refundType)
 				if (this.refundType == 3) {
 					this.handleOrderCustomerRefundApply(this.productInfo.id, formData);
 				} else {
@@ -139,31 +137,23 @@
 				}
 			},
 			async handleOrderRefundApplyOperation(id, formData) {
-				await this.$post(`${orderRefundApply}`, {
+				await this.$http.post(`${orderRefundApply}`, {
 					id,
 					...formData
-				}).then(r => {
-					this.$api.msg('申请成功');
-					uni.navigateBack({
-						delta: 2
-					});
-				}).catch(err => {
-					console.log(err)
-				})
+				}).then(() => {
+					this.$mHelper.toast('申请成功');
+					this.$mRouter.back();
+				});
 			},
 			async handleOrderCustomerRefundApply(id, formData) {
-				await this.$post(`${orderCustomerRefundApply}`, {
+				await this.$http.post(`${orderCustomerRefundApply}`, {
 					id,
 					...formData
-				}).then(r => {
-					this.$api.msg('申请成功');
-					uni.navigateBack({
-						delta: 2
-					});
-				}).catch(err => {
-					console.log(err)
-				})
-			},
+				}).then(() => {
+					this.$mHelper.toast('申请成功');
+					this.$mRouter.back();
+				});
+			}
 		}
 	}
 </script>

@@ -1,15 +1,15 @@
 <template>
-  <view>
+  <view class="my-coupon">
     <!--顶部导航栏-->
     <view class="tabr" :style="{top:headerTop}">
       <view :class="{on:typeClass=='valid'}" @tap="switchType('valid', 1)">可用
-        <text v-show="state === 1">({{couponList.length}})</text>
+        <text v-if="state === 1">({{couponList.length}})</text>
       </view>
       <view :class="{on:typeClass=='used'}" @tap="switchType('used', 2)">已使用
-        <text v-show="state === 2">({{couponList.length}})</text>
+        <text v-if="state === 2">({{couponList.length}})</text>
       </view>
       <view :class="{on:typeClass=='invalid'}" @tap="switchType('invalid', 3)">已失效
-        <text v-show="state === 3">({{couponList.length}})</text>
+        <text v-if="state === 3">({{couponList.length}})</text>
       </view>
       <view class="border" :class="typeClass"></view>
     </view>
@@ -22,7 +22,7 @@
         清空失效优惠券
       </view>
       <!-- 优惠券列表 -->
-      <view class="sub-list valid">
+      <view class="sub-list valid" :style="{marginTop: state === 3 ? '50upx' : 0}">
         <view class="row" v-for="(row,index) in couponList" :key="index">
           <!-- content -->
           <view class="carrier">
@@ -37,16 +37,16 @@
               <view class="term" v-else>
                 使用时间：{{ row.use_time | timeFull }}
               </view>
-              <view class="overdue" v-show="state === 3">
+              <view class="overdue" v-if="state === 3">
                 <i class="iconfont iconyiguoqi2 "></i>
               </view>
-              <view class="overdue" v-show="state === 2">
+              <view class="overdue" v-if="state === 2">
                 <i class="iconfont iconyishiyong"></i>
               </view>
               <view class="usage">
                 {{parseInt(row.couponType.max_fetch, 10) === 0 ? '不限' : `每人限领${row.couponType.max_fetch}` }}
                 已领{{ row.couponType.get_count }}
-                <text v-show="row.couponType.percentage">剩余{{ row.couponType.percentage }}%</text>
+                <text v-if="row.couponType.percentage">剩余{{ row.couponType.percentage }}%</text>
               </view>
             </view>
             <view class="right" :class="{ invalid: state !== 1 }">
@@ -58,13 +58,13 @@
               <view class="criteria">
                 满{{row.at_least}}使用
               </view>
-              <view class="use view" @tap="show(row)" v-show="parseInt(row.couponType.range_type, 10) === 2">
+              <view class="use view" @tap="show(row)" v-if="parseInt(row.couponType.range_type, 10) === 2">
                 商品
               </view>
               <view class="use" v-if="state == 1" @tap="navTo('/pages/category/category', 'tab')">
                 去使用
               </view>
-              <view class="use" v-else @tap="show(row)">
+              <view class="use" v-else @tap="navTo(`/pages/order/detail?id=${row.use_order_id}`)">
                 去查看
               </view>
             </view>
@@ -75,11 +75,17 @@
     </view>
     <rf-empty :info="'暂无优惠券'" v-if="couponList.length === 0 && !loading"></rf-empty>
     <!--显示部分商品的抽屉-->
-    <uni-drawer class="drawer" :visible="showRight" mode="right" @close="closeDrawer()">
-      <uni-list v-for="item in currentCoupon.usableProduct" :key="item.id">
-        <uni-list-item class="in1line" :title="item.name.split('】')[0]" :note="item.name.split('】')[1]"
-                       @tap="navTo(`/pages/product/product?id=${item.id}`)"/>
-      </uni-list>
+    <uni-drawer class="rf-drawer" :visible="showRight" mode="right" @close="closeDrawer()">
+      <view class="rf-drawer-title">可用商品列表</view>
+      <view class="rf-drawer-list">
+        <view class="rf-drawer-item" @tap="navTo(`/pages/product/product?id=${item.id}`)" v-for="item in currentCoupon.usableProduct" :key="item.id">
+          <view class="left">
+            <view class="title">{{ item.name.split('】')[0].split('【').join('') }}</view>
+            <view class="desc in2line">{{item.name.split('】')[1]}}</view>
+          </view>
+          <text class="iconfont iconyou"></text>
+        </view>
+      </view>
       <view class="close">
         <button class="btn" plain="true" size="small" type="primary" @tap="hide">关闭</button>
       </view>
@@ -99,17 +105,13 @@
 	import {couponClear, myCouponList} from "@/api/userInfo";
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
 
-	import moment from '@/utils/moment';
+	import moment from '@/common/moment';
 	import uniDrawer from '@/components/uni-drawer/uni-drawer'
-	import uniList from '@/components/uni-list/uni-list'
-	import uniListItem from '@/components/uni-list-item/uni-list-item';
 
 	export default {
 		components: {
 			rfLoadMore,
-			uniDrawer,
-			uniList,
-			uniListItem
+			uniDrawer
 		},
 		data() {
 			return {
@@ -182,7 +184,7 @@
 			},
 			// 切换顶部优惠券类型
 			switchType(type, state) {
-				if (this.typeClass == type) {
+				if (this.typeClass === type) {
 					return;
 				}
 				uni.pageScrollTo({
@@ -198,7 +200,7 @@
 			},
 			// 清空失效优惠券
 			async emptyInvalidCoupon() {
-				await this.$get(`${couponClear}`).then(() => {
+				await this.$http.get(`${couponClear}`).then(() => {
 					this.getMyCouponList();
 				})
 			},
@@ -208,33 +210,21 @@
 			},
 			// 初始化数据
 			initData() {
-				this.token = uni.getStorageSync('accessToken') || undefined;
-				if (this.token) {
-					this.page = 1;
-					this.couponList = [];
-					this.getMyCouponList();
-				}
+        this.page = 1;
+        this.couponList = [];
+        this.getMyCouponList();
 			},
 			// 统一跳转接口
-			navTo(url, type) {
-				if (!this.token) {
-					url = '/pages/public/login';
-				}
+			navTo(route, type) {
 				if (type) {
-					uni.switchTab({url});
-					return;
-				}
-				if (url === 'login') {
-					return
+					this.$mRouter.switchTab({route});
 				} else {
-					uni.navigateTo({
-						url
-					})
-				}
+					this.$mRouter.push({route});
+        }
 			},
 			// 获取我的优惠券列表
 			async getMyCouponList(type) {
-				await this.$get(`${myCouponList}`, {
+				await this.$http.get(`${myCouponList}`, {
 					page: this.page,
 					state: this.state
 				}).then(r => {
@@ -250,7 +240,7 @@
 						uni.stopPullDownRefresh();
 					}
         });
-			},
+			}
 		}
 	}
 </script>
@@ -262,56 +252,55 @@
 
   page {
     position: relative;
-    width: 100vw;
-    background-color: #f5f5f5;
+    background-color: $page-color-base
   }
 
-  .hidden {
-    display: none !important;
-  }
-
-  .place {
-    width: 100%;
-    height: 95upx;
-  }
- .tabr {
-    background-color: #fff;
-    width: 100%;
-    height: 95upx;
-    padding: 0 3%;
-    border-bottom: solid 1upx #dedede;
-    position: fixed;
-    top: 0;
-    z-index: 10;
-
-    view {
-      width: 33.3%;
-      height: 90upx;
-      justify-content: center;
-      align-items: center;
-      font-size: 32upx;
-      color: #999;
+  .my-coupon {
+    .place {
+      width: 100%;
+      height: 95upx;
     }
 
-    .on {
-      color: $base-color;
-    }
+   .tabr {
+      background-color: #fff;
+      width: 100%;
+      height: 95upx;
+      padding: 0 3%;
+      border-bottom: solid 1upx #dedede;
+      position: fixed;
+      top: 0;
+      z-index: 10;
 
-    .border {
-      height: 4upx;
-      background-color: $base-color;
-      transition: all .3s ease-out;
-
-      &.used {
-        transform: translate3d(100%, 0, 0);
+      view {
+        width: 33.3%;
+        height: 90upx;
+        justify-content: center;
+        align-items: center;
+        font-size: 32upx;
+        color: #999;
       }
 
-      &.invalid {
-        transform: translate3d(200%, 0, 0);
+      .on {
+        color: $base-color;
       }
-    }
 
+      .border {
+        height: 4upx;
+        background-color: $base-color;
+        transition: all .3s ease-out;
+
+        &.used {
+          transform: translate3d(100%, 0, 0);
+        }
+
+        &.invalid {
+          transform: translate3d(200%, 0, 0);
+        }
+      }
+
+    }
   }
+
   .coupon-list {
     width: 100%;
     display: block;
@@ -330,7 +319,6 @@
       }
     }
   }
-
   @keyframes showValid {
     0% {
       transform: translateX(-100%);
@@ -339,7 +327,6 @@
       transform: translateX(0);
     }
   }
-
   @keyframes showInvalid {
     0% {
       transform: translateX(0);
@@ -348,7 +335,6 @@
       transform: translateX(-100%);
     }
   }
-
   .sub-list {
     width: 100%;
     &.invalid {
@@ -575,26 +561,6 @@
             border-radius: 40upx;
             padding: 0 4upx;
           }
-        }
-      }
-    }
-  }
-
-  .drawer {
-    .close {
-      .btn {
-        width: 360upx;
-        height: 76upx;
-        line-height: 76upx;
-        border-radius: 50px;
-        margin-top: 70upx;
-        background: $uni-color-primary;
-        color: #fff;
-        font-size: $font-lg;
-        border: none;
-
-        &:after {
-          border-radius: 100px;
         }
       }
     }

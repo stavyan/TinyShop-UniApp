@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "我的",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "list-cell": "/components/rf-list-cell/index",
-    "rf-badge": "/components/rf-badge/rf-badge"
-  }
-}

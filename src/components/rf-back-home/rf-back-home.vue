@@ -19,7 +19,7 @@
 </template>
 <script>
 export default {
-  name: "Home",
+  name: 'Home',
   data () {
     return {
       homeActive: true

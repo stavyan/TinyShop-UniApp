@@ -1,15 +1,15 @@
 <template>
-	<view class="content b-t">
-		<view  v-if="invoiceList.length > 0">
-			<view class="list b-b" v-for="(item, index) in invoiceList" :key="index" @tap="navTo(item.order_id)">
-				<view class="wrapper">
+	<view class="invoice-history">
+    <view class="rf-list" v-if="invoiceList.length > 0">
+      <view class="rf-list-item" v-for="(item, index) in invoiceList" :key="index" @tap="navTo(item.order_id)">
+        <view class="wrapper">
 					<view class="address-box">
 						<view class="order-fl">
 							订单编号: <text class="order-sn">{{item.order_sn}}</text>
 						</view>
 						<view class="order-wrapper">
 							<text class="address">{{item.title}}<text v-if="item.content">{{ ` - ${item.content}` }}</text></text>
-							<text class="address">开票金额: {{item.tax_money}}</text>
+							<text class="address">开票金额: <text class="base-color">{{item.tax_money}}</text></text>
 						</view>
 					</view>
 					<view class="u-box">
@@ -21,32 +21,29 @@
 					</view>
 
 				</view>
-			</view>
-			<rf-load-more :status="loadingType" v-if="invoiceList.length > 0" />
-		</view>
-		<rf-empty :info="'您还未购买任何商品~'" v-if="invoiceList.length === 0 && !loading" ></rf-empty>
+      </view>
+      <rf-load-more v-if="invoiceList.length > 0" :status="loadingType"/>
+    </view>
+		<rf-empty info="您还未购买任何商品" v-if="invoiceList.length === 0 && !loading" ></rf-empty>
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
 	</view>
 </template>
 
 <script>
-	import {orderInvoiceList} from "@/api/userInfo";
-	import moment from '@/utils/moment';
+	import {orderInvoiceList} from '@/api/userInfo';
+	import moment from '@/common/moment';
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-
 	export default {
 		components: {
 			rfLoadMore
 		},
 		data() {
 			return {
-				timeOutEvent: 0,
-				source: 0,
 				page: 1,
 				loadingType: 'more',
 				invoiceList: [],
-				loading: true,
+				loading: true
 			}
 		},
 		filters: {
@@ -54,14 +51,13 @@
 				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
 			}
 		},
-		onLoad(option){
-			this.source = option.source;
+		onLoad(){
 			this.initData()
 		},
 		//下拉刷新
 		onPullDownRefresh(){
 			this.page = 1;
-			this.invoiceList = [];
+			this.invoiceList.length === 0;
 			this.getInvoiceList('refresh');
 		},
 		//加载更多
@@ -70,23 +66,13 @@
 			this.getInvoiceList();
 		},
 		methods: {
-			/**
-			 *@des 初始化数据
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 09:57:30
-			 */
+			// 数据初始化
 			initData () {
 				this.getInvoiceList();
 			},
-			/**
-			 *@des 获取收货地址列表
-			 *@author stav stavyan@qq.com
-			 *@blog https://stavtop.club
-			 *@date 2019/11/18 09:58:15
-			 */
+			// 获取发票历史
 			async getInvoiceList (type) {
-				await this.$get(`${orderInvoiceList}`,{
+				await this.$http.get(`${orderInvoiceList}`,{
 					page: this.page
 				}).then(r=>{
 			    this.loading = false;
@@ -103,24 +89,42 @@
 				})
 			},
 			navTo(id){
-				uni.navigateTo({
-					url: `/pages/order/detail?id=${id}`
-				})
+				this.$mRouter.push({route: `/pages/order/detail?id=${id}`});
 			}
 		}
 	}
 </script>
 
 <style lang='scss'>
-	.content{
-		position: relative;
+	page{
+    background-color: $page-color-base;
 	}
-	.list{
-		display: flex;
-		align-items: center;
-		padding: 20upx 30upx;;
-		background: #fff;
+	.invoice-list {
 		position: relative;
+    .t-box{
+      display: flex;
+      align-items: center;
+      font-size: 30upx;
+      color: $font-color-dark;
+      .tag {
+        font-size: 24upx;
+        color: $base-color;
+        margin-right: 10upx;
+        background: #fffafb;
+        border: 1px solid #ffb4c7;
+        border-radius: 4upx;
+        padding: 4upx 10upx;
+        line-height: 1;
+      }
+    }
+	  .u-box{
+      font-size: 28upx;
+      color: $font-color-light;
+      margin-top: 16upx;
+      .name{
+        margin-right: 30upx;
+      }
+    }
 	}
 	.wrapper{
 		display: flex;
@@ -129,30 +133,30 @@
 	}
 	.address-box{
 		.order-fl {
-			font-size: $font-base;
+			font-size: $font-sm;
+			color: $font-color-light;
 			margin-bottom: 10upx;
 			.order-sn {
 				margin-left: 14upx;
-				color: $base-color;
 			}
 		}
 		.order-wrapper {
 			display: flex;
 			justify-content: space-between;
-		}
-		.tag{
-			font-size: 24upx;
-			color: $base-color;
-			margin-right: 10upx;
-			background: #fffafb;
-			border: 1px solid #ffb4c7;
-			border-radius: 4upx;
-			padding: 4upx 10upx;
-			line-height: 1;
-		}
-		.address{
-			font-size: $font-base;
-			color: $font-color-dark;
+			.tag{
+				font-size: 24upx;
+				color: $base-color;
+				margin-right: 10upx;
+				background: #fffafb;
+				border: 1px solid #ffb4c7;
+				border-radius: 4upx;
+				padding: 4upx 10upx;
+				line-height: 1;
+			}
+			.address{
+				font-size: $font-base + 2upx;
+				color: $font-color-dark;
+			}
 		}
 	}
 	.u-box{
@@ -166,37 +170,5 @@
 		.time {
 			font-size: $font-sm + 2upx;
 		}
-	}
-	.icon-bianji{
-		display: flex;
-		align-items: center;
-		height: 80upx;
-		font-size: 40upx;
-		color: $font-color-light;
-		padding-left: 30upx;
-	}
-
-	.add-btn{
-		position: fixed;
-		left: 30upx;
-		right: 30upx;
-		bottom: 16upx;
-		z-index: 95;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 690upx;
-		height: 80upx;
-		font-size: 32upx;
-		color: #fff;
-		background-color: $base-color;
-		border-radius: 10upx;
-		box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
-	}
-	.tips {
-		display:block;
-		padding: 16upx 30upx 10upx;
-		color: #fa436a;
-		font-size: 24upx;
 	}
 </style>

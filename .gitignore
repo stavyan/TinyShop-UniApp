@@ -10,6 +10,7 @@ dist/resources/
 # local env files
 .env.local
 .env.*.local
+yarn.lock
 
 # Log files
 npm-debug.log*

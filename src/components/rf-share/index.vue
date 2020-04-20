@@ -110,7 +110,7 @@
 			stopPrevent(){},
 			//分享操作
 			shareToFriend(type){
-				this.$api.msg(`分享给${type}`);
+				this.$mHelper.toast(`分享给${type}`);
 				this.toggleMask();
 			},
 		}

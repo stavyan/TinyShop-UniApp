@@ -97,13 +97,28 @@
             }
         }
     },
+    "uni-app" : {
+        "scripts" : {
+            "h5-weixin" : {
+                "title" : "微信服务号",
+                "BROWSER" : "Chrome",
+                "env" : {
+                    "UNI_PLATFORM" : "h5"
+                },
+                "define" : {
+                    "H5-WEIXIN" : true
+                }
+            }
+        }
+    },
     /* SDK配置 */
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
         "usingComponents" : true,
-        "appid" : "",
+        "appid" : "", // 新梨享
+
         // 这里添加微信小程序appid
         "setting" : {
             "urlCheck" : true,

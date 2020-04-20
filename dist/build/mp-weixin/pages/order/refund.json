@@ -1,8 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "navigationBarTitleText": "订单售后",
-  "usingComponents": {
-    "rf-load-more": "/components/rf-load-more/rf-load-more",
-    "rf-count-down": "/components/rf-count-down/rf-count-down"
-  }
-}

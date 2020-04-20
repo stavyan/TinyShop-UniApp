@@ -62,9 +62,7 @@
 	}
 </script>
 
-<style>
-	@charset "UTF-8";
-
+<style lang="scss">
 	.uni-tag {
 		box-sizing: border-box;
 		padding: 0 32upx;
@@ -147,6 +145,18 @@
 	}
 
 	.uni-tag--inverted {
+		color: #333;
+		background-color: #fff;
+		border: 1px solid #f8f8f8
+	}
+	
+	.uni-tag--base.uni-tag--inverted {
+		color: $base-color;
+		background-color: #fff;
+		border: 1px solid $base-color;
+	}
+
+	.uni-tag--base {
 		color: #333;
 		background-color: #fff;
 		border: 1px solid #f8f8f8

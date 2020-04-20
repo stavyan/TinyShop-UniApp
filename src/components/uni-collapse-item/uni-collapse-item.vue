@@ -117,7 +117,7 @@
 	}
 
 	.uni-collapse-cell--open {
-		background-color: $page-color-white;
+		background-color: $color-white;
 	}
 
 	.uni-collapse-cell--disabled {

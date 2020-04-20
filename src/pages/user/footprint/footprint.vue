@@ -10,35 +10,40 @@
 				@change="handleDateChange"
 		/>
 		<!--足迹列表-->
-		<rf-swipe-action>
-			<rf-swipe-action-item
-					:options="options"
-					:info="item"
-					@action="bindClick"
-					class="uni-list-cell"
-					:key="index"
-					v-for="(item, index) in footPrintList">
-				<view class="uni-media-list" @tap="navTo(`/pages/product/product?id=${item.product.id}`)">
-					<image class="uni-media-list-logo"
-					       mode="aspectFill"
-					       @error="onImageError(index)"
-					       :src="item.product && item.product.picture"></image>
-					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top">{{ item.product && item.product.name }}</view>
-						<view class="uni-media-list-text-bottom">
-							<text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
-							<text>{{ item.created_at | time }}</text>
-						</view>
-					</view>
-				</view>
-			</rf-swipe-action-item>
-		</rf-swipe-action>
+    <rf-swipe-action class="rf-list" v-if="footPrintList.length > 0">
+      <rf-swipe-action-item
+          :options="options"
+          :info="item"
+          @action="bindClick"
+          :key="index"
+          class="rf-swipe-item"
+          v-for="(item, index) in footPrintList">
+          <view class="rf-list-item" @tap="navTo(`/pages/product/product?id=${item.product.id}`)">
+          <view class="left">
+            <image class="image" :isPreviewImage="false" :src="item.product && item.product.picture"></image>
+          </view>
+          <view class="mid">
+            <view class="title in2line">{{ item.product && item.product.name }}</view>
+            <view class="data">
+              <view class="item"><text class="iconfont icontuandui"></text>推荐 {{item.product && item.product.collect_num || 0 }}</view>
+              <view class="item"><text class="iconfont iconkechakan"></text>浏览 {{item.product && item.product.view || 0 }}</view>
+            </view>
+            <view class="state-wrapper">
+              <text class="state" v-if="parseInt(item.product && item.product.product_status) === 0">
+                失效
+              </text>
+            </view>
+            <view class="bottom">
+              <text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
+              <text>{{ item.created_at | time }}</text>
+            </view>
+          </view>
+        </view>
+      </rf-swipe-action-item>
+      <rf-load-more :status="loadingType" v-if="footPrintList.length > 0"/>
+    </rf-swipe-action>
 		<!--足迹列表为0-->
-		<view v-if="footPrintList.length === 0" class="empty">
-			<image class="empty-content-image" :src="empty" mode="aspectFit"></image>
-			<text class="empty-content-text">这一天没有足迹哦</text>
-		</view>
-		<rf-load-more v-else :status="loadingType"/>
+		<rf-empty info="暂无足迹列表" v-if="footPrintList.length === 0"></rf-empty>
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
 	</view>
@@ -54,11 +59,10 @@
      */
     import {footPrintDel, footPrintList} from "@/api/userInfo";
     import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-    import errorImg from '@/static/errorImage.jpg';
     import rfCalendar from "@/components/rf-calendar/rf-calendar";
     import rfSwipeAction from '@/components/rf-swipe-action/rf-swipe-action';
     import rfSwipeActionItem from '@/components/rf-swipe-action-item/rf-swipe-action-item';
-    import moment from '@/utils/moment';
+    import moment from '@/common/moment';
 
     export default {
         components: {
@@ -70,7 +74,6 @@
         data() {
             return {
                 footPrintList: [],
-                errorImg: errorImg,
                 page: 1,
                 loadingType: 'more',
                 token: null,
@@ -89,6 +92,11 @@
                 return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
             }
         },
+				//加载更多
+				onReachBottom() {
+					this.page++;
+					this.getFootPrintList();
+				},
         onLoad() {
             this.initData();
         },
@@ -109,10 +117,10 @@
             },
             // 删除足迹
             async bindClick(e) {
-                await this.$del(`${footPrintDel}?id=${e.data.id}`, {
+                await this.$http.delete(`${footPrintDel}?id=${e.data.id}`, {
                     page: this.page
                 }).then(() => {
-                    this.$api.msg('删除足迹成功');
+                    this.$mHelper.toast('删除足迹成功');
                     this.page = 1;
                     this.footPrintList.length = 0;
                     this.getFootPrintList();
@@ -120,20 +128,18 @@
             },
             // 数据初始化
             initData() {
-                this.token = uni.getStorageSync('accessToken') || undefined;
-                if (this.token) {
-                    this.getFootPrintList();
-                }
+              this.getFootPrintList();
             },
             // 获取我的足迹列表
             async getFootPrintList() {
                 const params = {};
                 params.page = this.page;
+                // 起始时间和结束时间
                 if (this.startTime && this.endTime) {
                     params.start_time = this.startTime,
-                        params.end_time = this.endTime
+                    params.end_time = this.endTime
                 }
-                await this.$get(`${footPrintList}`, {
+                await this.$http.get(`${footPrintList}`, {
                     ...params
                 }).then(r => {
                     this.loading = false;
@@ -143,79 +149,84 @@
                     this.loading = false;
                 });
             },
-            // 图片异常处理
-            onImageError(index) {
-                this.footPrintList[index].product.picture = this.errorImg;
-            },
             // 跳转至商品详情
-            navTo(url) {
-                uni.navigateTo({
-                    url
-                })
-            },
+            navTo(route) {
+							this.$mRouter.push({route})
+            }
         }
     }
 </script>
 
 <style lang='scss' scoped>
-	.footprint {
+	page {
 		background: $page-color-base;
-		height: 100vh;
-		
-		.uni-list-cell {
-			margin: 10upx 0;
-		}
-		
-		.empty {
-			text-align: center;
-			margin-top: 120upx;
-			
-			.empty-content-image {
-				width: 200upx;
-				height: 200upx;
-			}
-			
-			.empty-content-text {
-				display: block;
-				font-size: $font-color-light;
-			}
-		}
 	}
-	
-	.uni-list {
-		/*margin-top: 20upx;*/
-	}
-	
-	.uni-media-list-logo {
-		width: 240upx;
-		height: 180upx;
-	}
-	
-	.uni-media-list-body {
-		height: auto;
-		justify-content: space-around;
-	}
-	
-	.uni-media-list-text-top {
-		height: 74upx;
-		font-size: 28upx;
-		overflow: hidden;
-	}
-	
-	.uni-media-list-text-bottom {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-	}
-	
-	.price {
-		font-size: $font-base;
-		color: $font-color-dark;
-		
-		&:before {
-			content: '￥';
-			font-size: $font-sm;
-			margin: 0 2upx 0 8upx;
-		}
+	.footprint {
+    .rf-swipe-item {
+      margin: 0 $spacing-sm $spacing-base;
+    }
+    .rf-list-item {
+      padding: 0;
+      margin: 0;
+    }
+    .left {
+      padding: 20upx 20upx 10upx;
+      .image {
+        width: 260upx;
+        height: 240upx;
+      }
+    }
+    .mid {
+      width: calc(100vw - 350upx);
+      margin: 0 10upx;
+      .title {
+        height: 88upx;
+        font-size: $font-base + 2upx;
+        color: $font-color-dark;
+      }
+      .data {
+        display: flex;
+        justify-content: space-between;
+        margin: 10upx 0 5upx;
+        font-size: $font-base;
+        color: $font-color-base;
+        .item {
+          height: 50upx;
+          line-height: 50upx;
+        }
+        .iconfont {
+          color: $font-color-light;
+          margin-right: 10upx;
+        }
+      }
+      .state-wrapper {
+        height: 48upx;
+        .state {
+          margin: 5upx 0;
+          background-color: $base-color;
+          opacity: 0.8;
+          color: $color-white;
+          font-size: $font-sm;
+          padding: 4upx 10upx;
+          border-radius: 6upx;
+        }
+      }
+      .bottom {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: $font-sm;
+        color: $font-color-light;
+        .price{
+          color: $base-color;
+          font-size: $font-lg;
+          &:before{
+            content: '￥';
+            font-size: $font-sm;
+          }
+        }
+      }
+    }
 	}
 </style>

@@ -1,12 +1,10 @@
 <template>
 	<view class="about">
-		<uni-list>
-			<uni-list-item
-					v-for="item in navList"
-					:key="item.title"
-					:title="item.title"
-					@tap="navTo(`/pages/set/about/detail?field=${item.url}&title=${item.title}`)"></uni-list-item>
-		</uni-list>
+		<view class="list-cell b-b" v-for="item in navList" :key="item.title" @tap="navTo(`/pages/set/about/detail?field=${item.url}&title=${item.title}`)" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">{{item.title}}</text>
+			<text class="cell-tip">{{item.content}}</text>
+			<text class="cell-more iconfont iconyou"></text>
+		</view>
 		<view class="history-section icon">
 			<view class="sec-header">
 				<i class="iconfont iconshare"></i>
@@ -14,13 +12,9 @@
 			</view>
 			<view class="qrcode-wrapper">
 				<view class="qrcode-section">
-					<rf-image class="qrcode" :src="aboutInfo.qrcode"></rf-image>
+					<rf-image class="qrcode" :src="aboutInfo.qrcode ||''"></rf-image>
 					<text class="info">商城二维码</text>
 				</view>
-				<!--<view class="qrcode-section">-->
-					<!--<rf-image class="qrcode" :src="aboutInfo.web_qrcode"></rf-image>-->
-					<!--<text class="info">商城公众号二维码</text>-->
-				<!--</view>-->
 			</view>
 		</view>
 	</view>
@@ -33,10 +27,7 @@
 * @date 2019-12-09 10:13
 * @copyright 2019
 */
-import uniList from "@/components/uni-list/uni-list"
-import rfImage from "@/components/rf-image/rf-image"
-import uniListItem from "@/components/uni-list-item/uni-list-item"
-import {merchantView} from "@/api/merchant";
+import {merchantView} from '@/api/merchant';
 export default {
 	data() {
 		return {
@@ -51,42 +42,28 @@ export default {
 			]
 		}
 	},
-	components: {
-		uniList,
-		uniListItem,
-		rfImage
-	},
 	onLoad() {
 		this.initData();
 	},
 	methods: {
 		// 初始化数据
 		initData () {
-			this.token = uni.getStorageSync('accessToken') || undefined;
-			if (this.token) {
-				this.getConfigList();
-			}
+			this.getConfigList();
 		},
 		// 获取商城信息
 		async getConfigList() {
 	    const userInfo = uni.getStorageSync('userInfo');
-	    if (!userInfo) return;
-
-			await this.$get(`${merchantView}`, {
+			await this.$http.get(`${merchantView}`, {
 				id: userInfo.merchant_id,
 				field: 'web_qrcode'
 			}).then(r => {
 				this.aboutInfo = r.data
-			}).catch(err => {
-				console.log(err)
 			});
 		},
 		// 统一跳转接口
-		navTo(url){
-			uni.navigateTo({
-				url
-			})
-		},
+		navTo(route){
+			this.$mRouter.push({route});
+		}
 	}
 }
 </script>

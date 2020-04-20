@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import {provinceList} from "@/api/basic";
+    import {provinceList} from '@/api/basic';
 
     export default {
         props: {
@@ -39,7 +39,7 @@
             return {
                 multiArray: [],
                 multiIndex: [0, 0, 0],
-                multiStr: '',
+                multiStr: ''
             }
         },
         mounted() {
@@ -64,7 +64,7 @@
                 let province_name = null;
                 let city_name = null;
                 let area_name = null;
-                await this.$get(`${provinceList}`).then(async r => {
+                await this.$http.get(`${provinceList}`).then(async r => {
                     this.multiArray[0] = r.data;
                     if (this.addressData.province_id) {
                         r.data.forEach((item, index) => {
@@ -81,7 +81,7 @@
                     this.multiIndex = [provinceIndex];
                     this.multiStr = `${province_name}`;
                     // if (this.defaultLevel == 1) return;
-                    await this.$get(`${provinceList}`, {
+                    await this.$http.get(`${provinceList}`, {
                         pid: this.addressData.province_id
                     }).then(async r => {
                         this.multiArray[1] = r.data;
@@ -100,7 +100,7 @@
                         this.multiIndex = [provinceIndex, cityIndex];
                         this.multiStr = `${province_name}, ${city_name}`;
                         // if (this.defaultLevel == 2) return;
-                        await this.$get(`${provinceList}`, {
+                        await this.$http.get(`${provinceList}`, {
                             pid: this.addressData.city_id
                         }).then(r => {
                             this.multiArray[2] = r.data;
@@ -157,7 +157,7 @@
                                     this.$emit('getRegions', this.addressData);
                                     return true;
                                 }
-                                await this.$get(`${provinceList}`, {
+                                await this.$http.get(`${provinceList}`, {
                                     pid: this.multiArray[0][e.detail.value].id
                                 }).then(async r => {
                                     this.multiArray[1] = r.data;
@@ -169,7 +169,7 @@
                                         this.multiStr = `${province_name}, ${city_name}`;
                                         return true;
                                     }
-                                    await this.$get(`${provinceList}`, {
+                                    await this.$http.get(`${provinceList}`, {
                                         pid: this.multiArray[1][e.detail.column].id
                                     }).then(r => {
                                         this.multiArray[2] = r.data
@@ -198,7 +198,7 @@
                                             this.$emit('getRegions', this.addressData);
                                             return true;
                                         }
-                                        await this.$get(`${provinceList}`, {
+                                        await this.$http.get(`${provinceList}`, {
                                             pid: this.multiArray[1][e.detail.value].id
                                         }).then(r => {
                                             this.multiArray[2] = r.data;
@@ -237,7 +237,7 @@
                         break
                 }
                 this.$emit('getRegions', this.addressData);
-            },
-        },
+            }
+        }
     }
 </script>
