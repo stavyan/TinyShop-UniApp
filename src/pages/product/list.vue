@@ -145,15 +145,20 @@
 				/*  #ifdef APP-PLUS  */
 				switch (uni.getSystemInfoSync().platform) {
 					case 'android':
-						this.navBarTop = '118upx';
+						this.navBarTop = '128upx';
 						break;
 					case 'ios':
-						this.navBarTop = '188upx';
+						// 刘海屏返回true，否则返回false
+						if (plus.navigator.hasNotchInScreen()) {
+						  this.navBarTop = '168upx';
+            } else {
+						  this.navBarTop = '128upx';
+            }
 						break;
 				}
 				/*  #endif  */
 				/*  #ifndef APP-PLUS  */
-				this.navBarTop = '88upx';
+				this.navBarTop = '94upx';
 				/*  #endif  */
 				/*  #ifdef MP  */
         this.contentTop = '98upx';
@@ -332,7 +337,7 @@
         justify-content: center;
         align-items: center;
         height: 100%;
-        font-size: 30upx;
+        font-size: $font-base;
         color: $font-color-dark;
         position: relative;
 
