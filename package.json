@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "commit": "git-cz",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "release": "release-it",
     "serve": "npm run dev:h5",
     "build": "npm run build:h5",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
@@ -60,15 +63,24 @@
     "@vue/cli-plugin-babel": "3.5.1",
     "@vue/cli-service": "^4.1.1",
     "babel-plugin-import": "^1.13.0",
+    "commitizen": "^4.0.4",
+    "conventional-changelog-cli": "^2.0.31",
+    "cz-conventional-changelog": "^3.1.0",
     "mini-types": "0.0.5",
     "miniprogram-api-typings": "^2.9.4",
     "postcss-comment": "^2.0.0",
+    "release-it": "^13.5.4",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
     "Android >= 4",
     "ios >= 8"
   ],
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "uni-app": {
     "scripts": {}
   }
