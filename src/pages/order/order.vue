@@ -76,7 +76,7 @@
 						  <button class="action-btn" v-if="(item.order_status == 4 || item.order_status == 2) && item.product[0].is_virtual != 1" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
               <button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
 <!--              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer == 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>-->
-							<button class="action-btn recom" v-if="item.order_status == 4 && item.is_evaluate == 0" @tap="handleOrderOperation(item, 'evaluation')">批量评价</button>
+							<button class="action-btn recom" v-if="item.order_status == 3 && item.is_evaluate == 0" @tap="handleOrderOperation(item, 'evaluation')">批量评价</button>
 						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>

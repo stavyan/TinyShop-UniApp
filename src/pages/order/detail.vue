@@ -38,14 +38,14 @@
 						<view class="btn-box">
 							<button
 									class="action-btn recom"
-									v-if="item.order_status == 4 && item.is_evaluate == 0 && (item.refund_status == 0 || item.refund_status == -2 || item.refund_status == -3)"
+									v-if="item.order_status == 3 && item.is_evaluate == 0 && (item.refund_status == 0 || item.refund_status == -2 || item.refund_status == -3)"
 									@tap.stop="navToEvaluation(item)"
 							>
 								我要评价
 							</button>
 							<button
 									class="action-btn recom"
-									v-if="item.order_status == 4 && item.is_evaluate == 1 && (item.refund_status == 0 || item.refund_status == -2 || item.refund_status == -3)"
+									v-if="item.order_status == 3 && item.is_evaluate == 1 && (item.refund_status == 0 || item.refund_status == -2 || item.refund_status == -3)"
 									@tap.stop="navToEvaluation(item, 'add')"
 							>
 								追加评价
@@ -66,7 +66,7 @@
 							</button>
 							<button
 									class="action-btn"
-									v-if="item.order_status == 4 && (item.refund_status == 0 || item.refund_status == -3)"
+									v-if="(item.order_status == 3 || item.order_status == 4) && (item.refund_status == 0 || item.refund_status == -3)"
 									@tap.stop="navToRefund(item, 3)">
 								申请退换
 							</button>
@@ -208,13 +208,13 @@
 				<button class="action-btn recom" v-if="orderDetail.order_status == 2"
 				        @tap="handleOrderOperation(orderDetail, 'delivery')">确认收货
 				</button>
-				<button class="action-btn recom" v-if="orderDetail.order_status == 4 && orderDetail.is_evaluate == 0"
+				<button class="action-btn recom" v-if="orderDetail.order_status == 3 && orderDetail.is_evaluate == 0"
 				        @tap="handleOrderOperation(orderDetail, 'evaluation')">批量评价
 				</button>
 				<button class="action-btn recom" v-if="orderDetail.order_status == 0"
 				        @tap="navTo(`/pages/user/money/pay?id=${orderDetail.id}`)">立即支付
 				</button>
-				<button class="action-btn" v-if="(orderDetail.order_status == 4 || orderDetail.order_status == 2) && orderDetail.is_virtual != 1"
+				<button class="action-btn" v-if="(orderDetail.order_status == 4 || orderDetail.order_status == 3 || orderDetail.order_status == 2) && orderDetail.is_virtual != 1"
 				        @tap="handleOrderOperation(orderDetail, 'shipping')">查看物流
 				</button>
 				<button class="action-btn recom" v-if="orderDetail.order_status == -4"
