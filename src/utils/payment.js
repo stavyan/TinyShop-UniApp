@@ -49,16 +49,32 @@ export default {
             mHelper.toast('仅支持微信H5和微信小程序支付');
             return;
         }
-
         // #endif
         // #ifdef MP-QQ
         mHelper.toast('QQ小程序暂不支持充值');
         return;
         // #endif
-        // #ifdef APP-PLUS
-        mHelper.toast('APP暂不支持微信充值');
-        return;
+				// #ifdef APP-PLUS
+				await http.post(`${payCreate}`, {
+						order_group,
+						pay_type: 1,
+            trade_type: 'app',
+						data
+				}).then((r) => {
+					console.log(r)
+						uni.requestPayment({
+									provider: 'wxpay',
+    							orderInfo: 'orderInfo', //微信、支付宝订单数据
+									success: function (res) {
+											console.log('success:' + JSON.stringify(res));
+									},
+									fail: function (err) {
+											console.log('fail:' + JSON.stringify(err));
+									}
+							});
+				})
         // #endif
+				// #ifndef APP-PLUS
         await http.post(`${isBindingCheck}`, {
             // #ifdef H5
             oauth_client: 'wechat',
@@ -111,6 +127,7 @@ export default {
                 // #endif
             })
         });
+        // #endif
     },
 
     /*
@@ -128,21 +145,32 @@ export default {
         mHelper.toast('微信小程序不支持支付宝充值');
         return;
         // #endif
-        // #ifdef APP-PLUS
-        mHelper.toast('APP暂不支持支付宝充值');
-        return;
-        // #endif
         await http.post(`${payCreate}`, {
             order_group,
             pay_type: 2,
             // #ifdef H5
             trade_type: 'wap',
             // #endif
+        		// #ifdef APP-PLUS
+            trade_type: 'app',
+            // #endif
             data
         }).then(r => {
             // #ifdef H5
             window.location.href = r.data.config.config;
             // #endif
+        		// #ifdef APP-PLUS
+						uni.requestPayment({
+									provider: 'alipay',
+									orderInfo: 'orderInfo', //微信、支付宝订单数据
+									success: function (res) {
+											console.log('success:' + JSON.stringify(res));
+									},
+									fail: function (err) {
+											console.log('fail:' + JSON.stringify(err));
+									}
+							});
+        			// #endif
         })
     },
 
