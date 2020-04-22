@@ -2,6 +2,14 @@
   "name": "TinyShop-UniApp",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stavyan/TinyShop-UniApp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stavyan/TinyShop-UniApp/issues"
+  },
+  "homepage": "https://github.com/stavyan/TinyShop-UniApp#readme",
   "scripts": {
     "commit": "git pull && git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
