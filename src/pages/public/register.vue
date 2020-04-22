@@ -35,7 +35,7 @@
                 <text v-if="!smsCodeBtnDisabled">获取验证码</text>
                 <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
               </view>
-            
+
             </view>
           </view>
           <view class="input-item">
@@ -57,11 +57,11 @@
             />
           </view>
           <view class="input-item">
-            <text class="tit">姓名</text>
+            <text class="tit">昵称</text>
             <input
                 type="text"
-                v-model="registerParams.realname"
-                placeholder="请输入您的姓名"
+                v-model="registerParams.nickname"
+                placeholder="请输入您的昵称"
                 maxlength="12"
             />
           </view>
@@ -94,7 +94,7 @@
           password: '',
           password_repetition: '',
           promoCode: '',
-          realname: '',
+          nickname: '',
           code: ''
         },
 				reqBody: {},
@@ -147,7 +147,7 @@
 				this.reqBody['mobile'] = this.registerParams['mobile'];
         this.reqBody['password'] = this.registerParams['password'];
         this.reqBody['code'] = this.registerParams['code'];
-        this.reqBody['realname'] = this.registerParams['realname'];
+        this.reqBody['nickname'] = this.registerParams['nickname'];
         const cheRes = this.$mGraceChecker.check(this.reqBody, this.$mFormRule.registerRule);
 				if (!cheRes) {
 					this.$mHelper.toast(this.$mGraceChecker.error);
@@ -239,7 +239,7 @@
           width: 100%;
         }
       }
-      
+
       .confirm-btn {
         width: 630upx;
         height: 76upx;
