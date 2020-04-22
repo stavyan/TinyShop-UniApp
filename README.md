@@ -15,9 +15,9 @@
 
 ### Demo
 
-[H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com  
+[H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com
 
-Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk) 
+Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk)
 
 微信小程序和QQ小程序正处于审核阶段, 可自行clone至本地运行。
 
@@ -25,29 +25,21 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 [后台预览](http://demo2.rageframe.com/backend): http://demo2.rageframe.com/backend
 
-账号: demo   
-密码: 123456 
+账号: demo
+密码: 123456
 
-![image](docs/images/h5-qrcode.png) 
+![image](docs/images/h5-qrcode.png)
 
 ### 更新记录
 
-#### v1.1.11
+#### v1.1.2
 
 updated 2020.04.22
 
+- 新增: 支付宝APP支付
+- 优化: 注册用户姓名改成昵称
 - 修复: 匿名评价昵称不显示问题 资料修改 填写昵称
-- 优化：注册用户姓名改成昵称
-
-#### v1.1.1
-
-updated 2020.04.20
-
-- 修复: 商品列表ios 刘海屏/非刘海屏 android部分机型页面正常显示 
-- 修复: 商品列表 综合排序字体过大 内容溢出问题
-- 修复: 收货按钮的正常显示
-- [ ] 商品详细页面图片过大不能自适应 没有复现
-- [ ] 阻止按钮在短时间内多次点击
+- 修复: 微信小程序商品详情大图不自适应
 
 > [更多更新记录](docs/UPDATE.md)
 
@@ -63,7 +55,7 @@ updated 2020.04.20
 // 安装yarn命令
 npm i -g yarn
 // 安装依赖
-yarn 
+yarn
 ```
 
 2. 运行到指定平台
@@ -71,7 +63,7 @@ yarn
 ```
 // 运行到H5
 yarn serve
-// 运行至对应的小程序平台 
+// 运行至对应的小程序平台
 yarn dev:PLATFORM
 ```
 

@@ -61,12 +61,12 @@ export default {
             trade_type: 'app',
 						data
 				}).then((r) => {
-					console.log(r)
 						uni.requestPayment({
 									provider: 'wxpay',
-    							orderInfo: 'orderInfo', //微信、支付宝订单数据
-									success: function (res) {
-											console.log('success:' + JSON.stringify(res));
+    							orderInfo: JSON.stringify(r.data.config), //微信、支付宝订单数据
+									success: function () {
+											mHelper.toast('支付成功');
+											mRouter.push({route: '/pages/user/money/success'});
 									},
 									fail: function (err) {
 											console.log('fail:' + JSON.stringify(err));
@@ -162,9 +162,10 @@ export default {
         		// #ifdef APP-PLUS
 						uni.requestPayment({
 									provider: 'alipay',
-									orderInfo: 'orderInfo', //微信、支付宝订单数据
-									success: function (res) {
-											console.log('success:' + JSON.stringify(res));
+									orderInfo: r.data.config.config, //微信、支付宝订单数据
+									success: function () {
+											mHelper.toast('支付成功');
+											mRouter.push({route: '/pages/user/money/success'});
 									},
 									fail: function (err) {
 											console.log('fail:' + JSON.stringify(err));

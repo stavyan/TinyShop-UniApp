@@ -383,19 +383,15 @@
 			 */
 			formatRichText (html) { //控制小程序中图片大小
         if (html) {
-            let newContent= html.replace(/<img[^>]*>/gi,function(match,capture){
-                match = match.replace(/style="[^"]+"/gi, '').replace(/style='[^']+'/gi, '');
-                match = match.replace(/width="[^"]+"/gi, '').replace(/width='[^']+'/gi, '');
-                match = match.replace(/height="[^"]+"/gi, '').replace(/height='[^']+'/gi, '');
-                return match;
-            });
-            newContent = newContent.replace(/style="[^"]+"/gi,function(match,capture){
-                match = match.replace(/width:[^;]+;/gi, 'max-width:100%;').replace(/width:[^;]+;/gi, 'max-width:100%;');
-                return match;
-            });
-            newContent = newContent.replace(/<br[^>]*\/>/gi, '');
-            newContent = newContent.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:inline-block;margin:10rpx auto;"');
-            return newContent;
+            let newContent = html.replace(/<img[^>]*>/gi, function(match, capture) {
+						if(match.search(/style=/gi) == -1){
+							match = match.replace(/\<img/gi,'<img style=""');
+						}
+						return match;
+					});
+					newContent = newContent.replace(/style="/gi, '$& max-width:100% !important; ');
+					newContent = newContent.replace(/<br[^>]*\/>/gi, '');
+					return newContent;
         } else {
             return '暂无商品详情'
         }
