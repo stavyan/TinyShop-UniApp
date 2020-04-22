@@ -10,7 +10,7 @@
           v-for="(item, index) in collectionList">
           <view class="rf-list-item" @tap="navTo(`/pages/product/product?id=${item.product.id}`)">
           <view class="left">
-            <rf-image class="image" :isPreviewImage="false" :src="item.product && item.product.picture"></rf-image>
+            <image class="image"  :src="item.product && item.product.picture"></image>
           </view>
           <view class="mid">
             <view class="title in2line">{{ item.product && item.product.name }}</view>
