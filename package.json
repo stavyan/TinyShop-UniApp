@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "commit": "git-cz",
+    "commit": "git pull && git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "release": "release-it",
     "serve": "npm run dev:h5",
@@ -66,10 +66,12 @@
     "commitizen": "^4.0.4",
     "conventional-changelog-cli": "^2.0.31",
     "cz-conventional-changelog": "^3.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.7",
     "mini-types": "0.0.5",
     "miniprogram-api-typings": "^2.9.4",
     "postcss-comment": "^2.0.0",
-    "release-it": "^13.5.4",
+    "release-it": "^13.5.5",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
@@ -79,6 +81,14 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
   },
   "uni-app": {
