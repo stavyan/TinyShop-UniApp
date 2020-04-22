@@ -36,8 +36,8 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 updated 2020.04.22
 
-- 修复匿名评价昵称不显示问题 资料修改 填写昵称
-- 注册用户姓名改成昵称
+- 修复: 匿名评价昵称不显示问题 资料修改 填写昵称
+- 优化：注册用户姓名改成昵称
 
 #### v1.1.1
 
