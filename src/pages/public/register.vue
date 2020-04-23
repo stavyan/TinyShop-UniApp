@@ -138,7 +138,7 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					uni.setStorageSync('loginSmsCodeTime', moment().valueOf() / 1000);
+					uni.setStorageSync('registerSmsCodeTime', moment().valueOf() / 1000);
 					this.handleSmsCodeTime(59);
 				});
 			},
