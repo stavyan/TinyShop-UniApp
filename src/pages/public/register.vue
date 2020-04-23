@@ -73,8 +73,8 @@
                 placeholder="请输入您的邀请码"
             />
           </view>
-          <button class="confirm-btn" @tap="toRegister">注册</button>
       </view>
+	    <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toRegister">注册</button>
     </view>
     <view class="register-section">
       已经注册过了?
@@ -98,6 +98,7 @@
           nickname: '',
           code: ''
         },
+				btnLoading: false,
 				reqBody: {},
 				codeSeconds: 0, // 验证码发送时间间隔
 				smsCodeBtnDisabled: true
@@ -183,9 +184,13 @@
 				/*  #ifdef  MP-QQ  */
 				this.reqBody.group = 'tinyShopQqMq'
 				/*  #endif  */
+				this.btnLoading = true;
 				await this.$http.post(registerByPass, this.reqBody).then(() => {
+					this.btnLoading = false;
 					this.$mHelper.toast('恭喜您注册成功');
           this.$mRouter.push({route: '/pages/public/login'});
+				}).catch(() => {
+					this.btnLoading = false;
 				});
 			}
 		}
@@ -193,7 +198,7 @@
 	}
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
   .container {
     padding-top: 60px;
     position: relative;
@@ -272,21 +277,6 @@
 		      background-color: transparent;
 		    }
 		  }
-
-      .confirm-btn {
-        width: 630upx;
-        height: 76upx;
-        line-height: 76upx;
-        border-radius: 50px;
-        margin-top: 70upx;
-        background: $uni-color-primary;
-        color: #fff;
-        font-size: $font-lg;
-
-        &:after {
-          border-radius: 100px;
-        }
-      }
 
       .forget-section {
         font-size: $font-sm+2upx;

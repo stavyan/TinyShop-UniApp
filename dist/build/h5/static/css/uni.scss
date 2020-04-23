@@ -1579,3 +1579,32 @@
 		opacity: 0;
 	}
 }
+
+// 登录注册修改密码按钮
+.confirm-btn {
+	width: 630upx;
+	height: 76upx;
+	line-height: 76upx;
+	border-radius: 50px;
+	margin-top: 70upx;
+	background: $uni-color-primary;
+	color: #fff;
+	font-size: $font-lg;
+
+	&:after {
+		border-radius: 100px;
+	}
+}
+// 提交订单按钮
+.submit{
+	display:flex;
+	align-items:center;
+	justify-content: center;
+	width: 280upx;
+	border-radius: 0;
+	margin: 0;
+	height: 100%;
+	color: #fff;
+	font-size: 32upx;
+	background-color: $base-color;
+}

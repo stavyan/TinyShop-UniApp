@@ -56,7 +56,7 @@
 				    content: '确定要清除缓存吗',
 				    success: (e)=>{
 				    	if(e.confirm){
-				    		this.setList[6].content = 0;
+				    		this.setList[5].content = '0 kb';
 				    		uni.clearStorageSync();
 				    		this.handleLoadProgress();
 				    	}

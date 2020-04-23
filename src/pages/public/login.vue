@@ -45,14 +45,14 @@
                   data-key="mobile"
               />
             </view>
-            <button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
+            <button class="sms-code-btn" :loading="btnLoading" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
               <text v-if="!smsCodeBtnDisabled">获取验证码</text>
               <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
             </button>
 
           </view>
         </view>
-        <button class="confirm-btn" @tap="toLogin">登录</button>
+        <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toLogin">登录</button>
       </view>
       <view @tap="showLoginBySmsCode" class="forget-section">
         {{ loginByPass ? "验证码登录" : "密码登录" }}
@@ -81,6 +81,7 @@
 				  code: '',
           password: ''
         },
+        btnLoading: false,
 				reqBody: {},
 				codeSeconds: 0, // 验证码发送时间间隔
 				loginByPass: true,
@@ -121,7 +122,7 @@
 					this.smsCodeBtnDisabled = true;
 					uni.setStorageSync('loginSmsCodeTime', moment().valueOf() / 1000);
 					this.handleSmsCodeTime(59);
-				})
+				});
 			},
 			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
@@ -188,10 +189,12 @@
 			},
 			// 登录
 			async handleLogin(params, loginApi) {
+				this.btnLoading = true;
 				await this.$http.post(loginApi, params).then(r => {
 					this.$mHelper.toast('恭喜您，登录成功！');
 					this.$mStore.commit('login', r.data);
 					if (this.userInfo) {
+						this.btnLoading = false;
 						const oauthClientParams = {}
 						/*  #ifdef MP-WEIXIN */
 						oauthClientParams.oauth_client = 'wechatMp';
@@ -227,6 +230,8 @@
 					} else {
 						this.$mRouter.reLaunch({route: '/pages/user/user'});
 					}
+				}).catch(() => {
+					this.btnLoading = false;
 				});
 			}
 		}
@@ -370,21 +375,6 @@
     .sms-code-btn:after {
       border: none;
       background-color: transparent;
-    }
-  }
-
-  .confirm-btn {
-    width: 630upx;
-    height: 76upx;
-    line-height: 76upx;
-    border-radius: 50px;
-    margin-top: 70upx;
-    background: $uni-color-primary;
-    color: #fff;
-    font-size: $font-lg;
-
-    &:after {
-      border-radius: 100px;
     }
   }
 

@@ -55,8 +55,8 @@
               placeholder="请输入确认密码"
                />
         </view>
-        <button class="confirm-btn" @tap="toUpdatePassword">{{ type == 1 ? '修改密码' : '找回密码' }}</button>
       </view>
+	    <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toUpdatePassword">{{ type == 1 ? '修改密码' : '找回密码' }}</button>
     </view>
     <view class="register-section" v-if="type != 1">
       又想起密码了?
@@ -83,6 +83,7 @@
           password_repetition: '',
           code: ''
         },
+        btnLoading: false,
 				type: null,
 				smsCodeBtnDisabled: true,
 				reqBody: {},
@@ -118,7 +119,7 @@
 					this.smsCodeBtnDisabled = true;
 					uni.setStorageSync('pwdSmsCodeTime', moment().valueOf() / 1000);
 					this.handleSmsCodeTime(59);
-				});
+				})
 			},
 			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
@@ -168,19 +169,23 @@
 				/*  #ifdef  MP-QQ  */
 				this.reqBody.group = 'tinyShopQqMq'
 				/*  #endif  */
+				this.btnLoading = true;
 				await this.$http.post(updatePassword, this.reqBody).then(() => {
+					this.btnLoading = false;
           this.$mStore.commit('logout');
 					this.$mHelper.toast('密码重置成功');
           this.$mRouter.push({route: '/pages/public/login'});
-				})
+				}).catch(() => {
+					this.btnLoading = false;
+				});
 			}
 		}
 	}
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
   page {
-    background: #fff;
+    background: $color-white;
   }
 
   .container {
@@ -252,21 +257,6 @@
 
         .sms-code-resend {
           color: #999;
-        }
-      }
-
-      .confirm-btn {
-        width: 630upx;
-        height: 76upx;
-        line-height: 76upx;
-        border-radius: 50px;
-        margin-top: 70upx;
-        background: $uni-color-primary;
-        color: #fff;
-        font-size: $font-lg;
-
-        &:after {
-          border-radius: 100px;
         }
       }
 

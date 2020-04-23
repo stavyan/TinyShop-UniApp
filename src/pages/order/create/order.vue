@@ -166,7 +166,7 @@
 					<text class="price">{{ `${realAmount} ${ maxUsePoint > 0 && (isUsePoint ? ` + ${maxUsePoint} 积分` : '') || (orderDetail.preview && orderDetail.preview.point ? ` + ${orderDetail.preview && orderDetail.preview.point} 积分` : '') }` }}</text>
 				</view>
 	<!--			orderDetail.preview.point-->
-				<button class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
+				<button class="submit" @tap="submit" :disabled="btnLoading" :loading="btnLoading" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
 					提交订单
 				</button>
 				<text class="submit disabled" v-else>
@@ -259,6 +259,7 @@
 					{ label: '物流配送', value: 1 },
 					{ label: '买家自提', value: 2 }
 				],
+				btnLoading: false,
 				currentShippingType: {},
 				currentCompany: {},
 				currentPickupPoint: {},
@@ -497,6 +498,7 @@
 				if (this.use_point) {
 					params.use_point = this.use_point;
 				}
+				this.btnLoading = true;
 				await this.$http.post(`${orderCreate}`, {
 					...params,
 					...this.data
@@ -513,8 +515,8 @@
               url: `/pages/user/money/pay?id=${r.data.id}`
             })
           }
-				}).catch(err => {
-					console.log(err)
+				}).catch(() => {
+					this.btnLoading = false;
 				})
 			},
       // 设置购物车数量角标
@@ -672,18 +674,6 @@
 		.price{
 			font-size: $font-lg;
 			color: $base-color;
-		}
-		.submit{
-			display:flex;
-			align-items:center;
-			justify-content: center;
-			width: 280upx;
-			border-radius: 0;
-			margin: 0;
-			height: 100%;
-			color: #fff;
-			font-size: 32upx;
-			background-color: $base-color;
 		}
 		.disabled {
 			background-color: $border-color-dark;

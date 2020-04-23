@@ -48,7 +48,7 @@
 		<view class="feedback-body">
 			<input class="feedback-input" v-model="sendDate.contact_way" placeholder="(选填,方便我们联系你 )"/>
 		</view>
-		<button class="feedback-submit" @tap="send">提交</button>
+		<button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="send">提交</button>
 		<view class='feedback-title'>
 			<text>反馈结果可在设置 -> 意见反馈 -> 点击列表后查看！</text>
 		</view>
@@ -81,7 +81,8 @@
                     covers: '',
                     content: '',
                     contact_way: ''
-                }
+                },
+	            btnLoading: false
             }
         },
         methods: {
@@ -125,12 +126,16 @@
             },
            // 发送反馈
             async send() {
-                this.sendDate.covers = JSON.stringify(this.imageList);
-                await this.$http.post(`${opinionCreate}`, {
-                    ...this.sendDate
-                }).then(() => {
-                    this.$mRouter.back();
-                })
+              this.btnLoading = true;
+              this.sendDate.covers = JSON.stringify(this.imageList);
+              await this.$http.post(`${opinionCreate}`, {
+                  ...this.sendDate
+              }).then(() => {
+                  this.btnLoading = false;
+                  this.$mRouter.back();
+              }).catch(() => {
+                  this.btnLoading = false;
+              });
             }
         }
     }
@@ -150,12 +155,12 @@
 		color: #8f8f94;
 		font-size: 28upx;
 	}
-	
+
 	.feedback-star-view.feedback-title {
 		justify-content: flex-start;
 		margin: 0;
 	}
-	
+
 	.feedback-quick {
 		position: relative;
 		padding-right: 40upx;
@@ -163,19 +168,19 @@
       font-size: $font-sm;
     }
 	}
-	
+
 	.feedback-body {
 		background: #fff;
-		
+
 		.feedback-type {
 			padding: 20upx;
-			
+
 			.feedback-type-item {
 				margin-right: 20upx;
 			}
 		}
 	}
-	
+
 	.feedback-textare {
 		height: 200upx;
 		font-size: 34upx;
@@ -184,7 +189,7 @@
 		box-sizing: border-box;
 		padding: 20upx 30upx 0;
 	}
-	
+
 	.feedback-input {
 		font-size: 28upx;
 		height: 72upx;
@@ -192,14 +197,8 @@
 		padding: 15upx 20upx;
 		line-height: 72upx;
 	}
-	
+
 	.feedback-uploader {
 		padding: 22upx 20upx;
-	}
-	
-	.feedback-submit {
-		background: $base-color;
-		color: #FFFFFF;
-		margin: 20upx;
 	}
 </style>
