@@ -105,7 +105,7 @@
 		},
 		onLoad(options) {
 			const time = moment().valueOf() / 1000 - uni.getStorageSync('registerSmsCodeTime');
-			if (time < 60 && time > 0 ) {
+			if (time < 60) {
 				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
 				this.handleSmsCodeTime(this.codeSeconds);
 			} else {
@@ -138,7 +138,7 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					uni.setStorageSync('registerSmsCodeTime', r.timestamp);
+					uni.setStorageSync('loginSmsCodeTime', moment().valueOf() / 1000);
 					this.handleSmsCodeTime(59);
 				});
 			},
