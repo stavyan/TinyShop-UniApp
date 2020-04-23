@@ -73,7 +73,7 @@
 
 <script>
 	import {smsCode, updatePassword} from '@/api/login';
-
+	import moment from '@/common/moment';
 	export default {
 		data() {
 			return {
@@ -84,12 +84,21 @@
           code: ''
         },
 				type: null,
-				smsCodeBtnDisabled: false,
+				smsCodeBtnDisabled: true,
 				reqBody: {},
-				codeSeconds: this.$mConstDataConfig.sendCodeTime  // 验证码发送时间间隔
+				codeSeconds: 0 // 验证码发送时间间隔
 			}
 		},
 		onLoad(options) {
+			const time = moment().valueOf() / 1000 - uni.getStorageSync('pwdSmsCodeTime');
+			if (time < 60 && time > 0 ) {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
+				this.handleSmsCodeTime(this.codeSeconds);
+			} else {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime;
+				this.smsCodeBtnDisabled = false;
+				uni.removeStorageSync('pwdSmsCodeTime')
+			}
 			this.type = options.type
 		},
 		methods: {
@@ -107,7 +116,11 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					let time = 59;
+					uni.setStorageSync('pwdSmsCodeTime', r.timestamp);
+					this.handleSmsCodeTime(59);
+				});
+			},
+			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
 						if (time === 0) {
 							clearInterval(timer);
@@ -117,8 +130,7 @@
 							this.smsCodeBtnDisabled = true;
 							time--
 						}
-					}, 1000)
-				});
+					}, 1000);
 			},
 			navBack() {
         this.$mRouter.back();
@@ -232,7 +244,7 @@
 
         .sms-code-btn {
           position: absolute;
-          right: 0;
+          right: 20upx;
           color: #111;
           bottom: 20upx;
           font-size: 28upx;

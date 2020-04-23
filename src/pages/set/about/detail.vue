@@ -9,15 +9,21 @@
 			<view v-if="detail.qq"><text>QQ: </text><text>{{ detail.qq }}</text></view>
 		</view>
 		<view class="shop-info" v-if="title === '注册协议'">
-			<view v-if="detail.protocol_register"><text v-html="detail.protocol_register"></text></view>
+			<view v-if="detail.protocol_register">
+				<rich-text :nodes="detail.protocol_register | formatRichText"></rich-text>
+			</view>
 			<rf-empty :info="`暂无${title}`" v-if="!detail.protocol_register"></rf-empty>
 		</view>
 		<view class="shop-info" v-if="title === '隐私协议'">
-			<view v-if="detail.protocol_privacy"><text v-html="detail.protocol_privacy"></text></view>
+			<view v-if="detail.protocol_privacy">
+				<rich-text :nodes="detail.protocol_privacy | formatRichText"></rich-text>
+			</view>
 			<rf-empty :info="`暂无${title}`" v-if="!detail.protocol_privacy"></rf-empty>
 		</view>
 		<view class="shop-info" v-if="title === '充值协议'">
-			<view v-if="detail.protocol_recharge"><text v-html="detail.protocol_recharge"></text></view>
+			<view v-if="detail.protocol_recharge">
+				<rich-text :nodes="detail.protocol_recharge | formatRichText"></rich-text>
+			</view>
 			<rf-empty :info="`暂无${title}`" v-if="!detail.protocol_recharge"></rf-empty>
 		</view>
 		<rf-empty :info="`暂无${title}`" v-if="!detail && !loading"></rf-empty>
@@ -46,6 +52,32 @@ export default {
 	},
 	onLoad(options) {
 		this.initData(options);
+	},
+	filters: {
+	    /**
+		 * 处理富文本里的图片宽度自适应
+		 * 1.去掉img标签里的style、width、height属性
+		 * 2.img标签添加style属性：max-width:100%;height:auto
+		 * 3.修改所有style里的width属性为max-width:100%
+		 * 4.去掉<br/>标签
+		 * @param html
+		 * @returns {void|string|*}
+		 */
+		formatRichText (html) { //控制小程序中图片大小
+	    if (html) {
+	        let newContent = html.replace(/<img[^>]*>/gi, function(match, capture) {
+					if(match.search(/style=/gi) == -1){
+						match = match.replace(/\<img/gi,'<img style=""');
+					}
+					return match;
+				});
+				newContent = newContent.replace(/style="/gi, '$& max-width:100% !important; ');
+				newContent = newContent.replace(/<br[^>]*\/>/gi, '');
+				return newContent;
+	    } else {
+	        return '暂无商品详情'
+	    }
+		},
 	},
 	methods: {
 		// 数据初始化
@@ -89,6 +121,7 @@ export default {
 		background-color: $page-color-base;
 		position: relative;
 		.about {
+			padding-top: $spacing-lg;
 			.shop-info {
 				text-align: center;
 				image {

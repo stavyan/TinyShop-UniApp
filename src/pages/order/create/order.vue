@@ -166,9 +166,9 @@
 					<text class="price">{{ `${realAmount} ${ maxUsePoint > 0 && (isUsePoint ? ` + ${maxUsePoint} 积分` : '') || (orderDetail.preview && orderDetail.preview.point ? ` + ${orderDetail.preview && orderDetail.preview.point} 积分` : '') }` }}</text>
 				</view>
 	<!--			orderDetail.preview.point-->
-				<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
+				<button class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
 					提交订单
-				</text>
+				</button>
 				<text class="submit disabled" v-else>
 					积分不足
 				</text>
@@ -678,8 +678,9 @@
 			align-items:center;
 			justify-content: center;
 			width: 280upx;
+			border-radius: 0;
+			margin: 0;
 			height: 100%;
-			line-height: 1;
 			color: #fff;
 			font-size: 32upx;
 			background-color: $base-color;

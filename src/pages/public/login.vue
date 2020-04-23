@@ -72,6 +72,7 @@
 
 <script>
 	import {authLogin, loginByPass, loginBySmsCode, smsCode} from '@/api/login';
+	import moment from '@/common/moment';
 	export default {
 		data() {
 			return {
@@ -81,13 +82,22 @@
           password: ''
         },
 				reqBody: {},
-				codeSeconds: this.$mConstDataConfig.sendCodeTime, // 验证码发送时间间隔
+				codeSeconds: 0, // 验证码发送时间间隔
 				loginByPass: true,
-				smsCodeBtnDisabled: false,
+				smsCodeBtnDisabled: true,
 				userInfo: null
 			}
 		},
 		onLoad() {
+			const time = moment().valueOf() / 1000 - uni.getStorageSync('loginSmsCodeTime');
+			if (time < 60 && time > 0 ) {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
+				this.handleSmsCodeTime(this.codeSeconds);
+			} else {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime;
+				this.smsCodeBtnDisabled = false;
+				uni.removeStorageSync('loginSmsCodeTime')
+			}
 			this.userInfo = uni.getStorageSync('wechatUserInfo');
 		},
 		methods: {
@@ -109,7 +119,11 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					let time = 59;
+					uni.setStorageSync('loginSmsCodeTime', r.timestamp);
+					this.handleSmsCodeTime(59);
+				})
+			},
+			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
 						if (time === 0) {
 							clearInterval(timer);
@@ -120,7 +134,6 @@
 							time--
 						}
 					}, 1000);
-				})
 			},
 			// 失去焦点的手机号
 			blurMobileChange(e) {
@@ -341,7 +354,7 @@
 
   .input-item-sms-code {
     position: relative;
-
+		width: 100%;
     .sms-code-btn {
       position: absolute;
       color: #111;
