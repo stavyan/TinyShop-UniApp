@@ -31,10 +31,10 @@
                     data-key="mobile"
                 />
               </view>
-              <view class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
+              <button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
                 <text v-if="!smsCodeBtnDisabled">获取验证码</text>
                 <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
-              </view>
+              </button>
 
             </view>
           </view>
