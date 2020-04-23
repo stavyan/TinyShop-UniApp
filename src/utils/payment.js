@@ -62,8 +62,8 @@ export default {
 						data
 				}).then((r) => {
 						uni.requestPayment({
-									provider: 'wxpay',
-    							orderInfo: JSON.stringify(r.data.config), //微信、支付宝订单数据
+									provider: 'wxpay',	// 微信支付
+    							orderInfo: JSON.stringify(r.data.config), //微信订单数据
 									success: function () {
 											mHelper.toast('支付成功');
 											mRouter.push({route: '/pages/user/money/success'});

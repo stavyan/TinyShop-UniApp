@@ -72,7 +72,6 @@ $mRouter.beforeEach((navType, to) => {
 		return;
 	}
 	// 过滤需要权限的页面
-	console.log(to);
 	if (to.route.requiresAuth) {
 		if (store.getters.hasLogin) {
 			// 已经登录

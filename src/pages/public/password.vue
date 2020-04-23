@@ -35,7 +35,7 @@
               <text v-if="!smsCodeBtnDisabled">获取验证码</text>
               <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
             </view>
-          
+
           </view>
         </view>
         <view class="input-item">
@@ -232,7 +232,7 @@
 
         .sms-code-btn {
           position: absolute;
-          right: 20upx;
+          right: 0;
           color: #111;
           bottom: 20upx;
           font-size: 28upx;

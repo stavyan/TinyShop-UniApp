@@ -870,7 +870,7 @@
 				background: $uni-color-primary;
 			}
 		}
-		.icon-xingxing{
+		.iconxingxing{
 			position:relative;
 			z-index: 1;
 			font-size: 24upx;
