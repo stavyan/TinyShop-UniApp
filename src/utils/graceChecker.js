@@ -7,7 +7,7 @@
 module.exports = {
 	error: '',
 	check: function (data, rule) {
-		for (var i = 0; i < rule.length; i++) {
+		for (let i = 0; i < rule.length; i++) {
 			if (!rule[i].checkType) {
 				return true;
 			}
@@ -135,7 +135,7 @@ module.exports = {
 		return true;
 	},
 	isNumber: function (checkVal) {
-		var reg = /^-?[1-9][0-9]?.?[0-9]*$/;
+		let reg = /^-?[1-9][0-9]?.?[0-9]*$/;
 		return reg.test(checkVal);
 	}
 }

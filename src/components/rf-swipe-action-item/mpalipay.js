@@ -17,7 +17,7 @@ export default {
 			} else {
 				this.close()
 			}
-		},
+		}
 	},
 	created() {
 		if (this.swipeaction.children !== undefined) {
@@ -60,7 +60,7 @@ export default {
 		},
 		touchmove(e) {
 			let {
-				pageX,
+				pageX
 			} = e.changedTouches[0]
 			this.slide = this.getSlide(pageX)
 			if (this.slide === 0) {

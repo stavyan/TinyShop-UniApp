@@ -176,7 +176,12 @@
 		</view>
 		<!-- 404页面 -->
 		<view v-if="!orderDetail.products && !loading">
-			<rf-no-data :custom="true"><view class="title" @tap="getOrderDetail">{{ errorInfo || '订单不存在' }}，点击 <text class="spec-color">重新加载</text></view></rf-no-data>
+			<rf-no-data class="rf-no-data" :custom="true">
+				<view class="title">
+					{{ errorInfo || '订单不存在' }}
+				</view>
+				<view @tap="getOrderDetail" slot="refresh" class="spec-color">重新加载</view>
+			</rf-no-data>
 		</view>
 		<!--页面加载动画-->
     <rf-loading v-if="loading"></rf-loading>
@@ -718,4 +723,7 @@
 		}
 	}
 
+	.rf-no-data {
+		height: calc(100vh - 90upx);
+	}
 </style>

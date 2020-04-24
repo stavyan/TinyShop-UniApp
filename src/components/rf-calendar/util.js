@@ -220,16 +220,16 @@ class Calendar {
 	 * @param {Object} end
 	 */
 	geDateAll(begin, end) {
-		var arr = []
-		var ab = begin.split('-')
-		var ae = end.split('-')
-		var db = new Date()
+		let arr = []
+		let ab = begin.split('-')
+		let ae = end.split('-')
+		let db = new Date()
 		db.setFullYear(ab[0], ab[1] - 1, ab[2])
-		var de = new Date()
+		let de = new Date()
 		de.setFullYear(ae[0], ae[1] - 1, ae[2])
-		var unixDb = db.getTime() - 24 * 60 * 60 * 1000
-		var unixDe = de.getTime() - 24 * 60 * 60 * 1000
-		for (var k = unixDb; k <= unixDe;) {
+		let unixDb = db.getTime() - 24 * 60 * 60 * 1000
+		let unixDe = de.getTime() - 24 * 60 * 60 * 1000
+		for (let k = unixDb; k <= unixDe;) {
 			k = k + 24 * 60 * 60 * 1000
 			arr.push(this.getDate(new Date(parseInt(k))).fullDate)
 		}

@@ -337,7 +337,12 @@
 		</view>
 		<!-- 404页面 -->
 		<view v-if="!productDetail.name && !loading">
-			<rf-no-data :custom="true"><view class="title" @tap="getProductDetail(productDetail.id)">{{ errorInfo || '暂无数据' }}，点击<text class="spec-color">重新加载</text></view></rf-no-data>
+			<rf-no-data :custom="true">
+				<view class="no-data-title">
+					{{ errorInfo || '暂无数据' }}
+				</view>
+				<view @tap="getProductDetail(productDetail.id)" slot="refresh" class="spec-color">重新加载</view>
+			</rf-no-data>
 		</view>
 		<!--页面加载动画-->
     <rf-loading v-if="loading"></rf-loading>

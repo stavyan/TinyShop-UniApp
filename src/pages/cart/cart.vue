@@ -314,8 +314,7 @@
 							item.selected = true;
 							this.specSelected.push(item);
 						}
-					})
-
+					});
 					let skuStr = [];
 					this.specSelected.forEach(item => {
 						skuStr.push(item.base_spec_value_id)
@@ -383,9 +382,9 @@
 					this.sumPrice = 0;
 					this.getCartItemList();
 				} else {
-				  this.loading = false;
-				  this.cartList.length = 0;
+				  this.cartList = [];
 					this.selectedList.length = 0;
+				  this.loading = false;
 				}
 			},
 			// 通用跳转
@@ -402,19 +401,24 @@
 						uni.stopPullDownRefresh();
 					}
 					this.cartList = r.data;
-					uni.setStorageSync('cartNum', r.data.length)
+					let cartNum = 0;
+					r.data.forEach(item => {
+						if (parseInt(item.status, 10) === 1) {
+							cartNum += 1;
+						}
+					});
+					uni.setStorageSync('cartNum', cartNum)
 					if (r.data.length === 0) {
 						uni.removeTabBarBadge({index: 2});
 						return;
 					}
 					uni.setTabBarBadge({
 						index: 2,
-						text: r.data.length.toString()
+						text: cartNum.toString()
 					});
 				}).catch(() => {
+				  this.cartList = [];
 				  this.loading = false;
-				  this.hasLogin = false;
-				  this.cartList.length = 0;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}

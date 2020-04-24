@@ -14,7 +14,10 @@
 		</view>
 		<!-- 自定义内容 -->
 		<slot />
-		<view class="back">或者 <text class="btn" @tap="navTo('/pages/index/index')">返回主页</text></view>
+		<view class="back">
+			<text class="spec-color" @tap="navTo('/pages/index/index')">返回主页</text>
+		</view>
+		<slot name="refresh" />
 	</view>
 </template>
 
@@ -82,7 +85,7 @@ export default {
 <style lang="scss" scoped>
 .rf-no-data {
 	width: 100%;
-  height: calc(100vh - 90upx);
+  height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -90,7 +93,7 @@ export default {
 	.image {
 		width: 60vw;
 		height: 40vw;
-    margin-bottom: 40upx;
+    margin-bottom: 20upx;
 		image {
 			width: 100%;
 			height: 100%;
@@ -104,7 +107,8 @@ export default {
 		justify-content: center;
 		letter-spacing: 1upx;
 		.title {
-			font-size: 36upx;
+			font-size: $font-lg;
+			color: $font-color-dark;
 		}
 		.desc {
 			font-size: 28upx;
@@ -124,11 +128,7 @@ export default {
 		}
 	}
 	.back {
-		margin-top: $spacing-base;
-		.btn {
-			margin-left: $spacing-sm;
-			color: $font-color-spec;
-		}
+		margin: 300upx 0 40upx;
 	}
 }
 </style>

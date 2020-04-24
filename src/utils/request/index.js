@@ -68,6 +68,7 @@ http.interceptor.response(async (response) => { /* 请求之后拦截器 */
 			isRefreshing = false;
 			// refreshToken 的返回状态为401
 			if (response.config.url === refreshToken) {
+				uni.removeStorageSync('accessToken');
 				mHelper.backToLogin();
 				throw response.data.message;
 				break;
