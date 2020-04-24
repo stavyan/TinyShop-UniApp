@@ -2,20 +2,10 @@
   "name": "TinyShop-UniApp",
   "version": "1.0.0",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/stavyan/TinyShop-UniApp.git"
-  },
-  "bugs": {
-    "url": "https://github.com/stavyan/TinyShop-UniApp/issues"
-  },
-  "homepage": "https://github.com/stavyan/TinyShop-UniApp#readme",
   "scripts": {
-    "commit": "git pull && git-cz",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "release": "release-it",
     "serve": "npm run dev:h5",
     "build": "npm run build:h5",
+    "lint": "vue-cli-service lint",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
     "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
     "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
@@ -24,6 +14,8 @@
     "build:mp-qq": "cross-env NODE_ENV=production UNI_PLATFORM=mp-qq vue-cli-service uni-build",
     "build:mp-toutiao": "cross-env NODE_ENV=production UNI_PLATFORM=mp-toutiao vue-cli-service uni-build",
     "build:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin vue-cli-service uni-build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "commit": "git pull && git-cz",
     "dev:app-plus": "cross-env NODE_ENV=development UNI_PLATFORM=app-plus vue-cli-service uni-build --watch",
     "dev:custom": "cross-env NODE_ENV=development uniapp-cli custom",
     "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-serve",
@@ -32,7 +24,11 @@
     "dev:mp-qq": "cross-env NODE_ENV=development UNI_PLATFORM=mp-qq vue-cli-service uni-build --watch",
     "dev:mp-toutiao": "cross-env NODE_ENV=development UNI_PLATFORM=mp-toutiao vue-cli-service uni-build --watch",
     "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch",
-    "info": "node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js"
+    "info": "node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js",
+    "lint:fix": "eslint --ext .js,.vue src -c .eslintrc.js --fix",
+		"release": "release-it",
+		"vue:lint": "vue-cli-service lint",
+		"vue:lintfix": "vue-cli-service lint --fix"
   },
   "dependencies": {
     "@dcloudio/uni-app-plus": "^2.0.0-24220191115011",
@@ -48,8 +44,6 @@
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
     "axios": "^0.19.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^6.2.2",
     "flyio": "^0.6.2",
     "node-sass": "^4.13.0",
     "regenerator-runtime": "^0.12.1",
@@ -69,11 +63,20 @@
     "@types/html5plus": "*",
     "@types/uni-app": "*",
     "@vue/cli-plugin-babel": "3.5.1",
+    "@vue/cli-plugin-eslint": "^4.3.1",
     "@vue/cli-service": "^4.1.1",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-import": "^1.13.0",
     "commitizen": "^4.0.4",
     "conventional-changelog-cli": "^2.0.31",
     "cz-conventional-changelog": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^6.2.2",
     "husky": "^4.2.5",
     "lint-staged": "^10.1.7",
     "mini-types": "0.0.5",
@@ -86,18 +89,26 @@
     "Android >= 4",
     "ios >= 8"
   ],
+  "bugs": {
+    "url": "https://github.com/stavyan/TinyShop-UniApp/issues"
+  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
   },
-  "lint-staged": {
-    "src/**/*.{js,vue}": "eslint"
-  },
+  "homepage": "https://github.com/stavyan/TinyShop-UniApp#readme",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stavyan/TinyShop-UniApp.git"
   },
   "uni-app": {
     "scripts": {}
