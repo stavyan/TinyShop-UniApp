@@ -59,12 +59,12 @@
 						<view>
 							{{ row.value }}
 						</view>
-						<view v-if="row.trace.length === 0" class="datetime">
+						<view v-if="row.length != 0" class="datetime">
 							{{ row.time }}
 						</view>
 					</view>
 				</view>
-				<view>暂无物流信息</view>
+				<view v-if="item.trace.length===0">暂无物流信息</view>
 			</view>
 		</view>
 
