@@ -92,24 +92,24 @@
 </script>
 
 <style lang='scss'>
-	
+
 	page {
 		background-color: $page-color-base;
 	}
-	
+
 	.feedback-list {
 		position: relative;
-		
+
 		.wrapper {
 			display: flex;
 			flex-direction: column;
 			flex: 1;
 		}
-		
+
 		.address-box {
 			display: flex;
 			align-items: center;
-			
+
 			.tag {
 				font-size: 24upx;
 				color: $base-color;
@@ -120,18 +120,18 @@
 				padding: 4upx 10upx;
 				line-height: 1;
 			}
-			
+
 			.address {
 				font-size: 30upx;
 				color: $font-color-dark;
 			}
 		}
-		
+
 		.u-box {
 			font-size: 28upx;
 			color: $font-color-light;
 			margin-top: 16upx;
-			
+
 			.name {
 				margin-right: 30upx;
 			}

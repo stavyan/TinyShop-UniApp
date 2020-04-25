@@ -36,7 +36,7 @@
 				</label>
 			</view>
 		</view>
-		<text class="mix-btn" @tap="confirm">确认支付</text>
+		<button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="confirm">确认支付</button>
 	</view>
 </template>
 
@@ -52,7 +52,8 @@
                 money: 0,
                 userInfo: {},
                 orderDetail: {},
-                orderInfo: {}
+                orderInfo: {},
+                btnLoading: false
             };
         },
         computed: {},
@@ -81,8 +82,6 @@
                     simplify: 1 // 获取简化订单详情
                 }).then(r => {
                     this.money = r.data.pay_money
-                }).catch(err => {
-                    console.log(err)
                 });
             },
             // 获取支付类型列表
@@ -95,6 +94,7 @@
             },
             //确认支付
             async confirm() {
+                this.btnLoading = true;
                 switch (parseInt(this.payType)) {
                   case 1:
                     this.$mPayment.weixinPay('order', JSON.stringify(this.orderInfo));
@@ -106,32 +106,9 @@
                     this.$mPayment.balancePay(JSON.stringify(this.orderInfo));
                     break;
                 }
-            },
-            async balancePay() {
-            	const payType = parseInt(this.payType, 10);
-                if (payType === 1) {
-                    // #ifdef H5
-                    if (isWechat()) {
-                        params.trade_type = 'js';
-                    } else {
-                        params.trade_type = 'wap';
-                    }
-                    // #endif
-                    // #ifdef MP
-                    params.trade_type = 'mini_program';
-                    // #endif
-                } else if (payType === 5) {
-                    params.trade_type = 'default';
-                }
-                await this.$http.post(`${orderPay}`, {
-                    data: JSON.stringify(this.orderInfo),
-                    order_group: 'order',
-                    trade_type: 'js',
-                    pay_type: this.payType
-                }).then(async () => {
-                    this.$mHelper.toast('支付成功~');
-                    this.$mRouter.push({route: '/pages/user/money/success'});
-                });
+                setTimeout(() => {
+                	this.btnLoading = false;
+                }, 0.5 * 1000)
             }
         }
     }
@@ -214,20 +191,6 @@
 			font-size: $font-sm;
 			color: $font-color-light;
 		}
-	}
-
-	.mix-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 630upx;
-		height: 80upx;
-		margin: 80upx auto 30upx;
-		font-size: $font-lg;
-		color: #fff;
-		background-color: $base-color;
-		border-radius: 10upx;
-		box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
 	}
 
 </style>

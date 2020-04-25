@@ -99,10 +99,10 @@ export default {
 			checkRule: '6,18',
 			errorMsg: '请输入6-18位密码'
 		}, {
-			name: 'realname',
+			name: 'nickname',
 			checkType: 'string',
 			checkRule: '2,12',
-			errorMsg: '请输入2-12位真实姓名'
+			errorMsg: '请输入2-12位昵称'
 		}
 	],
 

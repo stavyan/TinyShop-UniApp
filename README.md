@@ -15,9 +15,9 @@
 
 ### Demo
 
-[H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com  
+[H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com
 
-Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk) 
+Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk)
 
 微信小程序和QQ小程序正处于审核阶段, 可自行clone至本地运行。
 
@@ -25,41 +25,30 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 [后台预览](http://demo2.rageframe.com/backend): http://demo2.rageframe.com/backend
 
-账号: demo   
-密码: 123456 
+账号: demo
+密码: 123456
 
-![image](docs/images/h5-qrcode.png) 
+![image](docs/images/h5-qrcode.png)
 
 ### 更新记录
 
-#### v1.1.0
+#### v1.1.4
 
-updated 2020.04.20
+updated 2020.04.24
 
-- 新增: 会话过期返回原先登录页面(utils/helper.js)
-- 新增: 路由导航
-    - 封装页面跳转方法(utils/router.js)
-- 新增: 封装支付方法(utils/payment)
-    - 公众号支付(微信H5支付)
-    - 微信小程序支付
-    - H5支付宝支付
-- 新增: 抽取常量参数
-    - 图片 (config/assets.config.js)
-    - 常量 (config/constData.config.js)
-    - 表单验证 (config/formRule.config.js)
-    - 基本配置 (config/index.config.js)
-    - websocket方法 (config/websocket.config.js)
-- 优化: vuex状态管理
-- 新增: 分包优化
-- 新增: 404/500 页面
-- 优化：request.js 优化token无痛刷新
-- 优化：服务协议和隐私协议窗口
-- 优化：订单下单-完成的流程
-- 新增：购物车 收藏 我的足迹失效状态的显示
-- 优化：购物车角标显示
-- 新增：订单搜索功能/搜索订单结果页面
-- 优化：统一所有list样式
-- 新增：图片懒加载(除h5)
+- 修复：下架商品的商品详情页显示
+- 优化：已过期或者已失效商品不计入购物车数字脚本
+
+#### v1.1.3
+
+updated 2020.04.23
+
+- 新增: 微信APP支付
+- 修复: 统一switch 组件样式
+- 修复: app端创建订单按钮不居中
+- 修复: 微信小程序协议不显示
+- 修复: 登录、注册、修改密码页面发送验证码倒计时 刷新或者切换页面数值重置
+- 提示: 自提点提货下单还是需要选择收货地址 收货地址信息包含用户姓名和用户联系方式
 
 > [更多更新记录](docs/UPDATE.md)
 
@@ -75,7 +64,7 @@ updated 2020.04.20
 // 安装yarn命令
 npm i -g yarn
 // 安装依赖
-yarn 
+yarn
 ```
 
 2. 运行到指定平台
@@ -83,7 +72,7 @@ yarn
 ```
 // 运行到H5
 yarn serve
-// 运行至对应的小程序平台 
+// 运行至对应的小程序平台
 yarn dev:PLATFORM
 ```
 

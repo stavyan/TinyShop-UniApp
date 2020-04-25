@@ -51,15 +51,16 @@
   </view>
 </template>
 
-<script>
-  /**
-   * @des 用户账户中心
-   *
-   * @author stav stavyan@qq.com
-   * @date 2020-01-10 15:17
-   * @copyright 2019
-   */
-  export default {
+<script>/**
+ * @des 用户账户中心
+ *
+ * @author stav stavyan@qq.com
+ * @date 2020-01-10 15:17
+ * @copyright 2019
+ */
+import { memberInfo } from '@/api/userInfo';
+
+export default {
     data() {
       return {
         userInfo: {},
@@ -72,15 +73,23 @@
         ]
       }
     },
-    onLoad() {
+    onShow() {
       this.initData();
     },
     methods: {
 		// 初始化数据
 		initData() {
-			this.userInfo = uni.getStorageSync('userInfo') || undefined;
-			this.loading = false;
+			this.getMemberInfo();
 		},
+    // 获取用户信息
+    async getMemberInfo() {
+      await this.$http.get(memberInfo).then(async r => {
+        this.loading = false;
+        this.userInfo = r.data;
+      }).catch(() => {
+        this.loading = false;
+      });
+    },
 		navTo(route) {
 			this.$mRouter.push({route})
 		}

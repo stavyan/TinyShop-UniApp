@@ -27,7 +27,7 @@
 			<text class="tit">设为默认</text>
 			<switch :checked="invoiceData.is_default ? true : false" color="#fa436a" @change="switchChange"/>
 		</view>
-		<button class="add-btn" @tap="confirm">提交</button>
+		<button class="add-btn" :disabled="btnLoading" :loading="btnLoading"  @tap="confirm">提交</button>
 	</view>
 </template>
 
@@ -51,7 +51,8 @@
                     {name: '公司', value: 1},
                     {name: '个人', value: 2}
                 ],
-                reqBody: {}
+                reqBody: {},
+		            btnLoading: false
             }
         },
         onLoad(options) {
@@ -97,6 +98,7 @@
                     this.$mHelper.toast(this.$mGraceChecker.error);
                     return;
                 }
+                this.btnLoading = true;
                 if (this.manageType === 'edit') {
                     this.handleInvoiceUpdate(this.invoiceData)
                 } else {
@@ -106,19 +108,21 @@
             // 编辑发票
             async handleInvoiceUpdate(params) {
                 await this.$http.put(`${invoiceUpdate}?id=${params.id}`, params).then(() => {
+                	  this.btnLoading = false;
                     this.$mHelper.toast('恭喜您, 发票修改成功！');
-										this.$mRouter.push({route: '/pages/set/invoice/invoice'});
-                }).catch(err => {
-                    console.log(err)
+										this.$mRouter.back();
+                }).catch(() => {
+                	this.btnLoading = false;
                 })
             },
             // 新增发票
             async handleInvoiceCreate(params) {
                 await this.$http.post(`${invoiceCreate}`, params).then(() => {
+                	  this.btnLoading = false;
                     this.$mHelper.toast('恭喜您, 发票添加成功！');
-										this.$mRouter.push({route: '/pages/set/invoice/invoice'});
-                }).catch(err => {
-                    console.log(err)
+										this.$mRouter.back();
+                }).catch(() => {
+                	this.btnLoading = false;
                 })
             }
         }

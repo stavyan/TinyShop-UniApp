@@ -31,11 +31,11 @@
                   data-key="mobile"
               />
             </view>
-            <view class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
+            <button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
               <text v-if="!smsCodeBtnDisabled">获取验证码</text>
               <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
-            </view>
-          
+            </button>
+
           </view>
         </view>
         <view class="input-item">
@@ -55,8 +55,8 @@
               placeholder="请输入确认密码"
                />
         </view>
-        <button class="confirm-btn" @tap="toUpdatePassword">{{ type == 1 ? '修改密码' : '找回密码' }}</button>
       </view>
+	    <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toUpdatePassword">{{ type == 1 ? '修改密码' : '找回密码' }}</button>
     </view>
     <view class="register-section" v-if="type != 1">
       又想起密码了?
@@ -73,7 +73,7 @@
 
 <script>
 	import {smsCode, updatePassword} from '@/api/login';
-
+	import moment from '@/common/moment';
 	export default {
 		data() {
 			return {
@@ -83,13 +83,23 @@
           password_repetition: '',
           code: ''
         },
+        btnLoading: false,
 				type: null,
-				smsCodeBtnDisabled: false,
+				smsCodeBtnDisabled: true,
 				reqBody: {},
-				codeSeconds: this.$mConstDataConfig.sendCodeTime  // 验证码发送时间间隔
+				codeSeconds: 0 // 验证码发送时间间隔
 			}
 		},
 		onLoad(options) {
+			const time = moment().valueOf() / 1000 - uni.getStorageSync('pwdSmsCodeTime');
+			if (time < 60) {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
+				this.handleSmsCodeTime(this.codeSeconds);
+			} else {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime;
+				this.smsCodeBtnDisabled = false;
+				uni.removeStorageSync('pwdSmsCodeTime')
+			}
 			this.type = options.type
 		},
 		methods: {
@@ -107,7 +117,11 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					let time = 59;
+					uni.setStorageSync('pwdSmsCodeTime', moment().valueOf() / 1000);
+					this.handleSmsCodeTime(59);
+				})
+			},
+			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
 						if (time === 0) {
 							clearInterval(timer);
@@ -117,8 +131,7 @@
 							this.smsCodeBtnDisabled = true;
 							time--
 						}
-					}, 1000)
-				});
+					}, 1000);
 			},
 			navBack() {
         this.$mRouter.back();
@@ -156,19 +169,23 @@
 				/*  #ifdef  MP-QQ  */
 				this.reqBody.group = 'tinyShopQqMq'
 				/*  #endif  */
+				this.btnLoading = true;
 				await this.$http.post(updatePassword, this.reqBody).then(() => {
+					this.btnLoading = false;
           this.$mStore.commit('logout');
 					this.$mHelper.toast('密码重置成功');
           this.$mRouter.push({route: '/pages/public/login'});
-				})
+				}).catch(() => {
+					this.btnLoading = false;
+				});
 			}
 		}
 	}
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
   page {
-    background: #fff;
+    background: $color-white;
   }
 
   .container {
@@ -240,21 +257,6 @@
 
         .sms-code-resend {
           color: #999;
-        }
-      }
-
-      .confirm-btn {
-        width: 630upx;
-        height: 76upx;
-        line-height: 76upx;
-        border-radius: 50px;
-        margin-top: 70upx;
-        background: $uni-color-primary;
-        color: #fff;
-        font-size: $font-lg;
-
-        &:after {
-          border-radius: 100px;
         }
       }
 

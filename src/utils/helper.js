@@ -21,30 +21,30 @@ export default {
 	/**
 	 * 返回登录页面
 	 */
-	 async backToLogin() {
+	async backToLogin() {
 		// 存当前页面的地址
 		const currentPage = getCurrentPages()[getCurrentPages().length - 1];
 		const params = {};
 		// #ifdef H5
 		params.route = `/${currentPage.$vm.route}`;
 		params.query = currentPage.$vm.$mp && currentPage.$vm.$mp.query;
-    	// #endif
+		// #endif
 		// #ifdef MP
 		params.route = `/${currentPage.$vm.__route__}`;
 		params.query = currentPage.$vm.$mp && currentPage.$vm.$mp.query;
-    	// #endif
+		// #endif
 		// #ifdef APP-PLUS
 		params.route = `/${currentPage.route}`;
 		params.query = currentPage.options;
-    	// #endif
+		// #endif
 		await uni.setStorageSync('backToPage', JSON.stringify(params));
-		await uni.removeTabBarBadge({index: mConstDataConfig.cartIndex});
+		await uni.removeTabBarBadge({ index: mConstDataConfig.cartIndex });
 		await mStore.commit('logout');
 		uni.showModal({
 			content: '会话已过期，是否跳转登录页面？',
 			success: (confirmRes) => {
 				if (confirmRes.confirm) {
-					mRouter.push({route: '/pages/public/logintype'});
+					mRouter.push({ route: '/pages/public/logintype' });
 				}
 			}
 		});
@@ -224,7 +224,7 @@ export default {
 			d++;
 			b3 = key.indexOf(str.charAt(d));
 			d++;
-			s[i] = b1 * l * l + b2 * l + b3
+			s[i] = b1 * l * l + b2 * l + b3;
 		}
 		b = eval('String.fromCharCode(' + s.join(',') + ')');
 		return b;
@@ -263,16 +263,15 @@ export default {
 	 * H5复制
 	 */
 	h5Copy(content) {
-		let textarea = document.createElement('textarea')
-		textarea.value = content
-		textarea.readOnly = 'readOnly'
-		document.body.appendChild(textarea)
-		textarea.select() // 选择对象
-		textarea.setSelectionRange(0, content.length) //核心
-		let result = document.execCommand('Copy') // 执行浏览器复制命令
-		textarea.remove()
-		return result
+		let textarea = document.createElement('textarea');
+		textarea.value = content;
+		textarea.readOnly = 'readOnly';
+		document.body.appendChild(textarea);
+		textarea.select(); // 选择对象
+		textarea.setSelectionRange(0, content.length); //核心
+		let result = document.execCommand('Copy'); // 执行浏览器复制命令
+		textarea.remove();
+		return result;
 	}
-
-}
+};
 

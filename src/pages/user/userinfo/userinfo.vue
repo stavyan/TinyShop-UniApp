@@ -77,7 +77,7 @@
 						placeholder="请输入您的邮箱"
 					/>
 				</view>
-				<button class="confirm-btn" @tap="toUpdateInfo">修改资料</button>
+				<button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toUpdateInfo">修改资料</button>
 		</view>
 
 		<!--加载动画-->
@@ -123,7 +123,8 @@
 				token: null,
 				loading: true,
 				headImg: this.$mAssetsPath.headImg,
-				userBg: this.$mAssetsPath.userBg
+				userBg: this.$mAssetsPath.userBg,
+				btnLoading: false
 			};
 		},
 		onLoad () {
@@ -181,6 +182,7 @@
 			},
 			// 更新用户信息
 			async handleUpdateInfo () {
+				this.btnLoading = true;
 				this.loadProgress = this.loadProgress + 6;
 		    const timer = setInterval(() => {
 					this.loadProgress = this.loadProgress + 6;
@@ -195,6 +197,8 @@
 				    setTimeout(() => {
 					    this.$mRouter.back();
 				    }, 1 * 1000);
+				}).catch(() => {
+					this.btnLoading = false;
 				});
 			}
 		}
@@ -292,19 +296,6 @@
 						background: $uni-color-primary;
 						border-color: $uni-color-primary;
 					}
-				}
-			}
-			.confirm-btn{
-				width: 630upx;
-				height: 76upx;
-				line-height: 76upx;
-				border-radius: 50px;
-				margin-top: 50upx;
-				background: $uni-color-primary;
-				color: #fff;
-				font-size: $font-lg;
-				&:after{
-					border-radius: 100px;
 				}
 			}
 		}

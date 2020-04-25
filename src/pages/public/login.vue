@@ -45,14 +45,14 @@
                   data-key="mobile"
               />
             </view>
-            <view class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
+            <button class="sms-code-btn" :loading="btnLoading" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
               <text v-if="!smsCodeBtnDisabled">获取验证码</text>
               <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
-            </view>
+            </button>
 
           </view>
         </view>
-        <button class="confirm-btn" @tap="toLogin">登录</button>
+        <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toLogin">登录</button>
       </view>
       <view @tap="showLoginBySmsCode" class="forget-section">
         {{ loginByPass ? "验证码登录" : "密码登录" }}
@@ -72,6 +72,7 @@
 
 <script>
 	import {authLogin, loginByPass, loginBySmsCode, smsCode} from '@/api/login';
+	import moment from '@/common/moment';
 	export default {
 		data() {
 			return {
@@ -80,14 +81,24 @@
 				  code: '',
           password: ''
         },
+        btnLoading: false,
 				reqBody: {},
-				codeSeconds: this.$mConstDataConfig.sendCodeTime, // 验证码发送时间间隔
+				codeSeconds: 0, // 验证码发送时间间隔
 				loginByPass: true,
-				smsCodeBtnDisabled: false,
+				smsCodeBtnDisabled: true,
 				userInfo: null
 			}
 		},
 		onLoad() {
+			const time = moment().valueOf() / 1000 - uni.getStorageSync('loginSmsCodeTime');
+			if (time < 60) {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
+				this.handleSmsCodeTime(this.codeSeconds);
+			} else {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime;
+				this.smsCodeBtnDisabled = false;
+				uni.removeStorageSync('loginSmsCodeTime')
+			}
 			this.userInfo = uni.getStorageSync('wechatUserInfo');
 		},
 		methods: {
@@ -109,7 +120,11 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					let time = 59;
+					uni.setStorageSync('loginSmsCodeTime', moment().valueOf() / 1000);
+					this.handleSmsCodeTime(59);
+				});
+			},
+			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
 						if (time === 0) {
 							clearInterval(timer);
@@ -120,7 +135,6 @@
 							time--
 						}
 					}, 1000);
-				})
 			},
 			// 失去焦点的手机号
 			blurMobileChange(e) {
@@ -175,10 +189,12 @@
 			},
 			// 登录
 			async handleLogin(params, loginApi) {
+				this.btnLoading = true;
 				await this.$http.post(loginApi, params).then(r => {
 					this.$mHelper.toast('恭喜您，登录成功！');
 					this.$mStore.commit('login', r.data);
 					if (this.userInfo) {
+						this.btnLoading = false;
 						const oauthClientParams = {}
 						/*  #ifdef MP-WEIXIN */
 						oauthClientParams.oauth_client = 'wechatMp';
@@ -214,6 +230,8 @@
 					} else {
 						this.$mRouter.reLaunch({route: '/pages/user/user'});
 					}
+				}).catch(() => {
+					this.btnLoading = false;
 				});
 			}
 		}
@@ -341,7 +359,7 @@
 
   .input-item-sms-code {
     position: relative;
-
+		width: 100%;
     .sms-code-btn {
       position: absolute;
       color: #111;
@@ -357,21 +375,6 @@
     .sms-code-btn:after {
       border: none;
       background-color: transparent;
-    }
-  }
-
-  .confirm-btn {
-    width: 630upx;
-    height: 76upx;
-    line-height: 76upx;
-    border-radius: 50px;
-    margin-top: 70upx;
-    background: $uni-color-primary;
-    color: #fff;
-    font-size: $font-lg;
-
-    &:after {
-      border-radius: 100px;
     }
   }
 

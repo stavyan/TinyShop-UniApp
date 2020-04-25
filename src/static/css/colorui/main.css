@@ -180,7 +180,7 @@ switch .uni-switch-input {
 
 switch .wx-switch-input:not([class*="bg-"]),
 switch .uni-switch-input:not([class*="bg-"]) {
-	background: #8799a3 !important;
+	/*background: #8799a3 !important;*/
 }
 
 switch .wx-switch-input::after,
@@ -409,7 +409,7 @@ radio.grey[checked] .wx-radio-input,
 switch.grey.checked .uni-switch-input,
 checkbox.grey.checked .uni-checkbox-input,
 radio.grey.checked .uni-radio-input {
-	background-color: #8799a3 !important;
+	/*background-color: #8799a3 !important;*/
 	border-color: #8799a3 !important;
 	color: #ffffff !important;
 }

@@ -7,8 +7,9 @@
  *
  */
 class Router {
-	constructor(arg) {
-		this.callBack = () => {};
+	constructor() {
+		this.callBack = () => {
+		};
 	}
 
 	beforeEach(callBack) {
@@ -34,7 +35,7 @@ class Router {
 	back(delta) {
 		uni.navigateBack({
 			delta
-		})
+		});
 	}
 }
 

@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import $mRoutesConfig from '@/config/routes.config'
-import $mRouter from '@/utils/router'
-
 Vue.use(Vuex);
 
 const ACCESSTOKEN = uni.getStorageSync('accessToken') || '';
@@ -74,13 +71,7 @@ const store = new Vuex.Store({
         networkStateChange({commit}, info) {
             commit('setNetworkState', info);
         },
-        reLogin({commit}, info) {
-            commit('logout', '');
-            $mRouter.redirectTo({
-                route: $mRoutesConfig.login
-            });
-        },
-        logout({commit}, info) {
+        logout({commit}) {
             commit('logout');
         }
     }

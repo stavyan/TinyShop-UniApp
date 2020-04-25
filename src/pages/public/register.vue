@@ -31,11 +31,11 @@
                     data-key="mobile"
                 />
               </view>
-              <view class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
+              <button class="sms-code-btn" :disabled="smsCodeBtnDisabled" @tap.stop="getSmsCode">
                 <text v-if="!smsCodeBtnDisabled">获取验证码</text>
                 <text v-else class="sms-code-resend">{{ `重新发送 (${codeSeconds})` }}</text>
-              </view>
-            
+              </button>
+
             </view>
           </view>
           <view class="input-item">
@@ -57,11 +57,11 @@
             />
           </view>
           <view class="input-item">
-            <text class="tit">姓名</text>
+            <text class="tit">昵称</text>
             <input
                 type="text"
-                v-model="registerParams.realname"
-                placeholder="请输入您的姓名"
+                v-model="registerParams.nickname"
+                placeholder="请输入您的昵称"
                 maxlength="12"
             />
           </view>
@@ -73,8 +73,8 @@
                 placeholder="请输入您的邀请码"
             />
           </view>
-          <button class="confirm-btn" @tap="toRegister">注册</button>
       </view>
+	    <button class="confirm-btn" :disabled="btnLoading" :loading="btnLoading" @tap="toRegister">注册</button>
     </view>
     <view class="register-section">
       已经注册过了?
@@ -86,6 +86,7 @@
 <script>
 	import {mapMutations} from 'vuex';
 	import {registerByPass, smsCode} from '@/api/login';
+	import moment from '@/common/moment';
 	export default {
 		data() {
 			return {
@@ -94,15 +95,25 @@
           password: '',
           password_repetition: '',
           promoCode: '',
-          realname: '',
+          nickname: '',
           code: ''
         },
+				btnLoading: false,
 				reqBody: {},
-				codeSeconds: this.$mConstDataConfig.sendCodeTime, // 验证码发送时间间隔
-				smsCodeBtnDisabled: false
+				codeSeconds: 0, // 验证码发送时间间隔
+				smsCodeBtnDisabled: true
 			}
 		},
 		onLoad(options) {
+			const time = moment().valueOf() / 1000 - uni.getStorageSync('registerSmsCodeTime');
+			if (time < 60) {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime - parseInt(time, 10);
+				this.handleSmsCodeTime(this.codeSeconds);
+			} else {
+				this.codeSeconds = this.$mConstDataConfig.sendCodeTime;
+				this.smsCodeBtnDisabled = false;
+				uni.removeStorageSync('registerSmsCodeTime')
+			}
 			this.registerParams.promoCode = options.promo_code;
 		},
 		methods: {
@@ -116,7 +127,6 @@
 			},
 			// 获取手机验证码
 			getSmsCode() {
-			  console.log(111)
 				this.reqBody['mobile'] = this.registerParams['mobile'];
         let checkSendCode = this.$mGraceChecker.check(this.reqBody, this.$mFormRule.sendCodeRule);
 				if (!checkSendCode) {
@@ -129,7 +139,11 @@
 				}).then(r => {
 					this.$mHelper.toast(`验证码发送成功, 验证码是${r.data}`);
 					this.smsCodeBtnDisabled = true;
-					let time = 59;
+					uni.setStorageSync('registerSmsCodeTime', moment().valueOf() / 1000);
+					this.handleSmsCodeTime(59);
+				});
+			},
+			handleSmsCodeTime (time) {
 					let timer = setInterval(() => {
 						if (time === 0) {
 							clearInterval(timer);
@@ -139,15 +153,14 @@
 							this.smsCodeBtnDisabled = true;
 							time--
 						}
-					}, 1000)
-				});
+					}, 1000);
 			},
       // 注册账号
 			async toRegister() {
 				this.reqBody['mobile'] = this.registerParams['mobile'];
         this.reqBody['password'] = this.registerParams['password'];
         this.reqBody['code'] = this.registerParams['code'];
-        this.reqBody['realname'] = this.registerParams['realname'];
+        this.reqBody['nickname'] = this.registerParams['nickname'];
         const cheRes = this.$mGraceChecker.check(this.reqBody, this.$mFormRule.registerRule);
 				if (!cheRes) {
 					this.$mHelper.toast(this.$mGraceChecker.error);
@@ -171,9 +184,13 @@
 				/*  #ifdef  MP-QQ  */
 				this.reqBody.group = 'tinyShopQqMq'
 				/*  #endif  */
+				this.btnLoading = true;
 				await this.$http.post(registerByPass, this.reqBody).then(() => {
+					this.btnLoading = false;
 					this.$mHelper.toast('恭喜您注册成功');
           this.$mRouter.push({route: '/pages/public/login'});
+				}).catch(() => {
+					this.btnLoading = false;
 				});
 			}
 		}
@@ -181,7 +198,7 @@
 	}
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
   .container {
     padding-top: 60px;
     position: relative;
@@ -239,21 +256,27 @@
           width: 100%;
         }
       }
-      
-      .confirm-btn {
-        width: 630upx;
-        height: 76upx;
-        line-height: 76upx;
-        border-radius: 50px;
-        margin-top: 70upx;
-        background: $uni-color-primary;
-        color: #fff;
-        font-size: $font-lg;
 
-        &:after {
-          border-radius: 100px;
-        }
-      }
+		  .input-item-sms-code {
+		    position: relative;
+				width: 100%;
+		    .sms-code-btn {
+		      position: absolute;
+		      color: #111;
+		      right: 20upx;
+		      bottom: 20upx;
+		      font-size: 28upx;
+		    }
+
+		    .sms-code-resend {
+		      color: #999;
+		    }
+
+		    .sms-code-btn:after {
+		      border: none;
+		      background-color: transparent;
+		    }
+		  }
 
       .forget-section {
         font-size: $font-sm+2upx;

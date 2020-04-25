@@ -166,9 +166,9 @@
 					<text class="price">{{ `${realAmount} ${ maxUsePoint > 0 && (isUsePoint ? ` + ${maxUsePoint} 积分` : '') || (orderDetail.preview && orderDetail.preview.point ? ` + ${orderDetail.preview && orderDetail.preview.point} 积分` : '') }` }}</text>
 				</view>
 	<!--			orderDetail.preview.point-->
-				<text class="submit" @tap="submit" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
+				<button class="submit" @tap="submit" :disabled="btnLoading" :loading="btnLoading" v-if="orderDetail.preview && (userInfo.account.user_integral >= orderDetail.preview.point)">
 					提交订单
-				</text>
+				</button>
 				<text class="submit disabled" v-else>
 					积分不足
 				</text>
@@ -176,7 +176,12 @@
 		</view>
 		<!-- 404页面 -->
 		<view v-if="!orderDetail.products && !loading">
-			<rf-no-data :custom="true"><view class="title" @tap="getOrderDetail">{{ errorInfo || '订单不存在' }}，点击 <text class="spec-color">重新加载</text></view></rf-no-data>
+			<rf-no-data class="rf-no-data" :custom="true">
+				<view class="title">
+					{{ errorInfo || '订单不存在' }}
+				</view>
+				<view @tap="getOrderDetail" slot="refresh" class="spec-color">重新加载</view>
+			</rf-no-data>
 		</view>
 		<!--页面加载动画-->
     <rf-loading v-if="loading"></rf-loading>
@@ -259,6 +264,7 @@
 					{ label: '物流配送', value: 1 },
 					{ label: '买家自提', value: 2 }
 				],
+				btnLoading: false,
 				currentShippingType: {},
 				currentCompany: {},
 				currentPickupPoint: {},
@@ -497,6 +503,7 @@
 				if (this.use_point) {
 					params.use_point = this.use_point;
 				}
+				this.btnLoading = true;
 				await this.$http.post(`${orderCreate}`, {
 					...params,
 					...this.data
@@ -513,8 +520,8 @@
               url: `/pages/user/money/pay?id=${r.data.id}`
             })
           }
-				}).catch(err => {
-					console.log(err)
+				}).catch(() => {
+					this.btnLoading = false;
 				})
 			},
       // 设置购物车数量角标
@@ -673,17 +680,6 @@
 			font-size: $font-lg;
 			color: $base-color;
 		}
-		.submit{
-			display:flex;
-			align-items:center;
-			justify-content: center;
-			width: 280upx;
-			height: 100%;
-			line-height: 1;
-			color: #fff;
-			font-size: 32upx;
-			background-color: $base-color;
-		}
 		.disabled {
 			background-color: $border-color-dark;
 		}
@@ -727,4 +723,7 @@
 		}
 	}
 
+	.rf-no-data {
+		height: calc(100vh - 90upx);
+	}
 </style>
