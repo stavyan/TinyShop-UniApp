@@ -21,7 +21,7 @@ export default {
 			} else {
 				this.close()
 			}
-		},
+		}
 	},
 	created() {
 		if (this.swipeaction.children !== undefined) {

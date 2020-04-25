@@ -61,11 +61,15 @@
 
 <style>
 	.rf-load-more {
+		width: 100vw;
 		display: flex;
 		flex-direction: row;
 		height: 80upx;
 		align-items: center;
-		justify-content: center
+		justify-content: center;
+		/*position: fixed;*/
+		/*bottom: 5upx;*/
+		/*text-align: center;*/
 	}
 
 	.rf-load-more__text {

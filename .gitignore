@@ -3,13 +3,14 @@ node_modules/
 unpackage/
 #src/api/params.js
 dist/dev/
-dist/dev/build/mp-weixin/
-dist/dev/build/mp-qq/
+dist/build/mp-weixin/
+dist/build/mp-qq/
 dist/resources/
 
 # local env files
 .env.local
 .env.*.local
+yarn.lock
 
 # Log files
 npm-debug.log*

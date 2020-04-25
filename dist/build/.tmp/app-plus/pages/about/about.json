@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "关于RF商城",
-  "usingComponents": {
-    "rf-image": "/components/rf-image/rf-image",
-    "uni-list": "/components/uni-list/uni-list",
-    "uni-list-item": "/components/uni-list-item/uni-list-item"
-  }
-}

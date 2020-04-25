@@ -25,7 +25,9 @@ if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_USING_V8) {
         }
       }
     ])
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
@@ -33,8 +35,8 @@ process.UNI_LIBRARIES.forEach(libraryName => {
   plugins.push([
     'import',
     {
-      'libraryName': libraryName,
-      'customName': (name) => {
+      libraryName: libraryName,
+      customName: (name) => {
         return `${libraryName}/lib/${name}/${name}`
       }
     }

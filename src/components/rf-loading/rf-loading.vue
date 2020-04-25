@@ -14,16 +14,17 @@
    * @date 2020-03-23 11:43
    * @copyright 2019
    */
+  import $mAssetsPath from '@/config/assets.config.js'
 	export default {
 		name: 'rf-loading',
     props: {
       src: {
       	type: String,
-        default: '/static/rage.png',
+        default: $mAssetsPath.logo
       },
       content: {
       	type: String,
-        default: '加载中...',
+        default: '加载中...'
       }
     }
 	}

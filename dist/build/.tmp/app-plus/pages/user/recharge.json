@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "充值中心",
-  "usingComponents": {
-    "rf-loading": "/components/rf-loading/rf-loading"
-  }
-}

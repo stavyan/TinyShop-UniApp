@@ -207,7 +207,7 @@
 								}
 							},
 							fail: ()=>{
-						    this.$api.msg('error3');
+						    this.$mHelper.toast('error3');
 							},
 							complete() {
 								uni.hideLoading();
@@ -279,7 +279,7 @@
 											});
 										},
 										fail: ()=>{
-						          this.$api.msg('error0');
+						          this.$mHelper.toast('error0');
 										}
 									});
 								});
@@ -293,7 +293,7 @@
 						// #endif
 					},
 					fail: (res)=>{
-	          this.$api.msg('error1');
+	          this.$mHelper.toast('error1');
 					},
 					complete: () => {
 						uni.hideLoading();
@@ -367,10 +367,6 @@
 											});
 										},
 										fail: ()=>{
-											uni.showToast({
-												title: "error0",
-												duration: 2000,
-											})
 										}
 									});
 								});
@@ -384,10 +380,6 @@
 						// #endif
 					},
 					fail: ()=>{
-						uni.showToast({
-							title: "error_prv",
-							duration: 2000,
-						})
 					},
 					complete: () => {
 						uni.hideLoading();
@@ -609,10 +601,6 @@
 						// #endif
 					},
 					fail: ()=>{
-						uni.showToast({
-							title: "error2",
-							duration: 2000,
-						})
 					},
 					complete: () => {
 						uni.hideLoading();
@@ -829,10 +817,7 @@
 
 				if( !this.prvImgData ) {
 					if( !(this.prvImgData = await this.fGetImgData().catch((res)=>{
-						uni.showToast({
-							title: "error_read",
-							duration: 2000,
-						})
+					
 					}))) return;
 					this.target = new Uint8ClampedArray(this.prvImgData.length);
 				}
@@ -947,10 +932,6 @@
 					height: prvHeight,
 					data: target,
 					fail() {
-						uni.showToast({
-							title: 'error_put',
-							duration: 2000
-						})
 					},
 					complete() {
 						uni.hideLoading();
