@@ -11,6 +11,7 @@ import $mRoutesConfig from '@/config/routes.config.js';
 import $mFormRule from '@/config/formRule.config.js';
 import $mConstDataConfig from '@/config/constData.config.js';
 import $mWebsocketConfig from '@/config/websocket.config.js';
+import $mSettingConfig from '@/config/setting.config.js';
 
 // 引入全局方法
 import { http } from '@/utils/request';
@@ -46,6 +47,7 @@ Vue.prototype.$mFormRule = $mFormRule;
 Vue.prototype.$mRoutesConfig = $mRoutesConfig;
 Vue.prototype.$mConstDataConfig = $mConstDataConfig;
 Vue.prototype.$mWebsocketConfig = $mWebsocketConfig;
+Vue.prototype.$mSettingConfig = $mSettingConfig;
 
 Vue.prototype.$mGraceChecker = $mGraceChecker;
 Vue.prototype.$mHelper = $mHelper;

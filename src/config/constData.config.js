@@ -35,13 +35,6 @@ export default {
         {title: '积分', value: 0, url: '/pages/user/account/integral'}
     ],
 
-    // 个人中心-推广中心
-    promotionList: [
-        {title: '累计佣金', value: 0, url: '/pages/distribution/brokerage/detail'},
-        {title: '当前佣金', value: 0, url: '/pages/distribution/brokerage/brokerage'},
-        {title: '已提现佣金', value: 0, url: '/pages/distribution/cash/list'}
-    ],
-
     // 订单状态
     orderStatus: [
         {key: 0, value: '待付款'},

@@ -131,14 +131,16 @@ uni-app： https://uniapp.dcloud.io/
 mix-mall: https://ext.dcloud.net.cn/plugin?id=200
 
 ColorUI: https://github.com/weilanwl/ColorUI
+
 ...
 
 ### 版权信息
 
-RageFrame 遵循 Apache2 开源协议发布，并提供免费使用。
+RF微商城 遵循 [Apache2](LICENSE.md) 开源协议和 [附加使用协议](docs/LICENSE-SUPPLEMENTAL.md) 发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
 版权所有Copyright © 2016-2020 by RageFrame [www.rageframe.com](http://www.rageframe.com)
 
 All rights reserved。
+LICENSE-SUPPLEMENTAL.md

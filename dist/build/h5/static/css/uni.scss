@@ -1611,3 +1611,23 @@
 .no-data-title {
 	font-size: $font-lg;
 }
+
+// 点击统一协议
+.footer-protocol {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: $font-base;
+	margin-bottom: 30upx;
+	padding-bottom: 30upx;
+    .cuIcon {
+      padding: 6upx;
+    }
+	.url {
+		color: $base-color;
+		opacity: 0.8;
+	}
+	.content {
+		margin: 0 4upx 0 $spacing-sm;
+	}
+}

@@ -4,14 +4,23 @@
 		<view class="user-section">
 			<image class="bg" :src="userBg"></image>
 			<!--用户信息-->
-			<view
-					class="user-info-box">
-				<view class="portrait-box" @tap="navTo(userInfo ? '/pages/user/userinfo/userinfo' : 'login')">
-					<image class="portrait"
-					       :src="userInfo.head_portrait || headImg"></image>
-					<text class="username">
-						{{ userInfo.realname || userInfo.nickname|| userInfo.username ||'请先登录'}}
+			<view class="user-info-box">
+				<view
+					class="portrait-box"
+					@tap="navTo(userInfo ? '/pages/user/userinfo/userinfo' : 'login')"
+				>
+					<image
+						class="portrait"
+						:src="userInfo.head_portrait || headImg"
+					></image>
+					<text class="username" v-if="hasLogin">
+						{{
+							userInfo.nickname ||
+							userInfo.realname ||
+							'暂无昵称'
+						}}
 					</text>
+					<text v-else>'登录/注册'</text>
 				</view>
 			</view>
 			<!--vip信息-->
@@ -151,7 +160,6 @@
                 settingList: this.$mConstDataConfig.settingList,
                 orderSectionList: this.$mConstDataConfig.orderSectionList,
                 amountList: this.$mConstDataConfig.amountList,
-                promotionList: this.$mConstDataConfig.promotionList,
                 headImg: this.$mAssetsPath.headImg,
                 vipCardBg: this.$mAssetsPath.vipCardBg,
                 arc: this.$mAssetsPath.arc,
@@ -209,7 +217,6 @@
             	this.hasLogin = this.$mStore.getters.hasLogin;
                 if (this.hasLogin) {
                     await this.getMemberInfo();
-                    await this.initCartItemCount();
                 } else {
                     this.loading = false;
                     this.resetSectionData();
@@ -217,7 +224,7 @@
             },
             // 设置购物车数量角标
             async initCartItemCount() {
-							if (this.hasLogin && parseInt(uni.getStorageSync('cartNum'), 10) > 0) {
+							if (parseInt(uni.getStorageSync('cartNum'), 10) > 0) {
                 await uni.setTabBarBadge({
                   index: this.$mConstDataConfig.cartIndex,
                   text: uni.getStorageSync('cartNum')
@@ -236,6 +243,7 @@
                     // 获取足迹列表
                     await this.getFootPrintList();
                     await this.setSectionData(r.data);
+                    await this.initCartItemCount();
                 }).catch(() => {
                 	  this.hasLogin = false;
                 	  this.userInfo = {};
@@ -249,9 +257,6 @@
                 this.amountList[0].value = 0;
                 this.amountList[1].value = 0;
                 this.amountList[2].value = 0;
-                this.promotionList[0].value = 0;
-                this.promotionList[1].value = 0;
-                this.promotionList[2].value = 0;
                 this.orderSectionList[0].num = 0;
                 this.orderSectionList[1].num = 0;
                 this.orderSectionList[2].num = 0;
@@ -270,9 +275,6 @@
                 this.amountList[0].value = data.account.user_money || 0;
                 this.amountList[1].value = data.coupon_num || 0;
                 this.amountList[2].value = data.account.user_integral || 0;
-                this.promotionList[0].value = data.promoter && data.promoter.accumulate_brokerage || 0;
-                this.promotionList[1].value = data.promoter && data.promoter.user_brokerage || 0;
-                this.promotionList[2].value = data.promoter && data.promoter.amount_drawn_brokerage || 0;
                 // 更新userInfo缓存
                 uni.setStorageSync('userInfo', data);
             },
@@ -383,7 +385,7 @@
 
 					.username {
 						font-size: $font-lg + 6upx;
-						color: $font-color-dark;
+						color: $color-white;
 						margin-left: 20upx;
 					}
 
