@@ -20,7 +20,7 @@
 							'暂无昵称'
 						}}
 					</text>
-					<text v-else>'登录/注册'</text>
+					<text class="username" v-else>登录/注册</text>
 				</view>
 			</view>
 			<!--vip信息-->
