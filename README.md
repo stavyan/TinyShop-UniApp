@@ -30,6 +30,16 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 ![image](docs/images/h5-qrcode.png)
 
+### 商业版Demo
+
+[H5 预览](http://uniapp.rageframe.com ): http://uniapp.rageframe.com  
+[后台预览](http://b2c.rageframe.com/backend): http://b2c.rageframe.com/backend    
+账号: demo   
+密码: 123456
+
+小程序二维码
+![image](docs/images/mp-qr-code.jpg)
+
 ### 更新记录
 
 #### v1.1.4
