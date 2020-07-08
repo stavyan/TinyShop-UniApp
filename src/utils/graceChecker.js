@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  *@des 表单验证
  *@author stav stavyan@qq.com
@@ -30,7 +31,9 @@ module.exports = {
 					}
 					break;
 				case 'int':
-					var reg = new RegExp('^(-[1-9]|[1-9])[0-9]{' + rule[i].checkRule + '}$');
+					var reg = new RegExp(
+						'^(-[1-9]|[1-9])[0-9]{' + rule[i].checkRule + '}$'
+					);
 					if (!reg.test(data[rule[i].name])) {
 						this.error = rule[i].errorMsg;
 						return false;
@@ -45,7 +48,10 @@ module.exports = {
 					var minMax = rule[i].checkRule.split(',');
 					minMax[0] = Number(minMax[0]);
 					minMax[1] = Number(minMax[1]);
-					if (data[rule[i].name] > minMax[1] || data[rule[i].name] < minMax[0]) {
+					if (
+						data[rule[i].name] > minMax[1] ||
+						data[rule[i].name] < minMax[0]
+					) {
 						this.error = rule[i].errorMsg;
 						return false;
 					}
@@ -59,7 +65,10 @@ module.exports = {
 					var minMax = rule[i].checkRule.split(',');
 					minMax[0] = Number(minMax[0]);
 					minMax[1] = Number(minMax[1]);
-					if (data[rule[i].name] > minMax[1] || data[rule[i].name] < minMax[0]) {
+					if (
+						data[rule[i].name] > minMax[1] ||
+						data[rule[i].name] < minMax[0]
+					) {
 						this.error = rule[i].errorMsg;
 						return false;
 					}
@@ -73,7 +82,10 @@ module.exports = {
 					var minMax = rule[i].checkRule.split(',');
 					minMax[0] = Number(minMax[0]);
 					minMax[1] = Number(minMax[1]);
-					if (data[rule[i].name] > minMax[1] || data[rule[i].name] < minMax[0]) {
+					if (
+						data[rule[i].name] > minMax[1] ||
+						data[rule[i].name] < minMax[0]
+					) {
 						this.error = rule[i].errorMsg;
 						return false;
 					}
@@ -98,7 +110,7 @@ module.exports = {
 					}
 					break;
 				case 'phoneno':
-					var reg = /^1[0-9]{10,10}$/;
+					var reg = /^(?:(?:\+|00)86)?1[3-9]\d{9}$/;
 					if (!reg.test(data[rule[i].name])) {
 						this.error = rule[i].errorMsg;
 						return false;

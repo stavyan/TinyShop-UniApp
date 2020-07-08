@@ -1,43 +1,40 @@
 import Vue from 'vue';
 import App from './App';
-
-//引入全局存储
+// 引入全局存储
 import store from '@/store';
-
 // 引入全局配置
 import $mAssetsPath from '@/config/assets.config.js';
 import $mConfig from '@/config/index.config.js';
 import $mRoutesConfig from '@/config/routes.config.js';
 import $mFormRule from '@/config/formRule.config.js';
 import $mConstDataConfig from '@/config/constData.config.js';
-import $mWebsocketConfig from '@/config/websocket.config.js';
 import $mSettingConfig from '@/config/setting.config.js';
-
 // 引入全局方法
 import { http } from '@/utils/request';
 import $mGraceChecker from '@/utils/graceChecker';
 import $mHelper from '@/utils/helper';
 import $mRouter from '@/utils/router';
 import $mPayment from '@/utils/payment';
-
 // 全局组件
 import rfImage from '@/components/rf-image/rf-image';
 import rfEmpty from '@/components/rf-empty';
-import rfLoading from '@/components/rf-loading/rf-loading';
+import rfLoading from '@/components/rf-loading';
 import rfLoadProgress from '@/components/rf-load-progress/rf-load-progress';
-
+import rfParser from '@/components/rf-parser';
+import rfBackTop from '@/components/rf-back-top';
+import rfTag from '@/components/rf-tag';
+import rfNavDetail from '@/components/rf-nav-detail';
+import cuCustom from '@/components/cu-custom';
 // 网络状态监听
 uni.getNetworkType({
-	success: function(res) {
+	success: res => {
 		store.dispatch('networkStateChange', res.networkType);
 	}
 });
-
-uni.onNetworkStatusChange(function(res) {
+uni.onNetworkStatusChange(function (res) {
 	store.dispatch('networkStateChange', res.networkType);
 });
-
-//挂载全局自定义方法
+// 挂载全局自定义方法
 Vue.prototype.$mStore = store;
 
 Vue.prototype.$http = http;
@@ -46,7 +43,6 @@ Vue.prototype.$mAssetsPath = $mAssetsPath;
 Vue.prototype.$mFormRule = $mFormRule;
 Vue.prototype.$mRoutesConfig = $mRoutesConfig;
 Vue.prototype.$mConstDataConfig = $mConstDataConfig;
-Vue.prototype.$mWebsocketConfig = $mWebsocketConfig;
 Vue.prototype.$mSettingConfig = $mSettingConfig;
 
 Vue.prototype.$mGraceChecker = $mGraceChecker;
@@ -58,6 +54,11 @@ Vue.component('rfImage', rfImage);
 Vue.component('rfEmpty', rfEmpty);
 Vue.component('rfLoading', rfLoading);
 Vue.component('rfLoadProgress', rfLoadProgress);
+Vue.component('rfParser', rfParser);
+Vue.component('rfBackTop', rfBackTop);
+Vue.component('rfTag', rfTag);
+Vue.component('rfNavDetail', rfNavDetail);
+Vue.component('cuCustom', cuCustom);
 
 if (process.env.NODE_ENV === 'production') {
 	Vue.config.productionTip = false;
@@ -65,8 +66,9 @@ if (process.env.NODE_ENV === 'production') {
 
 // 路由导航
 $mRouter.beforeEach((navType, to) => {
-	if (to.route === undefined)
+	if (to.route === undefined) {
 		throw '路由钩子函数中没有找到to对象，路由信息:' + JSON.stringify(to);
+	}
 	if (to.route === $mRoutesConfig.login.path && store.getters.hasLogin) {
 		uni.reLaunch({
 			url: $mHelper.objParseUrlAndParam($mRoutesConfig.main.path)
@@ -82,7 +84,7 @@ $mRouter.beforeEach((navType, to) => {
 			});
 		} else {
 			// 登录成功后的重定向地址和参数
-			let query = {
+			const query = {
 				redirectUrl: to.route.path,
 				...to.query
 			};
@@ -106,7 +108,29 @@ $mRouter.beforeEach((navType, to) => {
 
 App.mpType = 'app';
 
+Vue.mixin({
+	computed: {
+		themeColor: {
+			get () {
+				return store.getters.themeColor;
+			},
+			set (val) {
+				store.state.themeColor = val;
+			}
+		}
+	}
+});
+
+Vue.prototype.moneySymbol = $mConstDataConfig.moneySymbol;
+Vue.prototype.singleSkuText = $mConstDataConfig.singleSkuText;
+
+// 保留小数点后两位
+Vue.filter('keepTwoDecimal', value => {
+  return (Math.floor((value || 0) * 100) / 100).toFixed(2);
+});
+
 const app = new Vue({
-	...App
+	...App,
+	store: store
 });
 app.$mount();

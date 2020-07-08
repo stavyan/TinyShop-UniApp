@@ -1,6 +1,4 @@
 src/common/
-src/utils/
-src/components/rf-swipe-action-item/
 src/components/rf-calendar/
-src/pages/
-src/
+src/components/rf-parser/
+src/utils/share.js

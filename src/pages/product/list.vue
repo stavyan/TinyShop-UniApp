@@ -1,483 +1,1194 @@
 <template>
-	<view class="product-list">
-		<!--顶部搜索导航栏-->
-		<rf-search-bar
-			@link="navToIndex"
-			@search="handleSearchProductList"
-			icon="iconxiatubiao--copy"
-			title="主页"
-			:inputDisabled="true"
-			:placeholder="hotSearchDefault"/>
-		<!--分类栏目-->
-		<view v-if="isShowNavBar" class="navbar" :style="{top: navBarTop}">
-			<view class="nav-item" :class="{current: filterIndex === 0}" @tap="tabClick(0)">
-				综合排序
-			</view>
-			<view class="nav-item" :class="{current: filterIndex === 1}" @tap="tabClick(1)">
-				<text>销量</text>
-				<view class="p-box">
-					<i :class="{active: salesOrder === 1 && filterIndex === 1}" class="iconfont iconshang"></i>
-					<i :class="{active: salesOrder === 2 && filterIndex === 1}" class="iconfont iconshang xia"></i>
+	<view class="container product-list">
+		<view class="rf-header-box">
+			<view class="rf-header" :style="{width:width+'px',height:height+'px'}">
+				<view class="rf-back" :style="{marginTop:arrowTop+'px'}" @tap="back">
+					<text class="iconfont iconzuo"></text>
+				</view>
+				<view class="input-box" :style="{marginTop:inputTop+'px'}">
+					<input
+						v-model="keyword"
+						@confirm="search"
+						placeholder="请输入关键字"
+						placeholder-style="font-size: 24upx; color:#ccc;"
+						type="text" />
+					<text class="icon iconfont iconsousuo2" @tap.stop="search"></text>
 				</view>
 			</view>
-			<view class="nav-item" :class="{current: filterIndex === 2}" @tap="tabClick(2)">
-				浏览量
-			</view>
-			<view class="nav-item" :class="{current: filterIndex === 3}" @tap="tabClick(3)">
-				收藏
-			</view>
-			<view class="nav-item" :class="{current: filterIndex === 4}" @tap="tabClick(4)">
-				<text>价格</text>
-				<view class="p-box">
-					<i :class="{active: priceOrder === 1 && filterIndex === 4}" class="iconfont iconshang"></i>
-					<i :class="{active: priceOrder === 2 && filterIndex === 4}" class="iconfont iconshang xia"></i>
-				</view>
-			</view>
-			<i class="cate-item iconfont iconfenlei1" @tap="toggleCateMask('show')"></i>
 		</view>
-		<view v-else class="navbar" :style="{top: navBarTop}">
-			猜你喜欢
-		</view>
-		<!--商品列表-->
-		<view class="rf-product-list" :style="{marginTop: contentTop}" v-if="goodsList.length > 0">
-			<view
-				v-for="(item, index) in goodsList" :key="index"
-				class="product-item"
-				@tap="navTo(`/pages/product/product?id=${item.id}`)"
-			>
-				<view class="image-wrapper">
-					<image :src="item.picture" mode="aspectFill"></image>
+		<view class="rf-header-screen" :style="{top:height+'px'}">
+			<view class="rf-screen-top">
+				<view class="rf-top-item rf-icon-ml" :class="[tabIndex==0? `text-${themeColor.name} rf-bold`:'']" data-index="0" @tap="screen">
+					<text>{{selectedName}}</text>
+					<text class="iconfont" :class="selectH>0?'iconshang':'iconxia'" :style="{color: tabIndex==0? themeColor.color:'#444'}"></text>
 				</view>
-				<text class="title clamp in2line" v-if="item.name">{{item.name}}</text>
-				<view class="last-line" v-if="item.name">
-					<text class="price in1line">{{item.price}}
-						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
-					</text>
-					<text class="sales in1line">
-						<text class="red">{{ item.sales }}</text>
-						付款
-					</text>
+				<view class="rf-top-item" :class="[tabIndex == 1?`text-${themeColor.name} rf-bold`:'']" @tap="screen" data-index="1">
+					销量
 				</view>
+				<view class="rf-top-item" @tap="screen" data-index="2">
+					<text class="iconfont" :class="isList>0? 'iconliebiaoqiehuan':'iconfenlei'"></text>
+				</view>
+				<view class="rf-top-item rf-icon-ml" @tap="screen" data-index="3">
+					<text>筛选</text>
+					<!--<rf-icon name="screen" :size="12" color="#333" rf-icon-class="rf-ml" :bold="true"></rf-icon>-->
+				</view>
+				<!--下拉选择列表--综合-->
+				<view class="rf-dropdownlist" :class="[selectH>0?'rf-dropdownlist-show':'']" :style="{height:selectH+'upx'}">
+					<view class="rf-dropdownlist-item rf-icon-middle" :class="[item.selected?'rf-bold':'']" v-for="(item,index) in dropdownList" :key="index" @tap.stop="dropdownItem" :data-index="index">
+						<text class="rf-ml rf-middle">{{item.name}}</text>
+						<text class="iconfont icongouxuan" :class="'text-' + themeColor.name" v-if="item.selected"></text>
+					</view>
+				</view>
+				<view class="rf-dropdownlist-mask" :class="[selectH>0?'rf-mask-show':'']" @tap.stop="hideDropdownList"></view>
+				<!--下拉选择列表--综合-->
 			</view>
-			<rf-load-more :status="loadingType" v-if="goodsList.length > 0"></rf-load-more>
+			<view class="rf-screen-bottom">
+				<block v-for="(item,index) in attrArr" :key="index">
+					<view class="rf-bottom-item rf-icon-ml" :class="[item.isActive ? `bg-${themeColor.name} rf-btmItem-active` : 'rf-btmItem-normal',attrIndex==index?'rf-btmItem-tap':'']" :data-index="index" @tap="btnDropChange">
+						<view class="rf-bottom-text" :class="[attrIndex==index?'rf-active':'']">{{item.isActive?item.selectedName:item.name}}</view>
+						<text class="iconfont" :class="attrIndex==index?'iconshang':'iconxia'" :size="14" :color="attrIndex==index || item.isActive?'$base-color':'#444'" rf-icon-class="rf-ml" v-if="item.list.length>0"></text>
+					</view>
+				</block>
+			</view>
 		</view>
-		<rf-empty :info="errorInfo || '该分类暂无商品'" v-if="goodsList.length === 0 && !loading"></rf-empty>
-		<!--分类遮盖层-->
-		<view class="cate-mask"
-		      :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''"
-		      @tap="toggleCateMask">
-			<view class="cate-content" @tap.stop.prevent="stopPrevent" @touchmove.stop.prevent="stopPrevent">
-				<scroll-view scroll-y class="cate-list">
-					<view v-for="item in cateList" :key="item.id">
-						<view class="cate-item one" @tap.stop="changeCate(item.id)">{{item.title}}</view>
-						<view
-							v-for="sItem in item.child" :key="sItem.id"
-							class="cate-item two"
-							:class="{active: sItem.id==cateId}"
-							@tap.stop="changeCate(sItem.id)">
-							{{sItem.title}}
-							<view
-								v-for="tItem in sItem.child" :key="tItem.id"
-								class="cate-item three"
-								:class="{active: tItem.id==cateId}"
-								@tap.stop="changeCate(tItem.id)">
-								{{tItem.title}}
-							</view>
+		<view class="product-list-wrapper">
+				<rf-product-list :bottom="0" :list="productList" :isList="isList" :style="{paddingTop: dropScreenH+10 + 'upx' }"></rf-product-list>
+		</view>
+		<rf-load-more
+			:status="loadingType"
+			v-if="productList.length > 0"
+		></rf-load-more>
+		<rf-empty
+			:info="errorInfo || '该分类暂无商品'"
+			v-if="productList.length === 0 && !loading"
+		></rf-empty>
+		<!--顶部下拉筛选弹层 属性-->
+		<rf-top-drawer bgcolor="#f7f7f7" :show="dropScreenShow" :paddingbtm="110" :translatey="dropScreenH" @close="btnCloseDrop">
+			<scroll-view class="rf-scroll-box" scroll-y :scroll-top="scrollTop">
+				<view class="rf-seizeaseat-20"></view>
+				<view class="rf-drop-item rf-icon-middle" :class="[item.selected?'rf-bold':'']" v-for="(item,index) in attrData" :key="index" @tap.stop="btnSelected" :data-index="index">
+					<text class="iconfont icongouxuan" :class="'text-' + themeColor.name" :size="16" :bold="true" v-if="item.selected" rf-icon-class="rf-middle"></text>
+					<text class="rf-ml rf-middle">{{item.name}}</text>
+				</view>
+				<view class="rf-seizeaseat-30"></view>
+			</scroll-view>
+			<view class="rf-drop-btnbox">
+				<view class="rf-drop-btn" :class="'text-' + themeColor.name" :hover-stay-time="150" @tap="reset">重置</view>
+				<view class="rf-drop-btn" :class="'bg-' + themeColor.name" :hover-stay-time="150" @tap="btnSure">确定</view>
+			</view>
+		</rf-top-drawer>
+		<!---顶部下拉筛选弹层 属性-->
+		<!--左抽屉弹层 筛选 -->
+		<uni-drawer
+			class="rf-drawer"
+			:visible="drawer"
+			mode="right"
+			@close="closeDrawer()"
+		>
+			<view class="rf-drawer-box" :style="{paddingTop:height+'px'}">
+				<scroll-view class="rf-drawer-scroll" scroll-y :style="{height:drawerH+'px'}">
+					<view class="rf-drawer-title">
+						<text class="rf-title-bold">价格区间</text>
+						<view class="rf-attr-right" :class="'text-' + themeColor.name">
+							<text>请输入价格区间</text>
 						</view>
 					</view>
+					<view class="rf-drawer-content">
+						<input placeholder-class="rf-phcolor" v-model="minPrice" class="rf-input" placeholder="最低价" maxlength="11" type='number' />
+						<text>-</text>
+						<input placeholder-class="rf-phcolor" v-model="maxPrice"  class="rf-input" placeholder="最高价" maxlength="11" type='number' />
+					</view>
+					<view class="rf-drawer-title">
+						<text class="rf-title-bold">全部分类</text>
+						<view class="rf-all-box rf-icon-ml">
+							<view class="rf-attr-right" :class="'text-' + themeColor.name">{{ currentCateStr }}</view>
+						</view>
+					</view>
+					<view class="rf-drawer-content rf-flex-attr">
+						<view class="rf-attr-item" :class="[item.isActive ? `bg-${themeColor.name} rf-btmItem-active` : 'rf-btmItem-normal']" v-for="(item, index) in productCateList" :key="item.id" @tap.stop="cateBtnSelected(index)">
+							<view class="rf-attr-ellipsis">{{ item.title }}</view>
+						</view>
+					</view>
+
+					<view class="rf-drawer-title">
+						<text class="rf-title-bold">品牌</text>
+						<view class="rf-all-box rf-icon-ml">
+							<view class="rf-attr-right" :class="'text-' + themeColor.name">{{ currentBrandStr }}</view>
+						</view>
+					</view>
+					<view class="rf-drawer-content rf-flex-attr">
+						<view class="rf-attr-item" :class="[item.isActive ? `bg-${themeColor.name} rf-btmItem-active` : 'rf-btmItem-normal']" v-for="(item, index) in brandList" :key="item.id" @tap.stop="brandBtnSelected(index)">
+							<view class="rf-attr-ellipsis">{{ item.title }}</view>
+						</view>
+					</view>
+					<view class="rf-safearea-bottom"></view>
 				</scroll-view>
+				<view class="rf-attr-btnbox">
+					<view class="rf-attr-safearea">
+						<view class="rf-drawer-btn rf-drawerbtn-black" :class="'text-' + themeColor.name" hover-class="rf-white-hover" :hover-stay-time="150" @tap="reset">重置</view>
+						<view class="rf-drawer-btn rf-drawerbtn-primary" :class="'bg-' + themeColor.name" hover-class="rf-red-hover" :hover-stay-time="150" @tap="closeDrawer">确定</view>
+					</view>
+				</view>
 			</view>
-		</view>
+		</uni-drawer>
+		<!--左抽屉弹层 筛选-->
 		<!--页面加载动画-->
-		<rf-loading v-if="loading"></rf-loading>
+		<rfLoading isFullScreen :active="loading"></rfLoading>
 	</view>
 </template>
 <script>
-	import { guessYouLikeList, productCate, productList } from '@/api/product';
+	import uniDrawer from '@/components/uni-drawer/drawer';
+	import rfTopDrawer from '@/components/rf-top-drawer';
+	import rfAttrContent from '@/components/rf-attr-content';
+	import rfProductList from '@/components/rf-product-list';
 	import rfLoadMore from '@/components/rf-load-more/rf-load-more';
-	import rfSearchBar from '@/components/rf-search-bar';
+	import { cartItemCount, cartItemCreate, productDetail, productList, productCate, brandIndex } from '@/api/product';
+	import { mapMutations } from 'vuex';
+	/* eslint-disable */
 	export default {
 		components: {
+			uniDrawer,
+			rfProductList,
+			rfAttrContent,
 			rfLoadMore,
-			rfSearchBar
+			rfTopDrawer
+		},
+		filters: {
+			filterTotalSales (val) {
+				if (val > 10000) {
+					val = `${(val / 10000).toFixed(2)}w`;
+				}
+				return val;
+			}
 		},
 		data() {
 			return {
-				loading: true,  // 加载动画
-				navBarTop: '0',
-				cateMaskState: 0, //分类面板展开状态
-				loadingType: 'more', //加载更多状态
-				filterIndex: 0,
-				cateId: 0, //已选三级分类id
-				priceOrder: 0, //1 价格从低到高 2价格从高到低
-				salesOrder: 0, //1 价格从低到高 2价格从高到低
-				cateList: [],
-				goodsList: [],  // 商品列表
-				keyword: null,  // 搜索关键字
-				cateParams: null,
+			  keyword: '',
+			  errorInfo: '',
+				loadingType: 'more',
 				page: 1,
-				filterParams: {},
-				isShowNavBar: true,
-				hotSearchDefault: '请输入关键字',
-				contentTop: '88upx',
-				errorInfo: undefined // 接口请求出错信息
-			};
+				loading: true,
+				specClass: 'none',
+				productDetail: {},
+				searchKey: "", //搜索关键词
+				width: 200, //header宽度
+				height: 64, //header高度
+				inputTop: 0, //搜索框距离顶部距离
+				arrowTop: 0, //箭头距离顶部距离
+				dropScreenH: 0, //下拉筛选框距顶部距离
+				attrData: [],
+				attrIndex: -1,
+				dropScreenShow: false,
+				scrollTop: 0,
+				tabIndex: 0, //顶部筛选索引
+				isList: false, //是否以列表展示  | 列表或大图
+				drawer: false,
+				drawerH: 0, //抽屉内部scrollview高度
+				selectedName: "综合",
+				selectH: 0,
+				dropdownList: [{
+					name: "综合",
+					selected: true,
+					param: {}
+				}, {
+					name: "价格升序",
+					selected: false,
+					param: { price: 'asc' }
+				}, {
+					name: "价格降序",
+					selected: false,
+					param: { price: 'desc' }
+				}],
+				attrArr: [{
+					name: "全部",
+					selectedName: "全部",
+					isActive: false,
+					params: {},
+					list: []
+				}, {
+					name: "新品",
+					selectedName: "新品",
+					isActive: false,
+					params: { is_new: 1 },
+					list: []
+				}, {
+					name: "推荐",
+					selectedName: "推荐",
+					isActive: false,
+					params: { is_recommend: 1 },
+					list: []
+				}, {
+					name: "热门",
+					selectedName: "热门",
+					isActive: false,
+					params: { is_hot: 1 },
+					list: []
+				}
+				// 	{
+				// 	name: "品牌",
+				// 	selectedName: "品牌",
+				// 	isActive: false,
+				// 	list: [{
+				// 		name: "trendsetter",
+				// 		selected: false
+				// 	}, {
+				// 		name: "维肯（Viken）",
+				// 		selected: false
+				// 	}, {
+				// 		name: "AORO",
+				// 		selected: false
+				// 	}, {
+				// 		name: "苏发",
+				// 		selected: false
+				// 	}, {
+				// 		name: "飞花令（FHL）",
+				// 		selected: false
+				// 	}, {
+				// 		name: "叶梦丝",
+				// 		selected: false
+				// 	}, {
+				// 		name: "ITZOOM",
+				// 		selected: false
+				// 	}, {
+				// 		name: "亿魅",
+				// 		selected: false
+				// 	}, {
+				// 		name: "LEIKS",
+				// 		selected: false
+				// 	}, {
+				// 		name: "雷克士",
+				// 		selected: false
+				// 	}, {
+				// 		name: "蕊芬妮",
+				// 		selected: false
+				// 	}, {
+				// 		name: "辉宏达",
+				// 		selected: false
+				// 	}, {
+				// 		name: "英西达",
+				// 		selected: false
+				// 	}, {
+				// 		name: "戴为",
+				// 		selected: false
+				// 	}, {
+				// 		name: "魔风者",
+				// 		selected: false
+				// 	}, {
+				// 		name: "即满",
+				// 		selected: false
+				// 	}, {
+				// 		name: "北比",
+				// 		selected: false
+				// 	}, {
+				// 		name: "娱浪",
+				// 		selected: false
+				// 	}, {
+				// 		name: "搞怪猪",
+				// 		selected: false
+				// 	}]
+				// }
+					// {
+					// name: "类型",
+					// selectedName: "类型",
+					// isActive: false,
+					// list: [{
+					// 	name: "线充套装",
+					// 	selected: false
+					// }, {
+					// 	name: "单条装",
+					// 	selected: false
+					// }, {
+					// 	name: "车载充电器",
+					// 	selected: false
+					// }, {
+					// 	name: "PD快充",
+					// 	selected: false
+					// }, {
+					// 	name: "数据线转换器",
+					// 	selected: false
+					// }, {
+					// 	name: "多条装",
+					// 	selected: false
+					// }, {
+					// 	name: "充电插头",
+					// 	selected: false
+					// }, {
+					// 	name: "无线充电器",
+					// 	selected: false
+					// }, {
+					// 	name: "座式充电器",
+					// 	selected: false
+					// }, {
+					// 	name: "万能充",
+					// 	selected: false
+					// }, {
+					// 	name: "转换器/转接线",
+					// 	selected: false
+					// }, {
+					// 	name: "MFI苹果认证",
+					// 	selected: false
+					// }, {
+					// 	name: "转换器",
+					// 	selected: false
+					// }, {
+					// 	name: "苹果认证",
+					// 	selected: false
+					// }
+				// 	]
+				// },
+				// 	{
+				// 	name: "适用手机",
+				// 	selectedName: "适用手机",
+				// 	isActive: false,
+				// 	list: [{
+				// 		name: "通用",
+				// 		selected: false
+				// 	}, {
+				// 		name: "vivo",
+				// 		selected: false
+				// 	}, {
+				// 		name: "OPPO",
+				// 		selected: false
+				// 	}, {
+				// 		name: "魅族",
+				// 		selected: false
+				// 	}, {
+				// 		name: "苹果",
+				// 		selected: false
+				// 	}, {
+				// 		name: "华为",
+				// 		selected: false
+				// 	}, {
+				// 		name: "三星",
+				// 		selected: false
+				// 	}, {
+				// 		name: "荣耀",
+				// 		selected: false
+				// 	}, {
+				// 		name: "诺基亚5",
+				// 		selected: false
+				// 	}, {
+				// 		name: "荣耀4",
+				// 		selected: false
+				// 	}, {
+				// 		name: "诺基",
+				// 		selected: false
+				// 	}, {
+				// 		name: "荣耀",
+				// 		selected: false
+				// 	}, {
+				// 		name: "诺基亚2",
+				// 		selected: false
+				// 	}, {
+				// 		name: "荣耀2",
+				// 		selected: false
+				// 	}, {
+				// 		name: "诺基",
+				// 		selected: false
+				// 	}]
+				// }
+				],
+				productList: [
+				],
+				pageIndex: 1,
+				pullUpOn: true,
+				productCateList: [],
+				brandList: [],
+				currentCateStr: '',
+				currentBrandStr: '',
+				minPrice: '',
+				maxPrice: '',
+				productParams: {}
+			}
 		},
 		onLoad(options) {
+			let obj = {};
+			// #ifdef MP-WEIXIN
+			obj = wx.getMenuButtonBoundingClientRect();
+			// #endif
+			// #ifdef MP-BAIDU
+			obj = swan.getMenuButtonBoundingClientRect();
+			// #endif
+			// #ifdef MP-ALIPAY
+			my.hideAddToDesktopMenu();
+			// #endif
+			uni.getSystemInfo({
+				success: (res) => {
+					this.width = obj.left || res.windowWidth;
+					this.height = obj.top ? (obj.top + obj.height + 8) : (res.statusBarHeight + 44);
+					this.inputTop = obj.top ? (obj.top + (obj.height - 30) / 2) : (res.statusBarHeight + 7);
+					this.arrowTop = obj.top ? (obj.top + (obj.height - 32) / 2) : (res.statusBarHeight + 6);
+					this.searchKey = options.searchKey || "";
+					//略小，避免误差带来的影响
+					this.dropScreenH = this.height * 750 / res.windowWidth + 186;
+					this.drawerH = res.windowHeight - uni.upx2px(100) - this.height
+				}
+			});
 			this.initData(options);
 		},
-		//下拉刷新
+		// 下拉刷新
 		onPullDownRefresh() {
-			this.filterParams = {};
 			this.page = 1;
-			this.goodsList.length = 0;
-			this.getProductList('refresh');
+			this.productList.length = 0;
+			this.getProductList('refresh', {});
 		},
-		//加载更多
+		// 加载更多
 		onReachBottom() {
+		  if (this.loadingType === 'nomore') return;
 			this.page++;
 			this.getProductList();
 		},
 		methods: {
+      ...mapMutations(['setCartNum']),
 			// 初始化数据
 			initData(options) {
-				/*  #ifdef APP-PLUS  */
-				switch (uni.getSystemInfoSync().platform) {
-					case 'android':
-						this.navBarTop = '128upx';
-						break;
-					case 'ios':
-						// 刘海屏返回true，否则返回false
-						if (plus.navigator.hasNotchInScreen()) {
-							this.navBarTop = '168upx';
-						} else {
-							this.navBarTop = '128upx';
-						}
-						break;
+			  let params = {};
+			  if (options.cate_id) {
+					params.cate_id = options.cate_id;
+			  }
+				if (options.param) {
+				  params = { ...params, ...JSON.parse(options.param) }
 				}
-				/*  #endif  */
-				/*  #ifndef APP-PLUS  */
-				this.navBarTop = '94upx';
-				/*  #endif  */
-				/*  #ifdef MP  */
-				this.contentTop = '98upx';
-				/*  #endif  */
-				this.cateId = options.cate_id;
-				if (options.params) {
-					this.cateParams = JSON.parse(options.params);
-					if (this.cateParams.guessYouLike === 1) {
-						this.isShowNavBar = false;
-						this.getGuessYouLikeList();
+				if (options.keyword) {
+					this.keyword = options.keyword;
+					params.keyword = options.keyword;
+				}
+				this.productParams = params;
+				this.getProductList();
+			},
+			stopPrevent() {},
+			// 规格弹窗开关
+			toggleSpec(row) {
+				if (parseInt(row.status, 10) === 0) return;
+				if (this.specClass === 'show') {
+					this.specClass = 'hide';
+					if (row.stock === 0) {
+						this.$mHelper.toast('库存不足');
 						return;
 					}
+					if (row.type.toString() === '1') {
+						// 加入购物车
+						this.handleCartItemCreate(row.skuId, row.cartCount);
+					} else if (row.type.toString() === '2') {
+						// 立即购买
+						const list = {};
+						const data = {};
+						data.sku_id = row.skuId;
+						data.num = row.cartCount;
+						if (
+							this.productDetail.point_exchange_type.toString() === '2' ||
+							this.productDetail.point_exchange_type.toString() === '4' ||
+							(this.productDetail.point_exchange_type.toString() === '3' &&
+								this.isPointExchange)
+						) {
+							list.type = 'point_exchange';
+						} else {
+							list.type = 'buy_now';
+						}
+						list.data = JSON.stringify(data);
+						this.navTo(`/pages/order/create/order?data=${JSON.stringify(list)}`);
+					}
+					setTimeout(() => {
+						this.specClass = 'none';
+					}, 250);
+				} else if (this.specClass === 'none') {
+					this.getProductDetail(row);
 				}
-				this.keyword = options.keyword;
-				this.hotSearchDefault = options.keyword || '';
-				this.getProductList();
-				this.getProductCate();
 			},
-			// 搜索商品列表
-			handleSearchProductList(e) {
-				this.keyword = e.searchValue;
+			hideSpec() {
+				this.specClass = 'hide';
+				setTimeout(() => {
+					this.specClass = 'none';
+				}, 250);
+			},
+			// 添加商品至购物车
+			async handleCartItemCreate(skuId, cartCount) {
+				await this.$http
+					.post(`${cartItemCreate}`, {
+						sku_id: skuId,
+						num: cartCount
+					})
+					.then(async () => {
+						await this.$http.get(`${cartItemCount}`).then(async r => {
+							this.cartNum = r.data;
+							this.setCartNum(r.data);
+						});
+						this.$mHelper.toast('添加购物车成功');
+					});
+			},
+			// 获取产品详情
+			async getProductDetail(row) {
+				await this.$http
+					.get(`${productDetail}`, {
+						id: row.id
+					})
+					.then(async r => {
+						this.productDetail = r.data;
+						this.productDetail.sku_name = row.sku_name;
+						this.specClass = 'show';
+					});
+			},
+			px(num) {
+				return uni.upx2px(num) + "px"
+			},
+			btnDropChange(e) {
+				let index = parseInt(e.currentTarget.dataset.index, 10);
+				let arr = JSON.parse(JSON.stringify(this.attrArr[index].list));
+				if (arr.length === 0) {
+					this.$set(this.attrArr[index], "isActive", !this.attrArr[index].isActive)
+				  if (this.attrArr[index].isActive && index === 0) {
+				    this.attrArr[1].isActive = false;
+				    this.attrArr[2].isActive = false;
+				    this.attrArr[3].isActive = false;
+				  }
+					if (this.attrArr[1].isActive || this.attrArr[2].isActive || this.attrArr[3].isActive) {
+				    this.attrArr[0].isActive = false;
+				  }
+				} else {
+					this.attrData = arr;
+					this.attrIndex = index;
+					this.dropScreenShow = true;
+					this.$set(this.attrArr[index], "isActive", false);
+					this.scrollTop = 1;
+					this.$nextTick(() => {
+						this.scrollTop = 0
+					});
+				}
+				let params = {};
+				if (this.attrArr[0].isActive) {
+					params = {};
+				} else {
+					params.keyword = this.keyword;
+				}
+				this.attrArr.forEach(item => {
+					if (item.isActive) {
+						params = {...params, ...item.params }
+					}
+				});
 				this.page = 1;
-				this.goodsList.length = 0;
-				this.filterParams = {};
+				this.productList = [];
+				this.loading = true;
+				this.productParams = params;
 				this.getProductList();
 			},
-			// 跳转至主页
-			navToIndex() {
-				this.$mRouter.reLaunch({ route: '/pages/index/index' });
+			btnSelected(e) {
+				let index = e.currentTarget.dataset.index;
+				this.$set(this.attrData[index], "selected", !this.attrData[index].selected)
+			},
+			async reset() {
+      	this.currentBrandStr = '';
+      	this.currentCateStr = '';
+				this.minPrice = '';
+				this.maxPrice = '';
+				await this.getBrandList();
+				await this.getProductCate();
+			},
+			btnCloseDrop() {
+				this.scrollTop = 1;
+				this.$nextTick(() => {
+					this.scrollTop = 0
+				});
+				this.dropScreenShow = false;
+				this.attrIndex = -1
+			},
+			btnSure() {
+				let index = this.attrIndex;
+				let arr = this.attrData;
+				let active = false;
+				let attrName = "";
+				//这里只是为了展示选中效果,并非实际场景
+				for (let item of arr) {
+					if (item.selected) {
+						active = true;
+						attrName += attrName ? ";" + item.name : item.name
+					}
+				}
+				let obj = this.attrArr[index];
+				this.btnCloseDrop();
+				this.$set(obj, "isActive", active);
+				this.$set(obj, "selectedName", attrName);
+			},
+			showDropdownList() {
+				this.selectH = 246;
+				this.tabIndex = 0;
+			},
+			hideDropdownList() {
+				this.selectH = 0
+			},
+			dropdownItem(e) {
+				let index = parseInt(e.currentTarget.dataset.index, 10);
+				let arr = this.dropdownList;
+				for (let i = 0; i < arr.length; i++) {
+					if (i === index) {
+						arr[i].selected = true;
+					} else {
+						arr[i].selected = false;
+					}
+				}
+				this.dropdownList = arr;
+				this.selectedName = index === 0 ? '综合' : index === 1 ? '价格升序' : '价格降序';
+				this.selectH = 0;
+				this.page = 1;
+				this.productList = [];
+				this.loading = true;
+				this.productParams = this.dropdownList[index].param;
+				this.getProductList();
+			},
+			screen(e) {
+				let index = parseInt(e.currentTarget.dataset.index, 10);
+				if (index === 0) {
+					this.showDropdownList();
+				} else if (index === 1) {
+					let params = {}
+					if (this.tabIndex === 1) {
+						this.tabIndex = null;
+						params.total_sales = 'asc';
+					} else {
+						this.tabIndex = 1;
+						params.total_sales = 'desc';
+					}
+					this.page = 1;
+					this.productList = [];
+					this.loading = true;
+				  this.productParams = params;
+					this.getProductList();
+				} else if (index === 2) {
+					this.isList = !this.isList
+				} else if (index === 3) {
+				  if (this.productCateList.length === 0) {
+						this.getProductCate();
+				  }
+				  if (this.brandList.length === 0) {
+						this.getBrandList();
+				  }
+					this.drawer = true;
+				}
+			},
+			closeDrawer() {
+				this.drawer = false;
+			  const params = {};
+			  if (this.maxPrice) {
+			    params.max_price = this.maxPrice;
+			  }
+			  if (this.minPrice) {
+			    params.min_price = this.minPrice;
+			  }
+			  const brandArr = [];
+			  this.brandList.forEach(item => {
+				  if (item.isActive) {
+					    brandArr.push(item.id);
+					  }
+			  });
+			  if (brandArr.join(',')) {
+			    params.brand_id = brandArr.join(',');
+			  }
+			  const cateArr = [];
+			  this.productCateList.forEach(item => {
+				  if (item.isActive) {
+					    cateArr.push(item.id);
+					  }
+			  });
+			  if (cateArr.join(',')) {
+			    params.cate_id = cateArr.join(',');
+			  }
+				this.page = 1;
+				this.productList = [];
+				this.loading = true;
+				this.productParams = params;
+				this.getProductList();
+			},
+			cateBtnSelected(index) {
+			  this.currentCateStr = '';
+				this.$set(this.productCateList[index], "isActive", !this.productCateList[index].isActive);
+				const productCateArr = [];
+				this.productCateList.forEach(item => {
+				  if (item.isActive) {
+				    productCateArr.push(item.title);
+				  }
+				});
+				this.currentCateStr = productCateArr.join(',');
+			},
+			brandBtnSelected(index) {
+			  this.currentBrandStr = '';
+				this.$set(this.brandList[index], "isActive", !this.brandList[index].isActive);
+				const brandArr = [];
+				this.brandList.forEach(item => {
+				  if (item.isActive) {
+				    brandArr.push(item.title);
+				  }
+				});
+				this.currentBrandStr = brandArr.join(',');
+			},
+			// 获取商品分类列表
+			async getProductCate() {
+				await this.$http
+					.get(`${productCate}`)
+					.then(r => {
+					  this.productCateList = r.data;
+					});
+			},
+			// 获取商品品牌列表
+			async getBrandList() {
+				await this.$http
+					.get(`${brandIndex}`)
+					.then(r => {
+					  this.brandList = r.data;
+					});
+			},
+			back() {
+				if (this.drawer) {
+					this.closeDrawer()
+				} else {
+					this.$mRouter.back();
+				}
+			},
+			search() {
+			  this.page = 1;
+			  this.productList = [];
+			  this.loading = true;
+			  this.productParams = { keyword: this.keyword };
+			  this.getProductList();
 			},
 			// 获取商品列表
 			async getProductList(type) {
-				let params = {};
-				if (this.keyword) {
-					params.keyword = this.keyword;
-				} else if (this.cateId) {
-					params.cate_id = this.cateId;
-				} else if (this.cateParams) {
-					params = { ...this.cateParams };
-				}
-				params.page = this.page;
-				await this.$http.get(`${productList}`, {
-					...params,
-					...this.filterParams
-				}).then(async r => {
-					this.loading = false;
-					if (type === 'refresh') {
-						uni.stopPullDownRefresh();
-					}
-					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
-					this.goodsList = [...this.goodsList, ...r.data];
-				}).catch(err => {
-					this.errorInfo = err;
-					this.goodsList.length = 0;
-					this.loading = false;
-					if (type === 'refresh') {
-						uni.stopPullDownRefresh();
-					}
-				});
-			},
-			async getGuessYouLikeList() {
-				await this.$http.get(`${guessYouLikeList}`, {}).then(r => {
-					this.loading = false;
-					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
-					this.goodsList = [...this.goodsList, ...r.data];
-				}).catch(() => {
-					this.loading = false;
-				});
-			},
-			// 获取商品分类
-			async getProductCate() {
-				await this.$http.get(`${productCate}`).then(r => {
-					this.cateList = r.data;
-					this.cateList.unshift({
-						title: '全部商品',
-						id: ''
+				await this.$http
+					.get(`${productList}`, {
+						...this.productParams,
+						page: this.page
+					})
+					.then(async r => {
+						this.loading = false;
+						if (type === 'refresh') {
+							uni.stopPullDownRefresh();
+						}
+						this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+						this.productList = [...this.productList, ...r.data];
+					})
+					.catch(err => {
+						this.errorInfo = err;
+						this.loading = false;
+						if (type === 'refresh') {
+							uni.stopPullDownRefresh();
+						}
 					});
-				});
 			},
-			//筛选点击
-			tabClick(index) {
-				this.filterParams = {};
-				if (this.filterIndex === index && index !== 4 && index !== 1) {
-					return;
-				}
-				this.filterIndex = index;
-				if (index === 0) {
-					this.filterParams = {};
-				} else if (index === 1) {
-					if (this.salesOrder === 1) {
-						this.filterParams.sales = 'desc';
-						this.salesOrder = 2;
-					} else {
-						this.filterParams.sales = 'asc';
-						this.salesOrder = 1;
-					}
-				} else if (index === 2) {
-					this.filterParams.view = 'desc';
-				} else if (index === 3) {
-					this.filterParams.collect = 'desc';
-				} else if (index === 4) {
-					if (this.priceOrder === 1) {
-						this.filterParams.price = 'desc';
-						this.priceOrder = 2;
-					} else {
-						this.filterParams.price = 'asc';
-						this.priceOrder = 1;
-					}
-				}
-				uni.pageScrollTo({
-					duration: 300,
-					scrollTop: 0
-				});
-				this.page = 1;
-				this.goodsList.length = 0;
-				this.loading = true;
-				this.getProductList();
-			},
-			//显示分类面板
-			toggleCateMask(type) {
-				let timer = type === 'show' ? 10 : 300;
-				let state = type === 'show' ? 1 : 0;
-				this.cateMaskState = 2;
-				setTimeout(() => {
-					this.cateMaskState = state;
-				}, timer);
-			},
-			//分类点击
-			changeCate(id) {
-				if (!id) {
-					this.cateParams = null;
-					this.cateId = null;
-					this.keyword = null;
-				}
-				this.cateId = id;
-				this.keyword = undefined;
-				this.toggleCateMask();
-				uni.pageScrollTo({
-					duration: 300,
-					scrollTop: 0
-				});
-				this.page = 1;
-				this.goodsList.length = 0;
-				this.filterParams = {};
-				this.loading = true;
-				this.getProductList('refresh');
-			},
-			//跳转详情
+			// 跳转详情
 			navTo(route) {
 				this.$mRouter.push({ route });
-			},
-			stopPrevent() {
 			}
-		}
-	};
+		},
+	}
 </script>
-
 <style lang="scss">
 	page {
+		background: $page-color-base;
+	}
+	/*顶部下拉选择 属性*/
+	.rf-scroll-box {
+		width: 100%;
+		height: 480upx;
+		box-sizing: border-box;
+		position: relative;
+		z-index: 99;
+		color: $color-white;
+		font-size: 30upx;
+		word-break: break-all;
+	}
+	.rf-drop-item {
+		color: #333;
+		height: 80upx;
+		font-size: 28upx;
+		padding: 20upx 40upx 20upx 40upx;
+		box-sizing: border-box;
+		display: inline-block;
+		width: 50%;
+	}
+	.rf-drop-btnbox {
+		width: 100%;
+		height: 100upx;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		box-sizing: border-box;
+		display: flex;
+	}
+	.rf-drop-btn {
+		width: 50%;
+		font-size: 32upx;
+		text-align: center;
+		height: 100upx;
+		line-height: 100upx;
+		border: 0;
+	}
+	.rf-dropdownlist {
+		width: 100%;
+		position: absolute;
+		background: $color-white;
+		border-bottom-left-radius: 24upx;
+		border-bottom-right-radius: 24upx;
+		overflow: hidden;
+		box-sizing: border-box;
+		padding-top: 10upx;
+		padding-bottom: 26upx;
+		left: 0;
+		top: 88upx;
+		visibility: hidden;
+		transition: all 0.2s ease-in-out;
+		z-index: 99;
+		.icongouxuan {
+			font-size: $font-lg;
+			line-height: 88upx;
+		}
+	}
+	.rf-dropdownlist-show {
+		visibility: visible;
+	}
+	.rf-dropdownlist-mask {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.6);
+		z-index: -1;
+		transition: all 0.2s ease-in-out;
+		opacity: 0;
+		visibility: hidden;
+	}
+	.rf-mask-show {
+		opacity: 1;
+		visibility: visible;
+	}
+	.rf-dropdownlist-item {
+		color: #333;
+		height: 70upx;
+		font-size: 28upx;
+		padding: 0 40upx;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	/*顶部下拉选择 综合*/
+	.rf-drawer-box {
+		width: 686upx;
+		font-size: 24upx;
+		overflow: hidden;
+		position: relative;
+		padding-bottom: 100upx;
+	}
+	.rf-drawer-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 30upx;
+		box-sizing: border-box;
+		height: 80upx;
+	}
+	.rf-title-bold {
+		font-size: 26upx;
+		font-weight: bold;
+		flex-shrink: 0;
+	}
+	.rf-location {
+		margin-right: 6upx;
+	}
+	.rf-attr-right {
+		width: 70%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-align: right;
+	}
+	.rf-all-box {
+		width: 90%;
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+	.rf-drawer-content {
+		padding: 16upx 30upx 30upx 30upx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		box-sizing: border-box;
+	}
+	.rf-input {
+		border: 0;
+		height: 64upx;
+		border-radius: 32upx;
+		width: 45%;
+		background: #f7f7f7;
+		text-align: center;
+		font-size: $font-base;
+		color: #333;
+	}
+	.rf-phcolor {
+		text-align: center;
+		color: #b2b2b2;
+		font-size: 24upx;
+	}
+	.rf-flex-attr {
+		flex-wrap: wrap;
+		justify-content: flex-start;
+	}
+	.rf-attr-item {
+		width: 30%;
+		height: 64upx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 4upx;
+		box-sizing: border-box;
+		border-radius: 32upx;
+		margin-right: 5%;
+		margin-bottom: 5%;
+	}
+	.rf-attr-ellipsis {
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 96%;
+		text-align: center;
+	}
+	.rf-attr-item:nth-of-type(3n) {
+		margin-right: 0%;
+	}
+	.rf-attr-btnbox {
+		width: 100%;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		box-sizing: border-box;
+		padding: 0 30upx;
 		background: $color-white;
 	}
-
+	.rf-attr-safearea {
+		height: 100upx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		/*padding-bottom: env(safe-area-inset-bottom);*/
+	}
+	.rf-safearea-bottom {
+		width: 100%;
+		height: env(safe-area-inset-bottom);
+	}
+	.rf-attr-btnbox::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		border-top: 1upx solid #eaeef1;
+		-webkit-transform: scaleY(0.5);
+		transform: scaleY(0.5);
+	}
+	.rf-drawer-btn {
+		width: 47%;
+		text-align: center;
+		height: 60upx;
+		border-radius: 30upx;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+	}
+	.rf-drawerbtn-black {
+		border: 1upx solid;
+	}
 	.product-list {
-		.navbar {
-			position: fixed;
-			left: 0;
-			/*top: var(--window-top);*/
-			display: flex;
+		padding-bottom: env(safe-area-inset-bottom);
+		/* 隐藏scroll-view滚动条*/
+		::-webkit-scrollbar {
+			width: 0;
+			height: 0;
+			color: transparent;
+		}
+		.rf-header-box {
 			width: 100%;
-			height: 80upx;
-			background: #fff;
-			box-shadow: 0 2upx 10upx rgba(0, 0, 0, .06);
-			z-index: 10;
-
-			.nav-item {
-				flex: 1;
+			background: $color-white;
+			position: fixed;
+			z-index: 100;
+			left: 0;
+			top: 0;
+			.rf-header {
 				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 100%;
-				font-size: $font-base;
-				color: $font-color-dark;
-				position: relative;
-
-				&.current {
-					color: $base-color;
-
-					&:after {
-						content: '';
-						position: absolute;
-						left: 50%;
-						bottom: 0;
-						transform: translateX(-50%);
-						width: 120upx;
-						height: 0;
-						border-bottom: 4upx solid $base-color;
-					}
-				}
-			}
-
-			.p-box {
-				display: flex;
-				flex-direction: column;
-
-				.iconfont {
+				align-items: flex-start;
+				.rf-back {
+					margin-left: 8upx;
+					height: 32px !important;
+					width: 32px !important;
 					display: flex;
-					align-items: center;
 					justify-content: center;
-					width: 30upx;
-					height: 14upx;
-					line-height: 1;
-					margin-left: 4upx;
-					font-size: 26upx;
-					color: #888;
-
-					&.active {
-						color: $base-color;
+					align-items: center;
+					.iconzuo {
+						font-size: $font-lg + 4upx;
+						font-weight: 500;
+						color: $font-color-dark;
 					}
 				}
-
-				.xia {
-					transform: scaleY(-1);
-				}
 			}
-
-			.cate-item {
+			.input-box {
+				width: 100%;
+				font-size: $font-sm;
+				box-sizing: border-box;
+				color: #999;
 				display: flex;
-				justify-content: center;
 				align-items: center;
-				height: 100%;
-				width: 80upx;
+				overflow: hidden;
+				height: 60upx;
+				background-color: $page-color-base;
+				border-radius: 30upx;
 				position: relative;
-				font-size: 44upx;
-
-				&:after {
-					content: '';
-					position: absolute;
-					left: 0;
-					top: 50%;
-					transform: translateY(-50%);
-					border-left: 1px solid #ddd;
-					width: 0;
-					height: 36upx;
-				}
-			}
-		}
-
-		// 商品列表
-		.rf-product-list {
-			margin-top: 98upx;
-		}
-
-		/* 分类 */
-		.cate-mask {
-			position: fixed;
-			left: 0;
-			top: 40px;
-			bottom: 0;
-			width: 100%;
-			background: rgba(0, 0, 0, 0);
-			z-index: 95;
-			transition: .3s;
-
-			.cate-content {
-				width: 630upx;
-				height: 100%;
-				background: #fff;
-				float: right;
-				transform: translateX(100%);
-				transition: .3s;
-			}
-
-			&.none {
-				display: none;
-			}
-
-			&.show {
-				background: rgba(0, 0, 0, .4);
-
-				.cate-content {
-					transform: translateX(0);
-				}
-			}
-
-			.cate-list {
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-
-				.cate-item {
+				margin: 0 20upx 0 10upx;
+				.iconsousuo2 {
+					z-index: 100;
 					display: flex;
 					align-items: center;
-					height: 70upx;
-					padding-left: 30upx;
-					font-size: 30upx;
-					position: relative;
+					position: absolute;
+					top: 0;
+					right: 0;
+					width: 60upx;
+					height: 60upx;
+					font-size: $font-lg + 4upx;
 					color: $font-color-dark;
 				}
-
-				.one {
-					background: #eee;
-				}
-
-				.two {
-					background: #f8f8f8;
+				input {
+					width: 100%;
+					padding-left: 28upx;
+					height: 28upx;
 					color: $font-color-base;
-					height: 60upx;
 					font-size: 28upx;
-					padding-left: 50upx;
-				}
-
-				.three {
-					font-size: 26upx;
-					color: $font-color-base;
-				}
-
-				.active {
-					color: $base-color;
 				}
 			}
+		}
+		/*screen*/
+		.rf-header-screen {
+			width: 100%;
+			background: $color-white;
+			position: fixed;
+			z-index: 99;
+			.rf-screen-top,
+			.rf-screen-bottom {
+				border: none;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				font-size: 28upx;
+				color: #333;
+			}
+			.rf-screen-top {
+				height: 88upx;
+				line-height: 88upx;
+				position: relative;
+				background: $color-white;
+			}
+			.rf-top-item {
+				height: 28upx;
+				line-height: 28upx;
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				.iconfont {
+					font-size: $font-lg + 4upx;
+					font-weight: 500;
+				}
+			}
+			.rf-screen-bottom {
+				height: 100upx;
+				padding: 0 30upx;
+				box-sizing: border-box;
+				font-size: 24upx;
+				align-items: center;
+				overflow: hidden;
+			}
+			.rf-bottom-text {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.rf-bottom-item {
+				flex: 1;
+				width: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0 12upx;
+				box-sizing: border-box;
+				margin-right: 20upx;
+				white-space: nowrap;
+				height: 60upx;
+				border-radius: 40upx;
+			}
+			.rf-bottom-item:last-child {
+				margin-right: 0;
+			}
+			.rf-bold {
+				font-weight: bold;
+			}
+			.rf-active {
+				color: $base-color;
+			}
+			.rf-icon-ml .rf-icon-class {
+				margin-left: 6upx;
+			}
+			.rf-ml {
+				margin-left: 6upx;
+			}
+			.rf-seizeaseat-20 {
+				height: 20upx;
+			}
+			.rf-seizeaseat-30 {
+				height: 30upx;
+			}
+			.rf-icon-middle .rf-icon-class {
+				vertical-align: middle;
+			}
+			.rf-middle {
+				vertical-align: middle;
+			}
+		}
+		/*screen*/
+		.rf-btmItem-active {
+			border-radius: 32upx;
+			font-weight: bold;
+			position: relative;
+		}
+		.rf-btmItem-normal {
+			border: 1upx solid rgba(0, 0, 0, 0.12);
+			position: relative;
+		}
+		.rf-btmItem-active::after {
+			content: "";
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border-radius: 40upx;
+			left: 0;
+			top: 0;
+		}
+		.rf-btmItem-tap {
+			position: relative;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+		.rf-btmItem-tap::after {
+			content: "";
+			position: absolute;
+			width: 100%;
+			height: 22upx;
+			background: #f7f7f7;
+			left: 0;
+			top: 58upx;
+		}
+		.product-list-wrapper {
+			/*#ifdef MP*/
+			padding-top: 360rpx;
+		  /*#endif*/
 		}
 	}
 </style>

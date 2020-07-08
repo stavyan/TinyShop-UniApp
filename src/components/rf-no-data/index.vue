@@ -1,6 +1,8 @@
 <template>
 	<view class="rf-no-data hideToShow" :style="{ backgroundColor: bgColor }">
-		<view class="image"><image :src="custom == true ? notFoundImg : noNetWorkImg"></image></view>
+		<view class="image"
+			><image :src="custom == true ? notFoundImg : noNetWorkImg"></image
+		></view>
 		<!-- 网络连接失败默认显示内容 -->
 		<view class="content" v-if="netType == 'none' && custom == false">
 			<text class="title" :style="{ color: mainColor }">{{ mainText }}</text>
@@ -15,7 +17,9 @@
 		<!-- 自定义内容 -->
 		<slot />
 		<view class="back">
-			<text class="spec-color" @tap="navTo('/pages/index/index')">返回主页</text>
+			<text class="spec-color" @tap="navTo('/pages/index/index')"
+				>返回主页</text
+			>
 		</view>
 		<slot name="refresh" />
 	</view>
@@ -76,7 +80,7 @@ export default {
 			// }
 		},
 		navTo(route) {
-			this.$mRouter.reLaunch({route});
+			this.$mRouter.reLaunch({ route });
 		}
 	}
 };
@@ -85,7 +89,7 @@ export default {
 <style lang="scss" scoped>
 .rf-no-data {
 	width: 100%;
-  height: 100vh;
+	height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -93,7 +97,7 @@ export default {
 	.image {
 		width: 60vw;
 		height: 40vw;
-    margin-bottom: 20upx;
+		margin-bottom: 20upx;
 		image {
 			width: 100%;
 			height: 100%;

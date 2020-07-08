@@ -39,7 +39,8 @@ const orderTakeDelivery = '/tiny-shop/v1/member/order/take-delivery';
 // 退货/退款申请
 const orderRefundApply = '/tiny-shop/v1/member/order-product/refund-apply';
 // 产品退货提交物流
-const orderProductSalesReturn = '/tiny-shop/v1/member/order-product/refund-sales-return';
+const orderProductSalesReturn =
+	'/tiny-shop/v1/member/order-product/refund-sales-return';
 // 关闭退货/退款申请
 const closeOrderRefundApply = '/tiny-shop/v1/member/order-product/refund-close';
 // 获取订单详情
@@ -79,6 +80,8 @@ const invoiceDefault = '/tiny-shop/v1/member/invoice/default';
 const invoiceDel = '/tiny-shop/v1/member/invoice/delete';
 // 开票列表
 const orderInvoiceList = '/tiny-shop/v1/member/order-invoice/index';
+// 发票补领
+const orderInvoiceCreate = '/tiny-shop/v1/member/order-invoice/create';
 
 // 意见反馈列表
 const opinionList = '/tiny-shop/v1/member/opinion/index';
@@ -99,56 +102,106 @@ const rechargeConfigIndex = '/tiny-shop/v1/member/recharge-config/index';
 // 申请退款/退货
 const orderCustomerRefundApply = '/tiny-shop/v1/member/order-customer/apply';
 // 退货提交物流
-const orderCustomerSalesReturn = '/tiny-shop/v1/member/order-customer/sales-return';
+const orderCustomerSalesReturn =
+	'/tiny-shop/v1/member/order-customer/sales-return';
 // 退款/退货关闭申请
 const orderCustomerRefundClose = '/tiny-shop/v1/member/order-customer/close';
 
 // 上传图片
 const uploadImage = '/tiny-shop/v1/common/file/images';
 
+// 消息通知
+// 消息列表
+const notifyIndex = '/tiny-shop/v1/member/notify/index';
+// 消息详情
+const notifyView = '/tiny-shop/v1/member/notify/view';
+// 单个消息阅读
+const notifyRead = '/tiny-shop/v1/member/notify/read';
+// 全部已读
+const notifyReadAll = '/tiny-shop/v1/member/notify/read-all';
+// 删除一条或者多条
+const notifyClear = '/tiny-shop/v1/member/notify/clear';
+// 清空消息记录
+const notifyClearAll = '/tiny-shop/v1/member/notify/clear-all';
+// 未读消息个数
+const notifyUnRreadCount = '/tiny-shop/v1/member/notify/un-read-count';
+// 消息提醒配置
+const notifySubscriptionConfigIndex =
+	'/tiny-shop/v1/member/notify-subscription-config/index';
+// 修改消息提醒配置
+const notifySubscriptionConfigUpConfig =
+	'/tiny-shop/v1/member/notify-subscription-config/up-config';
+
+// 虚拟码列表
+const orderProductVirtualIndex =
+	'/tiny-shop/v1/member/order-product-virtual/index';
+// 虚拟码详情
+const orderProductVirtualView =
+	'/tiny-shop/v1/member/order-product-virtual/view';
+// 虚拟码详情
+const productVirtualVerificationVerify =
+	'/tiny-shop/v1/order/product-virtual-verification/verify';
+
+// 会员等级
+const memberLevelIndex = '/tiny-shop/v1/member/member-level/index';
+
 export {
-    memberInfo,
-    memberUpdate,
-    addressList,
-    addressCreate,
-    addressDefault,
-    addressDetail,
-    addressUpdate,
-    addressDelete,
-    couponList,
-    myCouponList,
-    couponClear,
-    couponDetail,
-    orderList,
-    orderRefundApply,
-    closeOrderRefundApply,
-    orderProductSalesReturn,
-    orderDetail,
-    orderDelete,
-    orderTakeDelivery,
-    couponReceive,
-    footPrintList,
-    footPrintDel,
-    collectList,
-    creditsLogList,
-    evaluateCreate,
-    evaluateAgain,
-    invoiceList,
-    invoiceCreate,
-    invoiceUpdate,
-    invoiceDetail,
-    invoiceDefault,
-    invoiceDel,
-    orderInvoiceList,
-    uploadImage,
-    opinionList,
-    opinionCreate,
-    opinionDetail,
-    thirdPartyAuthList,
-    thirdPartyAuthDelete,
-    rechargeConfigIndex,
-    orderCustomerSalesReturn,
-    orderCustomerRefundApply,
-    orderCustomerRefundClose,
-    orderProductIndex
+	memberInfo,
+	memberUpdate,
+	addressList,
+	addressCreate,
+	addressDefault,
+	addressDetail,
+	addressUpdate,
+	addressDelete,
+	couponList,
+	myCouponList,
+	couponClear,
+	couponDetail,
+	orderList,
+	orderRefundApply,
+	closeOrderRefundApply,
+	orderProductSalesReturn,
+	orderDetail,
+	orderDelete,
+	orderTakeDelivery,
+	couponReceive,
+	footPrintList,
+	footPrintDel,
+	collectList,
+	creditsLogList,
+	evaluateCreate,
+	evaluateAgain,
+	invoiceList,
+	invoiceCreate,
+	invoiceUpdate,
+	invoiceDetail,
+	invoiceDefault,
+	invoiceDel,
+	orderInvoiceCreate,
+	orderInvoiceList,
+	uploadImage,
+	opinionList,
+	opinionCreate,
+	opinionDetail,
+	thirdPartyAuthList,
+	thirdPartyAuthDelete,
+	rechargeConfigIndex,
+	orderCustomerSalesReturn,
+	orderCustomerRefundApply,
+	orderCustomerRefundClose,
+	orderProductIndex,
+	notifyIndex,
+	notifyView,
+	notifyRead,
+	notifyReadAll,
+	notifyClear,
+	notifyClearAll,
+	notifyUnRreadCount,
+	notifySubscriptionConfigUpConfig,
+	notifySubscriptionConfigIndex,
+	orderProductVirtualIndex,
+	orderProductVirtualView,
+	productVirtualVerificationVerify,
+	memberLevelIndex
 };

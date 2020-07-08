@@ -18,6 +18,7 @@ const transmitCreate = '/tiny-shop/v1/common/transmit/create';
 
 // 广告
 const advList = '/tiny-shop/v1/common/adv/index';
+const advView = '/tiny-shop/v1/common/adv/view';
 
 // 配置
 const configList = '/tiny-shop/v1/common/config/index';
@@ -34,15 +35,41 @@ const notifyAnnounceIndex = '/tiny-shop/v1/common/notify-announce/index';
 // 公告详情
 const notifyAnnounceView = '/tiny-shop/v1/common/notify-announce/view';
 
+// 版本检测
+const versionsIndex = '/app-versions/versions/index';
+
+// 版本检测
+const pickupPointIndex = '/tiny-shop/v1/common/pickup-point/index';
+
+// 站点帮助-列表
+const helperIndex = '/tiny-shop/v1/common/helper/index';
+// 站点帮助-详情
+const helperView = '/tiny-shop/v1/common/helper/view';
+
+// 设备绑定(app推送)
+const bindingEquipment = '/tiny-shop/v1/member/auth/binding-equipment';
+// 查询绑定状态
+const authIsBinding = '/tiny-shop/v1/member/auth/is-binding';
+// 第三方绑定
+const authCreate = '/tiny-shop/v1/member/auth/create';
+
 export {
-    provinceList,
-    collectCreate,
-    collectDel,
-    transmitCreate,
-    advList,
-    payCreate,
-    configList,
-    wechatConfig,
-    notifyAnnounceIndex,
-    notifyAnnounceView
+	provinceList,
+	collectCreate,
+	collectDel,
+	transmitCreate,
+	advList,
+	advView,
+	payCreate,
+	configList,
+	wechatConfig,
+	notifyAnnounceIndex,
+	notifyAnnounceView,
+	versionsIndex,
+	pickupPointIndex,
+	helperIndex,
+	helperView,
+	bindingEquipment,
+	authIsBinding,
+	authCreate
 };

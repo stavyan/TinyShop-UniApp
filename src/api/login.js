@@ -18,6 +18,9 @@ const wechatH5Login = '/tiny-shop/v1/third-party/wechat';
 // 微信小程序授权登录
 const mpWechatLogin = '/tiny-shop/v1/third-party/wechat-mp';
 
+// App微信授权登录
+const thirdPartyWechatOpenPlatform = '/tiny-shop/v1/third-party/wechat-open-platform';
+
 // 密码重置
 const updatePassword = '/tiny-shop/v1/site/up-pwd';
 
@@ -39,16 +42,21 @@ const logout = '/tiny-shop/v1/site/logout';
 // 刷新token
 const refreshToken = '/tiny-shop/v1/site/refresh';
 
+// 登录令牌有效性检测
+const verifyAccessToken = '/tiny-shop/v1/site/verify-access-token';
+
 export {
-    registerByPass,
-    loginByPass,
-    isBindingCheck,
-    wechatH5Login,
-    mpWechatLogin,
-    authLogin,
-    updatePassword,
-    smsCode,
-    loginBySmsCode,
-    logout,
-    refreshToken
+	registerByPass,
+	loginByPass,
+	isBindingCheck,
+	wechatH5Login,
+	mpWechatLogin,
+	thirdPartyWechatOpenPlatform,
+	authLogin,
+	updatePassword,
+	smsCode,
+	loginBySmsCode,
+	logout,
+	refreshToken,
+	verifyAccessToken
 };

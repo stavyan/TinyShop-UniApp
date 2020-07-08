@@ -8,8 +8,7 @@
  */
 class Router {
 	constructor() {
-		this.callBack = () => {
-		};
+		this.callBack = () => {};
 	}
 
 	beforeEach(callBack) {
@@ -33,9 +32,14 @@ class Router {
 	}
 
 	back(delta) {
+		// #ifdef H5
+		history.back();
+		// #endif
+		// #ifndef H5
 		uni.navigateBack({
 			delta
 		});
+		// #endif
 	}
 }
 

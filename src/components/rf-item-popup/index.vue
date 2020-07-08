@@ -1,94 +1,90 @@
 <template>
-  <view class="rf-item-popup">
-    <view class="c-row b-b" @tap.stop="show">
-      <view class="left">
-        <text class="tit">{{ title }}</text>
-      </view>
-      <view class="mid">
-        <slot name="content" v-if="!isEmpty"></slot>
-        <view class="empty" v-else>
-          {{ empty }}
-        </view>
-      </view>
-      <slot class="right" name="right"></slot>
-    </view>
-     <!--规格-模态层弹窗-->
-		<view
-      class="popup"
-      :class="specClass"
-		>
+	<view class="rf-item-popup">
+		<view class="c-row b-b" @tap.stop="show">
+			<view class="left">
+				<text class="tit">{{ title }}</text>
+			</view>
+			<view class="mid">
+				<slot name="content" v-if="!isEmpty"></slot>
+				<view class="empty" v-else>
+					{{ empty }}
+				</view>
+			</view>
+			<slot class="right" name="right"></slot>
+		</view>
+		<!--规格-模态层弹窗-->
+		<view class="popup" :class="specClass">
 			<!-- 遮罩层 -->
 			<view class="mask" @tap="hide"></view>
-      <!--内容层-->
-      <view class="layer">
-        <slot name="popup"></slot>
-      </view>
+			<!--内容层-->
+			<view class="layer">
+				<slot name="popup"></slot>
+			</view>
 		</view>
-  </view>
+	</view>
 </template>
 
 <script>
-  /**
-   * @des 点击item 显示popup
-   *
-   * @author stav stavyan@qq.com
-   * @date 2020-04-16 11:15
-   */
-	export default {
-		name: 'rfItemPopup',
-    props: {
-      title: {
-        type: String,
-        default: ''
-      },
-      empty: {
-        type: String,
-        default: ''
-      },
-      specClass: {
-        type: String,
-        default: 'none'
-      },
-      isEmpty: {
-        type: Boolean,
-        default: false
-      }
-    },
-    methods: {
-      show () {
-        this.$emit('show');
-      },
-      hide () {
-        this.$emit('hide');
-      },
-			stopPrevent(){
-			}
-    }
+/**
+ * @des 点击item 显示popup
+ *
+ * @author stav stavyan@qq.com
+ * @date 2020-04-16 11:15
+ */
+export default {
+	name: 'rfItemPopup',
+	props: {
+		title: {
+			type: String,
+			default: ''
+		},
+		empty: {
+			type: String,
+			default: ''
+		},
+		specClass: {
+			type: String,
+			default: 'none'
+		},
+		isEmpty: {
+			type: Boolean,
+			default: false
+		}
+	},
+	methods: {
+		show() {
+			this.$emit('show');
+		},
+		hide() {
+			this.$emit('hide');
+		},
+		stopPrevent() {}
 	}
+};
 </script>
 
 <style lang="scss">
 .rf-item-popup {
-  font-size: $font-sm + 2upx;
-  color: $font-color-base;
-  background: #fff;
-  .c-row{
-    display:flex;
-    align-items:center;
-    padding: 20upx 30upx;
-    position:relative;
-    .left {
-      width: 140upx;
-    }
-    .mid {
-      flex: 1;
-    }
-    .right {
-    }
-    .empty {
-      font-size: $font-base;
-    }
-  }
+	font-size: $font-sm + 2upx;
+	color: $font-color-base;
+	background: #fff;
+	.c-row {
+		display: flex;
+		align-items: center;
+		padding: 20upx 30upx;
+		position: relative;
+		.left {
+			width: 140upx;
+		}
+		.mid {
+			flex: 1;
+		}
+		.right {
+		}
+		.empty {
+			font-size: $font-base;
+		}
+	}
 	.popup {
 		position: fixed;
 		left: 0;
@@ -98,7 +94,7 @@
 		z-index: 99;
 		&.show {
 			display: block;
-			.mask{
+			.mask {
 				animation: showPopup 0.2s linear both;
 			}
 			.layer {
@@ -106,7 +102,7 @@
 			}
 		}
 		&.hide {
-			.mask{
+			.mask {
 				animation: hidePopup 0.2s linear both;
 			}
 			.layer {
@@ -116,7 +112,7 @@
 		&.none {
 			display: none;
 		}
-		.mask{
+		.mask {
 			position: fixed;
 			top: 0;
 			width: 100%;

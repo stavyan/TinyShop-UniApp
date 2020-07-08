@@ -17,13 +17,9 @@
 
 [H5 预览](http://h5.tinyshop.rageframe.com): http://h5.tinyshop.rageframe.com
 
-Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop.apk)
+Android App体验版 [下载](http://b2c.rageframe.com/attachment/files/2020/07/06/__UNI__8006C11_0706181408.apk)
 
-微信小程序和QQ小程序正处于审核阶段, 可自行clone至本地运行。
-
-[uni-app发布页](https://m3w.cn/rageframewsc): https://m3w.cn/rageframewsc
-
-[后台预览](http://demo2.rageframe.com/backend): http://demo2.rageframe.com/backend
+[后台预览](http://demo.rageframe.com/backend): http://demo.rageframe.com/backend
 
 账号: demo
 密码: 123456
@@ -32,9 +28,9 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 ### 商业版Demo
 
-[H5 预览](http://uniapp.rageframe.com ): http://uniapp.rageframe.com  
-[后台预览](http://b2c.rageframe.com/backend): http://b2c.rageframe.com/backend    
-账号: demo   
+[H5 预览](http://uniapp.rageframe.com ): http://uniapp.rageframe.com
+[后台预览](http://b2c.rageframe.com/backend): http://b2c.rageframe.com/backend
+账号: demo
 密码: 123456
 
 小程序二维码
@@ -42,23 +38,30 @@ Android App体验版 [下载](http://h5.tinyshop.rageframe.com/RageFrameTinyShop
 
 ### 更新记录
 
-#### v1.1.4
+#### v1.2.0
 
-updated 2020.04.24
+updated 2020.07.08
 
-- 修复：下架商品的商品详情页显示
-- 优化：已过期或者已失效商品不计入购物车数字脚本
-
-#### v1.1.3
-
-updated 2020.04.23
-
-- 新增: 微信APP支付
-- 修复: 统一switch 组件样式
-- 修复: app端创建订单按钮不居中
-- 修复: 微信小程序协议不显示
-- 修复: 登录、注册、修改密码页面发送验证码倒计时 刷新或者切换页面数值重置
-- 提示: 自提点提货下单还是需要选择收货地址 收货地址信息包含用户姓名和用户联系方式
+- 新增：全新ui
+- 新增：android/ios 微信授权登录
+- 新增：ios 苹果授权登录
+- 新增：商品列表直接下单
+- 重构：登录注册页面ui重构
+- 新增：首页分类模块
+- 新增：小程序直播
+- 新增：首页分类分页
+- 新增：广告点击统计
+- 新增：回到顶部组件
+- 新增：客服按钮 点击显示客服二维码
+- 新增：9大loading展示
+- 新增：消息tab
+- 新增：15个主题切换 主题换肤
+- 新增: 站点帮助
+- 优化：扫一扫功能
+- 重构：商品详情页ui重构
+- 新增：商品轮播图支持视频播放
+- 新增：商品详情页支持视频播放
+- 新增：H5 微信H5 小程序 APP分享功能
 
 > [更多更新记录](docs/UPDATE.md)
 
@@ -146,7 +149,7 @@ ColorUI: https://github.com/weilanwl/ColorUI
 
 ### 版权信息
 
-RF微商城 遵循 [Apache2](LICENSE.md) 开源协议和 [附加使用协议](docs/LICENSE-SUPPLEMENTAL.md) 发布，并提供免费使用。
+RF商城 遵循 [Apache2](LICENSE.md) 开源协议和 [附加使用协议](docs/LICENSE-SUPPLEMENTAL.md) 发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 

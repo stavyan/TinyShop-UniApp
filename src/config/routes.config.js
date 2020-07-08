@@ -44,4 +44,4 @@ export default {
 		name: '登录类型',
 		path: '/pages/public/logintype'
 	}
-}
+};

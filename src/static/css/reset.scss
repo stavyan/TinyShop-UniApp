@@ -119,7 +119,9 @@ form {
 .rf-button {
   color: #fff;
   border-radius: 30upx;
-  background: $uni-color-primary;
-  color: #fff;
   font-size: $font-lg;
+}
+
+uni-button {
+	background: none;
 }

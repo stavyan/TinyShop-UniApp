@@ -1,7 +1,7 @@
 <template>
 	<view class="register">
 		<!--顶部返回按钮-->
-		<text class="back-btn iconfont iconzuojiantou-up" @tap="navBack"></text>
+		<text class="back-btn iconfont iconzuo" @tap="navBack"></text>
 		<view class="right-top-sign"></view>
 		<!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
 		<view class="wrapper">
@@ -70,7 +70,7 @@
 						maxlength="12"
 					/>
 				</view>
-				<view class="input-item">
+				<view class="input-item" v-if="closeRegisterPromoCode">
 					<text class="tit">邀请码</text>
 					<input
 						type="text"
@@ -81,6 +81,7 @@
 			</view>
 			<button
 				class="confirm-btn"
+				:class="'bg-' + themeColor.name"
 				:disabled="btnLoading"
 				:loading="btnLoading"
 				@tap="toRegister"
@@ -97,11 +98,11 @@
 			<text
 				@tap="isAppAgreementDefaultSelect"
 				class="cuIcon"
-				:class="appAgreementDefaultSelect?'cuIcon-radiobox base-color' : 'cuIcon-round'"
+				:class="appAgreementDefaultSelect ? `text-${themeColor.name} cuIcon-radiobox` : 'cuIcon-round'"
 			></text>
 			<text class="content">同意</text>
 			<!-- 协议地址 -->
-			<navigator class="url" url="/pages/set/about/detail?field=protocol_register&title=注册协议" open-type="navigate">《注册协议》</navigator>
+			<navigator :class="'text-' + themeColor.name" url="/pages/set/about/detail?field=protocol_register&title=注册协议" open-type="navigate">《注册协议》</navigator>
 		</view>
 	</view>
 </template>
@@ -112,7 +113,8 @@ import moment from '@/common/moment';
 export default {
 	data() {
 		return {
-			appAgreementDefaultSelect: this.$mSettingConfig.appAgreementDefaultSelect === '1', // 是否允许点击登录按钮
+			appAgreementDefaultSelect: this.$mSettingConfig.appAgreementDefaultSelect, // 是否允许点击登录按钮
+			closeRegisterPromoCode: this.$mSettingConfig.closeRegisterPromoCode, // 是否允许点击登录按钮
 			registerParams: {
 				mobile: '',
 				password: '',
@@ -148,7 +150,6 @@ export default {
 			uni.removeStorageSync('registerSmsCodeTime');
 		}
 		const backUrl = uni.getStorageSync('backToPage');
-		console.log(backUrl.indexOf('promo_code'));
 		if (backUrl.indexOf('promo_code') !== -1) {
 			this.registerParams.promoCode = JSON.parse(backUrl)['query']['promo_code'];
 		} else {
@@ -209,6 +210,10 @@ export default {
 		},
 		// 注册账号
 		async toRegister() {
+			if (this.$mSettingConfig.closeRegister) {
+				this.$mHelper.toast('暂未开放注册，敬请期待～');
+				return;
+			}
 			if (!this.appAgreementDefaultSelect) {
         this.$mHelper.toast('请勾选同意注册协议，即可注册哦');
         return;
@@ -236,19 +241,8 @@ export default {
 				'password_repetition'
 			];
 			this.reqBody['promo_code'] = this.registerParams['promoCode'];
-			/*  #ifdef  APP-PLUS  */
-			this.reqBody.group = 'tinyShopApp';
-			/*  #endif  */
-			/*  #ifdef H5  */
-			this.reqBody.group = 'tinyShopH5';
-			/*  #endif  */
-			/*  #ifdef  MP-WEIXIN  */
-			this.reqBody.group = 'tinyShopWechatMq';
-			/*  #endif  */
-			/*  #ifdef  MP-QQ  */
-			this.reqBody.group = 'tinyShopQqMq';
-			/*  #endif  */
 			this.btnLoading = true;
+			this.reqBody.group = this.$mHelper.platformGroupFilter();
 			await this.$http
 				.post(registerByPass, this.reqBody)
 				.then(() => {

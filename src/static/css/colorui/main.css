@@ -331,10 +331,7 @@ checkbox.green.checked .uni-checkbox-input,
 checkbox.checked .uni-checkbox-input,
 radio.green.checked .uni-radio-input,
 radio.checked .uni-radio-input {
-	background-color: #39b54a !important;
-	border-color: #39b54a !important;
 	color: #ffffff !important;
-	border-color: #39B54A !important;
 }
 
 switch.cyan[checked] .wx-switch-input,
@@ -871,7 +868,6 @@ button.cuIcon.lg {
 /* ==================
           头像
  ==================== */
-
 .cu-avatar {
 	font-variant: small-caps;
 	margin: 0;
@@ -932,6 +928,9 @@ button.cuIcon.lg {
 	border: 1upx solid #f1f1f1;
 }
 
+.cu-avatar-circle {
+	border-radius: 50%;
+}
 /* ==================
          进度条
  ==================== */
@@ -1098,7 +1097,7 @@ button.cuIcon.lg {
 	border-top: 6upx solid rgba(0, 0, 0, 0.05);
 	border-right: 6upx solid rgba(0, 0, 0, 0.05);
 	border-bottom: 6upx solid rgba(0, 0, 0, 0.05);
-	border-left: 6upx solid #fa436a;
+	border-left: 6upx solid;
 	animation: cuIcon-spin 1s infinite linear;
 	z-index: -1;
 }
@@ -1139,7 +1138,7 @@ button.cuIcon.lg {
 	height: 24upx;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	border: solid 4upx #fa436a;
+	border: solid 4upx;
 	border-top-color: inherit;
 	border-left-color: inherit;
 	border-radius: 50%;
@@ -3353,7 +3352,7 @@ scroll-view.cu-steps .cu-item {
 
 .line-green::after,
 .lines-green::after {
-	border-color: #39b54a;
+	border-color: #fa436a;
 }
 
 .line-cyan::after,
@@ -3481,6 +3480,11 @@ scroll-view.cu-steps .cu-item {
 	color: #666666;
 }
 
+.bg-rf {
+	background-color: #fa436a;
+	color: #ffffff;
+}
+
 .bg-shadeTop {
 	background-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.01));
 	color: #ffffff;
@@ -3512,7 +3516,7 @@ scroll-view.cu-steps .cu-item {
 }
 
 .bg-green.light {
-	color: #39b54a;
+	color: #fa436a;
 	background-color: #d7f0dbff;
 }
 
@@ -3562,7 +3566,7 @@ scroll-view.cu-steps .cu-item {
 }
 
 .bg-gradual-green {
-	background-image: linear-gradient(45deg, #39b54a, #8dc63f);
+	background-image: linear-gradient(45deg, #fa436a, #8dc63f);
 	color: #ffffff;
 }
 
@@ -3912,4 +3916,10 @@ scroll-view.cu-steps .cu-item {
 .line-white,
 .lines-white {
 	color: #ffffff;
+}
+
+.text-rf,
+.line-rf,
+.lines-rf {
+	color: #fa436a;
 }

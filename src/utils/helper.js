@@ -1,6 +1,14 @@
+/* eslint-disable */
 import mRouter from '@/utils/router';
 import mConstDataConfig from '@/config/constData.config';
 import mStore from '@/store';
+import appShare from '@/utils/share';
+// #ifdef H5
+import jweixin from '@/common/jweixin';
+import $mPayment from '@/utils/payment';
+// #endif
+import { http } from '@/utils/request';
+import { advView } from '@/api/basic';
 //常用方法集合
 export default {
 	/**
@@ -17,7 +25,6 @@ export default {
 			icon
 		});
 	},
-
 	/**
 	 * 返回登录页面
 	 */
@@ -37,17 +44,11 @@ export default {
 		params.route = `/${currentPage.route}`;
 		params.query = currentPage.options;
 		// #endif
-		await uni.setStorageSync('backToPage', JSON.stringify(params));
-		await uni.removeTabBarBadge({ index: mConstDataConfig.cartIndex });
+		uni.setStorageSync('backToPage', JSON.stringify(params));
+		uni.removeTabBarBadge({ index: mConstDataConfig.cartIndex });
+		uni.removeTabBarBadge({ index: mConstDataConfig.notifyIndex });
 		await mStore.commit('logout');
-		uni.showModal({
-			content: '会话已过期，是否跳转登录页面？',
-			success: (confirmRes) => {
-				if (confirmRes.confirm) {
-					mRouter.push({ route: '/pages/public/logintype' });
-				}
-			}
-		});
+		mRouter.push({ route: '/pages/public/logintype' });
 	},
 	/**
 	 * 返回上一页携带参数
@@ -60,7 +61,6 @@ export default {
 		// #endif
 		return prePage.$vm;
 	},
-
 	/**
 	 * 开发环境全局打印日志
 	 * @param {Object} title
@@ -70,7 +70,6 @@ export default {
 			console.log(JSON.stringify(title));
 		}
 	},
-
 	/**
 	 * 异步获取设备信息
 	 */
@@ -86,7 +85,6 @@ export default {
 			});
 		});
 	},
-
 	/**
 	 * 安卓10不支持IMEI,则获取OAID
 	 */
@@ -102,7 +100,6 @@ export default {
 			});
 		});
 	},
-
 	/**
 	 * 获取一个随机数
 	 * @param {Object} min
@@ -121,7 +118,6 @@ export default {
 				break;
 		}
 	},
-
 	/**
 	 * 获取ios的IDFA
 	 */
@@ -142,7 +138,6 @@ export default {
 		}
 		return idfa;
 	},
-
 	/*
 	 * obj 转 params字符串参数
 	 * 例子：{a:1,b:2} => a=1&b=2
@@ -156,7 +151,6 @@ export default {
 		}
 		return paramsStr.substring(0, paramsStr.length - 1);
 	},
-
 	/*
 	 * obj 转 路由地址带参数
 	 * 例子：{a:1,b:2} => /pages/index/index?a=1&b=2
@@ -171,7 +165,6 @@ export default {
 		url += paramsStr;
 		return url;
 	},
-
 	/*
 	 * 获取url字符串参数
 	 */
@@ -182,12 +175,11 @@ export default {
 		if (str != undefined) {
 			let strs = str.split('&');
 			for (let i = 0; i < strs.length; i++) {
-				theRequest[strs[i].split('=')[0]] = (strs[i].split('=')[1]);
+				theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1];
 			}
 		}
 		return theRequest;
 	},
-
 	/**
 	 * 加密字符串
 	 */
@@ -195,7 +187,11 @@ export default {
 		const key = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		let l = key.length;
 		let a = key.split('');
-		let s = '', b, b1, b2, b3;
+		let s = '',
+			b,
+			b1,
+			b2,
+			b3;
 		for (let i = 0; i < str.length; i++) {
 			b = str.charCodeAt(i);
 			b1 = b % l;
@@ -207,14 +203,18 @@ export default {
 		}
 		return s;
 	},
-
 	/**
 	 * 解密字符串
 	 */
 	strDecode(str) {
 		const key = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		let l = key.length;
-		let b, b1, b2, b3, d = 0, s;
+		let b,
+			b1,
+			b2,
+			b3,
+			d = 0,
+			s;
 		s = new Array(Math.floor(str.length / 3));
 		b = s.length;
 		for (let i = 0; i < b; i++) {
@@ -229,7 +229,6 @@ export default {
 		b = eval('String.fromCharCode(' + s.join(',') + ')');
 		return b;
 	},
-
 	/**
 	 * 比较版本号
 	 */
@@ -240,10 +239,13 @@ export default {
 			let minLength = Math.min(arr1.length, arr2.length),
 				position = 0,
 				diff = 0;
-			while (position < minLength && ((diff = parseInt(arr1[position]) - parseInt(arr2[position])) == 0)) {
+			while (
+				position < minLength &&
+				(diff = parseInt(arr1[position]) - parseInt(arr2[position])) == 0
+			) {
 				position++;
 			}
-			diff = (diff != 0) ? diff : (arr1.length - arr2.length);
+			diff = diff != 0 ? diff : arr1.length - arr2.length;
 			if (diff > 0) {
 				if (position == minLength - 1) {
 					return 1;
@@ -254,11 +256,9 @@ export default {
 				return 0;
 			}
 		} else {
-			console.log('版本号不能为空');
 			return 0;
 		}
 	},
-
 	/**
 	 * H5复制
 	 */
@@ -271,7 +271,176 @@ export default {
 		textarea.setSelectionRange(0, content.length); //核心
 		let result = document.execCommand('Copy'); // 执行浏览器复制命令
 		textarea.remove();
-		return result;
-	}
-};
+		const msg = result ? '复制成功' : '复制失败';
+		this.toast(msg);
+	},
+	/**
+	 * app分享
+	 */
+	handleAppShare(shareUrl, shareTitle, shareContent, shareImg) {
+		let shareData = {
+			shareUrl,
+			shareTitle,
+			shareContent,
+			shareImg
+		};
+		appShare(shareData, res => {});
+	},
 
+  async handleWxH5Share(title, desc, link, imgUrl) {
+		// #ifdef H5
+    if ($mPayment.isWechat()) {
+      if (uni.getSystemInfoSync().platform === 'android') {
+        await $mPayment.wxConfigH5(link);
+      }
+      jweixin.ready(function () {
+        // eslint-disable-next-line
+        jweixin.updateAppMessageShareData({
+          title, // 分享标题
+          desc, // 分享描述
+          link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl, // 分享图标
+          success: function () {
+            // 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+            // 用户取消分享后执行的回调函数
+          }
+        });
+        // eslint-disable-next-line
+        jweixin.updateTimelineShareData({
+          title, // 分享标题
+          desc, // 分享描述
+          link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl, // 分享图标
+          success: function () {
+            // 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+            // 用户取消分享后执行的回调函数
+          }
+        });
+      });
+    }
+		// #endif
+  },
+
+  // 去掉字符串中的空格
+  trim(str){
+    if (!str) {
+        return '';
+    }
+    return str.replace(/\s*/g,'');
+  },
+
+  // 判断两个对象是否相同
+  isObjectValueEqual(x, y) {
+    // 指向同一内存时
+    if (x === y) {
+      return true;
+    } else if (
+      typeof x == 'object' &&
+      x != null &&
+      typeof y == 'object' && y != null
+    ) {
+      if (Object.keys(x).length != Object.keys(y).length) return false;
+
+      for (var prop in x) {
+        if (y.hasOwnProperty(prop)) {
+          if (!this.isObjectValueEqual(x[prop], y[prop])) return false;
+        } else return false;
+      }
+
+      return true;
+    } else return false;
+  },
+
+	platformGroupFilter () {
+		let platformGroup = 'tinyShop';
+		// #ifdef H5
+		if ($mPayment.isWechat()) {
+			platformGroup = 'tinyShopWechat';
+		} else {
+			platformGroup = 'tinyShopH5';
+		}
+		// #endif
+		// #ifdef MP-QQ
+		platformGroup = 'tinyShopQqMp';
+		// #endif
+		// #ifdef MP-WEIXIN
+		platformGroup = 'tinyShopWechatMp';
+		// #endif
+		// #ifdef MP-ALIPAY
+		platformGroup = 'tinyShopAliMp';
+		// #endif
+		// #ifdef MP-QQ
+		platformGroup = 'tinyShopQqMp';
+		// #endif
+		// #ifdef MP-BAIDU
+		platformGroup = 'tinyShopBaiduMp';
+		// #endif
+		// #ifdef APP-PLUS
+		switch(uni.getSystemInfoSync().platform){
+			case 'android':
+				 platformGroup = 'tinyShopAndroid';
+				 break;
+			case 'ios':
+				 platformGroup = 'tinyShopIos';
+				 break;
+		}
+		// #endif
+		return platformGroup;
+	},
+
+  // 广告图跳转封装
+  handleBannerNavTo(data, id, advId) {
+			let url;
+			http.get(advView, { id: advId });
+			switch (data) {
+				case 'notify_announce_view': // 公告详情
+					url = `/pages/index/notice/detail?id=${id}`;
+					break;
+				case 'product_view': // 产品详情
+					url = `/pages/product/product?id=${id}`;
+					break;
+				case 'combination_view': // 某分类下产品列表
+					url = `/pages/marketing/combination/list?id=${id}`;
+					break;
+				case 'coupon_view': // 优惠券详情
+					url = `/pages/user/coupon/detail?id=${id}`;
+					break;
+				case 'helper_view': // 站点帮助详情
+					url = '/pages/set/helper/index';
+					break;
+				case 'bargain_list': // 砍价列表
+					url = '/pages/marketing/bargain/list';
+					break;
+				case 'discount_list': // 限时折扣
+					url = '/pages/marketing/discount/list';
+					break;
+				case 'group_buy_list': // 团购列表
+					url = '/pages/marketing/group/list';
+					break;
+				case 'wholesale_list': // 拼团列表
+					url = '/pages/marketing/wholesale/list';
+					break;
+				case 'product_list_for_cate': // 某分类下产品列表
+					url = `/pages/product/list?cate_id=${id}`;
+					break;
+				case 'mini_program_live_view': // 跳转至带货直播间
+					// #ifdef MP-WEIXIN
+					url = `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${[id]}`;
+					// #endif
+					// #ifndef MP-WEIXIN
+					this.toast('请从微信小程序进入直播间');
+					// #endif
+					break;
+				default:
+					break;
+			}
+			if (url) {
+				mRouter.push({ route: url });
+			}
+  }
+
+};

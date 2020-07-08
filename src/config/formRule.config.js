@@ -12,12 +12,12 @@ export default {
 		checkType: 'notnull',
 		checkRule: '',
 		errorMsg: '手机号不能为空'
-	},{
+	}, {
 		name: 'mobile',
 		checkType: 'phoneno',
 		checkRule: '',
 		errorMsg: '手机号格式不正确'
-	},  {
+	}, {
 		name: 'password',
 		checkType: 'string',
 		checkRule: '6,18',
@@ -76,7 +76,6 @@ export default {
 		errorMsg: '发票税号不能为空'
 	}],
 
-
 	/* 用户注册 */
 	registerRule: [{
 		name: 'mobile',
@@ -98,11 +97,6 @@ export default {
 			checkType: 'string',
 			checkRule: '6,18',
 			errorMsg: '请输入6-18位密码'
-		}, {
-			name: 'nickname',
-			checkType: 'string',
-			checkRule: '2,12',
-			errorMsg: '请输入2-12位昵称'
 		}
 	],
 
@@ -129,4 +123,4 @@ export default {
 			errorMsg: '请输入6-18位密码'
 		}
 	]
-}
+};

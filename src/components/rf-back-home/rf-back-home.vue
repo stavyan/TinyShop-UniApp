@@ -3,7 +3,7 @@
     <view class="homeCon" :class="!homeActive ? 'on' : ''">
       <text class="yticon icon-xiatubiao--copy" @tap="navTo('/pages/index/index')"></text>
       <text class="yticon icon-gouwuche" @tap="navTo('/pages/cart/cart')"></text>
-      <text class="yticon icon-shoucang" @tap="navTo('/pages/user/user')"></text>
+      <text class="yticon icon-shoucang" @tap="navTo('/pages/profile/profile')"></text>
     </view>
     <view class="picture" @tap.stop="open">
       <image
