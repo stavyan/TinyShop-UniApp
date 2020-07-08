@@ -386,7 +386,7 @@ export default {
 		},
 		// 首页参数赋值
 		initIndexData(data) {
-			this.announceList = data.announce;
+			this.announceList = data.announce || [];
 			this.productCateList = data.cate;
 			this.categoryList = [{ id: 0, title: '首页' }, ...this.productCateList];
 			this.carouselList = data.adv;
