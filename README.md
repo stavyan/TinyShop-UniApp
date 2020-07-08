@@ -29,6 +29,7 @@ Android App体验版 [下载](http://b2c.rageframe.com/attachment/files/2020/07/
 ### 商业版Demo
 
 [H5 预览](http://uniapp.rageframe.com ): http://uniapp.rageframe.com
+
 [后台预览](http://b2c.rageframe.com/backend): http://b2c.rageframe.com/backend
 账号: demo
 密码: 123456
@@ -113,7 +114,7 @@ yarn build:PLATFORM // 平台信息同上
 
 > 注： H5除主页外刷新页面会出现404 需配置nginx伪静态
 
-```angular2
+```
 location / {
     try_files $uri $uri/ /index.html;
 }
