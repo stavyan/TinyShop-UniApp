@@ -1,0 +1,127 @@
+view,
+scroll-view,
+swiper,
+swiper-item,
+cover-view,
+cover-image,
+icon,
+text,
+rich-text,
+progress,
+button,
+checkbox,
+form,
+input,
+label,
+radio,
+slider,
+switch,
+textarea,
+navigator,
+audio,
+camera,
+image,
+video {
+  box-sizing: border-box;
+}
+
+/* 骨架屏替代方案 */
+.rf-skeleton {
+  background: $color-white;
+  padding: 20upx 0;
+  border-radius: 8upx;
+  box-shadow: 0upx 5upx 25upx rgba(0, 0, 0, 0.05);
+}
+
+/* 图片载入替代方案 */
+.image-wrapper {
+  font-size: 0;
+  background: #f3f3f3;
+  border-radius: 4px;
+
+  image {
+    width: 100%;
+    height: 100%;
+    transition: .6s;
+    opacity: 0;
+
+    &.loaded {
+      opacity: 1;
+    }
+  }
+}
+
+.common-hover {
+  background: #f5f5f5;
+}
+
+/*边框*/
+.b-b:after,
+.b-t:after {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  height: 0;
+  content: '';
+  transform: scaleY(.5);
+  border-bottom: 1px solid $border-color-base;
+}
+
+.b-b:after {
+  bottom: 0;
+}
+
+.b-t:after {
+  top: 0;
+}
+
+/* button样式改写 */
+uni-button,
+button {
+  height: 80upx;
+  line-height: 80upx;
+  font-size: $font-lg + 2upx;
+  font-weight: normal;
+
+  &.no-border:before,
+  &.no-border:after {
+    border: 0;
+  }
+}
+
+uni-button[type=default],
+button[type=default] {
+  color: $font-color-dark;
+}
+
+/* input 样式 */
+.input-placeholder {
+  color: #999999;
+}
+
+.placeholder {
+  color: #999999;
+}
+
+/*通用 */
+view{
+	font-size: $font-base;
+	line-height:1.5;
+}
+progress, checkbox-group{
+	width: 100%;
+}
+form {
+	width: 100%;
+}
+
+.rf-button {
+  color: #fff;
+  border-radius: 30upx;
+  font-size: $font-lg;
+}
+
+uni-button {
+	background: none;
+}
