@@ -20,12 +20,12 @@
 					</view>
 					<view class="rf-pro-content">
 						<view class="rf-pro-tit">{{ item.name }}</view>
-						<view>
-							<view class="rf-pro-price" v-if="item.price">
+						<view v-if="item">
+							<view class="rf-pro-price">
 								<text class="rf-sale-price" :class="'text-'+themeColor.name">{{ moneySymbol }}{{ item.price }}</text>
 								<text class="rf-factory-price" v-if="item.market_price > item.price">{{ moneySymbol }}{{ item.market_price }}</text>
 							</view>
-							<view class="rf-pro-pay" v-if="item">
+							<view class="rf-pro-pay">
 								<text
 									><text :class="'text-'+themeColor.name">{{
 										item.total_sales | filterTotalSales
@@ -64,12 +64,12 @@
 					</view>
 					<view class="rf-pro-content">
 						<view class="rf-pro-tit">{{ item.name }}</view>
-						<view>
-							<view class="rf-pro-price" v-if="item.price">
+						<view v-if="item">
+							<view class="rf-pro-price">
 								<text class="rf-sale-price" :class="'text-'+themeColor.name">{{ moneySymbol }}{{ item.price }}</text>
 								<text class="rf-factory-price" v-if="item.market_price > item.price">{{ moneySymbol }}{{ item.market_price }}</text>
 							</view>
-							<view class="rf-pro-pay" v-if="item">
+							<view class="rf-pro-pay">
 								<text
 									><text :class="'text-'+themeColor.name">{{
 										item.total_sales | filterTotalSales

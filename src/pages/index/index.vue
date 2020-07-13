@@ -153,8 +153,8 @@
 		</view>
 		<!--页面加载动画-->
 		<rfLoading isFullScreen :active="loading"></rfLoading>
+		<rf-back-home></rf-back-home>
 		<rf-back-top :scrollTop="scrollTop"></rf-back-top>
-		<rf-kefu></rf-kefu>
 	</view>
 </template>
 <script>
@@ -173,7 +173,6 @@ import rfSwipeDot from '@/components/rf-swipe-dot';
 import rfFloorIndex from '@/components/rf-floor-index';
 import rfSearchBar from '@/components/rf-search-bar';
 import rfSwiperSlide from '@/components/rf-swiper-slide';
-import rfKefu from '@/components/rf-kefu';
 import rfProductList from '@/components/rf-product-list';
 import { mapMutations } from 'vuex';
 export default {
@@ -182,7 +181,6 @@ export default {
 		rfSwipeDot,
 		rfProductList,
 		rfSearchBar,
-		rfKefu,
 		rfSwiperSlide
 	},
 	data() {

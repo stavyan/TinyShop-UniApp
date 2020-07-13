@@ -341,7 +341,7 @@
 
 	._img {
 		position: relative;
-		display: inline-block;
+		display: block;
 		max-width: 100%;
 	}
 
@@ -425,6 +425,7 @@
 
 	._image {
 		position: absolute;
+		display: block;
 		top: 0;
 		left: 0;
 		width: 100%;

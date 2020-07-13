@@ -25,6 +25,8 @@ import rfBackTop from '@/components/rf-back-top';
 import rfTag from '@/components/rf-tag';
 import rfNavDetail from '@/components/rf-nav-detail';
 import cuCustom from '@/components/cu-custom';
+import rfBackHome from '@/components/rf-back-home';
+
 // 网络状态监听
 uni.getNetworkType({
 	success: res => {
@@ -59,6 +61,7 @@ Vue.component('rfBackTop', rfBackTop);
 Vue.component('rfTag', rfTag);
 Vue.component('rfNavDetail', rfNavDetail);
 Vue.component('cuCustom', cuCustom);
+Vue.component('rfBackHome', rfBackHome);
 
 if (process.env.NODE_ENV === 'production') {
 	Vue.config.productionTip = false;

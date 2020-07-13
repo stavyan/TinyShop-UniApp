@@ -61,24 +61,23 @@ export default {
 	z-index: 10;
 	position: fixed;
 	right: 40upx;
-	bottom: 240upx;
+	bottom: 130upx;
 	/* #ifdef H5 */
-	margin-bottom: env(safe-area-inset-bottom);
+	bottom: 140upx;
 	/* #endif */
 	width: 72upx;
 	height: 72upx;
 	border-radius: 50%;
 	transform: translateZ(0);
 	-webkit-transform: translateZ(0);
-	background-color: #000;
+	background-color: rgba(0,0,0,.5);
 	display: flex;
 	justify-content: center;
-	opacity: 0.5;
 	align-items: center;
 	.iconfont {
 		font-size: 54upx;
 		color: $color-white;
-		opacity: 1;
+		font-weight: 600;
 		z-index: 100;
 	}
 }

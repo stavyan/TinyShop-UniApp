@@ -78,7 +78,7 @@ export default {
 @import './static/css/iconfont/iconfont.css';
 /*#endif*/
 /*#ifndef MP*/
-@import url('https://at.alicdn.com/t/font_1681579_yaiyfblc2xt.css');
+@import url('https://at.alicdn.com/t/font_1681579_dwilkcq6mvg.css');
 /*#endif*/
 @import './static/css/reset.scss';
 @import './static/css/uni.scss';
