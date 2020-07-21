@@ -14,7 +14,7 @@
 			</view>
 		</view>
 		<view class="pay-card">
-			<view class="pay-card-money">{{moneySymbol}}{{ orderDetail.final_payment_money || orderDetail.pay_money }}</view>
+			<view class="pay-card-money">{{moneySymbol}}{{ orderDetail.pay_money }}</view>
 			<view class="item"><text class="tit">订单编号：</text>{{ orderDetail.order_sn }}</view>
 			<view class="item"><text class="tit">下单时间：</text>{{ orderDetail.pay_time | time }}</view>
 			<view class="item"><text class="tit">支付方式：</text>{{ orderDetail.payment_explain }}</view>
