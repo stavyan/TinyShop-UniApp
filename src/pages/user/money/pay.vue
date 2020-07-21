@@ -150,7 +150,7 @@ export default {
 					this.getPayTypeList();
 					this.getMemberInfo();
 					// 尾款支付优先显示
-					this.money = r.data.final_payment_money || r.data.pay_money;
+					this.money = r.data.pay_money;
 				}).catch(() => {
 					this.loading = false;
 				});
