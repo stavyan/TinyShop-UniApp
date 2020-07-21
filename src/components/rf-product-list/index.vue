@@ -159,9 +159,6 @@ export default {
 			if (val.commissionRate) {
 				// 分销商品
 				return $mAssetsPath.distribution;
-			} else if (val.is_open_presell === '1') {
-				// 预售商品
-				return $mAssetsPath.presale;
 			} else if (val.is_virtual === '1') {
 				// 虚拟产品
 				return $mAssetsPath.virtual;

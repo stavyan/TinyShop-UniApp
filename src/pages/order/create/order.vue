@@ -241,35 +241,6 @@
 						placeholder-class="placeholder"
 					/>
 				</view>
-				<view class="yt-list-cell b-t" v-if="data.type === 'presell_buy'">
-					<text class="cell-tit clamp">全款预售</text>
-					<view class="cell-tip">
-						<radio-group @change="handleIsFullPayment">
-							<label
-								class="gender-item"
-							>
-								<radio
-									value="1"
-									style="transform:scale(0.7)"
-									:color="themeColor.color"
-								/>
-								<text class="gender-item-text">全款预定</text>
-							</label>
-							<label
-								class="gender-item"
-							>
-								<radio
-									value="0"
-									checked
-									style="transform:scale(0.7)"
-									class="gender-item-radio"
-									:color="themeColor.color"
-								/>
-								<text class="gender-item-text">预售价预定</text>
-							</label>
-						</radio-group>
-					</view>
-				</view>
 			</view>
 			<!-- 底部 -->
 			<view class="footer">
@@ -455,11 +426,7 @@ export default {
 	computed: {
 		// 计算商品金额
 		amountGoods() {
-			if (this.data.type === 'presell_buy' && this.isFullPayment === '1') {
-				return this.orderDetail.full_payment;
-			} else {
-				return this.orderDetail.preview && this.orderDetail.preview.product_money;
-			}
+			return this.orderDetail.preview && this.orderDetail.preview.product_money;
 		},
 		// 计算优惠金额
 		discountAmount() {
@@ -732,9 +699,6 @@ export default {
 			}
 			if (this.use_point) {
 				params.use_point = this.use_point;
-			}
-			if (this.data.type === 'presell_buy') {
-				params.is_full_payment = this.isFullPayment;
 			}
 			this.btnLoading = true;
 			await this.$http

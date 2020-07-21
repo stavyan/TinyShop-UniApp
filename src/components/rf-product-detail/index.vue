@@ -958,12 +958,6 @@
 					route: `/pages/order/create/order?data=${JSON.stringify(params)}&promo_code=${this.promoCode}`
 				});
 			},
-			async preSell(skuId) {
-				let params = {};
-				params.type = 'presell_buy';
-				params.data = JSON.stringify({ num: this.currentCartCount, sku_id: skuId });
-				this.$mRouter.push({ route: `/pages/order/create/order?data=${JSON.stringify(params)}&promo_code=${this.promoCode}` });
-			},
 			addCart(type, isPointExchange) {
 				if (!this.product.id) return;
 				if (!this.hasLogin) {
