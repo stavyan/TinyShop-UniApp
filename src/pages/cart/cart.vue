@@ -553,7 +553,7 @@ export default {
 					item.num += parseInt(item2.number, 10);
 					item.price += parseInt(item2.number, 10) * item2.price;
 				});
-				const ladderPreferential = item.data[0].ladderPreferential;
+				const ladderPreferential = item.data[0].ladderPreferential || 0;
 				for (let i = 0; i < ladderPreferential.length; i++) {
 					if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
 						ladderPreferential[i].num = item.num;
