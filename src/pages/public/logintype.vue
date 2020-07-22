@@ -164,7 +164,6 @@
 							});
 						} else {
 							await this.$mStore.commit('login', r.data.user_info);
-							await this.$mWebsocket.initWebsocket();
 							const backToPage = uni.getStorageSync('backToPage');
 							if (backToPage) {
 								if (
@@ -319,7 +318,6 @@
 						} else {
 							await _this.$mStore.commit('login', r.data.user_info);
 							_this.$mHelper.toast('已为您授权登录');
-							_this.$mWebsocket.initWebsocket();
 							const backToPage = uni.getStorageSync('backToPage');
 							if (backToPage) {
 								if (
@@ -397,7 +395,6 @@
 									} else {
 										await _this.$mStore.commit('login', r.data.user_info);
 										_this.$mHelper.toast('已为您授权登录');
-										_this.$mWebsocket.initWebsocket();
 										const backToPage = uni.getStorageSync('backToPage');
 										if (backToPage) {
 											if (
