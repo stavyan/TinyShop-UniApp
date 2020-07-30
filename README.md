@@ -132,7 +132,9 @@ http://www.rageframe.com
 
 在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我们交流
 
-QQ群：[655084090](https://jq.qq.com/?_wv=1027&k=4BeVA2r)
+QQ群1：[655084090](https://jq.qq.com/?_wv=1027&k=4BeVA2r) (2000人快满)
+
+QQ群2：[1148015133](https://jq.qq.com/?_wv=1027&k=Wk663e9N) (新群)
 
 ### 特别鸣谢
 
