@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import $mConstDataConfig from '@/config/constData.config';
+import $mSettingConfig from '@/config/setting.config';
+
 Vue.use(Vuex);
 const ACCESSTOKEN = uni.getStorageSync('accessToken') || '';
 const REFERRER = uni.getStorageSync('referrer') || '';
@@ -11,7 +13,7 @@ const CARTNUM = uni.getStorageSync('cartNum') || 0;
 const NOTIFYNUM = uni.getStorageSync('notifyNum') || 0;
 const IMHISTORY = uni.getStorageSync('imHistory') || [];
 const IMNOREAD = uni.getStorageSync('imNoRead') || 0;
-const THEMECOLOR = uni.getStorageSync('themeColor') || { title: '官方', name: 'rf', color: '#fa436a' };
+const THEMECOLOR = uni.getStorageSync('themeColor');
 const store = new Vuex.Store({
 	state: {
 		// 用户token
@@ -26,9 +28,9 @@ const store = new Vuex.Store({
 		networkState: 'unknown',
 		globalConfig: GLOBALCONFIG,
 		refreshToken: REFRESHTOKEN,
-    // 购物车数字角标
+		// 购物车数字角标
 		cartNum: CARTNUM,
-    // 消息中心数字角标
+		// 消息中心数字角标
 		notifyNum: NOTIFYNUM,
 		// 历史聊天消息，仅保存最后100条
 		imHistory: IMHISTORY,
@@ -43,7 +45,11 @@ const store = new Vuex.Store({
 	getters: {
 		// 全局配置
 		themeColor: state => {
-			return state.themeColor;
+			let theme = state.themeColor;
+			if (!theme) {
+				theme = $mConstDataConfig.themeList.filter((item) => item.name === ($mSettingConfig.styleType || 'rf'))[0];
+			}
+			return theme;
 		},
 		// 全局配置
 		globalConfig: state => {
@@ -93,16 +99,16 @@ const store = new Vuex.Store({
 		setCartNum(state, provider) {
 			state.cartNum = provider;
 			uni.setStorageSync('cartNum', provider);
-      if (!provider || parseInt(provider, 10) === 0) {
-        uni.removeTabBarBadge({
-          index: $mConstDataConfig.cartIndex
-        });
-      } else {
-        uni.setTabBarBadge({
-          index: $mConstDataConfig.cartIndex,
-          text: provider.toString()
-        });
-      }
+			if (!provider || parseInt(provider, 10) === 0) {
+				uni.removeTabBarBadge({
+					index: $mConstDataConfig.cartIndex
+				});
+			} else {
+				uni.setTabBarBadge({
+					index: $mConstDataConfig.cartIndex,
+					text: provider.toString()
+				});
+			}
 		},
 		setNotifyNum(state, provider) {
 			state.notifyNum = provider;
@@ -117,7 +123,7 @@ const store = new Vuex.Store({
 					text: provider.toString()
 				});
 			}
-	},
+		},
 		setGlobalConfig(state, provider) {
 			state.globalConfig = provider;
 			uni.setStorageSync('globalConfig', provider);

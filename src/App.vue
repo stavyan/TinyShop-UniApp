@@ -1,7 +1,6 @@
 <script>
 /* eslint-disable */
 import Vue from 'vue';
-import { configList, bindingEquipment } from '@/api/basic';
 import { verifyAccessToken } from '@/api/login'
 import { mapMutations } from 'vuex';
 export default {
@@ -12,6 +11,16 @@ export default {
 		...mapMutations(['setCartNum', 'setNotifyNum']),
 		// 数据初始化
 		async initData() {
+			uni.setTabBarStyle({
+				selectedColor: this.themeColor.color,
+				borderStyle: 'white'
+			});
+			this.themeColor.tabList && this.themeColor.tabList.forEach((selectedIconPath, index) => {
+				uni.setTabBarItem({
+					index,
+					selectedIconPath
+				});
+			});
 			// 获取页面设置配置
 			const token = uni.getStorageSync('accessToken');
 			// 获取系统title高度

@@ -277,7 +277,7 @@ export default new Setting(
 	true,
 	'rotatePlane',
 	true,
-	'rf',
+	'red',
 	false,
 	true,
 	true,
