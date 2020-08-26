@@ -39,12 +39,12 @@ Android App体验版 [下载](http://b2c.rageframe.com/attachment/files/2020/07/
 
 ### 更新记录
 
-#### v1.2.1
+#### v1.2.2
 
-updated 2020.08.06
+updated 2020.08.26
 
-- 修复：前端更改默认主题
-- 新增: 主页快速导航组件
+- 升级：uniapp的vue-cli版本
+- 优化: 主页顶部显示
 
 > [更多更新记录](docs/UPDATE.md)
 
