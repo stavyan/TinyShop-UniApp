@@ -37,7 +37,9 @@ export default {
 				// #endif
 			}
 			// #ifdef H5
-			await this.$mPayment.wxConfigH5(window.location.href);
+			if (this.isWechat()) {
+				await this.$mPayment.wxConfigH5(window.location.href);
+			}
 			// #endif
 		},
 		// 初始化系统信息
