@@ -37,7 +37,7 @@ export default {
 				// #endif
 			}
 			// #ifdef H5
-			if (this.isWechat()) {
+			if (this.$mPayment.isWechat()) {
 				await this.$mPayment.wxConfigH5(window.location.href);
 			}
 			// #endif
