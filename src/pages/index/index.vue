@@ -76,59 +76,6 @@
 						<image class="hot-recommend-image" @tap.stop="navTo(hotRecommendList[2].url)" :src="hotRecommendList[2].icon"></image>
 					</view>
 				</view>
-				<!--				<view-->
-				<!--					class="category"-->
-				<!--					v-for="(item, index) in productCateList"-->
-				<!--					:key="index"-->
-				<!--					@tap.prevent="navToCategory(item.id)"-->
-				<!--				>-->
-				<!--					<view class="img">-->
-				<!--						<image :src="item.cover || errorImage" mode="aspectFill"></image>-->
-				<!--					</view>-->
-				<!--					<view class="text in1line">{{ item.title }}</view>-->
-				<!--				</view>-->
-				<!--爆款拼团-->
-				<view class="wrapper" v-if="wholesaleProductList.length > 0">
-					<list-cell
-						icon="icontaobaoketuiguang"
-						:iconColor="themeColor.color"
-						@eventClick="navTo('/pages/marketing/wholesale/list')"
-						title="爆款拼团"
-					></list-cell>
-					<scroll-view
-						scroll-x
-						class="h-list"
-						:class="wholesaleProductList.length === 0 ? 'rf-box-shadow' : ''"
-					>
-						<view
-							class="h-item"
-							v-for="item in wholesaleProductList"
-							:key="item.product.id"
-							@tap.stop="
-							navTo(`/pages/marketing/wholesale/product?id=${item.product.id}`)
-						"
-						>
-							<image
-								:src="item.product.picture"
-								class="h-item-img"
-								mode="aspectFit"
-							></image>
-							<view class="title in2line">
-								{{ item.product.name }}
-							</view>
-							<view class="last-line">
-								<view class="price in1line" :class="'text-'+themeColor.name"
-								>{{ moneySymbol }}{{ item.product.wholesale_price }}
-									<text
-										class="m-price"
-										v-if="item.product.market_price > item.product.wholesale_price"
-									>{{ moneySymbol }}{{ item.product.market_price }}
-									</text>
-								</view>
-							</view>
-						</view>
-					</scroll-view>
-				</view>
 				<!--新品上市-->
 				<rf-floor-index
 					icon="iconxinpin2"
@@ -248,7 +195,6 @@
 				scrollTop: 0,
 				kefuShow: true,
 				loadingType: 'more',
-				wholesaleProductList: [], // 拼团列表
 				hotSearchDefault: '请输入关键字',
 				newsBg: this.$mAssetsPath.newsBg,
 				errorImage: this.$mAssetsPath.errorImage,
@@ -435,7 +381,6 @@
 			},
 			// 首页参数赋值
 			initIndexData(data) {
-				this.wholesaleProductList = data.product_wholesale;
 				this.announceList = data.announce;
 				this.productCateList = data.cate;
 				this.categoryList = [{ id: 0, title: '首页' }, ...this.productCateList];

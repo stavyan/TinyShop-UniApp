@@ -42,7 +42,6 @@
 		</scroll-view>
 	</view>
 </template>
-
 <script>
 	// #ifdef H5
 	import jweixin from '@/common/jweixin';
@@ -134,11 +133,23 @@
 				/*  #ifndef H5  */
 				uni.scanCode({
 					success: function(res) {
-						_this.$http.post(productVirtualVerificationVerify, { code: res.result }).then(() => {
-							_this.$mHelper.toast('核销成功');
-						}).catch(err => {
-							_this.$mHelper.toast(err);
-						});
+						if (res.result.indexOf('http') !== -1) {
+							if (res.result.indexOf(_this.$mConfig.hostUrl) !== -1) {
+								if (
+									res.result.indexOf('/pages/profile/profile') !== -1 ||
+									res.result.indexOf('/pages/cart/cart') !== -1 ||
+									res.result.indexOf('/pages/index/index') !== -1 ||
+									res.result.indexOf('/pages/notify/notify') !== -1 ||
+									res.result.indexOf('/pages/category/category') !== -1
+								) {
+									_this.$mRouter.reLaunch({ route: res.result.substring(_this.$mConfig.hostUrl.length) });
+								} else {
+									_this.$mRouter.redirectTo({ route: res.result.substring(_this.$mConfig.hostUrl.length) });
+								}
+							} else {
+								_this.$mHelper.toast('不能识别该二维码');
+							}
+						}
 					},
 					fail(res) {
 						// 支付成功后的回调函数
@@ -152,9 +163,23 @@
 						jweixin.scanQRCode({
 							needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
 							success(res) {
-								_this.$http.post(productVirtualVerificationVerify, { code: res.resultStr }).then(() => {
-									_this.$mHelper.toast('核销成功');
-								});
+								if (res.result.indexOf('http') !== -1) {
+									if (res.result.indexOf(_this.$mConfig.hostUrl) !== -1) {
+										if (
+											res.result.indexOf('/pages/profile/profile') !== -1 ||
+											res.result.indexOf('/pages/cart/cart') !== -1 ||
+											res.result.indexOf('/pages/index/index') !== -1 ||
+											res.result.indexOf('/pages/notify/notify') !== -1 ||
+											res.result.indexOf('/pages/category/category') !== -1
+										) {
+											_this.$mRouter.reLaunch({ route: res.result.substring(_this.$mConfig.hostUrl.length) });
+										} else {
+											_this.$mRouter.redirectTo({ route: res.result.substring(_this.$mConfig.hostUrl.length) });
+										}
+									} else {
+										_this.$mHelper.toast('不能识别该二维码');
+									}
+								}
 							},
 							fail(res) {
 								// 支付成功后的回调函数
@@ -175,7 +200,6 @@
 		}
 	};
 </script>
-
 <style lang="scss">
 	.rf-search-bar {
 		position: fixed;
