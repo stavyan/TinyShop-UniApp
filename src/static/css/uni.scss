@@ -2365,3 +2365,27 @@
 		}
 	}
 }
+
+// 滑动分类
+.index-cate {
+	white-space: nowrap;
+	z-index: 12;
+	//background: #fff;
+	color: $font-color-base;
+	//padding-bottom: 10upx;
+	.index-cate-item {
+		display: inline-block;
+		height: 75upx;
+		line-height: 75upx;
+		margin: 0 15upx 10upx;
+		text-align: center;
+		width: 120upx;
+		font-size: $font-base;
+		color: $color-white;
+	}
+	.active {
+		font-weight: 500;
+		border-bottom: 5upx solid;
+		color: $color-white;
+	}
+}

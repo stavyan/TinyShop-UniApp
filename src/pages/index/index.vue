@@ -3,15 +3,15 @@
 		<!--搜索导航栏-->
 		<rf-search-bar
 			@search="navToSearch"
-			title="扫miao"
+			title="扫一扫"
+			icon="iconsaomiao"
 			@tab="tabClick"
 			:categoryList="categoryList"
 			:merchantData="merchantData"
-			:merchantShow="merchantShow"
 			:placeholder="hotSearchDefault"
 		/>
 		<view :style="{
-			paddingTop: merchantShow ? (isOpenIndexCate ? 128 + statusBar + 'px' : 85 + statusBar + 'px' )  : (isOpenIndexCate ? 90 + statusBar + 'px' : 55 + statusBar + 'px' )
+			paddingTop: merchantShow ? (isOpenIndexCate ? 134 + statusBar + 'px' : 85 + statusBar + 'px' )  : (isOpenIndexCate ? 98 + statusBar + 'px' : 55 + statusBar + 'px' )
 		}">
 			<block v-if="currentCate === 0">
 				<!-- 轮播图1 -->
