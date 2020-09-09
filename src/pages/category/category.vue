@@ -1,12 +1,17 @@
 <template>
 	<view class="rf-category">
 		<!--顶部搜索导航栏-->
-		<rf-search-bar
-			@search="toSearch"
-			title="扫一扫"
-			icon="iconsaomiao"
-			:placeholder="hotSearchDefault"
-		/>
+		<view class="input-box">
+			<view class="iconfont iconzhuyedefuben"  :class="'text-'+themeColor.name" @tap.stop="toHome"></view>
+			<input
+				@tap.stop="toSearch"
+				disabled
+				:value="hotSearchDefault || '请输入关键字'"
+				style="color:#888;"
+				placeholder-style="color:#ccc;"
+			/>
+			<view class="iconfont iconsousuo2" @tap.stop="toSearch"></view>
+		</view>
 		<view
 			class="category-list"
 			@touchmove.stop.prevent="moveHandle"
@@ -414,11 +419,15 @@ export default {
 	}
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 page {
 	background-color: $color-white;
 }
 .rf-category {
+	background-color: $color-white;
+	/*  #ifdef  APP-PLUS  */
+	margin-top: calc(20upx + var(--status-bar-height));
+	/*  #endif  */
 	/*模块分类*/
 	.category-list {
 		width: 100%;
@@ -427,9 +436,9 @@ page {
 		.left,
 		.right {
 			position: absolute;
-			top: 100upx;
+			top: 80upx;
 			/*  #ifdef  APP-PLUS  */
-			top: calc(100upx + var(--status-bar-height));
+			top: calc(80upx + var(--status-bar-height));
 			/*  #endif  */
 			bottom: 0upx;
 		}
@@ -527,7 +536,7 @@ page {
 							display: flex;
 							justify-content: center;
 							align-items: center;
-              font-size: $font-sm + 2upx;
+							font-size: $font-sm + 2upx;
 							margin: 0 $spacing-base 0 $spacing-sm;
 							color: $font-color-light;
 							.iconfont-group {
@@ -719,6 +728,39 @@ page {
 		// #ifndef H5
 		bottom: 0;
 		// #endif
+	}
+	.input-box {
+		height: 60upx;
+		position: relative;
+		display: flex;
+		align-items: center;
+		margin: 10upx 20upx;
+		.iconfont {
+			width: 60upx;
+			font-size: 48upx;
+			font-weight: 500;
+		}
+		.iconsousuo2 {
+			z-index: 999;
+			display: flex;
+			align-items: center;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 60upx;
+			height: 60upx;
+			font-size: 34upx;
+			color: #c0c0c0;
+		}
+		input {
+			flex: 1;
+			height: 60upx;
+			background-color: #f5f5f5;
+			padding-left: 28upx;
+			border-radius: 30upx;
+			color: #888;
+			font-size: 28upx;
+		}
 	}
 }
 </style>
