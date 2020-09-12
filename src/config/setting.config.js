@@ -266,30 +266,30 @@ class Setting {
 	}
 }
 export default new Setting(
-	$mConstData.appName,
-	$mAssetsPath.logo,
-	'1',
-	$mAssetsPath.logo,
+	$mConstData.appName,	// 应用名称
+	$mAssetsPath.logo,	// 应用logo
+	'1',	// 客服类型
+	$mAssetsPath.logo,	// 海报默认logo
+	true,	// 是否默认选中协议
+	true,	// 是否开启分销（无此功能）
+	true,	// 是否显示首页扫一扫按钮
+	true,	// 开启直播入口
+	true,	// 是否开启loading 加载
+	'rotatePlane', // loading 加载风格
 	true,
-	true,
-	true,
-	true,
-	true,
-	'rotatePlane',
-	true,
-	'red',
-	false,
-	true,
-	true,
-	'为您挑选了一个好物',
-	'roundness',
-	false,
-	false,
-	false,
-	'',
-	'商城正在维护中...',
+	'red',	// 商城主题
+	false,	// 是否开启充值入口
+	true, // 是否开启主页分类
+	true, // 是否开放站点
+	'为您挑选了一个好物',	// 海报图片（无此功能）
+	'roundness',	// 海报头像显示风格（无此功能）
+	false,	// 关闭登录入口
+	false,	// 关闭注册入口
+	false, // 关闭第三方登录
+	'',	// 关闭站点时间
+	'商城正在维护中...', 	// 关闭站点描述
 	'one_two_three_cover', // one_two_three_cover 三级分类有图 one_two_three_text 三级分类无图
-	'two',	// 登录风格一 登录风格二
+	'two',	// one 登录风格一 one 登录风格二
 	'common_qr',
-	true
+	true	// 关闭注册激活码输入框
 );
