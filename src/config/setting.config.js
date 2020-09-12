@@ -277,7 +277,7 @@ export default new Setting(
 	true,	// 是否开启loading 加载
 	'rotatePlane', // loading 加载风格
 	true,
-	'red',	// 商城主题
+	'rf',	// 商城主题
 	false,	// 是否开启充值入口
 	true, // 是否开启主页分类
 	true, // 是否开放站点
