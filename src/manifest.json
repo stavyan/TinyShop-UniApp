@@ -191,6 +191,11 @@
 		"permission" : {
 		},
 		"plugins" : {
+			// 根据具体情况填写version(版本号)和provider(插件APPID)
+//			"live-player-plugin" : {
+//				"version" : "1.0.16",
+//				"provider" : "wx2b03c6e691cd7370"
+//			}
 		},
 		"uniStatistics" : {
 			"enable" : true
