@@ -665,6 +665,10 @@ export default {
 				this.$mHelper.toast('物流配送暂未开启，请联系客服');
 				return;
 			}
+			if (this.pickerShippingType.length === 0) {
+				this.$mHelper.toast('请联系客服开启物流配送');
+				return;
+			}
 			const params = {};
 			params.buyer_message = this.buyerMessage;
 			if (this.promoCode) {
