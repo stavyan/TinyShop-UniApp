@@ -52,7 +52,6 @@
 					:disabled="btnLoading"
 					:loading="btnLoading"
 					class="login-type-btn"
-							open-type="getUserInfo"
 							@tap="toAuthLogin">
 					<image class="image" :src="wechat"></image>
 				</button>
@@ -187,6 +186,17 @@
 					this.btnLoading = false;
 				});
 			}
+			/*  #ifdef MP-WEIXIN  */
+			// eslint-disable-next-line
+			wx.login({
+				success: function(loginRes) {
+					_this.code = loginRes.code;
+				},
+				fail: function() {
+					_this.$mHelper.log('暂不支持小程序登录');
+				}
+			});
+			/*  #endif  */
 		},
 		methods: {
 			// 通用跳转
@@ -289,6 +299,23 @@
 					fail: function() {
 						_this.btnLoading = false;
 						_this.$mHelper.log('暂不支持小程序登录');
+					}
+				});
+				/*  #endif  */
+				/*  #ifdef MP-WEIXIN */
+				// eslint-disable-next-line
+				wx.getUserProfile({
+					desc: '用于完善用户资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+					success: (infoRes) => {
+						let params = _this.promoCodeParams;
+						authApi = mpWechatLogin;
+						params = { ...infoRes, ...params };
+						params.code = this.code;
+						_this.thirdPartyAuthLogin(authApi, params);
+					},
+					fail: function() {
+						_this.loading = false;
+						_this.btnLoading = false;
 					}
 				});
 				/*  #endif  */
