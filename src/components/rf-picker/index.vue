@@ -72,11 +72,11 @@
 				@change="pickerChange"
 				v-if="mode === 'multiSelector'"
 			>
-				<block v-for="(n, index) in pickerValueMulArray.length" :key="index">
+				<block v-for="(list, index) in pickerValueMulArray" :key="index">
 					<picker-view-column>
 						<view
 							class="picker-item"
-							v-for="(item, index1) in pickerValueMulArray[n]"
+							v-for="(item, index1) in list"
 							:key="index1"
 							>{{ item.label }}</view
 						>
