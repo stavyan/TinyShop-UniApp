@@ -1,0 +1,9 @@
+{
+	"menu": {
+		"index": "Home page",
+		"category": "Category",
+		"notify": "Notify",
+		"cart": "Cart",
+		"my": "Mine"
+	}
+}

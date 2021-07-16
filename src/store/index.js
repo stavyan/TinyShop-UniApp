@@ -14,6 +14,8 @@ const NOTIFYNUM = uni.getStorageSync('notifyNum') || 0;
 const IMHISTORY = uni.getStorageSync('imHistory') || [];
 const IMNOREAD = uni.getStorageSync('imNoRead') || 0;
 const THEMECOLOR = uni.getStorageSync('themeColor');
+const LOCALE = uni.getStorageSync('locale') || 'zh';
+
 const store = new Vuex.Store({
 	state: {
 		// 用户token
@@ -40,9 +42,15 @@ const store = new Vuex.Store({
 		isImPanel: false,
 		// 当前是否人工客服服务
 		isStuffService: false,
-		themeColor: THEMECOLOR
+		themeColor: THEMECOLOR,
+		// 国际化
+		locale: LOCALE
 	},
 	getters: {
+		// 国际化
+		locale: state => {
+			return state.locale;
+		},
 		// 全局配置
 		themeColor: state => {
 			let theme = state.themeColor;
@@ -165,6 +173,10 @@ const store = new Vuex.Store({
 		setThemeColor(state, val) {
 			state.themeColor = val;
 			uni.setStorageSync('themeColor', val);
+		},
+		setLocale(state, val) {
+			state.locale = val;
+			uni.setStorageSync('locale', val);
 		}
 	},
 	actions: {

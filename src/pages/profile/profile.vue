@@ -54,7 +54,7 @@
 					icon="iconqianbao"
 					:iconColor="themeColor.color"
 					@eventClick="navTo('/pages/user/account/account')"
-					title="我的账户"
+					:title="_i18n.t('profile.myAccount')"
 				></list-cell>
 				<view class="tj-sction">
 					<view
@@ -153,7 +153,7 @@
 					icon="iconfuwu"
 					:iconColor="themeColor.color"
 					@eventClick="navTo('/pages/set/set')"
-					title="我的服务"
+					:title="_i18n.t('profile.myService')"
 				></list-cell>
 				<view class="tj-sction">
 					<!-- 分类列表 -->
@@ -189,6 +189,16 @@
 								<view class="text">{{ item.title }}</view>
 							</button>
 						</view>
+<!--						不需要国际化的 注释下面 view 就行-->
+						<view class="category" @tap="switchLanguage">
+							<view class="img">
+								<text
+									class="iconfont iconyuyanqiehuan"
+									:class="['text-'+themeColor.name]"
+								></text>
+							</view>
+							<view class="text">{{ currentLanguage }}</view>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -218,7 +228,6 @@ export default {
 	},
 	data() {
 		return {
-			settingList: this.$mConstDataConfig.settingList,
 			orderSectionList: this.$mConstDataConfig.orderSectionList,
 			amountList: this.$mConstDataConfig.amountList,
 			isOpenLiveStreaming: this.$mSettingConfig.isOpenLiveStreaming,
@@ -236,7 +245,8 @@ export default {
 			footPrintList: [], // 足迹列表
 			loading: true,
 			appName: this.$mSettingConfig.appName,
-			hasLogin: false
+			hasLogin: false,
+			currentLanguage: this._i18n.locale === 'zh' ? 'English' : '中文'
 		};
 	},
 	filters: {
@@ -275,7 +285,18 @@ export default {
         }
         return type;
       };
-    }
+    },
+		settingList() {
+			return [
+				{ icon: 'icongonggao', url: '/pages/index/notice/notice', title: this._i18n.t('profile.notice'), color: '#ff6b81' },
+				{ icon: 'iconyouhuiquan-copy', url: '/pages/user/coupon/list', title: this._i18n.t('profile.couponCenter'), color: '#ff6b81' },
+				{ icon: 'icondizhi1', url: '/pages/user/address/address', title: this._i18n.t('profile.addressManage'), color: '#ff6b81' },
+				{ icon: 'iconshoucang3', url: '/pages/user/collection/collection', title: this._i18n.t('profile.myCollection'), color: '#ff6b81' },
+				{ icon: 'iconfenxiang', url: '', title: this._i18n.t('profile.share'), color: '#ff6b81' },
+				{ icon: 'iconzhibo', url: '/pages/marketing/live/list', title: this._i18n.t('profile.live'), color: '#ff6b81' },
+				{ icon: 'iconshezhi3', url: '/pages/set/set', title: this._i18n.t('profile.setting'), color: '#ff6b81' }
+			];
+		}
   },
 	// 小程序分享
 	onShareAppMessage() {
@@ -308,6 +329,24 @@ export default {
 	},
 	// #endif
 	methods: {
+		// 切换语言
+		switchLanguage() {
+			if (this._i18n.locale === 'zh') {
+				this._i18n.locale = 'en';
+				this.currentLanguage = '中文';
+			} else if (this._i18n.locale === 'en') {
+				this._i18n.locale = 'zh';
+				this.currentLanguage = 'English';
+			}
+			this.initData();
+			this.$mStore.commit('setLocale', this._i18n.locale);
+			uni.setNavigationBarTitle({ title: this._i18n.t('menu.my') });
+			uni.setTabBarItem({ index: 0, text: this._i18n.t('menu.index') });
+			uni.setTabBarItem({ index: 1, text: this._i18n.t('menu.category') });
+			uni.setTabBarItem({ index: 2, text: this._i18n.t('menu.notify') });
+			uni.setTabBarItem({ index: 3, text: this._i18n.t('menu.cart') });
+			uni.setTabBarItem({ index: 4, text: this._i18n.t('menu.my') });
+		},
 		...mapMutations(['setNotifyNum', 'setCartNum']),
 		// 分享
     share() {

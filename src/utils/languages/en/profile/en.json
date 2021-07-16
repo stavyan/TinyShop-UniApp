@@ -1,0 +1,14 @@
+{
+	"profile": {
+		"language": "Language",
+		"setting": "Setting",
+		"live": "Live",
+		"share": "Share",
+		"notice": "Notice",
+		"couponCenter": "Coupon Center",
+		"addressManage": "Address Manage",
+		"myCollection": "My Collection",
+		"myAccount": "my account",
+		"myService": "My Service"
+	}
+}
